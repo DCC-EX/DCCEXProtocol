@@ -5,7 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
- * Copyright © 2018-2019 Blue Knobby Systems Inc.
+ * Copyright © 2023 Peter Akers
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * 4.0 International License. To view a copy of this license, visit
@@ -25,24 +25,15 @@
  *
  */
 
-#IFNDEF MAX_THROTTLES
-    #DEFINE MAX_THROTTLES 6
-#ENDIF
-#IFNDEF MAX_ROSTER
-    #DEFINE MAX_ROSTER 20
-#ENDIF
-#IFNDEF MAX_TURNOUTS
-    #DEFINE MAX_TURNOUTS 20
-#ENDIF
-#IFNDEF MAX_ROUTES
-    #DEFINE MAX_ROUTES 20
-#ENDIF
-#IFNDEF MAX_TURNTABLES
-    #DEFINE MAX_TURNTABLES 2
-#ENDIF
-#IFNDEF MAX_TURNTABLES_INDEXES
-    #DEFINE MAX_TURNTABLES_INDEXES 10
-#ENDIF
+#ifndef DCCEXPROTOCOL_H
+#define DCCEXPROTOCOL_H
+
+static const int MAX_THROTTLES 6
+static const int MAX_ROSTER 20
+static const int MAX_TURNOUTS 20
+static const int MAX_ROUTES 20
+static const int MAX_TURNTABLES 2
+static const int MAX_TURNTABLES_INDEXES 10
 
 #include "Arduino.h"
 
@@ -176,12 +167,12 @@ class DCCEXProtocol {
 
     bool getServer();
 
-    int getRoster();
-    int getTurnouts();
-    int getRoutes();
-    int getTurntable();
+    bool getRoster();
+    bool getTurnouts();
+    bool getRoutes();
+    bool getTurntable();
   
-    setPower(TrackPower powerState, int track );
+    setPower(TrackPower powerState, int track);
 
     bool emergencyStop();
 
@@ -189,11 +180,11 @@ class DCCEXProtocol {
 
 	void setTrackPower(TrackPower state);
 
-    bool setTurnout(int TurnoutId, TurnoutAction action);
-    bool setRoute(int RouteId);
+    bool setTurnout(int turnoutId, TurnoutAction action);
+    bool setRoute(int routeId);
     bool pauseRoutes();
     bool resumeRoutes();
-    bool setTurntable(int TurntableId, int position, int activity)
+    bool setTurntable(int TurntableId, int position, int activity);
 
     bool setAccessory(int accessoryAddress, int activate);
     bool setAccessory(int accessoryAddress, int accessorySubAddr, int activate);
@@ -215,10 +206,10 @@ class DCCEXProtocol {
     char inputbuffer[32767];
     ssize_t nextChar;  // where the next character to be read goes in the buffer
 
+    void init();
+
     bool processCommand(char *c, int len);
     void sendCommand(String cmd);
-
-    void init();
 
     void processUnknownCommand(const String& unknownCommand);
 
@@ -231,7 +222,7 @@ class DCCEXProtocol {
     void requestLocoUpdate(int address);
     void setLoco(int address, int speed, Direction direction);
 
-    bool processLocomotiveAction(char *c, int len);
+    bool processLocoAction(char *c, int len);
 
     // *******************
 
@@ -336,3 +327,5 @@ class Turntable {
     private:
         bool turntableIsMoving;
 }
+
+#endif // DCCEXPROTOCOL_H
