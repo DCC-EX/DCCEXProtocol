@@ -222,6 +222,10 @@ class DCCEXProtocol {
 
     void processUnknownCommand(const String& unknownCommand);
 
+    void processServerDescription(char *c, int len);	
+
+    void processTrackPower(char *c, int len);
+
     // *******************
 
     void requestLocoUpdate(int address);
@@ -229,20 +233,23 @@ class DCCEXProtocol {
 
     bool processLocomotiveAction(char multiThrottle, char *c, int len);
 
-    bool processRosterFunctionList(char multiThrottle, char *c, int len);
-    void processServerDescription(char *c, int len);	
+    // *******************
+
     void processRosterList(char *c, int len);
+    void processRosterEntry(char *c, int len);
+
     void processTurnoutList(char *c, int len);
-    void processRouteList(char *c, int len);
-    void processTrackPower(char *c, int len);
-    void processFunctionState(char multiThrottle, const String& functionData);
-    void processRosterFunctionListEntries(char multiThrottle, const String& s);
-    void processSpeedSteps(char multiThrottle, const String& speedStepData);
-    void processDirection(char multiThrottle, const String& speedStepData);
-    void processSpeed(char multiThrottle, const String& speedData);
-    void processAddRemove(char multiThrottle, char *c, int len);
+    void processTurnoutEntry(char *c, int len);
     void processTurnoutAction(char *c, int len);
+
+    void processRouteList(char *c, int len);
+    void processRouteEntry(char *c, int len);
     void processRouteAction(char *c, int len);
+
+    void processTurntableList(char *c, int len);
+    void processTurntableEntry(char *c, int len);
+    void processTurntableIndexEntry(char *c, int len);
+    void processTurntableAction(char *c, int len);
 
 };
 
