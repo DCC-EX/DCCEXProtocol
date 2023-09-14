@@ -119,7 +119,7 @@ class NullStream : public Stream {
 class DCCEXProtocolDelegate {
   public:
   
-    virtual void receivedServerDescription(String description, String verion) {}
+    virtual void receivedServerDescription(String description, String version) {}
   
     virtual void receivedRosterList(int rosterSize) {}
     virtual void receivedTurnoutList(int turnoutListSize) {}    
@@ -128,17 +128,13 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedSpeed(int throttleNo, int speed) { }
     virtual void receivedDirection(int throttleNo, Direction dir) { }
-    virtual void receivedFunction(int throttleNo, uint8_t func, bool state) { }
+    virtual void receivedFunction(int throttleNo, int func, bool state) { }
 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    // virtual void receivedLocoAdded(int throttleNo, String address, String entry) { }
-    // virtual void receivedLocoRemoved(int throttleNo, String address, String command) { }
-
-    virtual void receivedTurnoutAction(int TurnoutId, TurnoutState state) { } //  PTAturnoutstatesystemname
+    virtual void receivedTurnoutAction(int turnoutId, TurnoutState state) { } //  PTAturnoutstatesystemname
     virtual void receivedRouteAction(int routeId, RouteState state) { } //  PTAturnoutstatesystemname
-    
-     //  PTAturnoutstatesystemname
+    virtual void receivedTurntableAction(int turntableId, int position, TurnoutState turntableState) { } //  PTAturnoutstatesystemname
 };
 
 

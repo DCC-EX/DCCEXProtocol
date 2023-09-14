@@ -152,16 +152,42 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     String s = responseStr.replace("\\\"", "'");
     //split on spaces, with stuff between doublequotes treated as one item
     String[] args = s.substring(1, responseStr.length() - 1).split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", 999);
-    int sLen = s.length();
+    int cleanLen = s.length();
+    char *cleanC = s.c_str(); 
 
     if (delegate) {
-        if (len > 3 && s.charAt(1)=='i') {
-            serverVersion = args[1];
-            serverMicroprocessorType = args[2];
-            serverMotorcontrollerType = args [3];
-            serverBuildNumber = args[4];
-        } 
-    } else if (len > 3 && s.charAt(1)=='i') {
+        if (len > 3 && cleanC[1]=='i') {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+            processServerDescription(cleanC, cleanLen);
+
+        } else if (len > 3 && cleanC[1]=='p') { //<p onOff>
+            processTrackPower(cleanC, cleanLen);
+
+        } else if (len > 3 && cleanC[1]=='l') { //<l cab reg speedByte functMap>
+            processLocoAction(cleanC, cleanLen);
+
+        } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='R' && (args.length>1)) { 
+            if ( (args.length<3) || (args[2].charAt(0) != '"') ) {  // loco list
+                processRosterList(cleanC, cleanLen); //<jR [id1 id2 id3 ...]>
+            } else { // individual
+                processRosterEntry(cleanC, cleanLen); //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
+            }
+
+        } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='T' && (args.length>1)) { 
+            if ( (args.length == 1)  // no Turnouts <jT>
+            || ((args.length == 3) && ((args[2].charAt(0) == 'C') || (args[2].charAt(0) == 'T') || (args[2].charAt(0) == 'X')) ) // <jT id state>     or <jT id X>
+            || ((args.length == 4) && (args[3].charAt(0) == '"') ) ) { // individual turnout  <jT id state "[desc]">
+                processTurnoutList(cleanC, cleanLen); //<jT [id1 id2 id3 ...]>
+            } else { // individual
+                processTunoutEntry(cleanC, cleanLen); //<jT id X|state |"[desc]">
+            }
+
+        } else if (len > 3 && cleanC[1]=='H') { //<H id state>
+            if (delegate) {
+                delegate->receivedTurnoutAction(arg[1].toInt(), args[2].toInt());
+            }
+        
+        }
+
     }
 
     console->println("processCommand() end");
@@ -171,6 +197,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
 void DCCEXProtocol::processUnknownCommand(const String& unknownCommand) {
     console->println("processUnknownCommand()");
     if (delegate) {
+        console->printf("unknown command '%s'\n", c);
     }
     console->println("processUnknownCommand() end");
 }
@@ -178,6 +205,10 @@ void DCCEXProtocol::processUnknownCommand(const String& unknownCommand) {
 bool DCCEXProtocol::processLocoAction(char *c, int len) {
     console->println("processLocoAction()");
     if (delegate) {
+
+        // delegate->receivedSpeed(throttle, speed);
+        // delegate->receivedDirection(throttle, direction);
+        // delegate->receivedFunction(throttle, function, state);
     }
     console->println("processLocoAction() end");
 }
@@ -185,8 +216,12 @@ bool DCCEXProtocol::processLocoAction(char *c, int len) {
 
 void DCCEXProtocol::processServerDescription(char *c, int len) {
     if (delegate && len > 0) {
-        String serverDescription = String(c);
-        delegate->receivedServerDescription(serverDescription);
+        serverVersion = args[1];
+        serverMicroprocessorType = args[2];
+        serverMotorcontrollerType = args [3];
+        serverBuildNumber = args[4];
+
+        delegate->receivedServerDescription(serverDescription, serverVersion);
     }
 }
 
@@ -235,10 +270,10 @@ void DCCEXProtocol::processTrackPower(char *c, int len) {
     if (delegate) {
         if (len > 0) {
             TrackPower state = PowerUnknown;
-            if (c[0]=='0') {
+            if (c[1]=='0') {
                 state = PowerOff;
             }
-            else if (c[0]=='1') {
+            else if (c[1]=='1') {
                 state = PowerOn;
             }
 
