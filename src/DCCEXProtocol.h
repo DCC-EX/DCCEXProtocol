@@ -29,13 +29,15 @@
 #define DCCEXPROTOCOL_H
 
 static const int MAX_THROTTLES 6
-static const int MAX_ROSTER 20
-static const int MAX_TURNOUTS 20
-static const int MAX_ROUTES 20
-static const int MAX_TURNTABLES 2
-static const int MAX_TURNTABLES_INDEXES 10
+// static const int MAX_ROSTER 20
+// static const int MAX_TURNOUTS 20
+// static const int MAX_ROUTES 20
+// static const int MAX_TURNTABLES 2
+// static const int MAX_TURNTABLES_INDEXES 10
+static const int MAX_FUNCTIONS 28
 
 #include "Arduino.h"
+#include <LinkedList.h>
 
 // *****************************************************************
 
@@ -245,12 +247,14 @@ class DCCEXProtocol {
 
 };
 
+// *****************************************************************
+
 class Functions {
     public:
-        String functionLabel[28];
-        int functionState[28];
-        int functionLatching[28];
-        int functionState[28];
+        String functionLabel[MAX_FUNCTIONS];
+        int functionState[MAX_FUNCTIONS];
+        int functionLatching[MAX_FUNCTIONS];
+        int functionState[MAX_FUNCTIONS];
 
     private:
 }
@@ -268,10 +272,14 @@ class Loco {
 
 }
 
+class ConsistLoco : public Loco {
+    public:
+        Facing consisLocoFacing;
+}
+
 class Consist {
     public:
-        Loco consistLocos[10];
-        int consistLocosFacing[10];
+        LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
         int consistSpeed;
         Direction consistDirection;
 
@@ -288,6 +296,9 @@ class Consist {
         bool consistSetFunction(int functionNo, FunctionState functionState);
         bool consistSetFunction(int address, int functionNo, FunctionState functionState);
 
+        bool addToConsist(int locoAddress, Facing, facing);
+        bool removeFromConsist(int locoAddress, Facing, facing);
+        
     private:
 
 }
@@ -312,7 +323,6 @@ class TurntableIndex {
     public:
         int turntableIndexId;
         String turntableIndexName;
-        int turntableValue;
         int turntableAngle;
     private:
 }

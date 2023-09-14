@@ -446,107 +446,94 @@ void DCCEXProtocol::processTurntableAction(char *c, int len) {
 
 }
 
+// *****************************************************************
 
-class DCCEXProtocol::Functions {
-    public:
-        String functionLabel[28];
-        int functionState[28];
-        int functionLatching[28];
-        int functionState[28];
-
-    private:
+class Functions {
+    String functionLabel[MAX_FUNCTIONS];
+    int functionState[MAX_FUNCTIONS];
+    int functionLatching[MAX_FUNCTIONS];
+    int functionState[MAX_FUNCTIONS];
 }
 
-class DCCEXProtocol::Loco {
-    public:
-        int locoAddress;
-        String locoName;
-        int locoSpeed;
-        Direction locoDirection;
-        Functions locoFunctions;
-        LocoSource locoSource;
-
-    private:
-
+class Loco {
+    int locoAddress;
+    String locoName;
+    int locoSpeed;
+    Direction locoDirection;
+    Functions locoFunctions;
+    LocoSource locoSource;
 }
 
-class DCCEXProtocol::Consist {
-    public:
-        Loco consistLocos[10];
-        int consistLocosFacing[10];
-        int consistSpeed;
-        Direction consistDirection;
+class Consist {
+    Loco consistLocos[10];
+    int consistLocosFacing[10];
+    int consistSpeed;
+    Direction consistDirection;
 
-        bool consistAddLoco(int locoAddress) {
+    bool consistAddLoco(int locoAddress) {
 
-        }
+    }
 
-        bool consistReleaseLoco() {
+    bool consistReleaseLoco() {
 
-        }
-        
-        bool consistReleaseLoco(int locoAddress) {
+    }
+    
+    bool consistReleaseLoco(int locoAddress) {
 
-        }
-        
-        bool consistGetNumberOfLocos() {
+    }
+    
+    bool consistGetNumberOfLocos() {
 
-        }
-        
-        bool consistGetLocoAtPosition(int position) {
+    }
+    
+    bool consistGetLocoAtPosition(int position) {
 
-        }
-        
-        bool consistGetLocoPosition(int locoAddress) {
+    }
+    
+    bool consistGetLocoPosition(int locoAddress) {
 
-        }
-        
+    }
 
-        bool consistSetSpeed(int speed) {
+    bool consistSetSpeed(int speed) {
 
-        }
-        
-        int consistGetSpeed() {
+    }
+    
+    int consistGetSpeed() {
 
-        }
-        
-        bool consistSetDirection(Direction direction) {
+    }
+    
+    bool consistSetDirection(Direction direction) {
 
-        }
-        
-        bool consistSetFunction(int functionNo, FunctionState functionState) {
+    }
+    
+    bool consistSetFunction(int functionNo, FunctionState functionState) {
 
-        }
-        
-        bool consistSetFunction(int address, int functionNo, FunctionState functionState) {
+    }
+    
+    bool consistSetFunction(int address, int functionNo, FunctionState functionState) {
 
-        }
-        
-
-    private:
-
+    }
 }
 
-class DCCEXProtocol::Turnout {
+class Turnout {
     int turnoutId;
     String turnoutName;
     TurnoutState turnoutState;
 }
 
-class DCCEXProtocol::Route {
+class Route {
     int routeId;
     String routeName;
 }
 
-
-class DCCEXProtocol::TurntableIndex {
+class TurntableIndex {
     int turntableIndexId;
     String turntableIndexName;
     int turntableValue;
     int turntableAngle;
 }
 
-class DCCEXProtocol::Turntable {
+class Turntable {
     int turntableId;
     String turntableName;
     int turntablePosition;
