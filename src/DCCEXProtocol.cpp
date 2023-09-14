@@ -148,10 +148,17 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
 }
 
 void DCCEXProtocol::processUnknownCommand(const String& unknownCommand) {
-
+    console->println("processUnknownCommand()");
+    if (delegate) {
+    }
+    console->println("processUnknownCommand() end");
 }
 
 bool DCCEXProtocol::processLocoAction(char *c, int len) {
+    console->println("processLocoAction()");
+    if (delegate) {
+    }
+    console->println("processLocoAction() end");
 }
 
 
@@ -165,19 +172,40 @@ void DCCEXProtocol::processServerDescription(char *c, int len) {
 
 void DCCEXProtocol::processRosterList(char *c, int len) {
     console->println("processRosterList()");
+    if (delegate) {
+    }
     console->println("processRosterList(): end");
 }
 
 
 void DCCEXProtocol::processTurnoutList(char *c, int len) {
     console->println("processTurnoutList()");
+    if (delegate) {
+    }
     console->println("processTurnoutList(): end");
 }
 
 
 void DCCEXProtocol::processRouteList(char *c, int len) {
     console->println("processRouteList()");
+    if (delegate) {
+    }
     console->println("processRouteList(): end");
+}
+
+
+bool DCCEXProtocol::pauseRoutes() {
+    console->println("pauseRoutes()");
+    if (delegate) {
+    }
+    console->println("pauseRoutes() end");
+}
+
+bool DCCEXProtocol::resumeRoutes() {
+    console->println("resumeRoutes()");
+    if (delegate) {
+    }
+    console->println("resumeRoutes() end");
 }
 
 void DCCEXProtocol::processTrackPower(char *c, int len) {
@@ -196,54 +224,6 @@ void DCCEXProtocol::processTrackPower(char *c, int len) {
             delegate->receivedTrackPower(state);
         }
     }
-}
-
-
-void DCCEXProtocol::processAddRemove(char multiThrottle, char *c, int len) {
-    console->print("processAddRemove(): "); console->println(multiThrottle);
-
-    if (!delegate) {
-        // If no one is listening, don't do the work to parse the string
-        return;
-    }
-
-    //console->printf("processing add/remove command %s\n", c);
-
-    String s(c);
-
-    bool add = (c[0] == '+');
-    bool remove = (c[0] == '-');
-
-    int p = s.indexOf(PROPERTY_SEPARATOR);
-    if (p > 0) {
-        String address = s.substring(1, p);
-        String entry   = s.substring(p+3);
-
-        address.trim();
-        entry.trim();
-
-        if (add) {
-            if (multiThrottle == DEFAULT_MULTITHROTTLE) {
-                delegate->addressAdded(address, entry);
-            } else {
-                delegate->addressAddedMultiThrottle(multiThrottle, address, entry);
-            }
-        }
-        if (remove) {
-            if (entry.equals("d\n") || entry.equals("r\n")) {
-                delegate->addressRemoved(address, entry);
-            }
-            else {
-                console->printf("malformed address removal: command is %s\n", entry.c_str());
-                console->printf("entry length is %d\n", entry.length());
-                for (int i = 0; i < entry.length(); i++) {
-                    console->printf("  char at %d is %d\n", i, entry.charAt(i));
-                }
-            }
-        }
-    }
-
-    console->println("processAddRemove(): end"); 
 }
 
 
