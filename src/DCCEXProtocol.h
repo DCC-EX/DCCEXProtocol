@@ -135,8 +135,10 @@ class DCCEXProtocolDelegate {
     // virtual void receivedLocoAdded(int throttleNo, String address, String entry) { }
     // virtual void receivedLocoRemoved(int throttleNo, String address, String command) { }
 
-    virtual void receivedTurnoutAction(String systemName, TurnoutState state) { } //  PTAturnoutstatesystemname
-    virtual void receivedRouteAction(String systemName, RouteState state) { } //  PTAturnoutstatesystemname
+    virtual void receivedTurnoutAction(int TurnoutId, TurnoutState state) { } //  PTAturnoutstatesystemname
+    virtual void receivedRouteAction(int routeId, RouteState state) { } //  PTAturnoutstatesystemname
+    
+     //  PTAturnoutstatesystemname
 };
 
 
@@ -153,7 +155,10 @@ class DCCEXProtocol {
 
     bool check();
 
-    String currentDeviceName;
+    String serverVersion;
+    String serverMicroprocessorType;
+    String serverMotorcontrollerType;
+    String serverBuildNumber;
 
     // *******************
 

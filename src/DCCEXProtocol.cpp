@@ -27,13 +27,11 @@
 
 //#include <ArduinoTime.h>
 //#include <TimeLib.h>
-#include <vector>  //https://github.com/arduino-libraries/Arduino_AVRSTL
 
 #include "DCCEXProtocol.h"
 
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
-static const char *rosterSegmentDesc[] = {"Name", "Address", "Length"};
 
 
 DCCEXProtocol::DCCEXProtocol(bool server) {
@@ -81,7 +79,7 @@ void DCCEXProtocol::connect(Stream *stream) {
 }
 
 void DCCEXProtocol::disconnect() {
-    String command = "Q";
+    String command = "<U DISCONNECT>";
     sendCommand(command);
     this->stream = NULL;
 }
@@ -137,13 +135,36 @@ void DCCEXProtocol::sendCommand(String cmd) {
 
 
 bool DCCEXProtocol::processCommand(char *c, int len) {
+    console->println("processCommand()");
     bool changed = false;
-
-    console->print("<== ");
-    console->println(c);
 
     lastServerResponseTime = millis()/1000;
 
+    console->print("<== "); console->println(c);
+
+    String s(c);
+    if (!(s.charAt(0) == '<')) {
+        if (s.contains("<")) { // see if we can clean it up
+            s = responseStr.substring(s.indexOf("<"));
+        }
+    }
+    // remove any escaped double quotes
+    String s = responseStr.replace("\\\"", "'");
+    //split on spaces, with stuff between doublequotes treated as one item
+    String[] args = s.substring(1, responseStr.length() - 1).split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", 999);
+    int sLen = s.length();
+
+    if (delegate) {
+        if (len > 3 && s.charAt(1)=='i') {
+            serverVersion = args[1];
+            serverMicroprocessorType = args[2];
+            serverMotorcontrollerType = args [3];
+            serverBuildNumber = args[4];
+        } 
+    } else if (len > 3 && s.charAt(1)=='i') {
+    }
+
+    console->println("processCommand() end");
     return false;
 }
 
