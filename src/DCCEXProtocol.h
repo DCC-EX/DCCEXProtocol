@@ -231,7 +231,7 @@ class DCCEXProtocol {
     void requestLocoUpdate(int address);
     void setLoco(int address, int speed, Direction direction);
 
-    bool processLocomotiveAction(char multiThrottle, char *c, int len);
+    bool processLocomotiveAction(char *c, int len);
 
     // *******************
 
