@@ -147,6 +147,9 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     return false;
 }
 
+void DCCEXProtocol::processUnknownCommand(const String& unknownCommand) {
+
+}
 
 bool DCCEXProtocol::processLocoAction(char *c, int len) {
 }
@@ -312,7 +315,7 @@ bool DCCEXProtocol::setSpeed(int throttle, int speed) {
 
 // ******************************************************************************************************
 
-void requestLocoUpdate(int address) {
+void DCCEXProtocol::requestLocoUpdate(int address) {
 
 }
 
@@ -366,14 +369,155 @@ long DCCEXProtocol::getLastServerResponseTime() {
 }
 
 
-bool setTurntable(int TurntableId, int position, int activity) {
+bool DCCEXProtocol::setTurntable(int TurntableId, int position, int activity) {
 
 }
 
-bool setAccessory(int accessoryAddress, int activate) {
+bool DCCEXProtocol::setAccessory(int accessoryAddress, int activate) {
 
 }
 
-bool setAccessory(int accessoryAddress, int accessorySubAddr, int activate) {
-    
+bool DCCEXProtocol::setAccessory(int accessoryAddress, int accessorySubAddr, int activate) {
+
+}
+
+
+void DCCEXProtocol::processRosterEntry(char *c, int len) {
+
+}
+
+void DCCEXProtocol::processTurnoutEntry(char *c, int len) {
+
+}
+
+void DCCEXProtocol::processRouteEntry(char *c, int len) {
+
+}
+
+void DCCEXProtocol::processTurntableList(char *c, int len) {
+
+}
+
+void DCCEXProtocol::processTurntableEntry(char *c, int len) {
+
+}
+
+void DCCEXProtocol::processTurntableIndexEntry(char *c, int len) {
+
+}
+
+void DCCEXProtocol::processTurntableAction(char *c, int len) {
+
+}
+
+
+class DCCEXProtocol::Functions {
+    public:
+        String functionLabel[28];
+        int functionState[28];
+        int functionLatching[28];
+        int functionState[28];
+
+    private:
+}
+
+class DCCEXProtocol::Loco {
+    public:
+        int locoAddress;
+        String locoName;
+        int locoSpeed;
+        Direction locoDirection;
+        Functions locoFunctions;
+        LocoSource locoSource;
+
+    private:
+
+}
+
+class DCCEXProtocol::Consist {
+    public:
+        Loco consistLocos[10];
+        int consistLocosFacing[10];
+        int consistSpeed;
+        Direction consistDirection;
+
+        bool consistAddLoco(int locoAddress) {
+
+        }
+
+        bool consistReleaseLoco() {
+
+        }
+        
+        bool consistReleaseLoco(int locoAddress) {
+
+        }
+        
+        bool consistGetNumberOfLocos() {
+
+        }
+        
+        bool consistGetLocoAtPosition(int position) {
+
+        }
+        
+        bool consistGetLocoPosition(int locoAddress) {
+
+        }
+        
+
+        bool consistSetSpeed(int speed) {
+
+        }
+        
+        int consistGetSpeed() {
+
+        }
+        
+        bool consistSetDirection(Direction direction) {
+
+        }
+        
+        bool consistSetFunction(int functionNo, FunctionState functionState) {
+
+        }
+        
+        bool consistSetFunction(int address, int functionNo, FunctionState functionState) {
+
+        }
+        
+
+    private:
+
+}
+
+class DCCEXProtocol::Turnout {
+    int turnoutId;
+    String turnoutName;
+    TurnoutState turnoutState;
+}
+
+class DCCEXProtocol::Route {
+    int routeId;
+    String routeName;
+}
+
+
+class DCCEXProtocol::TurntableIndex {
+    int turntableIndexId;
+    String turntableIndexName;
+    int turntableValue;
+    int turntableAngle;
+}
+
+class DCCEXProtocol::Turntable {
+    int turntableId;
+    String turntableName;
+    int turntablePosition;
+    TurntableIndex turntableIndexes[MAX_TURNTABLE_INDEXES];
+    bool turntableIsMoving;
+
+    int turntableGetCurrentIndex() {
+
+    }
 }
