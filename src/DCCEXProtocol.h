@@ -135,35 +135,30 @@ class DCCEXProtocolDelegate {
     virtual void receivedRouteList(int routeListSize) {}
     virtual void receivedTurntablesList(int turntablesListSize) {}    
 
-    virtual void receivedFunction(int throttleNo, uint8_t func, bool state) { }
-    
     virtual void receivedSpeed(int throttleNo, int speed) { }
     virtual void receivedDirection(int throttleNo, Direction dir) { }
+    virtual void receivedFunction(int throttleNo, uint8_t func, bool state) { }
 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    virtual void receivedLocoAdded(int throttleNo, String address, String entry) { }
-    virtual void receivedLocoRemoved(int throttleNo, String address, String command) { }
+    // virtual void receivedLocoAdded(int throttleNo, String address, String entry) { }
+    // virtual void receivedLocoRemoved(int throttleNo, String address, String command) { }
 
     virtual void receivedTurnoutAction(String systemName, TurnoutState state) { } //  PTAturnoutstatesystemname
     virtual void receivedRouteAction(String systemName, RouteState state) { } //  PTAturnoutstatesystemname
-
 };
 
 
 class DCCEXProtocol {
   public:
     
-	DCCEXProtocol(bool server = false);
+    DCCEXProtocol(bool server = false);
 
-	void setDelegate(DCCEXProtocolDelegate *delegate);
-	void setLogStream(Stream *console);
+    void setDelegate(DCCEXProtocolDelegate *delegate);
+    void setLogStream(Stream *console);
 
-	void connect(Stream *stream);
+    void connect(Stream *stream);
     void disconnect();
-
-    void setDeviceName(String deviceName);
-    void setDeviceID(String deviceId);
 
     bool check();
 
@@ -204,17 +199,16 @@ class DCCEXProtocol {
     bool setAccessory(int accessoryAddress, int accessorySubAddr, int activate);
 
     long getLastServerResponseTime();  // seconds since Arduino start
-    
 
   private:
   
     bool server;
     
-	Stream *stream;
+    Stream *stream;
     Stream *console;
-	NullStream nullStream;
+    NullStream nullStream;
 	
-	DCCEXProtocolDelegate *delegate = NULL;
+    DCCEXProtocolDelegate *delegate = NULL;
 
     long lastServerResponseTime;
 
@@ -237,7 +231,7 @@ class DCCEXProtocol {
 
     bool processRosterFunctionList(char multiThrottle, char *c, int len);
     void processServerDescription(char *c, int len);	
-	void processRosterList(char *c, int len);
+    void processRosterList(char *c, int len);
     void processTurnoutList(char *c, int len);
     void processRouteList(char *c, int len);
     void processTrackPower(char *c, int len);
@@ -258,6 +252,8 @@ class Functions {
         int functionState[28];
         int functionLatching[28];
         int functionState[28];
+
+    private:
 }
 
 class Loco {
