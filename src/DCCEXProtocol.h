@@ -31,7 +31,7 @@
 static const int MAX_THROTTLES 6
 static const int MAX_FUNCTIONS 28
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
 
 // *****************************************************************
@@ -317,8 +317,8 @@ class Consist {
 class Turnout {
     public:
         bool setTurnout(int id, String name, TurnoutState state);
-        bool setTurnoutState(int id, TurnoutState state);
-        TurnoutState getTurnoutState(int id);
+        bool setTurnoutState(TurnoutState state);
+        TurnoutState getTurnoutState();
         int getTurnoutId();
         String getTurnoutName();
 

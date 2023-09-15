@@ -242,7 +242,7 @@ bool DCCEXProtocol::processLocoAction(String args[], char *c, int len) {
     console->println("processLocoAction() end");
 }
 
-void DCCEXProtocol::processServerDescription(String args[], char *c, int len) {
+void DCCEXProtocol::processServerDescription(String args[], char *c, int len) { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
     if (delegate) {
         serverVersion = args[1];
         serverMicroprocessorType = args[2];
@@ -348,9 +348,9 @@ void DCCEXProtocol::processTurnoutList(String args[], char *c, int len) {
         for (i=1; i<args.length(); i++) {
             int id = arg[1].toInt();
             Turnout turnout = new Turnout();
-            bool rslt = turnout.setturnout(id, "", TurnoutClose);
+            bool rslt = turnout.setTurnout(id, "", TurnoutClose);
             turnouts.add(turnout);
-            requestTurnoutEntry(turnoutId);
+            requestTurnoutEntry(id);
         }
     }
     console->println("processTurnoutList(): end");
@@ -370,11 +370,9 @@ void DCCEXProtocol::processTurnoutEntry(String args[], char *c, int len) {
         //find the turnout entry to update
         if (turnouts.size()>0) { 
             for (i=0; i<turnouts.size(); i++) {
-                Turnout turnout = turnouts.get(i);
-                if (rosterLoco.)
-                int id = arg[1].toInt();
-                Turnout turnoutsTurnout = roster.get(i);
-                if (turnoutsTurnout.getId()==id) {
+                Turnout turnoutsTurnout = turnouts.get(i);
+                int id = args[1].toInt();
+                if (turnoutsTurnout.getTurnoutId()==id) {
                     int id = arg[1].toInt();
                     Turnout turnout = new Turnout();
                     bool rslt = turnout.setTurnout(id, args[2], TurnoutClosed);
@@ -404,10 +402,39 @@ void DCCEXProtocol::processTurnoutAction(String args[], char *c, int len) {
 void DCCEXProtocol::processRouteList(String args[], char *c, int len) {
     console->println("processRouteList()");
     if (delegate) {
+        if (routes.size()>0) { // already have a routes list so this is an update
+            routes.clear();
+        } 
+        for (i=1; i<args.length(); i++) {
+            int id = arg[1].toInt();
+            Route route = new Route();
+            bool rslt = routes.setRoute(id, "");
+            routes.add(route);
+            requestTurnoutEntry(id);
+        }
     }
     console->println("processRouteList(): end");
 }
 
+void DCCEXProtocol::processRouteEntry(String args[], char *c, int len) {
+    console->println("processRouteEntry()");
+    if (delegate) {
+        //find the Route entry to update
+        if (routes.size()>0) { 
+            for (i=0; i<routes.size(); i++) {
+                int id = arg[1].toInt();
+                Route routesRoute = routes.get(i);
+                if (routesRoute.getId()==id) {
+                    int id = arg[1].toInt();
+                    Route route = new Route();
+                    bool rslt = route.setRoute(id, args[2]);
+                    routes.set(route);
+                }
+            }
+        } 
+    }
+    console->println("processTurnoutEntry() end");
+}
 bool DCCEXProtocol::setRoute(int routeId) {
     sendCommand("</START " + routeId + ">");
     return true;
@@ -652,14 +679,14 @@ class Turnout {
     TurnoutState turnoutState;
 
     bool setTurnout(int id, String name, TurnoutState state) {}
-    bool setTurnoutState(int id, TurnoutState state) {}
+    bool setTurnoutState(TurnoutState state) {}
     int getTurnoutId() {
         return turnoutId;
     }
     String getTurnoutName() {
         return turnoutName;
     }
-    TurnoutState getTurnoutState(int id) {
+    TurnoutState getTurnoutState() {
         return turnoutState;
     }
 }
@@ -680,7 +707,6 @@ class Route {
 class TurntableIndex {
     int turntableIndexId;
     String turntableIndexName;
-    int turntableValue;
     int turntableAngle;
 }
 
@@ -697,15 +723,28 @@ class Turntable {
     String getTurntableName() {
         return turntableName;
     }
-    bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle) {}
+    bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle) {
+        TurntableIndex index = new TurntableIndex();
+        index.turntableIndexId = turntableIndexId;
+        index.turntableIndexName = turntableIndexName;
+        index.turntableAngle = turntableAngle;
+    }
     int getTurntableCurrentPosition() {
         return turntableCurrentPosition;
     }
-    int getTurntableNumberOfIndexes() {}
+    int getTurntableNumberOfIndexes() {
+        return turntableIndexes.size();
+    }
     TurntableIndex getTurntableIndexAt(int positionInLinkedList) {
         return turntableIndexes.get(positionInLinkedList);
     }
     TurntableIndex getTurntableIndex(int indexId) {
+        for (int i=0; i<turntableIndexes.size(); i++) {
+            if (turntableIndexes.get(i).turntableId==indexId) {
+                return turntableIndexes.get(i);
+            }
+        }
+        return {};
     }
     bool rotateTurntableTo(int index) {}
     TurntableState getTurntableState() {
