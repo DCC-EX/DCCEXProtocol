@@ -121,6 +121,16 @@ bool DCCEXProtocol::check() {
     }
 }
 
+
+long DCCEXProtocol::getLastServerResponseTime() {
+  return lastServerResponseTime;   
+}
+
+
+// ******************************************************************************************************
+// ******************************************************************************************************
+// ******************************************************************************************************
+
 void DCCEXProtocol::sendCommand(String cmd) {
     if (stream) {
         // TODO: what happens when the write fails?
@@ -131,8 +141,6 @@ void DCCEXProtocol::sendCommand(String cmd) {
         console->print("==> "); console->println(cmd);
     }
 }
-
-
 
 bool DCCEXProtocol::processCommand(char *c, int len) {
     console->println("processCommand()");
@@ -156,38 +164,61 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     char *cleanC = s.c_str(); 
 
     if (delegate) {
-        if (len > 3 && cleanC[1]=='i') {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
-            processServerDescription(cleanC, cleanLen);
+        if (len > 3 && cleanC[1]=='i' && args[0]=="iDCCEX") {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+            processServerDescription(args, cleanC, cleanLen);
 
-        } else if (len > 3 && cleanC[1]=='p') { //<p onOff>
+        } else if (len > 1 && cleanC[1]=='p') { //<p onOff>
             processTrackPower(cleanC, cleanLen);
 
         } else if (len > 3 && cleanC[1]=='l') { //<l cab reg speedByte functMap>
-            processLocoAction(cleanC, cleanLen);
+            processLocoAction(args, cleanC, cleanLen);
 
         } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='R' && (args.length>1)) { 
             if ( (args.length<3) || (args[2].charAt(0) != '"') ) {  // loco list
-                processRosterList(cleanC, cleanLen); //<jR [id1 id2 id3 ...]>
+                processRosterList(args, cleanC, cleanLen); //<jR [id1 id2 id3 ...]>
             } else { // individual
-                processRosterEntry(cleanC, cleanLen); //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
+                processRosterEntry(args, cleanC, cleanLen); //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
             }
 
         } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='T' && (args.length>1)) { 
-            if ( (args.length == 1)  // no Turnouts <jT>
-            || ((args.length == 3) && ((args[2].charAt(0) == 'C') || (args[2].charAt(0) == 'T') || (args[2].charAt(0) == 'X')) ) // <jT id state>     or <jT id X>
-            || ((args.length == 4) && (args[3].charAt(0) == '"') ) ) { // individual turnout  <jT id state "[desc]">
-                processTurnoutList(cleanC, cleanLen); //<jT [id1 id2 id3 ...]>
-            } else { // individual
-                processTunoutEntry(cleanC, cleanLen); //<jT id X|state |"[desc]">
+            if ( (args.length == 4) && (args[3].charAt(0) == '"') 
+            || (args.length == 3) && (args[2].charAt(0) == 'X')) {
+                processTurnoutEntry(args, cleanC, cleanLen); //<jT id state |"[desc]">   or    <jT id X">
+            } else {
+                processTurnoutList(args cleanC, cleanLen); //<jT [id1 id2 id3 ...]>
             }
 
         } else if (len > 3 && cleanC[1]=='H') { //<H id state>
             if (delegate) {
                 delegate->receivedTurnoutAction(arg[1].toInt(), args[2].toInt());
             }
-        
-        }
 
+        } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='O' && (args.length>1)) { 
+            if ( (args.length == 6) && (args[5].charAt(0) == '"') ) { //<jO id type position position_count "[desc]">
+                processTuntableEntry(args, cleanC, cleanLen); 
+            } else {
+                processTurtableList(args, cleanC, cleanLen); //<jO [id1 id2 id3 ...]>
+            } 
+
+        } else if (len > 3 && cleanC[1]=='i' && args[0]!="iDCCEX") { //<i id position>   or   <i id position moving>
+            if (delegate) {
+                TurntableState state = TurntableStationary;
+                if (args.length==3) {
+                    state = args[2].toInt();
+                }
+                delegate->receivedTurnoutAction(arg[1].toInt(), state);
+            }
+
+        } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='T' && (args.length>1)) { 
+            if ( (args.length == 4) && (args[3].charAt(0) == '"') 
+            || (args.length == 3) && (args[2].charAt(0) == 'X')) {
+                processRoutesEntry(args, cleanC, cleanLen); //<jA id type |"desc">   or  <jA id X>
+            } else {
+                processRoutesList(args, cleanC, cleanLen); //<jA [id0 id1 id2 ..]>
+            }
+        } else {
+            processUnknownCommand(cleanC, cleanLen);
+        }
     }
 
     console->println("processCommand() end");
@@ -202,7 +233,12 @@ void DCCEXProtocol::processUnknownCommand(const String& unknownCommand) {
     console->println("processUnknownCommand() end");
 }
 
-bool DCCEXProtocol::processLocoAction(char *c, int len) {
+
+// ******************************************************************************************************
+// ******************************************************************************************************
+// ******************************************************************************************************
+
+bool DCCEXProtocol::processLocoAction(String args[], char *c, int len) {
     console->println("processLocoAction()");
     if (delegate) {
 
@@ -214,8 +250,8 @@ bool DCCEXProtocol::processLocoAction(char *c, int len) {
 }
 
 
-void DCCEXProtocol::processServerDescription(char *c, int len) {
-    if (delegate && len > 0) {
+void DCCEXProtocol::processServerDescription(String args[], char *c, int len) {
+    if (delegate) {
         serverVersion = args[1];
         serverMicroprocessorType = args[2];
         serverMotorcontrollerType = args [3];
@@ -226,15 +262,51 @@ void DCCEXProtocol::processServerDescription(char *c, int len) {
 }
 
 
-void DCCEXProtocol::processRosterList(char *c, int len) {
+void DCCEXProtocol::processRosterList(String args[], String args[], char *c, int len) {
     console->println("processRosterList()");
     if (delegate) {
+        if (roster.size()>0) { // already have a roster so this is an update
+            roster.clear();
+        } 
+        for (i=1; i<args.length(); i++) {
+            int address = arg[1].toInt();
+            Loco loco = new Loco();
+            bool rslt = loco.setLoco(address, "", LocoSourceRoster)
+            roster.add(loco);
+            requestRosterEntry(address);
+        }
     }
     console->println("processRosterList(): end");
 }
 
+void requestRosterEntry(int address) {
+    console->println("requestRosterEntry()");
+    if (delegate) {
+        sendCommand("<JR "+address">");
+    }
+    console->println("requestRosterEntry() end");
+}
 
-void DCCEXProtocol::processTurnoutList(char *c, int len) {
+void processRosterEntry(String args[], char *c, int len) {
+    console->println("processRosterEntry()");
+    if (delegate) {
+        //find the roster entry to update
+        if (roster.size()>0) { 
+            for (i=0; i<roster.size(); i++) {
+                Loco rosterLoco = roster.get(i);
+                if (rosterLoco.)
+                int address = arg[1].toInt();
+                Loco loco = new Loco();
+                bool rslt = loco.setLoco(address, "", LocoSourceRoster)
+                roster.add(loco);
+                requestRosterEntry(address);
+            }
+        } 
+    }
+    console->println("processRosterEntry()");
+}
+
+void DCCEXProtocol::processTurnoutList(String args[], char *c, int len) {
     console->println("processTurnoutList()");
     if (delegate) {
     }
@@ -242,26 +314,11 @@ void DCCEXProtocol::processTurnoutList(char *c, int len) {
 }
 
 
-void DCCEXProtocol::processRouteList(char *c, int len) {
+void DCCEXProtocol::processRouteList(String args[], char *c, int len) {
     console->println("processRouteList()");
     if (delegate) {
     }
     console->println("processRouteList(): end");
-}
-
-
-bool DCCEXProtocol::pauseRoutes() {
-    console->println("pauseRoutes()");
-    if (delegate) {
-    }
-    console->println("pauseRoutes() end");
-}
-
-bool DCCEXProtocol::resumeRoutes() {
-    console->println("resumeRoutes()");
-    if (delegate) {
-    }
-    console->println("resumeRoutes() end");
 }
 
 void DCCEXProtocol::processTrackPower(char *c, int len) {
@@ -283,7 +340,7 @@ void DCCEXProtocol::processTrackPower(char *c, int len) {
 }
 
 
-void DCCEXProtocol::processTurnoutAction(char *c, int len) {
+void DCCEXProtocol::processTurnoutAction(String args[], char *c, int len) {
     console->println("processTurnoutAction(): ");
     if (delegate) {
 
@@ -292,7 +349,7 @@ void DCCEXProtocol::processTurnoutAction(char *c, int len) {
 }
 
 
-void DCCEXProtocol::processRouteAction(char *c, int len) {
+void DCCEXProtocol::processRouteAction(String args[], char *c, int len) {
     console->println("processRouteAction(): ");
     if (delegate) {
 
@@ -301,7 +358,7 @@ void DCCEXProtocol::processRouteAction(char *c, int len) {
 }
 
 
-void DCCEXProtocol::processTurntableAction(char *c, int len) {
+void DCCEXProtocol::processTurntableAction(String args[], char *c, int len) {
     console->println("processTurntableAction(): ");
     if (delegate) {
 
@@ -318,21 +375,15 @@ bool DCCEXProtocol::addLocomotive(int throttle, int address) {
     return ok;
 }
 
-// ******************************************************************************************************
-
 bool DCCEXProtocol::releaseLocomotive(int throttle, String address) {
     console->print("releaseLocomotive(): "); console->print(throttle); console->print(" : "); console->println(address);
     return true;
 }
 
-// ******************************************************************************************************
-
 int DCCEXProtocol::getLocomotiveAtPosition(int throttle, int position) {
     console->print("getLocomotiveAtPosition(): "); console->print(throttle); console->print(" : "); console->println(position);
     return {};
 }
-
-// ******************************************************************************************************
 
 int DCCEXProtocol::getNumberOfLocos(int throttle) {
     console->print("getNumberOfLocos(): "); console->println(throttle);
@@ -341,34 +392,18 @@ int DCCEXProtocol::getNumberOfLocos(int throttle) {
     return size;
 }
 
-// ******************************************************************************************************
-
 bool DCCEXProtocol::setSpeed(int throttle, int speed) {
     console->print("setSpeed(): "); console->print(throttle); console->print(" : "); console->println(speed);
     console->println("setSpeed(): end"); 
     return true;
 }
 
-// ******************************************************************************************************
-
-void DCCEXProtocol::requestLocoUpdate(int address) {
-
-}
-
-int DCCEXProtocol::setLoco(int address, int speed, Direction direction) {
-    console->print("setLoco(): "); console->println(address);
-    console->println("setLoco(): end");
-}
-
-
-// ******************************************************************************************************
 
 void DCCEXProtocol::emergencyStop() {
-    emergencyStop(DEFAULT_MULTITHROTTLE, ALL_LOCOS_ON_THROTTLE);
+    console->print("emergencyStop(): ");
+    sendCommand("<!>");
+    console->print("emergencyStop(): end");
 }
-
-
-// ******************************************************************************************************
 
 void DCCEXProtocol::setFunction(int throttle, String address, int funcNum, bool pressed) {
     console->print("setFunction(): "); console->print(multiThrottle); console->print(" : "); console->println(funcNum);
@@ -377,6 +412,38 @@ void DCCEXProtocol::setFunction(int throttle, String address, int funcNum, bool 
 
     console->println("setFunction(): end"); 
 }
+
+// ******************************************************************************************************
+// individual locos
+
+void DCCEXProtocol::requestLocoUpdate(int address) {
+
+}
+
+int DCCEXProtocol::sendLoco(int address, int speed, Direction direction) {
+    console->print("setLoco(): "); console->println(address);
+    console->println("setLoco(): end");
+}
+
+
+// ******************************************************************************************************
+
+bool DCCEXProtocol::pauseRoutes() {
+    console->println("pauseRoutes()");
+    if (delegate) {
+    }
+    console->println("pauseRoutes() end");
+}
+
+bool DCCEXProtocol::resumeRoutes() {
+    console->println("resumeRoutes()");
+    if (delegate) {
+    }
+    console->println("resumeRoutes() end");
+}
+
+
+// ******************************************************************************************************
 
 // ******************************************************************************************************
 
@@ -398,10 +465,6 @@ bool DCCEXProtocol::setRoute(int routeId) {  // address is turnout system name
     String cmd = "";
     sendCommand(cmd);
     return true;
-}
-
-long DCCEXProtocol::getLastServerResponseTime() {
-  return lastServerResponseTime;   
 }
 
 
@@ -453,6 +516,10 @@ class Functions {
     int functionState[MAX_FUNCTIONS];
     int functionLatching[MAX_FUNCTIONS];
     int functionState[MAX_FUNCTIONS];
+
+    bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state) {}
+    bool setFunctionState(int functionNumber, FunctionState state) {}
+    FunctionState getFunctionState(int functionNumber) {}
 }
 
 class Loco {
@@ -462,68 +529,58 @@ class Loco {
     Direction locoDirection;
     Functions locoFunctions;
     LocoSource locoSource;
+
+    bool setLoco(int address, String name, LocoSource source) {}
+    String getLocoName(int address) {}
+    LocoSource getLocoSource(int address) {}
+    bool setLocoSpeed(int address, int speed) {}
+    bool setLocoDirection(int address, Direction direction) {}
+    int  getLocoSpeed(int address) {}
+    Direction getLocoDirection(int address) {}
+}
+
+class ConsistLoco : public Loco {
+    Facing consisLocoFacing;
+    bool setConsistLocoFacing(Facing facing) {}
+    Facing getConsistLocoFacing() {}
 }
 
 class Consist {
-    Loco consistLocos[10];
-    int consistLocosFacing[10];
+    LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
     int consistSpeed;
     Direction consistDirection;
 
-    bool consistAddLoco(int locoAddress) {
-
-    }
-
-    bool consistReleaseLoco() {
-
-    }
+    bool consistAddLoco(Loco loco, Facing facing) {}
+    bool consistReleaseLoco() {}
     
-    bool consistReleaseLoco(int locoAddress) {
+    bool consistReleaseLoco(int locoAddress) {}
+    bool consistGetNumberOfLocos() {}
+    bool consistGetLocoAtPosition(int position) {}
+    bool consistGetLocoPosition(int locoAddress) {}
 
-    }
+    bool consistSetSpeed(int speed) {}
+    int consistGetSpeed() {}
+    bool consistSetDirection(Direction direction) {}
+    Direction consistGetDirection() {}
     
-    bool consistGetNumberOfLocos() {
+    bool consistSetFunction(int functionNo, FunctionState state) {}
+    bool consistSetFunction(int address, int functionNo, FunctionState state) {}
 
-    }
-    
-    bool consistGetLocoAtPosition(int position) {
-
-    }
-    
-    bool consistGetLocoPosition(int locoAddress) {
-
-    }
-
-    bool consistSetSpeed(int speed) {
-
-    }
-    
-    int consistGetSpeed() {
-
-    }
-    
-    bool consistSetDirection(Direction direction) {
-
-    }
-    
-    bool consistSetFunction(int functionNo, FunctionState functionState) {
-
-    }
-    
-    bool consistSetFunction(int address, int functionNo, FunctionState functionState) {
-
-    }
 }
 
 class Turnout {
     int turnoutId;
     String turnoutName;
     TurnoutState turnoutState;
+    bool setTurnout(int id, String name, TurnoutState state) {}
+    bool setTurnoutState(int id, TurnoutState state) {}
+    TurnoutState getTurnoutState(int id) {}
 }
 
 class Route {
     int routeId;
     String routeName;
+    bool setRoute(int id, String name) {}
 }
 
 class TurntableIndex {
@@ -536,11 +593,15 @@ class TurntableIndex {
 class Turntable {
     int turntableId;
     String turntableName;
-    int turntablePosition;
-    TurntableIndex turntableIndexes[MAX_TURNTABLE_INDEXES];
+    int turntableCurrentPosition;
+    LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
     bool turntableIsMoving;
-
-    int turntableGetCurrentIndex() {
-
-    }
+    
+    bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle) {}
+    int getTurntableCurrentPosition() {}
+    int getTurntableNumberOfIndexes() {}
+    TurntableIndex getTurntableIndexAt(int positionInLinkedList) {}
+    TurntableIndex getTurntableIndex(int indexId) {}
+    bool rotateTurntableTo(int index) {}
+    TurntableState getTurntableState() {}
 }

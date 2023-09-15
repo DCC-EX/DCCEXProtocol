@@ -29,15 +29,10 @@
 #define DCCEXPROTOCOL_H
 
 static const int MAX_THROTTLES 6
-// static const int MAX_ROSTER 20
-// static const int MAX_TURNOUTS 20
-// static const int MAX_ROUTES 20
-// static const int MAX_TURNTABLES 2
-// static const int MAX_TURNTABLES_INDEXES 10
 static const int MAX_FUNCTIONS 28
 
 #include "Arduino.h"
-#include <LinkedList.h>
+#include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
 
 // *****************************************************************
 
@@ -81,7 +76,7 @@ typedef enum TrackMode {
 
 typedef enum TurntableState {
     TurntableMoving = 1,
-    TuerntableStationary = 0
+    TurntableStationary = 0
 } TurntableState;
 
 typedef enum FunctionState {
@@ -136,7 +131,7 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedTurnoutAction(int turnoutId, TurnoutState state) { } //  PTAturnoutstatesystemname
     virtual void receivedRouteAction(int routeId, RouteState state) { } //  PTAturnoutstatesystemname
-    virtual void receivedTurntableAction(int turntableId, int position, TurnoutState turntableState) { } //  PTAturnoutstatesystemname
+    virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { } //  PTAturnoutstatesystemname
 };
 
 
@@ -161,10 +156,10 @@ class DCCEXProtocol {
     // *******************
 
     Consist throttle[MAX_THROTTLES];
-    Loco roster[MAX_ROSTER];
-    Turnout turnouts[MAX_TURNOUTS];
-    Route routes[MAX_ROUTES];
-    Turntable turntables[MAX_TURNTABLES];
+    LinkedList<Loco> roster = LinkedList<Loco>();
+    LinkedList<Turnout> turnouts = LinkedList<Turnout>();
+    LinkedList<Route> routes = LinkedList<Route>();
+    LinkedList<Turntable> turntables =LinkedList<Turntable>();
 
     // *******************
 
@@ -216,34 +211,35 @@ class DCCEXProtocol {
 
     void processUnknownCommand(const String& unknownCommand);
 
-    void processServerDescription(char *c, int len);	
+    void processServerDescription(String args[], char *c, int len);	
 
     void processTrackPower(char *c, int len);
 
     // *******************
 
     void requestLocoUpdate(int address);
-    void setLoco(int address, int speed, Direction direction);
+    void sendLoco(int address, int speed, Direction direction);
 
-    bool processLocoAction(char *c, int len);
+    bool processLocoAction(String args[], cchar *c, int len);
 
     // *******************
 
-    void processRosterList(char *c, int len);
-    void processRosterEntry(char *c, int len);
+    void processRosterList(String args[], char *c, int len);
+    void processRosterEntry(String args[], char *c, int len);
+    void requestRosterEntry(int id);
 
-    void processTurnoutList(char *c, int len);
-    void processTurnoutEntry(char *c, int len);
-    void processTurnoutAction(char *c, int len);
+    void processTurnoutList(String args[], char *c, int len);
+    void processTurnoutEntry(String args[], char *c, int len);
+    void processTurnoutAction(String args[], char *c, int len);
 
-    void processRouteList(char *c, int len);
-    void processRouteEntry(char *c, int len);
-    void processRouteAction(char *c, int len);
+    void processRouteList(String args[], char *c, int len);
+    void processRouteEntry(String args[], char *c, int len);
+    void processRouteAction(String args[], char *c, int len);
 
-    void processTurntableList(char *c, int len);
-    void processTurntableEntry(char *c, int len);
-    void processTurntableIndexEntry(char *c, int len);
-    void processTurntableAction(char *c, int len);
+    void processTurntableList(String args[], char *c, int len);
+    void processTurntableEntry(String args[], char *c, int len);
+    void processTurntableIndexEntry(String args[], char *c, int len);
+    void processTurntableAction(String args[], char *c, int len);
 
 };
 
@@ -251,39 +247,48 @@ class DCCEXProtocol {
 
 class Functions {
     public:
+        bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
+        bool setFunctionState(int functionNumber, FunctionState state);
+        FunctionState getFunctionState(int functionNumber);
+       
+    private:
         String functionLabel[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
         int functionLatching[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
-
-    private:
 }
 
 class Loco {
     public:
+        Functions locoFunctions;
+        bool setLoco(int address, String name, LocoSource source);
+        String getLocoName(int address);
+        LocoSource getLocoSource(int address);
+        bool setLocoSpeed(int address, int speed);
+        bool setLocoDirection(int address, Direction direction);
+        int  getLocoSpeed(int address);
+        Direction getLocoDirection(int address);
+
+    private:
         int locoAddress;
         String locoName;
         int locoSpeed;
         Direction locoDirection;
-        Functions locoFunctions;
         LocoSource locoSource;
-
-    private:
-
 }
 
 class ConsistLoco : public Loco {
     public:
+        bool setConsistLocoFacing(Facing facing);
+        Facing getConsistLocoFacing();
+    private:
         Facing consisLocoFacing;
 }
 
 class Consist {
     public:
-        LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
-        int consistSpeed;
-        Direction consistDirection;
 
-        bool consistAddLoco(int locoAddress);
+        bool consistAddLoco(Loco loco, Facing, facing);
         bool consistReleaseLoco();   //all
         bool consistReleaseLoco(int locoAddress);
         bool consistGetNumberOfLocos();
@@ -293,29 +298,34 @@ class Consist {
         bool consistSetSpeed(int speed);
         int consistGetSpeed();
         bool consistSetDirection(Direction direction);
-        bool consistSetFunction(int functionNo, FunctionState functionState);
-        bool consistSetFunction(int address, int functionNo, FunctionState functionState);
+        Direction consistGetDirection();
+        bool consistSetFunction(int functionNo, FunctionState state);
+        bool consistSetFunction(int address, int functionNo, FunctionState state);
 
-        bool addToConsist(int locoAddress, Facing, facing);
-        bool removeFromConsist(int locoAddress, Facing, facing);
-        
     private:
-
+        LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
+        int consistSpeed;
+        Direction consistDirection;
 }
 
 class Turnout {
     public:
+        bool setTurnout(int id, String name, TurnoutState state);
+        bool setTurnoutState(int id, TurnoutState state);
+        TurnoutState getTurnoutState(int id);
+
+    private:
         int turnoutId;
         String turnoutName;
         TurnoutState turnoutState;
-    private:
 }
 
 class Route {
     public:
+        bool setRoute(int id, String name);
+    private:
         int routeId;
         String routeName;
-    private:
 }
 
 
@@ -324,18 +334,23 @@ class TurntableIndex {
         int turntableIndexId;
         String turntableIndexName;
         int turntableAngle;
-    private:
 }
 
 class Turntable {
     public:
+        bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
+        int getTurntableCurrentPosition();
+        int getTurntableNumberOfIndexes();
+        TurntableIndex getTurntableIndexAt(int positionInLinkedList);
+        TurntableIndex getTurntableIndex(int indexId);
+        bool rotateTurntableTo(int index);
+        TurntableState getTurntableState();
+
+    private
         int turntableId;
         String turntableName;
-        int turntablePosition;
-        TurntableIndex turntableIndexes[MAX_TURNTABLE_INDEXES];
-        int turntableGetCurrentIndex();
-
-    private:
+        int turntableCurrentPosition;
+        LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
         bool turntableIsMoving;
 }
 
