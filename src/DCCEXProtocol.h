@@ -233,7 +233,7 @@ class DCCEXProtocol {
 
     void processRouteList(String args[], char *c, int len);
     void processRouteEntry(String args[], char *c, int len);
-    void processRouteAction(String args[], char *c, int len);
+    // void processRouteAction(String args[], char *c, int len);
 
     void processTurntableList(String args[], char *c, int len);
     void processTurntableEntry(String args[], char *c, int len);
@@ -256,7 +256,6 @@ class Functions {
         String functionName[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
         int functionLatching[MAX_FUNCTIONS];
-        int functionState[MAX_FUNCTIONS];
 }
 
 class Loco {

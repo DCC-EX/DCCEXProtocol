@@ -440,13 +440,13 @@ bool DCCEXProtocol::setRoute(int routeId) {
     return true;
 }
 
-void DCCEXProtocol::processRouteAction(String args[], char *c, int len) {
-    console->println("processRouteAction(): ");
-    if (delegate) {
+// void DCCEXProtocol::processRouteAction(String args[], char *c, int len) {
+//     console->println("processRouteAction(): ");
+//     if (delegate) {
 
-    }
-    console->println("processRouteAction(): end");
-}
+//     }
+//     console->println("processRouteAction(): end");
+// }
 
 bool DCCEXProtocol::pauseRoutes() {
     console->println("pauseRoutes()");
@@ -490,6 +490,7 @@ bool DCCEXProtocol::releaseLocomotive(int throttle, String address) {
 
 int DCCEXProtocol::getLocomotiveAtPosition(int throttle, int position) {
     console->print("getLocomotiveAtPosition(): "); console->print(throttle); console->print(" : "); console->println(position);
+
     return {};
 }
 
@@ -580,12 +581,18 @@ void DCCEXProtocol::processTurntableAction(char *c, int len) {
 
 class Functions {
     String functionName[MAX_FUNCTIONS];
-    int functionState[MAX_FUNCTIONS];
     int functionLatching[MAX_FUNCTIONS];
     int functionState[MAX_FUNCTIONS];
 
-    bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state) {}
-    bool setFunctionState(int functionNumber, FunctionState state) {}
+    bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state) {
+        functionName[functionNumber] = label;
+        functionLatching[functionNumber] = latching;
+        functionState[functionNumber] = state;
+        return true;
+    }
+    bool setFunctionState(int functionNumber, FunctionState state) {
+        return true;
+    }
     String getFunctionName(int functionNumber) {
         return FunctionName[functionNumber];
     }
