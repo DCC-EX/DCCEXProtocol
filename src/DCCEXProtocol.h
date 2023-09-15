@@ -176,7 +176,8 @@ class DCCEXProtocol {
 
     Consist getThrottleConsist(int throttleNo);
 
-	void setTrackPower(TrackPower state);
+	bool setTrackPower(TrackPower state);
+	bool setTrackPower(TrackPower state, char track);
 
     bool setTurnout(int turnoutId, TurnoutAction action);
     bool setRoute(int routeId);
@@ -192,7 +193,6 @@ class DCCEXProtocol {
   private:
   
     bool server;
-    
     Stream *stream;
     Stream *console;
     NullStream nullStream;
@@ -208,7 +208,6 @@ class DCCEXProtocol {
 
     bool processCommand(char *c, int len);
     void sendCommand(String cmd);
-
     void processUnknownCommand(const String& unknownCommand);
 
     void processServerDescription(String args[], char *c, int len);	
@@ -248,8 +247,10 @@ class DCCEXProtocol {
 class Functions {
     public:
         bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
-        bool setFunctionState(int functionNumber, FunctionState state);
-        FunctionState getFunctionState(int functionNumber);
+        bool setFunctionState(FunctionState state);
+        FunctionState getFunctionState();
+        String getFunctioName();
+        FunctionLatching getFunctionLatching();
        
     private:
         String functionLabel[MAX_FUNCTIONS];
@@ -262,12 +263,14 @@ class Loco {
     public:
         Functions locoFunctions;
         bool setLoco(int address, String name, LocoSource source);
-        String getLocoName(int address);
-        LocoSource getLocoSource(int address);
-        bool setLocoSpeed(int address, int speed);
-        bool setLocoDirection(int address, Direction direction);
-        int  getLocoSpeed(int address);
-        Direction getLocoDirection(int address);
+        bool setLocoSpeed(int speed);
+        bool setLocoDirection(Direction direction);
+
+        int getLocoAddress();
+        String getLocoName();
+        LocoSource getLocoSource();
+        int  getLocoSpeed();
+        Direction getLocoDirection();
 
     private:
         int locoAddress;
@@ -282,7 +285,7 @@ class ConsistLoco : public Loco {
         bool setConsistLocoFacing(Facing facing);
         Facing getConsistLocoFacing();
     private:
-        Facing consisLocoFacing;
+        Facing consistLocoFacing;
 }
 
 class Consist {
@@ -302,6 +305,8 @@ class Consist {
         bool consistSetFunction(int functionNo, FunctionState state);
         bool consistSetFunction(int address, int functionNo, FunctionState state);
 
+        String getConsistName();
+
     private:
         LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
         int consistSpeed;
@@ -313,6 +318,8 @@ class Turnout {
         bool setTurnout(int id, String name, TurnoutState state);
         bool setTurnoutState(int id, TurnoutState state);
         TurnoutState getTurnoutState(int id);
+        int getTurnoutId();
+        String getTurnoutName();
 
     private:
         int turnoutId;
@@ -339,11 +346,14 @@ class TurntableIndex {
 class Turntable {
     public:
         bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
+        bool rotateTurntableTo(int index);
+
+        int getTurntableId();
+        String getTurntableName();
         int getTurntableCurrentPosition();
         int getTurntableNumberOfIndexes();
         TurntableIndex getTurntableIndexAt(int positionInLinkedList);
         TurntableIndex getTurntableIndex(int indexId);
-        bool rotateTurntableTo(int index);
         TurntableState getTurntableState();
 
     private

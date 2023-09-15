@@ -54,24 +54,18 @@ void DCCEXProtocol::init() {
     //last Response time
     lastServerResponseTime = millis() /1000;
 	
-	// init change flags
-    resetChangeFlags();
-
     console->println("init(): end");
 }
-
 
 // Set the delegate instance for callbasks
 void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) {
     this->delegate = delegate;
 }
 
-
 // Set the Stream used for logging
 void DCCEXProtocol::setLogStream(Stream *console) {
     this->console = console;
 }
-
 
 void DCCEXProtocol::connect(Stream *stream) {
     init();
@@ -233,7 +227,6 @@ void DCCEXProtocol::processUnknownCommand(const String& unknownCommand) {
     console->println("processUnknownCommand() end");
 }
 
-
 // ******************************************************************************************************
 // ******************************************************************************************************
 // ******************************************************************************************************
@@ -249,7 +242,6 @@ bool DCCEXProtocol::processLocoAction(String args[], char *c, int len) {
     console->println("processLocoAction() end");
 }
 
-
 void DCCEXProtocol::processServerDescription(String args[], char *c, int len) {
     if (delegate) {
         serverVersion = args[1];
@@ -261,6 +253,35 @@ void DCCEXProtocol::processServerDescription(String args[], char *c, int len) {
     }
 }
 
+void DCCEXProtocol::processTrackPower(char *c, int len) {
+    console->println("processTrackPower()");
+
+    if (delegate) {
+        if (len > 0) {
+            TrackPower state = PowerUnknown;
+            if (c[1]=='0') {
+                state = PowerOff;
+            }
+            else if (c[1]=='1') {
+                state = PowerOn;
+            }
+
+            delegate->receivedTrackPower(state);
+        }
+    }
+}
+
+bool DCCEXProtocol::setTrackPower(TrackPower state) {
+    sendCommand("<" + state + ">");	
+    return true;
+}
+
+bool DCCEXProtocol::setTrackPower(TrackPower state, char track) {
+    sendCommand("<" + state + " " + track + ">");	
+    return true;
+}
+
+// ****************
 
 void DCCEXProtocol::processRosterList(String args[], String args[], char *c, int len) {
     console->println("processRosterList()");
@@ -287,58 +308,99 @@ void requestRosterEntry(int address) {
     console->println("requestRosterEntry() end");
 }
 
-void processRosterEntry(String args[], char *c, int len) {
+void processRosterEntry(String args[], char *c, int len) { //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
     console->println("processRosterEntry()");
     if (delegate) {
         //find the roster entry to update
         if (roster.size()>0) { 
             for (i=0; i<roster.size(); i++) {
+                int address = args[1].toInt();
                 Loco rosterLoco = roster.get(i);
-                if (rosterLoco.)
-                int address = arg[1].toInt();
-                Loco loco = new Loco();
-                bool rslt = loco.setLoco(address, "", LocoSourceRoster)
-                roster.add(loco);
-                requestRosterEntry(address);
+                if (rosterLoco.getLocoAddress()==address) {
+                    int address = arg[1].toInt();
+                    Loco loco = new Loco();
+                    bool rslt = loco.setLoco(address, args[2], LocoSourceRoster)
+
+                    String functions[] = args[2].split("/", 999);
+                    for (j=0; (j<functions.length() && j<MAX_FUNCTIONS) ) {
+                        FunctionLatching latching = FunctionLatchingTrue;
+                        if (functions[j].charAt(0)=='*') {
+                            latching = FunctionLatchingFalse;
+                        }
+                        loco.locoFunctions[j].setFunction(j, functions[j], latching, FunctionStateOff); 
+                    }
+                    roster.set(loco);
+                }
             }
         } 
     }
     console->println("processRosterEntry()");
 }
 
+// ****************
+
 void DCCEXProtocol::processTurnoutList(String args[], char *c, int len) {
     console->println("processTurnoutList()");
     if (delegate) {
+        if (turnouts.size()>0) { // already have a turnouts list so this is an update
+            turnouts.clear();
+        } 
+        for (i=1; i<args.length(); i++) {
+            int id = arg[1].toInt();
+            Turnout turnout = new Turnout();
+            bool rslt = turnout.setturnout(id, "", TurnoutClose);
+            turnouts.add(turnout);
+            requestTurnoutEntry(turnoutId);
+        }
     }
     console->println("processTurnoutList(): end");
 }
 
-
-void DCCEXProtocol::processRouteList(String args[], char *c, int len) {
-    console->println("processRouteList()");
+void requestTurnoutEntry(int address) {
+    console->println("requestTurnoutEntry()");
     if (delegate) {
+        sendCommand("<JT "+address">");
     }
-    console->println("processRouteList(): end");
+    console->println("requestTurnoutEntry() end");
 }
 
-void DCCEXProtocol::processTrackPower(char *c, int len) {
-    console->println("processTrackPower()");
-
+void DCCEXProtocol::processTurnoutEntry(String args[], char *c, int len) {
+    console->println("processTurnoutEntry()");
     if (delegate) {
-        if (len > 0) {
-            TrackPower state = PowerUnknown;
-            if (c[1]=='0') {
-                state = PowerOff;
-            }
-            else if (c[1]=='1') {
-                state = PowerOn;
-            }
+        //find the turnout entry to update
+        if (turnouts.size()>0) { 
+            for (i=0; i<turnouts.size(); i++) {
+                Turnout turnout = turnouts.get(i);
+                if (rosterLoco.)
+                int id = arg[1].toInt();
+                Turnout turnoutsTurnout = roster.get(i);
+                if (turnoutsTurnout.getId()==id) {
+                    int address = arg[1].toInt();
+                    Loco loco = new Loco();
+                    bool rslt = loco.setLoco(address, args[2], LocoSourceRoster)
 
-            delegate->receivedTrackPower(state);
-        }
+                    String functions[] = args[2].split("/", 999);
+                    for (j=0; (j<functions.length() && j<MAX_FUNCTIONS) ) {
+                        FunctionLatching latching = FunctionLatchingTrue;
+                        if (functions[j].charAt(0)=='*') {
+                            latching = FunctionLatchingFalse;
+                        }
+                        loco.locoFunctions[j].setFunction(j, functions[j], latching, FunctionStateOff); 
+                    }
+                    roster.set(loco);
+                }
+            }
+        } 
     }
+    console->println("processTurnoutEntry() end");
 }
 
+
+
+bool DCCEXProtocol::setTurnout(int turnoutId, TurnoutAction action) {
+    sendCommand("<T " + turnoutId + " " + action + ">");
+    return true;
+}
 
 void DCCEXProtocol::processTurnoutAction(String args[], char *c, int len) {
     console->println("processTurnoutAction(): ");
@@ -348,6 +410,19 @@ void DCCEXProtocol::processTurnoutAction(String args[], char *c, int len) {
     console->println("processTurnoutAction(): end");
 }
 
+// ****************
+
+void DCCEXProtocol::processRouteList(String args[], char *c, int len) {
+    console->println("processRouteList()");
+    if (delegate) {
+    }
+    console->println("processRouteList(): end");
+}
+
+bool DCCEXProtocol::setRoute(int routeId) {
+    sendCommand("</START " + routeId + ">");
+    return true;
+}
 
 void DCCEXProtocol::processRouteAction(String args[], char *c, int len) {
     console->println("processRouteAction(): ");
@@ -357,6 +432,23 @@ void DCCEXProtocol::processRouteAction(String args[], char *c, int len) {
     console->println("processRouteAction(): end");
 }
 
+bool DCCEXProtocol::pauseRoutes() {
+    console->println("pauseRoutes()");
+    if (delegate) {
+    }
+    console->println("pauseRoutes() end");
+    return true;
+}
+
+bool DCCEXProtocol::resumeRoutes() {
+    console->println("resumeRoutes()");
+    if (delegate) {
+    }
+    console->println("resumeRoutes() end");
+    return true;
+}
+
+// ****************
 
 void DCCEXProtocol::processTurntableAction(String args[], char *c, int len) {
     console->println("processTurntableAction(): ");
@@ -366,8 +458,8 @@ void DCCEXProtocol::processTurntableAction(String args[], char *c, int len) {
     console->println("processTurntableAction(): end");
 }
 
-
 // ******************************************************************************************************
+// throttle methods
 
 bool DCCEXProtocol::addLocomotive(int throttle, int address) {
     console->print("addLocomotive(): "); console->print(throttle); console->print(" : "); console->println(address);
@@ -428,66 +520,25 @@ int DCCEXProtocol::sendLoco(int address, int speed, Direction direction) {
 
 // ******************************************************************************************************
 
-bool DCCEXProtocol::pauseRoutes() {
-    console->println("pauseRoutes()");
-    if (delegate) {
-    }
-    console->println("pauseRoutes() end");
-}
-
-bool DCCEXProtocol::resumeRoutes() {
-    console->println("resumeRoutes()");
-    if (delegate) {
-    }
-    console->println("resumeRoutes() end");
-}
-
-
 // ******************************************************************************************************
-
-// ******************************************************************************************************
-
-void DCCEXProtocol::setTrackPower(TrackPower state) {
-
-    String cmd = "PPA";
-    cmd.concat(state);
-
-    sendCommand(cmd);	
-}
-
-bool DCCEXProtocol::setTurnout(int turnoutId, TurnoutAction action) {  // address is turnout system name
-    sendCommand(cmd);
-
-    return true;
-}
-
-bool DCCEXProtocol::setRoute(int routeId) {  // address is turnout system name
-    String cmd = "";
-    sendCommand(cmd);
-    return true;
-}
 
 
 bool DCCEXProtocol::setTurntable(int TurntableId, int position, int activity) {
 
+    return true;
 }
 
 bool DCCEXProtocol::setAccessory(int accessoryAddress, int activate) {
 
+    return true;
 }
 
 bool DCCEXProtocol::setAccessory(int accessoryAddress, int accessorySubAddr, int activate) {
 
+    return true;
 }
 
 
-void DCCEXProtocol::processRosterEntry(char *c, int len) {
-
-}
-
-void DCCEXProtocol::processTurnoutEntry(char *c, int len) {
-
-}
 
 void DCCEXProtocol::processRouteEntry(char *c, int len) {
 
@@ -531,16 +582,28 @@ class Loco {
     LocoSource locoSource;
 
     bool setLoco(int address, String name, LocoSource source) {}
-    String getLocoName(int address) {}
-    LocoSource getLocoSource(int address) {}
-    bool setLocoSpeed(int address, int speed) {}
-    bool setLocoDirection(int address, Direction direction) {}
-    int  getLocoSpeed(int address) {}
-    Direction getLocoDirection(int address) {}
+    bool setLocoSpeed(int speed) {}
+    bool setLocoDirection(Direction direction) {}
+
+    int getLocoAddress() {
+        return locoAddress;
+    }
+    String getLocoName() {
+        return locoName;
+    }
+    LocoSource getLocoSource() {
+        return locoSource;
+    }
+    int  getLocoSpeed() {
+        return locoSpeed;
+    }
+    Direction getLocoDirection() {
+        return locoDirection
+    }
 }
 
 class ConsistLoco : public Loco {
-    Facing consisLocoFacing;
+    Facing consistLocoFacing;
     bool setConsistLocoFacing(Facing facing) {}
     Facing getConsistLocoFacing() {}
 }
@@ -566,21 +629,34 @@ class Consist {
     bool consistSetFunction(int functionNo, FunctionState state) {}
     bool consistSetFunction(int address, int functionNo, FunctionState state) {}
 
+    String getConsistName() {}
+
 }
 
 class Turnout {
     int turnoutId;
     String turnoutName;
     TurnoutState turnoutState;
+
     bool setTurnout(int id, String name, TurnoutState state) {}
     bool setTurnoutState(int id, TurnoutState state) {}
+    int getTurnoutId() {
+        return turnoutId;
+    }
+    String getTurnoutName() {
+        return turnoutName;
+    }
     TurnoutState getTurnoutState(int id) {}
 }
 
 class Route {
     int routeId;
     String routeName;
+
     bool setRoute(int id, String name) {}
+    int getRouteId() {
+        return routeId;
+    }
 }
 
 class TurntableIndex {
@@ -597,6 +673,12 @@ class Turntable {
     LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
     bool turntableIsMoving;
     
+    int getTurntableId() {
+        return turntableId;
+    }
+    String getTurntableName() {
+        return turntableName;
+    }
     bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle) {}
     int getTurntableCurrentPosition() {}
     int getTurntableNumberOfIndexes() {}
