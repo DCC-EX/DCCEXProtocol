@@ -375,27 +375,16 @@ void DCCEXProtocol::processTurnoutEntry(String args[], char *c, int len) {
                 int id = arg[1].toInt();
                 Turnout turnoutsTurnout = roster.get(i);
                 if (turnoutsTurnout.getId()==id) {
-                    int address = arg[1].toInt();
-                    Loco loco = new Loco();
-                    bool rslt = loco.setLoco(address, args[2], LocoSourceRoster)
-
-                    String functions[] = args[2].split("/", 999);
-                    for (j=0; (j<functions.length() && j<MAX_FUNCTIONS) ) {
-                        FunctionLatching latching = FunctionLatchingTrue;
-                        if (functions[j].charAt(0)=='*') {
-                            latching = FunctionLatchingFalse;
-                        }
-                        loco.locoFunctions[j].setFunction(j, functions[j], latching, FunctionStateOff); 
-                    }
-                    roster.set(loco);
+                    int id = arg[1].toInt();
+                    Turnout turnout = new Turnout();
+                    bool rslt = turnout.setTurnout(id, args[2], TurnoutClosed);
+                    turnouts.set(turnout);
                 }
             }
         } 
     }
     console->println("processTurnoutEntry() end");
 }
-
-
 
 bool DCCEXProtocol::setTurnout(int turnoutId, TurnoutAction action) {
     sendCommand("<T " + turnoutId + " " + action + ">");
@@ -563,14 +552,23 @@ void DCCEXProtocol::processTurntableAction(char *c, int len) {
 // *****************************************************************
 
 class Functions {
-    String functionLabel[MAX_FUNCTIONS];
+    String functionName[MAX_FUNCTIONS];
     int functionState[MAX_FUNCTIONS];
     int functionLatching[MAX_FUNCTIONS];
     int functionState[MAX_FUNCTIONS];
 
     bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state) {}
     bool setFunctionState(int functionNumber, FunctionState state) {}
-    FunctionState getFunctionState(int functionNumber) {}
+    String getFunctionName(int functionNumber) {
+        return FunctionName[functionNumber];
+    }
+    FunctionState getFunctionState(int functionNumber) {
+        return FunctionState[functionNumber];
+    }
+    FunctionLatching getFunctionLatching(int functionNumber) {
+        return FunctionLatching[functionNumber];
+    }
+
 }
 
 class Loco {
@@ -581,9 +579,17 @@ class Loco {
     Functions locoFunctions;
     LocoSource locoSource;
 
-    bool setLoco(int address, String name, LocoSource source) {}
-    bool setLocoSpeed(int speed) {}
-    bool setLocoDirection(Direction direction) {}
+    bool setLoco(int address, String name, LocoSource source) {
+        locoAddress = address;
+        locoName = name;
+        locoSource = source;
+    }
+    bool setLocoSpeed(int speed) {
+        locoSpeed  =speed
+    }
+    bool setLocoDirection(Direction direction) {
+        locoDirection = direction;
+    }
 
     int getLocoAddress() {
         return locoAddress;
@@ -604,14 +610,19 @@ class Loco {
 
 class ConsistLoco : public Loco {
     Facing consistLocoFacing;
-    bool setConsistLocoFacing(Facing facing) {}
-    Facing getConsistLocoFacing() {}
+    bool setConsistLocoFacing(Facing facing) {
+        consistLocoFacing = facing;
+    }
+    Facing getConsistLocoFacing() {
+        return consistLocoFacing;
+    }
 }
 
 class Consist {
     LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
     int consistSpeed;
     Direction consistDirection;
+    String consistName;
 
     bool consistAddLoco(Loco loco, Facing facing) {}
     bool consistReleaseLoco() {}
@@ -629,7 +640,9 @@ class Consist {
     bool consistSetFunction(int functionNo, FunctionState state) {}
     bool consistSetFunction(int address, int functionNo, FunctionState state) {}
 
-    String getConsistName() {}
+    String getConsistName() {
+        return consistName;
+    }
 
 }
 
@@ -646,14 +659,19 @@ class Turnout {
     String getTurnoutName() {
         return turnoutName;
     }
-    TurnoutState getTurnoutState(int id) {}
+    TurnoutState getTurnoutState(int id) {
+        return turnoutState;
+    }
 }
 
 class Route {
     int routeId;
     String routeName;
 
-    bool setRoute(int id, String name) {}
+    bool setRoute(int id, String name) {
+        routeId = id;
+        routeName = name;
+    }
     int getRouteId() {
         return routeId;
     }
@@ -680,10 +698,21 @@ class Turntable {
         return turntableName;
     }
     bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle) {}
-    int getTurntableCurrentPosition() {}
+    int getTurntableCurrentPosition() {
+        return turntableCurrentPosition;
+    }
     int getTurntableNumberOfIndexes() {}
-    TurntableIndex getTurntableIndexAt(int positionInLinkedList) {}
-    TurntableIndex getTurntableIndex(int indexId) {}
+    TurntableIndex getTurntableIndexAt(int positionInLinkedList) {
+        return turntableIndexes.get(positionInLinkedList);
+    }
+    TurntableIndex getTurntableIndex(int indexId) {
+    }
     bool rotateTurntableTo(int index) {}
-    TurntableState getTurntableState() {}
+    TurntableState getTurntableState() {
+        TurntableState rslt = TurntableStationary;
+        if (turntableIsMoving) {
+            rslt = TurntableMoving;
+        }
+        return rslt;
+    }
 }

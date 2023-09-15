@@ -247,13 +247,13 @@ class DCCEXProtocol {
 class Functions {
     public:
         bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
-        bool setFunctionState(FunctionState state);
-        FunctionState getFunctionState();
-        String getFunctioName();
-        FunctionLatching getFunctionLatching();
+        bool setFunctionState(int functionNumber, FunctionState state);
+        String getFunctionName(int functionNumber);
+        FunctionState getFunctionState(int functionNumber);
+        FunctionLatching getFunctionLatching(int functionNumber);
        
     private:
-        String functionLabel[MAX_FUNCTIONS];
+        String functionName[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
         int functionLatching[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
@@ -311,6 +311,7 @@ class Consist {
         LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
         int consistSpeed;
         Direction consistDirection;
+        String consistName;
 }
 
 class Turnout {
