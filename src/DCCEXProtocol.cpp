@@ -214,7 +214,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
                 if (getSize(args)==3) {
                     state = args[2].toInt();
                 }
-                delegate->receivedTurnoutAction(arg[1].toInt(), state);
+                processTurntableAction(args, cleanC, cleanLen);
             }
 
         } else if (len > 3 && cleanC[1]=='j' && cleanC[2]=='T' && (getSize(args)>1)) { 
@@ -557,12 +557,14 @@ void processTurntableIndexEntry(String args[], char *c, int len) { // <jP id ind
 }
 
 //private
-void DCCEXProtocol::processTurntableAction(String args[], char *c, int len) {
+void DCCEXProtocol::processTurntableAction(String args[], char *c, int len) { // <i id position moving>
     console->println("processTurntableAction(): ");
     if (delegate) {
-
-        // ??????????????????????????????????
-
+        int pos = findTurntableListPositionFromId(id);
+        if (I>0) {
+            turntables.get(pos).actionTurntableExternalChange(args[1].toInt(), args[2].toInt())
+        }
+        delegate->receivedTurnoutAction(arg[1].toInt(), state);
     }
     console->println("processTurntableAction(): end");
 }
@@ -571,13 +573,19 @@ void DCCEXProtocol::processTurntableAction(String args[], char *c, int len) {
 // Locos
 
 //private
-bool DCCEXProtocol::processLocoAction(String args[], char *c, int len) {
+bool DCCEXProtocol::processLocoAction(String args[], char *c, int len) { //<l cab reg speedByte functMap>
     console->println("processLocoAction()");
     if (delegate) {
-
-        // delegate->receivedSpeed(throttle, speed);
-        // delegate->receivedDirection(throttle, direction);
-        // delegate->receivedFunction(throttle, function, state);
+        int address = args[1]toInt();
+        int throttleNo = findThrottleWithLoco(address);
+        if (throttleNo>=0) {
+            bool rslt = throttleConsists[throttleNo].consistGetLocoPosition();
+            if (rslt==0) {  /// ignore everythign that is not the lead loco
+                bool actionConsistExternalChange(getSpeedFromSpeedByte(args[3]toInt()), getDirectionFromSpeedbyte(args[3]toInt()), getFunctionsFromFunctionMap(args[3]toInt());
+            }
+        } else {
+            console->print("processLocoAction(): unknown loco");
+        }
     }
     console->println("processLocoAction() end");
 }
@@ -585,7 +593,7 @@ bool DCCEXProtocol::processLocoAction(String args[], char *c, int len) {
 // ******************************************************************************************************
 // server commands
 
-bool sendServerDetailsRequest() {
+bool DCCEXProtocol::sendServerDetailsRequest() {
     console->print("sendServerDetailsRequest(): ");
     if (delegate) {
        sendCommand("<s>");	
@@ -721,7 +729,7 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 
 // ******************************************************************************************************
 
-bool getRoster() {
+bool DCCEXProtocol::getRoster() {
     console->println("getRoster()");
     if (delegate) {
         sendCommand("<JR>");
@@ -730,7 +738,7 @@ bool getRoster() {
     return true;
 }
 
-bool getTurnouts() {
+bool DCCEXProtocol::getTurnouts() {
     console->println("getTurnouts()");
     if (delegate) {
         sendCommand("<T>");
@@ -739,7 +747,7 @@ bool getTurnouts() {
     return true;
 }
 
-bool getRoutes() {
+bool DCCEXProtocol::getRoutes() {
     console->println("getRoutes()");
     if (delegate) {
         sendCommand("</ROUTES>");
@@ -748,7 +756,7 @@ bool getRoutes() {
     return true;
 }
 
-bool getTurntables() {
+bool DCCEXProtocol::getTurntables() {
     console->println("getTurntable()");
     if (delegate) {
         sendCommand("<T>");
@@ -764,7 +772,7 @@ bool getTurntables() {
 
 // private
 // find which, if any, throttle has this loco selected
-int findThrottleWithLoco(int address) {
+int DCCEXProtocol::findThrottleWithLoco(int address) {
     for (int i=0; i<MAX_THROTTLES; i++) {
         if (throttleConsists[i] != NULL) {
             int pos = throttleConsists[i].consistGetLocoPosition(address);
@@ -774,6 +782,77 @@ int findThrottleWithLoco(int address) {
         }
     }
     return -1;  //not found
+}
+
+
+int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
+    if (turnouts != NULL) {
+        for (int i=0; i<turnouts.size(); i++) {
+            if (turnouts.get(i).getTurnoutId()==id) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int DCCEXProtocol::findRoutesListPositionFromId(int id) {
+    if (routes != NULL) {
+        for (int i=0; i<routes.size(); i++) {
+            if (routes.get(i).getRouteId()==id) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int DCCEXProtocol::findTurntableListPositionFromId(int id) {
+    if (turntables != NULL) {
+        for (int i=0; i<turntables.size(); i++) {
+            if (turntables.get(i).getTurntableId()==id) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int getSpeedFromSpeedByte(int speedByte) {
+    int speed = speedByte;
+    if (speed >= 128) {
+        speed = speed - 128;
+        dir = 1;
+    }
+    if (speed>1) {
+        speed = speed - 1; // get round and idiotic design of the speed command
+    } else {
+        speed=0;
+    }
+    return speed;
+}
+
+int getDirectionFromSpeedByte(int speedByte) {
+    Direction dir = Forward;
+    int speed = speedByte;
+    if (speed >= 128) {
+        speed = speed - 128;
+        dir = 1;
+    }
+    if (speed>1) {
+        speed = speed - 1; // get round and idiotic design of the speed command
+    } else {
+        speed=0;
+    }
+    return dir;
+}
+
+int[] getFunctionStatesFromFunctionMap(int functionMap) {
+    int states[MAX_FUNCTIONS];
+
+    // ??????????????????????????????????
+
+    return states;
 }
 
 
@@ -799,6 +878,13 @@ class Functions {
 
         return true;
     }
+
+    bool actionFunctionStateExternalChange(int functionNumber, FunctionState state) {
+
+        // ??????????????????????????????????
+
+    }
+
     String getFunctionName(int functionNumber) {
         return FunctionName[functionNumber];
     }
@@ -927,7 +1013,7 @@ class Consist {
             if (consistSpeed!=speed) {
                 for (int i=0; i<consistLocos.size(); i++) {
                     sendLocoAction(consistLocos.get(i).getLocoAddress(), speed, consistLocos.get(i).getLocoDirection());
-                    consistLocos.get(i).setLocoSpeed(speed);
+                    bool rslt = consistLocos.get(i).setLocoSpeed(speed);
                 }
             }
         }
@@ -948,7 +1034,8 @@ class Consist {
                         } else {
                             locoDir = Forward;
                         }
-                        consistLocos.get(i).setLocoDirection(locoDir);
+                        bool rslt = consistLocos.get(i).setLocoSpeed(speed);
+                        rslt = consistLocos.get(i).setLocoDirection(locoDir);
                     }
                     sendLocoAction(consistLocos.get(i).getLocoAddress(), speed, locoDir);
                 }
@@ -957,10 +1044,36 @@ class Consist {
         consistDirection = direction;
         return true;
     }
+    bool actionConsistExternalChange(int speed, Direction, direction, Functions functions) {
+        if (consistLocos != NULL) {
+            if ( (consistDirection != direction) || (consistSpeed != speed) ) {
+
+                delegate->receivedSpeed(throttle, speed);
+                delegate->receivedDirection(throttle, direction);
+
+                for (int i=0; i<consistLocos.size(); i++) {
+                    Direction locoDir = direction;
+                    if (consistLocos.get(i).getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
+                        if (direction == Forward) {
+                            locoDir = Reverse;
+                        } else {
+                            locoDir = Forward;
+                        }
+                        bool rslt = consistLocos.get(i).setLocoDirection(locoDir);
+                    }
+                    sendLocoAction(consistLocos.get(i).getLocoAddress(), speed, locoDir);
+                }
+            }
+        }
+
+        // ??????????????????????????????????
+
+        // delegate->receivedFunction(throttle, function, state);
+    }
+
     Direction consistGetDirection() {
         return consistDirection;
     }
-    
     bool consistSetFunction(int functionNo, FunctionState state) {
         // ??????????????????????????????????
     }
@@ -983,7 +1096,7 @@ class Turnout {
         turnoutName = name;
         turnoutState = state;
     }
-    bool setTurnoutState(TurnoutAction action) {
+    bool sendTurnoutState(TurnoutAction action) {
         TurnoutState newState = action;
         if (action == TurnoutToggle) {
             if (turnoutState == TurnoutClosed ) {
@@ -998,6 +1111,11 @@ class Turnout {
             return true;
         }
         return false;
+    }
+    bool actionTurnoutExternalChange(TurnoutState state) {
+        turnoutState = state;
+        delegate->receivedTurnoutAction(turnoutId, state);
+        return true;
     }
     int getTurnoutId() {
         return turnoutId;
@@ -1077,8 +1195,22 @@ class Turntable {
         }
         return {};
     }
-    bool rotateTurntableTo(int index) {}
-    TurntableState getTurntableState() {
+    bool sendTurntableRotateTo(int index) {
+        if (turntableCurrentPosition != index) {
+            sendCommand("<I " + turntableId + " " + index + ">");
+            turntableCurrentPosition = index;
+            turntableIsMoving = TurntableMoving;
+            return true;
+        }
+        return false;
+    }
+    bool actionTurntableExternalChange(int index, TurntableMoving moving) {
+        turntableCurrentPosition = index;
+        turntableIsMoving = moving;
+        delegate->receivedTurntableAction(turntableId, position, turntableState);
+        return true;
+    }
+   TurntableState getTurntableState() {
         TurntableState rslt = TurntableStationary;
         if (turntableIsMoving) {
             rslt = TurntableMoving;

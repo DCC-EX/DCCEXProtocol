@@ -135,9 +135,9 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    virtual void receivedTurnoutAction(int turnoutId, TurnoutState state) { } //  PTAturnoutstatesystemname
-    virtual void receivedRouteAction(int routeId, RouteState state) { } //  PTAturnoutstatesystemname
-    virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { } //  PTAturnoutstatesystemname
+    virtual void receivedTurnoutAction(int turnoutId, TurnoutState state) { }
+    virtual void receivedRouteAction(int routeId, RouteState state) { }
+    virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
 };
 
 
@@ -254,6 +254,9 @@ class DCCEXProtocol {
 
     //helper functions
     int findThrottleWithLoco(int address);
+    int findTurnoutListPositionFromId(int id);
+    int findRouteListPositionFromId(int id);
+    int findTurntableListPositionFromId(int id);
 };
 
 // *****************************************************************
@@ -270,6 +273,8 @@ class Functions {
         String functionName[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
         int functionLatching[MAX_FUNCTIONS];
+
+        bool actionFunctionStateExternalChange(int functionNumber, FunctionState state);
 }
 
 class Loco {
@@ -312,6 +317,8 @@ class Consist {
         Loco consistGetLocoAtPosition(int position);
         int consistGetLocoPosition(int locoAddress);
 
+        bool actionConsistExternalChange(int speed, Direction, direction, Functions functions);
+
         bool consistSetSpeed(int speed);
         int consistGetSpeed();
         bool consistSetDirection(Direction direction);
@@ -331,7 +338,7 @@ class Consist {
 class Turnout {
     public:
         bool initTurnout(int id, String name, TurnoutState state);
-        bool setTurnoutState(TurnoutState state);
+        bool sendTurnoutState(TurnoutAction action);
         TurnoutState getTurnoutState();
         int getTurnoutId();
         String getTurnoutName();
@@ -340,6 +347,7 @@ class Turnout {
         int turnoutId;
         String turnoutName;
         TurnoutState turnoutState;
+        bool actionTurnoutExternalChange(TurnoutState state);
 }
 
 class Route {
@@ -364,7 +372,7 @@ class Turntable {
     public:
         bool initTurntable(int id, String name, TurntableType type, int position);
         bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
-        bool rotateTurntableTo(int index);
+        bool sendTurntableRotateTo(int index);
 
         int getTurntableId();
         String getTurntableName();
@@ -381,6 +389,7 @@ class Turntable {
         int turntableCurrentPosition;
         LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
         bool turntableIsMoving;
+        bool actionTurntableExternalChange(int index, TurntableMoving moving);
 }
 
 #endif // DCCEXPROTOCOL_H
