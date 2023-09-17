@@ -28,11 +28,16 @@
 #ifndef DCCEXPROTOCOL_H
 #define DCCEXPROTOCOL_H
 
-static const int MAX_THROTTLES 6
-static const int MAX_FUNCTIONS 28
-
 #include <Arduino.h>
 #include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
+
+
+static const int MAX_THROTTLES = 6;
+static const int MAX_FUNCTIONS = 28;
+
+// Protocol special characters
+#define NEWLINE 			'\n'
+#define CR 					'\r'
 
 // *****************************************************************
 
@@ -66,13 +71,11 @@ typedef enum RouteState {
     RouteInconsistent = 8
 } RouteState;
 
-typedef enum TrackMode {
-    TrackModeMain = "MAIN",
-    TrackModeProg = "PROG",
-    TrackModeDC = "DC",
-    TrackModeDCX = "DCX",
-    TrackModeOff = "OFF"
-} TrackMode;
+static const String TrackModeMain = "MAIN";
+static const String  TrackModeProg = "PROG";
+static const String  TrackModeDC = "DC";
+static const String  TrackModeDCX = "DCX";
+static const String TrackModeOff = "OFF";
 
 typedef enum TurntableState {
     TurntableMoving = 1,
@@ -83,7 +86,7 @@ typedef enum TurntableType {
     TurntableTypeDCC = 0,
     TurntableTypeEXTT = 1,
     TurntableTypeUnknown = 0 // returns 'X'
-} TurntableState;
+} TurntableType;
 
 typedef enum FunctionState {
     FunctionStateOn = 1,
@@ -104,6 +107,139 @@ typedef enum Facing {
     FacingForward = 0,
     FacingReversed = 1
 } Facing;
+
+// *****************************************************************
+
+class Functions {
+    public:
+        bool initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
+        bool setFunctionState(int functionNumber, FunctionState state);
+        String getFunctionName(int functionNumber);
+        FunctionState getFunctionState(int functionNumber);
+        FunctionLatching getFunctionLatching(int functionNumber);
+       
+    private:
+        String functionName[MAX_FUNCTIONS];
+        int functionState[MAX_FUNCTIONS];
+        int functionLatching[MAX_FUNCTIONS];
+
+        bool actionFunctionStateExternalChange(int functionNumber, FunctionState state);
+};
+
+class Loco {
+    public:
+        Functions locoFunctions;
+        bool initLoco(int address, String name, LocoSource source);
+        bool setLocoSpeed(int speed);
+        bool setLocoDirection(Direction direction);
+
+        int getLocoAddress();
+        String getLocoName();
+        LocoSource getLocoSource();
+        int  getLocoSpeed();
+        Direction getLocoDirection();
+
+    private:
+        int locoAddress;
+        String locoName;
+        int locoSpeed;
+        Direction locoDirection;
+        LocoSource locoSource;
+};
+
+class ConsistLoco : public Loco {
+    public:
+        bool setConsistLocoFacing(Facing facing);
+        Facing getConsistLocoFacing();
+    private:
+        Facing consistLocoFacing;
+};
+
+class Consist {
+    public:
+
+        bool initConsist(String name);
+        bool consistAddLoco(Loco loco, Facing facing);
+        bool consistReleaseAllLocos();
+        bool consistReleaseLoco(int locoAddress);
+        int consistGetNumberOfLocos();
+        Loco consistGetLocoAtPosition(int position);
+        int consistGetLocoPosition(int locoAddress);
+
+        bool actionConsistExternalChange(int speed, Direction direction, Functions functions);
+
+        bool consistSetSpeed(int speed);
+        int consistGetSpeed();
+        bool consistSetDirection(Direction direction);
+        Direction consistGetDirection();
+        bool consistSetFunction(int functionNo, FunctionState state);
+        bool consistSetFunction(int address, int functionNo, FunctionState state);
+
+        String getConsistName();
+
+    private:
+        LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
+        int consistSpeed;
+        Direction consistDirection;
+        String consistName;
+};
+
+class Turnout {
+    public:
+        bool initTurnout(int id, String name, TurnoutState state);
+        bool sendTurnoutState(TurnoutAction action);
+        TurnoutState getTurnoutState();
+        int getTurnoutId();
+        String getTurnoutName();
+
+    private:
+        int turnoutId;
+        String turnoutName;
+        TurnoutState turnoutState;
+        bool actionTurnoutExternalChange(TurnoutState state);
+};
+
+class Route {
+    public:
+        bool setRoute(int id, String name);
+    private:
+        int routeId;
+        String routeName;
+};
+
+
+class TurntableIndex {
+    public:
+        int turntableIndexId;
+        String turntableIndexName;
+        int turntableIndexAngle;
+
+        bool initTurntableIndex(int id, String name, TurntableType type, int angle);
+};
+
+class Turntable {
+    public:
+        bool initTurntable(int id, String name, TurntableType type, int position);
+        bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
+        bool sendTurntableRotateTo(int index);
+
+        int getTurntableId();
+        String getTurntableName();
+        int getTurntableCurrentPosition();
+        int getTurntableNumberOfIndexes();
+        TurntableIndex getTurntableIndexAt(int positionInLinkedList);
+        TurntableIndex getTurntableIndex(int indexId);
+        TurntableState getTurntableState();
+
+    private:
+        int turntableId;
+        TurntableType turntableType;
+        String turntableName;
+        int turntableCurrentPosition;
+        LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
+        bool turntableIsMoving;
+        bool actionTurntableExternalChange(int index, TurntableState state);
+};
 
 // *****************************************************************
 
@@ -217,9 +353,9 @@ class DCCEXProtocol {
     bool processCommand(char *c, int len);
     void processUnknownCommand(const String& unknownCommand);
 
-    void processServerDescription(String args[], char *c, int len);	
+    void processServerDescription(LinkedList<String> args);	
 
-    void processTrackPower(char *c, int len);
+    void processTrackPower(LinkedList<String> args);
 
     // *******************
 
@@ -228,168 +364,35 @@ class DCCEXProtocol {
 
     // *******************
 
-    void processRosterList(String args[], char *c, int len);
-    void processRosterEntry(String args[], char *c, int len);
-    void requestRosterEntry(int id);
+    void processRosterEntry(LinkedList<String> args);
+    void processRosterList(LinkedList<String> args);
     void sendRosterEntryRequest(int address);
 
-    void processTurnoutList(String args[], char *c, int len);
-    void processTurnoutEntry(String args[], char *c, int len);
-    void processTurnoutAction(String args[], char *c, int len);
+    void processTurnoutEntry(LinkedList<String> args);
+    void processTurnoutList(LinkedList<String> args);
+    void processTurnoutAction(LinkedList<String> args);
     void sendTurnoutEntryRequest(int address);
 
-    void processRouteList(String args[], char *c, int len);
-    void processRouteEntry(String args[], char *c, int len);
+    void processRouteList(LinkedList<String> args);
+    void processRouteEntry(LinkedList<String> args);
     void sendRouteEntryRequest(int id);
-    // void processRouteAction(String args[], char *c, int len);
+    // void processRouteAction(LinkedList<String> args);
 
-    void processTurntableList(String args[], char *c, int len);
-    void processTurntableEntry(String args[], char *c, int len);
-    void processTurntableIndexEntry(String args[], char *c, int len);
-    void processTurntableAction(String args[], char *c, int len);
+    void processTurntableEntry(LinkedList<String> args);
+    void processTurntableList(LinkedList<String> args);
+    void processTurntableIndexEntry(LinkedList<String> args);
+    void processTurntableAction(LinkedList<String> args);
     void sendTurntableEntryRequest(int id);
     void sendTurntableIndexEntryRequest(int id);
 
-    bool processLocoAction(String args[], cchar *c, int len);
+    bool processLocoAction(LinkedList<String> args);
 
     //helper functions
     int findThrottleWithLoco(int address);
     int findTurnoutListPositionFromId(int id);
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
+    LinkedList<String> splitCommand(String text, char splitChar);
 };
-
-// *****************************************************************
-
-class Functions {
-    public:
-        bool initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
-        bool setFunctionState(int functionNumber, FunctionState state);
-        String getFunctionName(int functionNumber);
-        FunctionState getFunctionState(int functionNumber);
-        FunctionLatching getFunctionLatching(int functionNumber);
-       
-    private:
-        String functionName[MAX_FUNCTIONS];
-        int functionState[MAX_FUNCTIONS];
-        int functionLatching[MAX_FUNCTIONS];
-
-        bool actionFunctionStateExternalChange(int functionNumber, FunctionState state);
-}
-
-class Loco {
-    public:
-        Functions locoFunctions;
-        bool initLoco(int address, String name, LocoSource source);
-        bool setLocoSpeed(int speed);
-        bool setLocoDirection(Direction direction);
-
-        int getLocoAddress();
-        String getLocoName();
-        LocoSource getLocoSource();
-        int  getLocoSpeed();
-        Direction getLocoDirection();
-
-    private:
-        int locoAddress;
-        String locoName;
-        int locoSpeed;
-        Direction locoDirection;
-        LocoSource locoSource;
-}
-
-class ConsistLoco : public Loco {
-    public:
-        bool setConsistLocoFacing(Facing facing);
-        Facing getConsistLocoFacing();
-    private:
-        Facing consistLocoFacing;
-}
-
-class Consist {
-    public:
-
-        bool initConsist(String name);
-        bool consistAddLoco(Loco loco, Facing, facing);
-        bool consistReleaseAllLocos();
-        bool consistReleaseLoco(int locoAddress);
-        int consistGetNumberOfLocos();
-        Loco consistGetLocoAtPosition(int position);
-        int consistGetLocoPosition(int locoAddress);
-
-        bool actionConsistExternalChange(int speed, Direction, direction, Functions functions);
-
-        bool consistSetSpeed(int speed);
-        int consistGetSpeed();
-        bool consistSetDirection(Direction direction);
-        Direction consistGetDirection();
-        bool consistSetFunction(int functionNo, FunctionState state);
-        bool consistSetFunction(int address, int functionNo, FunctionState state);
-
-        String getConsistName();
-
-    private:
-        LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
-        int consistSpeed;
-        Direction consistDirection;
-        String consistName;
-}
-
-class Turnout {
-    public:
-        bool initTurnout(int id, String name, TurnoutState state);
-        bool sendTurnoutState(TurnoutAction action);
-        TurnoutState getTurnoutState();
-        int getTurnoutId();
-        String getTurnoutName();
-
-    private:
-        int turnoutId;
-        String turnoutName;
-        TurnoutState turnoutState;
-        bool actionTurnoutExternalChange(TurnoutState state);
-}
-
-class Route {
-    public:
-        bool setRoute(int id, String name);
-    private:
-        int routeId;
-        String routeName;
-}
-
-
-class TurntableIndex {
-    public:
-        int turntableIndexId;
-        String turntableIndexName;
-        int turntableIndexAngle;
-
-        bool initTurntableIndex(int id, String name, TurntableType type, int angle);
-}
-
-class Turntable {
-    public:
-        bool initTurntable(int id, String name, TurntableType type, int position);
-        bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
-        bool sendTurntableRotateTo(int index);
-
-        int getTurntableId();
-        String getTurntableName();
-        int getTurntableCurrentPosition();
-        int getTurntableNumberOfIndexes();
-        TurntableIndex getTurntableIndexAt(int positionInLinkedList);
-        TurntableIndex getTurntableIndex(int indexId);
-        TurntableState getTurntableState();
-
-    private
-        int turntableId;
-        TurntableType turntableType;
-        String turntableName;
-        int turntableCurrentPosition;
-        LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
-        bool turntableIsMoving;
-        bool actionTurntableExternalChange(int index, TurntableMoving moving);
-}
 
 #endif // DCCEXPROTOCOL_H
