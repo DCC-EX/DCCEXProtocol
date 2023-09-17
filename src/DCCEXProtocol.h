@@ -50,7 +50,7 @@ typedef enum TrackPower {
 typedef enum TurnoutState {
     TurnoutClosed = 0,
     TurnoutThrown = 1,
-    TurnoutUnknownId = 9   // "X" is sent
+    TurnoutUnknownId = -1   // "X" is sent
 } TurnoutState;
 
 typedef enum TurnoutAction {
@@ -77,6 +77,12 @@ typedef enum TrackMode {
 typedef enum TurntableState {
     TurntableMoving = 1,
     TurntableStationary = 0
+} TurntableState;
+
+typedef enum TurntableType {
+    TurntableTypeDCC = 0,
+    TurntableTypeEXTT = 1,
+    TurntableTypeUnknown = 0 // returns 'X'
 } TurntableState;
 
 typedef enum FunctionState {
@@ -155,7 +161,7 @@ class DCCEXProtocol {
 
     // *******************
 
-    Consist throttle[MAX_THROTTLES];
+    Consist throttleConsists[MAX_THROTTLES];
     LinkedList<Loco> roster = LinkedList<Loco>();
     LinkedList<Turnout> turnouts = LinkedList<Turnout>();
     LinkedList<Route> routes = LinkedList<Route>();
@@ -163,32 +169,33 @@ class DCCEXProtocol {
 
     // *******************
 
-    bool getServer();
+    bool sendServerDetailsRequest();
 
     bool getRoster();
     bool getTurnouts();
     bool getRoutes();
-    bool getTurntable();
-  
-    setPower(TrackPower powerState, int track);
+    bool getTurntables();
 
-    bool emergencyStop();
+    long getLastServerResponseTime();  // seconds since Arduino start
+
+    bool sendEmergencyStop();
 
     Consist getThrottleConsist(int throttleNo);
 
-	bool setTrackPower(TrackPower state);
-	bool setTrackPower(TrackPower state, char track);
+	bool sendTrackPower(TrackPower state);
+	bool sendTrackPower(TrackPower state, char track);
 
-    bool setTurnout(int turnoutId, TurnoutAction action);
-    bool setRoute(int routeId);
-    bool pauseRoutes();
-    bool resumeRoutes();
-    bool setTurntable(int TurntableId, int position, int activity);
+    bool sendTurnoutAction(int turnoutId, TurnoutAction action);
 
-    bool setAccessory(int accessoryAddress, int activate);
-    bool setAccessory(int accessoryAddress, int accessorySubAddr, int activate);
+    bool sendRouteAction(int routeId);
+    bool sendPauseRoutes();
+    bool sendResumeRoutes();
 
-    long getLastServerResponseTime();  // seconds since Arduino start
+    bool sendTurntableAction(int turntableId, int position, int activity);
+
+    bool sendAccessoryAction(int accessoryAddress, int activate);
+    bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
+
 
   private:
   
@@ -206,8 +213,8 @@ class DCCEXProtocol {
 
     void init();
 
-    bool processCommand(char *c, int len);
     void sendCommand(String cmd);
+    bool processCommand(char *c, int len);
     void processUnknownCommand(const String& unknownCommand);
 
     void processServerDescription(String args[], char *c, int len);	
@@ -216,37 +223,44 @@ class DCCEXProtocol {
 
     // *******************
 
-    void requestLocoUpdate(int address);
-    void sendLoco(int address, int speed, Direction direction);
-
-    bool processLocoAction(String args[], cchar *c, int len);
+    bool sendLocoUpdateRequest(int address);
+    bool sendLocoAction(int address, int speed, Direction direction);
 
     // *******************
 
     void processRosterList(String args[], char *c, int len);
     void processRosterEntry(String args[], char *c, int len);
     void requestRosterEntry(int id);
+    void sendRosterEntryRequest(int address);
 
     void processTurnoutList(String args[], char *c, int len);
     void processTurnoutEntry(String args[], char *c, int len);
     void processTurnoutAction(String args[], char *c, int len);
+    void sendTurnoutEntryRequest(int address);
 
     void processRouteList(String args[], char *c, int len);
     void processRouteEntry(String args[], char *c, int len);
+    void sendRouteEntryRequest(int id);
     // void processRouteAction(String args[], char *c, int len);
 
     void processTurntableList(String args[], char *c, int len);
     void processTurntableEntry(String args[], char *c, int len);
     void processTurntableIndexEntry(String args[], char *c, int len);
     void processTurntableAction(String args[], char *c, int len);
+    void sendTurntableEntryRequest(int id);
+    void sendTurntableIndexEntryRequest(int id);
 
+    bool processLocoAction(String args[], cchar *c, int len);
+
+    //helper functions
+    int findThrottleWithLoco(int address);
 };
 
 // *****************************************************************
 
 class Functions {
     public:
-        bool setFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
+        bool initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
         bool setFunctionState(int functionNumber, FunctionState state);
         String getFunctionName(int functionNumber);
         FunctionState getFunctionState(int functionNumber);
@@ -261,7 +275,7 @@ class Functions {
 class Loco {
     public:
         Functions locoFunctions;
-        bool setLoco(int address, String name, LocoSource source);
+        bool initLoco(int address, String name, LocoSource source);
         bool setLocoSpeed(int speed);
         bool setLocoDirection(Direction direction);
 
@@ -290,12 +304,13 @@ class ConsistLoco : public Loco {
 class Consist {
     public:
 
+        bool initConsist(String name);
         bool consistAddLoco(Loco loco, Facing, facing);
-        bool consistReleaseLoco();   //all
+        bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
-        bool consistGetNumberOfLocos();
-        bool consistGetLocoAtPosition(int position);
-        bool consistGetLocoPosition(int locoAddress);
+        int consistGetNumberOfLocos();
+        Loco consistGetLocoAtPosition(int position);
+        int consistGetLocoPosition(int locoAddress);
 
         bool consistSetSpeed(int speed);
         int consistGetSpeed();
@@ -315,7 +330,7 @@ class Consist {
 
 class Turnout {
     public:
-        bool setTurnout(int id, String name, TurnoutState state);
+        bool initTurnout(int id, String name, TurnoutState state);
         bool setTurnoutState(TurnoutState state);
         TurnoutState getTurnoutState();
         int getTurnoutId();
@@ -340,11 +355,14 @@ class TurntableIndex {
     public:
         int turntableIndexId;
         String turntableIndexName;
-        int turntableAngle;
+        int turntableIndexAngle;
+
+        bool initTurntableIndex(int id, String name, TurntableType type, int angle);
 }
 
 class Turntable {
     public:
+        bool initTurntable(int id, String name, TurntableType type, int position);
         bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
         bool rotateTurntableTo(int index);
 
@@ -358,6 +376,7 @@ class Turntable {
 
     private
         int turntableId;
+        TurntableType turntableType;
         String turntableName;
         int turntableCurrentPosition;
         LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
