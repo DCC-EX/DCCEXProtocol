@@ -107,7 +107,7 @@ class Functions {
         String getFunctionName(int functionNumber);
         FunctionState getFunctionState(int functionNumber);
         FunctionLatching getFunctionLatching(int functionNumber);
-       
+    
     private:
         String functionName[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
@@ -154,7 +154,7 @@ class Consist {
         bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
         int consistGetNumberOfLocos();
-        Loco consistGetLocoAtPosition(int position);
+        ConsistLoco consistGetLocoAtPosition(int position);
         int consistGetLocoPosition(int locoAddress);
 
         bool actionConsistExternalChange(int speed, Direction direction, Functions functions);
@@ -178,11 +178,12 @@ class Consist {
 class Turnout {
     public:
         bool initTurnout(int id, String name, TurnoutState state);
-        bool sendTurnoutState(TurnoutAction action);
+        // bool sendTurnoutState(TurnoutAction action);
+        bool setTurnoutState(TurnoutAction action);
         TurnoutState getTurnoutState();
         int getTurnoutId();
         String getTurnoutName();
-        bool actionTurnoutExternalChange(TurnoutState state);
+//        bool actionTurnoutExternalChange(TurnoutState state);
 
     private:
         int turnoutId;
@@ -207,18 +208,19 @@ class TurntableIndex {
         String turntableIndexName;
         int turntableIndexAngle;
 
-        bool initTurntableIndex(int id, String name, int index, int angle);
+        bool initTurntableIndex(int index, String name, int angle);
 };
 
 class Turntable {
     public:
         bool initTurntable(int id, String name, TurntableType type, int position);
-        bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
-        bool sendTurntableRotateTo(int index);
+        bool addTurntableIndex(int index, String indexName, int indexAngle);
+        // bool sendTurntableRotateTo(int index);
         LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
 
         int getTurntableId();
         String getTurntableName();
+        bool setTurntableCurrentPosition(int index);
         int getTurntableCurrentPosition();
         int getTurntableNumberOfIndexes();
         TurntableIndex getTurntableIndexAt(int positionInLinkedList);
@@ -269,6 +271,7 @@ class DCCEXProtocolDelegate {
     virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
 };
 
+// *******************
 
 class DCCEXProtocol {
   public:
@@ -297,15 +300,15 @@ class DCCEXProtocol {
     LinkedList<Turntable> turntables =LinkedList<Turntable>();
 
     //helper functions
-    void delegateReceivedTurntableAction(int turntableId, int index, TurntableState state);
-    int getSpeedFromSpeedByte(int speedByte);
     Direction getDirectionFromSpeedByte(int speedByte);
+    int getSpeedFromSpeedByte(int speedByte);
     Functions getFunctionStatesFromFunctionMap(int * states, int functionMap);
 
     // *******************
 
     void sendCommand(String cmd);
 
+    bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
     bool sendFunction(int throttle, String address, int funcNum, bool pressed);
     bool sendLocoUpdateRequest(int address);

@@ -42,43 +42,6 @@ Function/method prefixes
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
 
-// ******************************************************************************************************
-//helper functions
-
-int DCCEXProtocol::getSpeedFromSpeedByte(int speedByte) {
-    int speed = speedByte;
-    if (speed >= 128) {
-        speed = speed - 128;
-    }
-    if (speed>1) {
-        speed = speed - 1; // get round the idiotic design of the speed command
-    } else {
-        speed=0;
-    }
-    return speed;
-}
-
-Direction DCCEXProtocol::getDirectionFromSpeedByte(int speedByte) {
-    Direction dir = Forward;
-    int speed = speedByte;
-    if (speed >= 128) {
-        speed = speed - 128;
-        dir = 1;
-    }
-    if (speed>1) {
-        speed = speed - 1; // get round and idiotic design of the speed command
-    } else {
-        speed=0;
-    }
-    return dir;
-}
-
-Functions DCCEXProtocol::getFunctionStatesFromFunctionMap( int * states, int functionMap) {
-    
-    // ??????????????????????????????????
-    Functions fns;
-    return fns;
-}
 
 // ******************************************************************************************************
 // ******************************************************************************************************
@@ -175,6 +138,37 @@ long DCCEXProtocol::getLastServerResponseTime() {
 // ******************************************************************************************************
 
 // ******************************************************************************************************
+//helper functions
+
+Direction DCCEXProtocol::getDirectionFromSpeedByte(int speedByte) {
+    Direction dir = Forward;
+    if (speedByte >= 128) {
+        dir = Reverse;
+    }
+    return dir;
+}
+
+int DCCEXProtocol::getSpeedFromSpeedByte(int speedByte) {
+    int speed = speedByte;
+    if (speed >= 128) {
+        speed = speed - 128;
+    }
+    if (speed>1) {
+        speed = speed - 1; // get round the idiotic design of the speed command
+    } else {
+        speed=0;
+    }
+    return speed;
+}
+
+Functions DCCEXProtocol::getFunctionStatesFromFunctionMap( int * states, int functionMap) {
+    
+    // ??????????????????????????????????
+    Functions fns;
+    return fns;
+}
+
+// ******************************************************************************************************
 // sending and receiving commands from the CS
 
 //private
@@ -244,7 +238,10 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
         } else if (len > 3 && char0 == 'H') { //<H id state>
             if (delegate) {
                 // TurnoutState state = (int) args.get(2).toInt();
-                delegate->receivedTurnoutAction(args.get(1).toInt(), args.get(2).toInt());
+                if (args.size()==3) {
+                    processTurnoutAction(args);
+                    delegate->receivedTurnoutAction(args.get(1).toInt(), args.get(2).toInt());
+                }
             }
 
         } else if (len > 3 && char0=='j' && char1=='O' && (noOfParameters>1)) { 
@@ -257,10 +254,11 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
         } else if (len > 3 && char0=='i' && args.get(0)!="iDCCEX") { //<i id position>   or   <i id position moving>
             if (delegate) {
                 TurntableState state = TurntableStationary;
-                if (args.size()==3) {
-                    state = args.get(2).toInt();
+                if (args.size()<3) { 
+                    state = TurntableMoving;
                 }
                 processTurntableAction(args);
+                delegate->receivedTurntableAction(args.get(1).toInt(), args.get(2).toInt(), state);
             }
 
         } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters > 1)) { 
@@ -374,6 +372,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> args) { //<jR id ""|"d
                     // }
 // ????????????????
                     roster.set(i, loco);
+                    sendLocoUpdateRequest(address);
                 }
             }
         } 
@@ -439,12 +438,24 @@ bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
 }
 
 //private
-void DCCEXProtocol::processTurnoutAction(LinkedList<String> args) {
+void DCCEXProtocol::processTurnoutAction(LinkedList<String> args) { //<H id state>
     console->println("processTurnoutAction(): ");
     if (delegate) {
-
-    // ??????????????????????????????????
-
+        //find the Turnout entry to update
+        if (turnouts.size()>0) { 
+            for (int i=0; i<turnouts.size(); i++) {
+                int id = args.get(1).toInt();
+                Turnout turnoutsTurnout = turnouts.get(i);
+                if (turnoutsTurnout.getTurnoutId()==id) {
+                    TurnoutState state = args.get(2).toInt();
+                    Turnout turnout = turnoutsTurnout;
+                    if (args.size() >= 3) {
+                        bool rslt = turnout.setTurnoutState(state);
+                        delegate->receivedTurnoutAction(id, state);
+                    }
+                }
+            }
+        } 
     }
     console->println("processTurnoutAction(): end");
 }
@@ -587,9 +598,11 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> args) { // <jP
                         Turntable turntable = turntablesTurntable;
 
                         //this assumes we are always starting from scratch, not updating indexes
-                        TurntableIndex index;
-                        bool rslt = index.initTurntableIndex (args.get(2).toInt(), args.get(4), args.get(2).toInt(), args.get(3).toInt());
-                        turntable.turntableIndexes.add(index);
+                        int index = args.get(2).toInt();
+                        int angle = args.get(3).toInt();
+                        String name = args.get(4);
+
+                        bool rslt = turntablesTurntable.addTurntableIndex (index, name, angle);
                         turntables.set(i, turntable);
                     }
                 }
@@ -610,7 +623,7 @@ void DCCEXProtocol::processTurntableAction(LinkedList<String> args) { // <i id p
         if (pos!=newPos) {
             turntables.get(pos).actionTurntableExternalChange(newPos, state);
         }
-        delegate->receivedTurnoutAction(id, newPos);
+        delegate->receivedTurntableAction(id, newPos, state);
     }
     console->println("processTurntableAction(): end");
 }
@@ -627,13 +640,16 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> args) { //<l cab reg sp
         int functMap = args.get(4).toInt();
         int throttleNo = findThrottleWithLoco(address);
         if (throttleNo>=0) {
-            bool rslt = throttleConsists[throttleNo].consistGetLocoPosition(address);
+            int rslt = throttleConsists[throttleNo].consistGetLocoPosition(address);
             if (rslt==0) {  // ignore everything that is not the lead loco
-                Direction dir = getDirectionFromSpeedbyte(speedByte);
                 int speed = getSpeedFromSpeedByte(speedByte);
+                Direction dir = getDirectionFromSpeedbyte(speedByte);
                 int functionStates[MAX_FUNCTIONS];
                 Functions fns = getFunctionStatesFromFunctionMap(functionStates, functMap);
-                bool rslt = actionConsistExternalChange(speed, dir, fns);
+                bool rslt = throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fns);
+
+                delegate->receivedSpeed(throttleNo, speed);
+                delegate->receivedDirection(throttleNo, dir);
             }
         } else {
             console->print("processLocoAction(): unknown loco");
@@ -695,6 +711,37 @@ bool DCCEXProtocol::sendFunction(int throttle, String address, int funcNum, bool
     console->println("sendFunction(): end"); 
     return true;
 }
+
+
+// ******************************************************************************************************
+// throttle
+
+bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direction) {
+    console->println("sendThrottleAction(): ");
+    if (delegate) {
+        if (throttleConsists[throttle].consistGetNumberOfLocos()>0) {
+            throttleConsists[throttle].consistSetSpeed(speed);
+            throttleConsists[throttle].consistSetDirection(direction);
+            for (int i=0; i<throttleConsists[throttle].consistGetNumberOfLocos(); i++) {
+                ConsistLoco conLoco = throttleConsists[throttle].consistGetLocoAtPosition(i);
+                int address = conLoco.getLocoAddress();
+                Direction dir = direction;
+                if (conLoco.getConsistLocoFacing()==Reverse) {
+                    if (direction==Forward) {
+                        dir = Reverse;
+                    } else {
+                        dir = Forward;
+                    }                    
+                }
+                sendLocoAction(address, speed, dir);
+            }
+        }
+    }
+    console->println("sendThrottleAction(): end");
+    return true;
+}
+
+
 
 // ******************************************************************************************************
 // individual locos
@@ -834,7 +881,6 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
     return -1;  //not found
 }
 
-
 int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
     if (turnouts.size()>0) {
         for (int i=0; i<turnouts.size(); i++) {
@@ -866,10 +912,6 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
         }
     }
     return -1;
-}
-
-void DCCEXProtocol::delegateReceivedTurntableAction(int turntableId, int index, TurntableState state) {
-    delegate->receivedTurntableAction(turntableId, index, state);
 }
 
 LinkedList<String> DCCEXProtocol::splitCommand(String text, char splitChar) {
@@ -905,10 +947,7 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
 // ******************************************************************************************************
 // subsidary classes
 
-// class Functions {
-    // String functionName[MAX_FUNCTIONS];
-    // int functionLatching[MAX_FUNCTIONS];
-    // int functionState[MAX_FUNCTIONS];
+// class Functions
 
     bool Functions::initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state) {
         functionName[functionNumber] = label;
@@ -938,15 +977,8 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     FunctionLatching Functions::getFunctionLatching(int functionNumber) {
         return functionLatching[functionNumber];
     }
-// }
 
-// class Loco {
-//     int locoAddress;
-//     String locoName;
-//     int locoSpeed;
-//     Direction locoDirection;
-//     Functions locoFunctions;
-//     LocoSource locoSource;
+// class Loco
 
     bool Loco::initLoco(int address, String name, LocoSource source) {
         locoAddress = address;
@@ -954,13 +986,11 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         locoSource = source;
         locoDirection = Forward;
         locoSpeed = 0;
-
-        sendLocoUpdateRequest(address);
     }
     bool Loco::setLocoSpeed(int speed) {
         if (locoSpeed!=speed) {
             locoSpeed = speed;
-            sendLocoAction(locoAddress, speed, locoDirection);
+            // sendLocoAction(locoAddress, speed, locoDirection);
         }
         locoSpeed = speed;
         return true;
@@ -968,7 +998,6 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     bool Loco::setLocoDirection(Direction direction) {
         if (locoDirection!=direction) {
             locoDirection = direction;
-            sendLocoAction(locoAddress, locoSpeed, locoDirection);
         }
         locoDirection = direction;
         return true;
@@ -989,23 +1018,17 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     Direction Loco::getLocoDirection() {
         return locoDirection;
     }
-// }
 
-// class ConsistLoco : public Loco {
-//     Facing consistLocoFacing;
+// class ConsistLoco : public Loco
+
     bool ConsistLoco::setConsistLocoFacing(Facing facing) {
         consistLocoFacing = facing;
     }
     Facing ConsistLoco::getConsistLocoFacing() {
         return consistLocoFacing;
     }
-// }
 
-// class Consist {
-//     LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
-//     int consistSpeed;
-//     Direction consistDirection;
-//     String consistName;
+// class Consist
 
     bool Consist::initConsist(String name) {
         consistName = name;
@@ -1038,7 +1061,7 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         return consistLocos.size();
         return 0;
     }
-    Loco Consist::consistGetLocoAtPosition(int position) {
+    ConsistLoco Consist::consistGetLocoAtPosition(int position) {
         if (position<consistLocos.size()) {
             return consistLocos.get(position);
         }
@@ -1056,7 +1079,6 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         if (consistLocos.size()>0) {
             if (consistSpeed!=speed) {
                 for (int i=0; i<consistLocos.size(); i++) {
-                    sendLocoAction(consistLocos.get(i).getLocoAddress(), speed, consistLocos.get(i).getLocoDirection());
                     bool rslt = consistLocos.get(i).setLocoSpeed(speed);
                 }
             }
@@ -1078,10 +1100,9 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
                         } else {
                             locoDir = Forward;
                         }
-                        bool rslt = consistLocos.get(i).setLocoSpeed(consistSpeed);
-                        rslt = consistLocos.get(i).setLocoDirection(locoDir);
                     }
-                    sendLocoAction(consistLocos.get(i).getLocoAddress(), consistSpeed, locoDir);
+                    bool rslt = consistLocos.get(i).setLocoSpeed(consistSpeed);
+                    rslt = consistLocos.get(i).setLocoDirection(locoDir);
                 }
             }
         }
@@ -1091,12 +1112,6 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     bool Consist::actionConsistExternalChange(int speed, Direction direction, Functions functions) {
         if (consistLocos.size()>0) {
             if ( (consistDirection != direction) || (consistSpeed != speed) ) {
-
-//?????????????????????????
-                delegate->receivedSpeed(throttle, speed);
-                delegate->receivedDirection(throttle, direction);
-//?????????????????????????
-
                 for (int i=0; i<consistLocos.size(); i++) {
                     Direction locoDir = direction;
                     if (consistLocos.get(i).getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
@@ -1105,9 +1120,9 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
                         } else {
                             locoDir = Forward;
                         }
-                        bool rslt = consistLocos.get(i).setLocoDirection(locoDir);
                     }
-                    sendLocoAction(consistLocos.get(i).getLocoAddress(), speed, locoDir);
+                    bool rslt = consistLocos.get(i).setLocoSpeed(consistSpeed);
+                    rslt = consistLocos.get(i).setLocoDirection(locoDir);
                 }
             }
         }
@@ -1130,19 +1145,15 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     String Consist::getConsistName() {
         return consistName;
     }
-// }
 
-// class Turnout {
-//     int turnoutId;
-//     String turnoutName;
-//     TurnoutState turnoutState;
+// class Turnout
 
     bool Turnout::initTurnout(int id, String name, TurnoutState state) {
         turnoutId = id;
         turnoutName = name;
         turnoutState = state;
     }
-    bool Turnout::sendTurnoutState(TurnoutAction action) {
+    bool Turnout::setTurnoutState(TurnoutAction action) {
         TurnoutState newState = action;
         if (action == TurnoutToggle) {
             if (turnoutState == TurnoutClosed ) {
@@ -1153,16 +1164,31 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         }
         if (newState<=TurnoutThrow) { // ignore TurnoutExamine
             turnoutState = newState;
-            sendTurnoutAction(turnoutId, newState)
+            // sendTurnoutAction(turnoutId, newState)
             return true;
         }
         return false;
     }
-    bool Turnout::actionTurnoutExternalChange(TurnoutState state) {
-        turnoutState = state;
-        delegate->receivedTurnoutAction(turnoutId, state);
-        return true;
-    }
+    // bool Turnout::sendTurnoutState(TurnoutAction action) {
+    //     TurnoutState newState = action;
+    //     if (action == TurnoutToggle) {
+    //         if (turnoutState == TurnoutClosed ) {
+    //             newState = TurnoutThrown;
+    //         } else { // Thrown or Inconsistant
+    //             newState = TurnoutClosed;
+    //         }
+    //     }
+    //     if (newState<=TurnoutThrow) { // ignore TurnoutExamine
+    //         turnoutState = newState;
+    //         sendTurnoutAction(turnoutId, newState)
+    //         return true;
+    //     }
+    //     return false;
+    // }
+    // bool Turnout::actionTurnoutExternalChange(TurnoutState state) {
+    //     turnoutState = state;
+    //     return true;
+    // }
     int Turnout::getTurnoutId() {
         return turnoutId;
     }
@@ -1172,11 +1198,8 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     TurnoutState Turnout::getTurnoutState() {
         return turnoutState;
     }
-// }
 
-// class Route {
-//     int routeId;
-//     String routeName;
+// class Route
 
     bool Route::initRoute(int id, String name) {
         routeId = id;
@@ -1185,27 +1208,17 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     int Route::getRouteId() {
         return routeId;
     }
-// }
 
-// class TurntableIndex {
-//     int turntableIndexId;
-//     String turntableIndexName;
-//     int turntableIndexAngle;
+// class TurntableIndex
 
-    bool TurntableIndex::initTurntableIndex(int id, String name, int index, int angle) {
-        turntableIndexId = id;
-        turntableIndexName = name;
+    bool TurntableIndex::initTurntableIndex(int index, String name, int angle) {
         turntableIndexIndex = index;
+        turntableIndexName = name;
         turntableIndexAngle = angle;
     }
-// }
 
-// class Turntable {
-//     int turntableId;
-//     String turntableName;
-//     int turntableCurrentPosition;
-//     LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>;
-//     bool turntableIsMoving;
+// class Turntable
+
     
     bool Turntable::initTurntable(int id, String name, TurntableType type, int position) {
         turntableId = id;
@@ -1220,13 +1233,21 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     String Turntable::getTurntableName() {
         return turntableName;
     }
-    bool Turntable::addTurntableIndex(int indexId, String indexName, int indexAngle) {
-        TurntableIndex index;
-        index.turntableIndexId = indexId;
-        index.turntableIndexName = indexName;
-        index.turntableAngle = indexAngle;
-        turntableIndexes.add(index);
+    bool Turntable::addTurntableIndex(int index, String indexName, int indexAngle) {
+        TurntableIndex turntableIndex;
+        turntableIndex.turntableIndexIndex = index;
+        turntableIndex.turntableIndexName = indexName;
+        turntableIndex.turntableIndexAngle = indexAngle;
+        turntableIndexes.add(turntableIndex);
     }
+    bool Turntable::setTurntableCurrentPosition(int index) {
+        if (turntableCurrentPosition != index) {
+            turntableCurrentPosition = index;
+            turntableIsMoving = TurntableMoving;
+            return true;
+        }
+        return false;
+    }    
     int Turntable::getTurntableCurrentPosition() {
         return turntableCurrentPosition;
     }
@@ -1244,19 +1265,18 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         }
         return {};
     }
-    bool Turntable::sendTurntableRotateTo(int index) {
-        if (turntableCurrentPosition != index) {
-            sendCommand("<I " + String(turntableId) + " " + String(index) + ">");
-            turntableCurrentPosition = index;
-            turntableIsMoving = TurntableMoving;
-            return true;
-        }
-        return false;
-    }
+    // bool Turntable::sendTurntableRotateTo(int index) {
+    //     if (turntableCurrentPosition != index) {
+    //         sendCommand("<I " + String(turntableId) + " " + String(index) + ">");
+    //         turntableCurrentPosition = index;
+    //         turntableIsMoving = TurntableMoving;
+    //         return true;
+    //     }
+    //     return false;
+    // }
     bool Turntable::actionTurntableExternalChange(int index, TurntableState state) {
         turntableCurrentPosition = index;
         turntableIsMoving = state;
-        delegateReceivedTurntableAction(turntableId, index, state);
         return true;
     }
    TurntableState Turntable::getTurntableState() {
@@ -1266,4 +1286,3 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         }
         return rslt;
     }
-// }
