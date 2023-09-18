@@ -41,72 +41,62 @@ static const int MAX_FUNCTIONS = 28;
 
 // *****************************************************************
 
-typedef enum Direction {
-    Reverse = 0,
-    Forward = 1
-} Direction;
+typedef int Direction;
+#define Reverse 0
+#define Forward 1
 
-typedef enum TrackPower {
-    PowerOff = 0,
-    PowerOn = 1,
-    PowerUnknown = 2
-} TrackPower;
+typedef int  TrackPower;
+#define PowerOff 0
+#define PowerOn 1
+#define PowerUnknown 2
 
-typedef enum TurnoutState {
-    TurnoutClosed = 0,
-    TurnoutThrown = 1,
-    TurnoutUnknownId = -1   // "X" is sent
-} TurnoutState;
+typedef int TurnoutState;
+#define TurnoutClosed 0
+#define TurnoutThrown 1
+#define TurnoutUnknownId -1
 
-typedef enum TurnoutAction {
-    TurnoutClose = 0,
-    TurnoutThrow = 1,
-    TurnoutToggle = 2,
-    TurnoutExamine = 9     // "X" needs to be sent
-} TurnoutAction;
+typedef int TurnoutAction;
+#define TurnoutClose 0
+#define TurnoutThrow 1
+#define TurnoutToggle 2
+#define TurnoutExamine 9     // "X" needs to be sent
 
-typedef enum RouteState {
-    RouteActive = 2,
-    RouteInactive = 4,
-    RouteInconsistent = 8
-} RouteState;
+typedef int RouteState;
+#define RouteActive 2
+#define RouteInactive 4
+#define RouteInconsistent 8
 
+typedef int TrackMode;
 static const String TrackModeMain = "MAIN";
 static const String  TrackModeProg = "PROG";
 static const String  TrackModeDC = "DC";
 static const String  TrackModeDCX = "DCX";
 static const String TrackModeOff = "OFF";
 
-typedef enum TurntableState {
-    TurntableMoving = 1,
-    TurntableStationary = 0
-} TurntableState;
+typedef int TurntableState;
+#define TurntableStationary 0
+#define TurntableMoving 1
 
-typedef enum TurntableType {
-    TurntableTypeDCC = 0,
-    TurntableTypeEXTT = 1,
-    TurntableTypeUnknown = 0 // returns 'X'
-} TurntableType;
+typedef int TurntableType;
+#define TurntableTypeDCC 0
+#define TurntableTypeEXTT 1
+#define TurntableTypeUnknown 9 // returns 'X'
 
-typedef enum FunctionState {
-    FunctionStateOn = 1,
-    FunctionStateOff = 0
-} FunctionState;
+typedef int FunctionState;
+#define FunctionStateOff 0
+#define FunctionStateOn 1
 
-typedef enum FunctionLatching {
-    FunctionLatchingTrue = 1,
-    FunctionLatchingFalse = 0
-} FunctionLatching;
+typedef int FunctionLatching;
+#define FunctionLatchingTrue 1
+#define FunctionLatchingFalse 0
 
-typedef enum LocoSource {
-    LocoSourceRoster = 0,
-    LocoSourceEntry = 1
-} LocoSource;
+typedef int LocoSource;
+#define LocoSourceRoster 0
+#define LocoSourceEntry 1
 
-typedef enum Facing {
-    FacingForward = 0,
-    FacingReversed = 1
-} Facing;
+typedef int Facing;
+#define FacingForward 0
+#define FacingReversed 1
 
 // *****************************************************************
 
@@ -151,6 +141,7 @@ class ConsistLoco : public Loco {
     public:
         bool setConsistLocoFacing(Facing facing);
         Facing getConsistLocoFacing();
+        bool initConsistLoco(Loco loco, Facing facing);
     private:
         Facing consistLocoFacing;
 };
@@ -191,17 +182,18 @@ class Turnout {
         TurnoutState getTurnoutState();
         int getTurnoutId();
         String getTurnoutName();
+        bool actionTurnoutExternalChange(TurnoutState state);
 
     private:
         int turnoutId;
         String turnoutName;
         TurnoutState turnoutState;
-        bool actionTurnoutExternalChange(TurnoutState state);
 };
 
 class Route {
     public:
-        bool setRoute(int id, String name);
+        bool initRoute(int id, String name);
+        int getRouteId();
     private:
         int routeId;
         String routeName;
@@ -211,10 +203,11 @@ class Route {
 class TurntableIndex {
     public:
         int turntableIndexId;
+        int turntableIndexIndex;
         String turntableIndexName;
         int turntableIndexAngle;
 
-        bool initTurntableIndex(int id, String name, TurntableType type, int angle);
+        bool initTurntableIndex(int id, String name, int index, int angle);
 };
 
 class Turntable {
@@ -222,6 +215,7 @@ class Turntable {
         bool initTurntable(int id, String name, TurntableType type, int position);
         bool addTurntableIndex(int turntableIndexId, String turntableIndexName, int turntableAngle);
         bool sendTurntableRotateTo(int index);
+        LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
 
         int getTurntableId();
         String getTurntableName();
@@ -230,15 +224,14 @@ class Turntable {
         TurntableIndex getTurntableIndexAt(int positionInLinkedList);
         TurntableIndex getTurntableIndex(int indexId);
         TurntableState getTurntableState();
+        bool actionTurntableExternalChange(int index, TurntableState state);
 
     private:
         int turntableId;
         TurntableType turntableType;
         String turntableName;
         int turntableCurrentPosition;
-        LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
         bool turntableIsMoving;
-        bool actionTurntableExternalChange(int index, TurntableState state);
 };
 
 // *****************************************************************
@@ -258,7 +251,7 @@ class NullStream : public Stream {
 class DCCEXProtocolDelegate {
   public:
   
-    virtual void receivedServerDescription(String description, String version) {}
+    virtual void receivedServerDescription(String microprocessor, String version) {}
   
     virtual void receivedRosterList(int rosterSize) {}
     virtual void receivedTurnoutList(int turnoutListSize) {}    
@@ -303,6 +296,20 @@ class DCCEXProtocol {
     LinkedList<Route> routes = LinkedList<Route>();
     LinkedList<Turntable> turntables =LinkedList<Turntable>();
 
+    //helper functions
+    void delegateReceivedTurntableAction(int turntableId, int index, TurntableState state);
+    int getSpeedFromSpeedByte(int speedByte);
+    Direction getDirectionFromSpeedByte(int speedByte);
+    Functions getFunctionStatesFromFunctionMap(int * states, int functionMap);
+
+    // *******************
+
+    void sendCommand(String cmd);
+
+    bool sendLocoAction(int address, int speed, Direction direction);
+    bool sendFunction(int throttle, String address, int funcNum, bool pressed);
+    bool sendLocoUpdateRequest(int address);
+
     // *******************
 
     bool sendServerDetailsRequest();
@@ -314,7 +321,7 @@ class DCCEXProtocol {
 
     long getLastServerResponseTime();  // seconds since Arduino start
 
-    bool sendEmergencyStop();
+    void sendEmergencyStop();
 
     Consist getThrottleConsist(int throttleNo);
 
@@ -332,6 +339,7 @@ class DCCEXProtocol {
     bool sendAccessoryAction(int accessoryAddress, int activate);
     bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
 
+    // *******************
 
   private:
   
@@ -349,18 +357,12 @@ class DCCEXProtocol {
 
     void init();
 
-    void sendCommand(String cmd);
     bool processCommand(char *c, int len);
-    void processUnknownCommand(const String& unknownCommand);
+    void processUnknownCommand(String unknownCommand);
 
     void processServerDescription(LinkedList<String> args);	
 
     void processTrackPower(LinkedList<String> args);
-
-    // *******************
-
-    bool sendLocoUpdateRequest(int address);
-    bool sendLocoAction(int address, int speed, Direction direction);
 
     // *******************
 
@@ -371,7 +373,7 @@ class DCCEXProtocol {
     void processTurnoutEntry(LinkedList<String> args);
     void processTurnoutList(LinkedList<String> args);
     void processTurnoutAction(LinkedList<String> args);
-    void sendTurnoutEntryRequest(int address);
+    void sendTurnoutEntryRequest(int id);
 
     void processRouteList(LinkedList<String> args);
     void processRouteEntry(LinkedList<String> args);
@@ -393,6 +395,8 @@ class DCCEXProtocol {
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
     LinkedList<String> splitCommand(String text, char splitChar);
+    int countSplitCharacters(String text, char splitChar);
+
 };
 
 #endif // DCCEXPROTOCOL_H
