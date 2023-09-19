@@ -1,14 +1,23 @@
-// WiThrottleProtocol library: Basic example
+// WiThrottleProtocol library: Delegate example
 //
-// Shows how to create an instance of DCCEXProtocol
-// and how to connect to a DCC-EX Native protocol server using static IP
+// Shows how to create a delegate class to handle callbacks
 // Tested with ESP32-WROOM board
 //
 // Peter Akers, 2023
 // Luca Dentella, 2020
 
+
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
+
+// Delegate class
+class MyDelegate : public DCCEXProtocolDelegate {
+  
+  public:
+    void receivedVersion(String version) {     
+      Serial.print("Received version: "); Serial.println(version);  
+    }
+};
 
 // WiFi and server configuration
 // const char* ssid = "MySSID";
@@ -21,11 +30,12 @@ int serverPort = 2560;
 // Global objects
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
+MyDelegate myDelegate;
   
 void setup() {
   
   Serial.begin(115200);
-  Serial.println("DCCEXProtocol Basic Demo");
+  Serial.println("DCCEXProtocol Delegate Demo");
   Serial.println();
 
   // Connect to WiFi network
@@ -43,7 +53,10 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  //dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&Serial);
+
+  // Pass the delegate instance to wiThrottleProtocol
+  dccexProtocol.setDelegate(&myDelegate);
 
   // Pass the communication to wiThrottleProtocol
   dccexProtocol.connect(&client);

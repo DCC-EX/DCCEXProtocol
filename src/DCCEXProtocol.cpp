@@ -643,7 +643,7 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> args) { //<l cab reg sp
             int rslt = throttleConsists[throttleNo].consistGetLocoPosition(address);
             if (rslt==0) {  // ignore everything that is not the lead loco
                 int speed = getSpeedFromSpeedByte(speedByte);
-                Direction dir = getDirectionFromSpeedbyte(speedByte);
+                Direction dir = getDirectionFromSpeedByte(speedByte);
                 int functionStates[MAX_FUNCTIONS];
                 Functions fns = getFunctionStatesFromFunctionMap(functionStates, functMap);
                 bool rslt = throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fns);
