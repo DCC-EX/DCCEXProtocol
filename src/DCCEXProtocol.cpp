@@ -331,10 +331,15 @@ void DCCEXProtocol::processRosterList(LinkedList<String> &args) {
         } 
         for (int i=1; i<args.size(); i++) {
             int address = args.get(i).toInt();
+             console->print("processRosterList() address: ");  console->println(address);
             Loco loco;
+            console->println("processRosterList() 0");
             bool rslt = loco.initLoco(address, "", LocoSourceRoster);
+            console->println("processRosterList() 1");
             roster.add(loco);
+            console->println("processRosterList() 2");
             sendRosterEntryRequest(address);
+            console->println("processRosterList() 3");
         }
     }
     console->println("processRosterList(): end");

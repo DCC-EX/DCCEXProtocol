@@ -39,8 +39,8 @@ class MyDelegate : public DCCEXProtocolDelegate {
 // WiFi and server configuration
 // const char* ssid = "MySSID";
 // const char* password =  "MyPWD";
-const char* ssid = "DCCEX_1ec919";
-const char* password =  "PASS_1ec919";
+const char* ssid = "DCCEX_44182a";
+const char* password =  "PASS_44182a";
 IPAddress serverAddress(192,168,4,1);
 int serverPort = 2560;
 
