@@ -296,7 +296,8 @@ class DCCEXProtocol {
     LinkedList<Loco> roster = LinkedList<Loco>();
     LinkedList<Turnout> turnouts = LinkedList<Turnout>();
     LinkedList<Route> routes = LinkedList<Route>();
-    LinkedList<Turntable> turntables =LinkedList<Turntable>();
+    LinkedList<Turntable> turntables = LinkedList<Turntable>();
+    // LinkedList<String> args = LinkedList<String>();
 
     //helper functions
     Direction getDirectionFromSpeedByte(int speedByte);
@@ -362,41 +363,42 @@ class DCCEXProtocol {
     bool processCommand(char *c, int len);
     void processUnknownCommand(String unknownCommand);
 
-    void processServerDescription(LinkedList<String> args);	
+    void processServerDescription(LinkedList<String> &args);	
 
-    void processTrackPower(LinkedList<String> args);
+    void processTrackPower(LinkedList<String> &args);
 
     // *******************
 
-    void processRosterEntry(LinkedList<String> args);
-    void processRosterList(LinkedList<String> args);
+    void processRosterEntry(LinkedList<String> &args);
+    void processRosterList(LinkedList<String> &args);
     void sendRosterEntryRequest(int address);
 
-    void processTurnoutEntry(LinkedList<String> args);
-    void processTurnoutList(LinkedList<String> args);
-    void processTurnoutAction(LinkedList<String> args);
+    void processTurnoutEntry(LinkedList<String> &args);
+    void processTurnoutList(LinkedList<String> &args);
+    void processTurnoutAction(LinkedList<String> &args);
     void sendTurnoutEntryRequest(int id);
 
-    void processRouteList(LinkedList<String> args);
-    void processRouteEntry(LinkedList<String> args);
+    void processRouteList(LinkedList<String> &args);
+    void processRouteEntry(LinkedList<String> &args);
     void sendRouteEntryRequest(int id);
-    // void processRouteAction(LinkedList<String> args);
+    // void processRouteAction(LinkedList<String> &args);
 
-    void processTurntableEntry(LinkedList<String> args);
-    void processTurntableList(LinkedList<String> args);
-    void processTurntableIndexEntry(LinkedList<String> args);
-    void processTurntableAction(LinkedList<String> args);
+    void processTurntableEntry(LinkedList<String> &args);
+    void processTurntableList(LinkedList<String> &args);
+    void processTurntableIndexEntry(LinkedList<String> &args);
+    void processTurntableAction(LinkedList<String> &args);
     void sendTurntableEntryRequest(int id);
     void sendTurntableIndexEntryRequest(int id);
 
-    bool processLocoAction(LinkedList<String> args);
+    bool processLocoAction(LinkedList<String> &args);
 
     //helper functions
     int findThrottleWithLoco(int address);
     int findTurnoutListPositionFromId(int id);
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
-    LinkedList<String> splitCommand(String text, char splitChar);
+    // LinkedList<String> splitCommand(String text, char splitChar);
+    bool splitCommand(LinkedList<String> &args, String text, char splitChar);
     int countSplitCharacters(String text, char splitChar);
 
 };

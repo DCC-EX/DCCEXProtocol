@@ -95,7 +95,7 @@ void DCCEXProtocol::disconnect() {
 }
 
 bool DCCEXProtocol::check() {
-    console->println("check()");
+    // console->println("check()");
     bool changed = false;
 
     if (stream) {
@@ -122,12 +122,13 @@ bool DCCEXProtocol::check() {
                     nextChar = 0;
                 }
             }
+            // console->println("check(): end-loop");
         }
-        console->println("check(): end-stream");
+        // console->println("check(): end-stream");
         return changed;
     }
     else {
-        console->println("check(): end");
+        // console->println("check(): end");
         return false;
     }
 }
@@ -196,18 +197,8 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     console->print("<== "); console->println(c);
 
     String s = String(c);
-    // if (!(s.charAt(0) == '<')) {
-    //     if (s.indexOf("<")>0) { // see if we can clean it up
-    //         s = s.substring(s.indexOf("<"));
-    //     }
-    // }
-    // // remove any escaped double quotes
-    // s = s.replace("\\\"", "'");
-
-    //split on spaces, with stuff between doublequotes treated as one item
-    // String args[] = s.substring(1, s.length() - 1).split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", 999);
-
-    LinkedList<String> args = splitCommand(s.substring(1, s.length() - 1),' ');
+    LinkedList<String> args;
+    bool rslt = splitCommand(args, s.substring(1, s.length() - 1),' ');
     char char0 = args.get(0).charAt(0);
     char char1 = args.get(0).charAt(1);
     int noOfParameters = args.size();
@@ -281,7 +272,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     }
 
     console->println("processCommand() end");
-    return false;
+    return true;
 }
 
 //private
@@ -299,7 +290,7 @@ void DCCEXProtocol::processUnknownCommand(String unknownCommand) {
 // Process responses from the CS
 
 //private
-void DCCEXProtocol::processServerDescription(LinkedList<String> args) { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+void DCCEXProtocol::processServerDescription(LinkedList<String> &args) { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
     console->println("processServerDescription()");
     if (delegate) {
         serverVersion = args.get(1);
@@ -313,7 +304,7 @@ void DCCEXProtocol::processServerDescription(LinkedList<String> args) { //<iDCCE
 }
 
 //private
-void DCCEXProtocol::processTrackPower(LinkedList<String> args) {
+void DCCEXProtocol::processTrackPower(LinkedList<String> &args) {
     console->println("processTrackPower()");
     if (delegate) {
         TrackPower state = PowerUnknown;
@@ -332,7 +323,7 @@ void DCCEXProtocol::processTrackPower(LinkedList<String> args) {
 // roster
 
 //private
-void DCCEXProtocol::processRosterList(LinkedList<String> args) {
+void DCCEXProtocol::processRosterList(LinkedList<String> &args) {
     console->println("processRosterList()");
     if (delegate) {
         if (roster.size()>0) { // already have a roster so this is an update
@@ -359,7 +350,7 @@ void DCCEXProtocol::sendRosterEntryRequest(int address) {
 }
 
 //private
-void DCCEXProtocol::processRosterEntry(LinkedList<String> args) { //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
+void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
     console->println("processRosterEntry()");
     if (delegate) {
         //find the roster entry to update
@@ -394,7 +385,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> args) { //<jR id ""|"d
 // Turnouts/Points
 
 //private
-void DCCEXProtocol::processTurnoutList(LinkedList<String> args) {
+void DCCEXProtocol::processTurnoutList(LinkedList<String> &args) {
     console->println("processTurnoutList()");
     if (delegate) {
         if (turnouts.size()>0) { // already have a turnouts list so this is an update
@@ -421,7 +412,7 @@ void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
 }
 
 //private
-void DCCEXProtocol::processTurnoutEntry(LinkedList<String> args) {
+void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
     console->println("processTurnoutEntry()");
     if (delegate) {
         //find the turnout entry to update
@@ -448,7 +439,7 @@ bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
 }
 
 //private
-void DCCEXProtocol::processTurnoutAction(LinkedList<String> args) { //<H id state>
+void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id state>
     console->println("processTurnoutAction(): ");
     if (delegate) {
         //find the Turnout entry to update
@@ -474,7 +465,7 @@ void DCCEXProtocol::processTurnoutAction(LinkedList<String> args) { //<H id stat
 // Routes
 
 //private
-void DCCEXProtocol::processRouteList(LinkedList<String> args) {
+void DCCEXProtocol::processRouteList(LinkedList<String> &args) {
     console->println("processRouteList()");
     if (delegate) {
         if (routes.size()>0) { // already have a routes list so this is an update
@@ -501,7 +492,7 @@ void DCCEXProtocol::sendRouteEntryRequest(int address) {
 }
 
 //private
-void DCCEXProtocol::processRouteEntry(LinkedList<String> args) {
+void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
     console->println("processRouteEntry()");
     if (delegate) {
         //find the Route entry to update
@@ -521,7 +512,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> args) {
     console->println("processRouteEntry() end");
 }
 
-// void DCCEXProtocol::processRouteAction(LinkedList<String> args) {
+// void DCCEXProtocol::processRouteAction(LinkedList<String> &args) {
 //     console->println("processRouteAction(): ");
 //     if (delegate) {
 
@@ -532,7 +523,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> args) {
 // ****************
 // Turntables
 
-void DCCEXProtocol::processTurntableList(LinkedList<String> args) {  // <jO [id1 id2 id3 ...]>
+void DCCEXProtocol::processTurntableList(LinkedList<String> &args) {  // <jO [id1 id2 id3 ...]>
     console->println("processTurntableList(): ");
     if (delegate) {
         if (turntables.size()>0) { // already have a turntables list so this is an update
@@ -569,7 +560,7 @@ void DCCEXProtocol::sendTurntableIndexEntryRequest(int id) {
 }
 
 //private
-void DCCEXProtocol::processTurntableEntry(LinkedList<String> args) {  // <jO id type position position_count "[desc]">
+void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id type position position_count "[desc]">
     console->println("processTurntableEntry(): ");
     if (delegate) {
         //find the Turntable entry to update
@@ -594,7 +585,7 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> args) {  // <jO id 
 }
 
 //private
-void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> args) { // <jP id index angle "[desc]">
+void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <jP id index angle "[desc]">
     console->println("processTurntableIndexEntry(): ");
     if (delegate) {
         if (args.size() <= 3) {  // server did not find the index
@@ -623,7 +614,7 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> args) { // <jP
 }
 
 //private
-void DCCEXProtocol::processTurntableAction(LinkedList<String> args) { // <i id position moving>
+void DCCEXProtocol::processTurntableAction(LinkedList<String> &args) { // <i id position moving>
     console->println("processTurntableAction(): ");
     if (delegate) {
         int id = args.get(1).toInt();
@@ -642,7 +633,7 @@ void DCCEXProtocol::processTurntableAction(LinkedList<String> args) { // <i id p
 // Locos
 
 //private
-bool DCCEXProtocol::processLocoAction(LinkedList<String> args) { //<l cab reg speedByte functMap>
+bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg speedByte functMap>
     console->println("processLocoAction()");
     if (delegate) {
         int address = args.get(1).toInt();
@@ -672,11 +663,11 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> args) { //<l cab reg sp
 // server commands
 
 bool DCCEXProtocol::sendServerDetailsRequest() {
-    console->print("sendServerDetailsRequest(): ");
+    console->println("sendServerDetailsRequest(): ");
     if (delegate) {
        sendCommand("<s>");	
     }
-    console->print("sendServerDetailsRequest(): end");
+    console->println("sendServerDetailsRequest(): end");
     return true; 
 }
 
@@ -684,31 +675,31 @@ bool DCCEXProtocol::sendServerDetailsRequest() {
 // power commands
 
 bool DCCEXProtocol::sendTrackPower(TrackPower state) {
-    console->print("sendTrackPower(): ");
+    console->println("sendTrackPower(): ");
     if (delegate) {
        sendCommand("<" + String(state) + ">");	
     }
-    console->print("sendTrackPower(): end");
+    console->println("sendTrackPower(): end");
     return true;
 }
 
 bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
-    console->print("sendTrackPower(): ");
+    console->println("sendTrackPower(): ");
     if (delegate) {
         sendCommand("<" + String(state) + " " + String(track) + ">");	
     }
-    console->print("sendTrackPower(): end");
+    console->println("sendTrackPower(): end");
     return true;
 }
 
 // ******************************************************************************************************
 
 void DCCEXProtocol::sendEmergencyStop() {
-    console->print("emergencyStop(): ");
+    console->println("emergencyStop(): ");
     if (delegate) {
             sendCommand("<!>");
     }
-    console->print("emergencyStop(): end");
+    console->println("emergencyStop(): end");
 }
 
 // ******************************************************************************************************
@@ -924,14 +915,15 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     return -1;
 }
 
-LinkedList<String> DCCEXProtocol::splitCommand(String text, char splitChar) {
+// LinkedList<String> DCCEXProtocol::splitCommand(String text, char splitChar) {
+bool DCCEXProtocol::splitCommand(LinkedList<String> &args, String text, char splitChar) {
     console->println("splitCommand()");
     String s = text;
     if (text.charAt(0)!=splitChar)  s = String(splitChar) + text;  // add a leading space if not already there
     if (text.charAt(text.length()-1)!=splitChar)  s = s + String(splitChar) ;  // add a trailing space if not already there
     int splitCount = countSplitCharacters(s, splitChar);
     console->print("splitCommand(): number of splits found: "); console->println(splitCount);
-    LinkedList<String> returnValue = LinkedList<String>();
+    // LinkedList<String> returnValue = LinkedList<String>();
     int index = -1;
     int index2;
 
@@ -941,12 +933,14 @@ LinkedList<String> DCCEXProtocol::splitCommand(String text, char splitChar) {
         if (s.charAt(index)==splitChar) index=index+1; // clear leading spaces
 
         if(index2 < 0) index2 = s.length() - 1;
-        returnValue.add(s.substring(index, index2));
+        // returnValue.add(s.substring(index, index2));
+        args.add(s.substring(index, index2));
         // console->print(index); console->print("-"); console->print(index);
         // console->print(": "); console->println(s.substring(index, index2));
     }
     console->println("splitCommand(): end");
-    return returnValue;
+    // return returnValue;
+    return true;
 }
 
 int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {

@@ -1,6 +1,6 @@
-// WiThrottleProtocol library: Delegate example
+// WiThrottleProtocol library: Roster example
 //
-// Shows how to create a delegate class to handle callbacks
+// Shows how to create a delegate class to handle callbacks and retrieve the Roster
 // Tested with ESP32-WROOM board
 //
 // Peter Akers, 2023
@@ -15,12 +15,25 @@ class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
     void receivedServerDescription(String microprocessor, String version) {     
-      Serial.print("Received version: "); Serial.println(version);  
+        Serial.print("Received version: "); Serial.println(version);  
     }
 
     void receivedTrackPower(TrackPower state) { 
       Serial.print("Received Track Power: "); Serial.println(state);  
     }
+
+    virtual void receivedRosterList(int rosterSize) {
+        Serial.print("Received Roster: "); Serial.println(rosterSize);  
+    }
+    virtual void receivedTurnoutList(int turnoutListSize) {
+        Serial.print("Received Turnout List: "); Serial.println(turnoutListSize); 
+    }    
+    virtual void receivedRouteList(int routeListSize) {
+        Serial.print("Received Route List: "); Serial.println(routeListSize); 
+    }
+    virtual void receivedTurntablesList(int turntablesListSize) {
+        Serial.print("Received Turnout List: "); Serial.println(turntablesListSize); 
+    }  
 };
 
 // WiFi and server configuration
@@ -67,6 +80,11 @@ void setup() {
   Serial.println("DCC-EX connected");
 
   dccexProtocol.sendServerDetailsRequest();
+
+  dccexProtocol.getRoster();
+  dccexProtocol.getTurnouts();
+  dccexProtocol.getRoutes();
+  dccexProtocol.getTurntables();
 }
   
 void loop() {
