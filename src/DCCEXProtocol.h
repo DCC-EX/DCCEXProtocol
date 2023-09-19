@@ -252,7 +252,6 @@ class NullStream : public Stream {
 
 class DCCEXProtocolDelegate {
   public:
-  
     virtual void receivedServerDescription(String microprocessor, String version) {}
   
     virtual void receivedRosterList(int rosterSize) {}

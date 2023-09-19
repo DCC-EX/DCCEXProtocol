@@ -14,7 +14,7 @@
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedVersion(String version) {     
+    void receivedServerDescription(String microprocessor, String version) {     
       Serial.print("Received version: "); Serial.println(version);  
     }
 };
@@ -61,10 +61,13 @@ void setup() {
   // Pass the communication to wiThrottleProtocol
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");
+
+  dccexProtocol.sendServerDetailsRequest();
 }
   
 void loop() {
-
+  Serial.println("loop");
   // parse incoming messages
   dccexProtocol.check();
+  delay(1000);
 }

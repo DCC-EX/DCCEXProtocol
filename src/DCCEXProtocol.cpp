@@ -95,11 +95,13 @@ void DCCEXProtocol::disconnect() {
 }
 
 bool DCCEXProtocol::check() {
+    console->println("check()");
     bool changed = false;
 
     if (stream) {
         while(stream->available()) {
             char b = stream->read();
+            // console->print("check(): char: ~"); console->print(b); console->println("~");
             if (b == NEWLINE || b==CR) {
                 // server sends TWO newlines after each command, we trigger on the
                 // first, and this skips the second one
@@ -108,8 +110,7 @@ bool DCCEXProtocol::check() {
                     changed |= processCommand(inputbuffer, nextChar);
                 }
                 nextChar = 0;
-            }
-            else {
+            } else {
                 inputbuffer[nextChar] = b;
                 nextChar += 1;
                 if (nextChar == (sizeof(inputbuffer)-1) ) {
@@ -122,9 +123,11 @@ bool DCCEXProtocol::check() {
                 }
             }
         }
+        console->println("check(): end-stream");
         return changed;
     }
     else {
+        console->println("check(): end");
         return false;
     }
 }
@@ -192,7 +195,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
 
     console->print("<== "); console->println(c);
 
-    String s(c);
+    String s = String(c);
     // if (!(s.charAt(0) == '<')) {
     //     if (s.indexOf("<")>0) { // see if we can clean it up
     //         s = s.substring(s.indexOf("<"));
@@ -204,14 +207,18 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     //split on spaces, with stuff between doublequotes treated as one item
     // String args[] = s.substring(1, s.length() - 1).split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", 999);
 
-    LinkedList<String> args = LinkedList<String>();
-    args = splitCommand(s.substring(1, s.length() - 1),' ');
+    LinkedList<String> args = splitCommand(s.substring(1, s.length() - 1),' ');
     char char0 = args.get(0).charAt(0);
     char char1 = args.get(0).charAt(1);
     int noOfParameters = args.size();
 
+    console->print("processing: "); console->println(s);
+    for (int i=0; i<args.size();i++) {
+        console->print("arg"); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
+    }
+
     if (delegate) {
-        if (len > 3 && char0 == 'i' && args.get(0) == "iDCCEX") {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+        if (len > 3 && char0 == 'i' && args.get(0) == "iDCC-EX") {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
             processServerDescription(args);
 
         } else if (len > 1 && char0 == 'p') { //<p onOff>
@@ -251,7 +258,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
                 processTurntableList(args); //<jO [id1 id2 id3 ...]>
             } 
 
-        } else if (len > 3 && char0=='i' && args.get(0)!="iDCCEX") { //<i id position>   or   <i id position moving>
+        } else if (len > 3 && char0=='i' && args.get(0)!="iDCC-EX") { //<i id position>   or   <i id position moving>
             if (delegate) {
                 TurntableState state = TurntableStationary;
                 if (args.size()<3) { 
@@ -293,14 +300,16 @@ void DCCEXProtocol::processUnknownCommand(String unknownCommand) {
 
 //private
 void DCCEXProtocol::processServerDescription(LinkedList<String> args) { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+    console->println("processServerDescription()");
     if (delegate) {
         serverVersion = args.get(1);
-        serverMicroprocessorType = args.get(2);
-        serverMotorcontrollerType = args [3];
-        serverBuildNumber = args.get(4);
+        serverMicroprocessorType = args.get(3);
+        serverMotorcontrollerType = args.get(5);
+        // serverBuildNumber = args.get(6);
 
         delegate->receivedServerDescription(serverMicroprocessorType, serverVersion);
     }
+    console->println("processServerDescription(): end");
 }
 
 //private
@@ -316,6 +325,7 @@ void DCCEXProtocol::processTrackPower(LinkedList<String> args) {
 
         delegate->receivedTrackPower(state);
     }
+     console->println("processTrackPower(): end");
 }
 
 // ****************
@@ -915,30 +925,40 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
 }
 
 LinkedList<String> DCCEXProtocol::splitCommand(String text, char splitChar) {
-    int splitCount = countSplitCharacters(text, splitChar);
+    console->println("splitCommand()");
+    String s = text;
+    if (text.charAt(0)!=splitChar)  s = String(splitChar) + text;  // add a leading space if not already there
+    if (text.charAt(text.length()-1)!=splitChar)  s = s + String(splitChar) ;  // add a trailing space if not already there
+    int splitCount = countSplitCharacters(s, splitChar);
+    console->print("splitCommand(): number of splits found: "); console->println(splitCount);
     LinkedList<String> returnValue = LinkedList<String>();
     int index = -1;
     int index2;
 
-    for(int i = 0; i < splitCount - 1; i++) {
-        index = text.indexOf(splitChar, index + 1);
-        index2 = text.indexOf(splitChar, index + 1);
+    for(int i = 0; i < splitCount; i++) {
+        index = s.indexOf(splitChar, index + 1);
+        index2 = s.indexOf(splitChar, index + 1);
+        if (s.charAt(index)==splitChar) index=index+1; // clear leading spaces
 
-        if(index2 < 0) index2 = text.length() - 1;
-        returnValue.add(text.substring(index, index2));
+        if(index2 < 0) index2 = s.length() - 1;
+        returnValue.add(s.substring(index, index2));
+        // console->print(index); console->print("-"); console->print(index);
+        // console->print(": "); console->println(s.substring(index, index2));
     }
-
+    console->println("splitCommand(): end");
     return returnValue;
 }
 
 int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
+    console->println("countSplitCharacters()");
     int returnValue = 0;
-    int index = -1;
+    int index = 0;
 
     while (index > -1) {
         index = text.indexOf(splitChar, index + 1);
         if(index > -1) returnValue+=1;
     }
+    console->println("countSplitCharacters() end");
     return returnValue;
 } 
 
