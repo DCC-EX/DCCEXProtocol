@@ -367,7 +367,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                 if (roster.get(i)->getLocoAddress() == address) {
                     // console->print("processRosterEntry(): found: "); console->println(address);
                     String name = args.get(2);
-                    bool rslt = roster.get(i)->setLocoName(name);
+                    bool rslt = roster.get(i)->setLocoName(stripLeadAndTrailQuotes(name));
                     rslt = roster.get(i)->setLocoSource(LocoSourceRoster);
                     roster.get(i)->setIsFromRosterAndReceivedDetails();
 
@@ -442,7 +442,7 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
                 if (turnouts.get(i)->getTurnoutId()==id) {
                     String name = args.get(3);
                     bool rslt = turnouts.get(i)->setTurnoutId(id);
-                    rslt = turnouts.get(i)->setTurnoutName(name);
+                    rslt = turnouts.get(i)->setTurnoutName(stripLeadAndTrailQuotes(name));
                     turnouts.get(i)->setHasReceivedDetails();
                 }
             }
@@ -529,7 +529,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
                 int id = args.get(1).toInt();
                 if (routes.get(i)->getRouteId()==id) {
                     String name = args.get(2);
-                    bool rslt = routes.get(i)->setRouteName(name);
+                    bool rslt = routes.get(i)->setRouteName(stripLeadAndTrailQuotes(name));
                     routes.get(i)->setHasReceivedDetails();
                 }
             }
@@ -613,7 +613,7 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
                         type = args.get(2).toInt();
                         position = args.get(3).toInt();
                     }
-                    bool rslt = turntables.get(i)->setTurntableName(name);
+                    bool rslt = turntables.get(i)->setTurntableName(stripLeadAndTrailQuotes(name));
                     rslt = turntables.get(i)->setTurntableType(type);
                     rslt = turntables.get(i)->setTurntableCurrentPosition(position);
                     turntables.get(i)->setHasReceivedDetails();
@@ -639,7 +639,7 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
                         int angle = args.get(3).toInt();
                         String name = args.get(4);
 
-                        bool rslt = turntables.get(i)->addTurntableIndex (index, name, angle);
+                        bool rslt = turntables.get(i)->addTurntableIndex (index, stripLeadAndTrailQuotes(name), angle);
                         // turntables.set(i, turntable);
                         // ???????????????????????????????????
                         // ???????????????????????????????????
@@ -1020,6 +1020,14 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     console->println("countSplitCharacters() end");
     return returnValue;
 } 
+
+String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
+    String s = text;
+    if (text.charAt(0)=='"' && text.charAt(text.length()-1)=='"') {
+        s = s.substring(1, text.length()-1);
+    }
+    return s;
+}
 
 // ******************************************************************************************************
 // ******************************************************************************************************

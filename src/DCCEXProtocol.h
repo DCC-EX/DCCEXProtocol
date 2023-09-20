@@ -436,7 +436,7 @@ class DCCEXProtocol {
     // LinkedList<String> splitCommand(String text, char splitChar);
     bool splitCommand(LinkedList<String> &args, String text, char splitChar);
     int countSplitCharacters(String text, char splitChar);
-
+    String stripLeadAndTrailQuotes(String text);
 };
 
 #endif // DCCEXPROTOCOL_H
