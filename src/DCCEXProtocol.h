@@ -38,6 +38,8 @@ static const int MAX_FUNCTIONS = 28;
 // Protocol special characters
 #define NEWLINE 			'\n'
 #define CR 					'\r'
+#define COMMAND_START       '<'
+#define COMMAND_END         '>'
 
 // *****************************************************************
 
@@ -118,16 +120,22 @@ class Functions {
 
 class Loco {
     public:
+        Loco() {}
+        Loco(int address, String name, LocoSource source);
         Functions locoFunctions;
-        bool initLoco(int address, String name, LocoSource source);
+
         bool setLocoSpeed(int speed);
         bool setLocoDirection(Direction direction);
-
+        
         int getLocoAddress();
+        bool setLocoName(String name);
         String getLocoName();
+        bool setLocoSource(LocoSource source);
         LocoSource getLocoSource();
         int  getLocoSpeed();
         Direction getLocoDirection();
+        void setIsFromRosterAndReceivedDetails();
+        bool getIsFromRosterAndReceivedDetails();
 
     private:
         int locoAddress;
@@ -135,21 +143,26 @@ class Loco {
         int locoSpeed;
         Direction locoDirection;
         LocoSource locoSource;
+        bool rosterReceivedDetails;
 };
 
 class ConsistLoco : public Loco {
     public:
+        // ConsistLoco(int address, String name, LocoSource source, Facing facing)
+        //  : Loco(address, name, source) {};
+        ConsistLoco() {};
+        ConsistLoco(int address, String name, LocoSource source, Facing facing);
         bool setConsistLocoFacing(Facing facing);
         Facing getConsistLocoFacing();
-        bool initConsistLoco(Loco loco, Facing facing);
+
     private:
         Facing consistLocoFacing;
 };
 
 class Consist {
     public:
-
-        bool initConsist(String name);
+        Consist() {}
+        Consist(String name);
         bool consistAddLoco(Loco loco, Facing facing);
         bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
@@ -177,27 +190,39 @@ class Consist {
 
 class Turnout {
     public:
-        bool initTurnout(int id, String name, TurnoutState state);
-        // bool sendTurnoutState(TurnoutAction action);
+        Turnout() {}
+        Turnout(int id, String name, TurnoutState state);
         bool setTurnoutState(TurnoutAction action);
         TurnoutState getTurnoutState();
+        bool setTurnoutId(int id);
         int getTurnoutId();
+        bool setTurnoutName(String name);
         String getTurnoutName();
-//        bool actionTurnoutExternalChange(TurnoutState state);
+        void setHasReceivedDetails();
+        bool getHasReceivedDetails();
 
     private:
         int turnoutId;
         String turnoutName;
         TurnoutState turnoutState;
+        bool hasReceivedDetail;
 };
 
 class Route {
     public:
-        bool initRoute(int id, String name);
+        Route() {}
+        Route(int id, String name);
         int getRouteId();
+        bool setRouteName(String name);
+        String getRouteName();
+
+        void setHasReceivedDetails();
+        bool getHasReceivedDetails();
+        
     private:
         int routeId;
         String routeName;
+        bool hasReceivedDetail;
 };
 
 
@@ -207,26 +232,36 @@ class TurntableIndex {
         int turntableIndexIndex;
         String turntableIndexName;
         int turntableIndexAngle;
+        bool hasReceivedDetail;
 
-        bool initTurntableIndex(int index, String name, int angle);
+        TurntableIndex() {}
+        TurntableIndex(int index, String name, int angle);
+        void setHasReceivedDetails();
+        bool getHasReceivedDetails();
 };
 
 class Turntable {
     public:
-        bool initTurntable(int id, String name, TurntableType type, int position);
+        Turntable() {}
+        Turntable(int id, String name, TurntableType type, int position);
         bool addTurntableIndex(int index, String indexName, int indexAngle);
         // bool sendTurntableRotateTo(int index);
         LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
 
         int getTurntableId();
+        bool setTurntableName(String name);
         String getTurntableName();
         bool setTurntableCurrentPosition(int index);
+        bool setTurntableType(TurntableType type);
+        TurntableType getTurntableType();
         int getTurntableCurrentPosition();
         int getTurntableNumberOfIndexes();
         TurntableIndex getTurntableIndexAt(int positionInLinkedList);
         TurntableIndex getTurntableIndex(int indexId);
         TurntableState getTurntableState();
         bool actionTurntableExternalChange(int index, TurntableState state);
+        void setHasReceivedDetails();
+        bool getHasReceivedDetails();
 
     private:
         int turntableId;
@@ -234,6 +269,7 @@ class Turntable {
         String turntableName;
         int turntableCurrentPosition;
         bool turntableIsMoving;
+        bool hasReceivedDetail;
 };
 
 // *****************************************************************
@@ -293,10 +329,10 @@ class DCCEXProtocol {
     // *******************
 
     Consist throttleConsists[MAX_THROTTLES];
-    LinkedList<Loco> roster = LinkedList<Loco>();
-    LinkedList<Turnout> turnouts = LinkedList<Turnout>();
-    LinkedList<Route> routes = LinkedList<Route>();
-    LinkedList<Turntable> turntables = LinkedList<Turntable>();
+    LinkedList<Loco*> roster = LinkedList<Loco*>();
+    LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
+    LinkedList<Route*> routes = LinkedList<Route*>();
+    LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
     // LinkedList<String> args = LinkedList<String>();
 
     //helper functions

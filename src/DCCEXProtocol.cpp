@@ -102,15 +102,24 @@ bool DCCEXProtocol::check() {
         while(stream->available()) {
             char b = stream->read();
             // console->print("check(): char: ~"); console->print(b); console->println("~");
-            if (b == NEWLINE || b==CR) {
-                // server sends TWO newlines after each command, we trigger on the
-                // first, and this skips the second one
+            // if (b == NEWLINE || b==CR) {
+            //     // server sends TWO newlines after each command, we trigger on the
+            //     // first, and this skips the second one
+            //     if (nextChar != 0) {
+            //         inputbuffer[nextChar] = 0;
+            //         changed |= processCommand(inputbuffer, nextChar);
+            //     }
+            //     nextChar = 0;
+            if (b == COMMAND_END) {
                 if (nextChar != 0) {
+                    inputbuffer[nextChar] = b;
+                    nextChar++;
                     inputbuffer[nextChar] = 0;
                     changed |= processCommand(inputbuffer, nextChar);
                 }
                 nextChar = 0;
-            } else {
+            } else if (b != NEWLINE && b != CR) {
+            // } else {
                 inputbuffer[nextChar] = b;
                 nextChar += 1;
                 if (nextChar == (sizeof(inputbuffer)-1) ) {
@@ -331,15 +340,8 @@ void DCCEXProtocol::processRosterList(LinkedList<String> &args) {
         } 
         for (int i=1; i<args.size(); i++) {
             int address = args.get(i).toInt();
-             console->print("processRosterList() address: ");  console->println(address);
-            Loco loco;
-            console->println("processRosterList() 0");
-            bool rslt = loco.initLoco(address, "", LocoSourceRoster);
-            console->println("processRosterList() 1");
-            roster.add(loco);
-            console->println("processRosterList() 2");
+            roster.add(new Loco(address, "", LocoSourceRoster));
             sendRosterEntryRequest(address);
-            console->println("processRosterList() 3");
         }
     }
     console->println("processRosterList(): end");
@@ -351,7 +353,7 @@ void DCCEXProtocol::sendRosterEntryRequest(int address) {
     if (delegate) {
         sendCommand("<JR " + String(address) + ">");
     }
-    console->println("sendRosterEntryRequest() end");
+    console->println("sendRosterEntryRequest(): end");
 }
 
 //private
@@ -362,11 +364,14 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
         if (roster.size()>0) { 
             for (int i=0; i<roster.size(); i++) {
                 int address = args.get(1).toInt();
-                Loco rosterLoco = roster.get(i);
-                if (rosterLoco.getLocoAddress() == address) {
-                    int address = args.get(1).toInt();
-                    Loco loco;
-                    bool rslt = loco.initLoco(address, args.get(2), LocoSourceRoster);
+                if (roster.get(i)->getLocoAddress() == address) {
+                    // console->print("processRosterEntry(): found: "); console->println(address);
+                    String name = args.get(2);
+                    bool rslt = roster.get(i)->setLocoName(name);
+                    rslt = roster.get(i)->setLocoSource(LocoSourceRoster);
+                    roster.get(i)->setIsFromRosterAndReceivedDetails();
+
+                    // Loco loco(address, name, LocoSourceRoster);
 // ????????????????
 //                    String functions[] = args.get(2).split("/", 999);
                     // for (int j=0; (j<functions.length() && j<MAX_FUNCTIONS); j++ ) {
@@ -377,13 +382,25 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                     //     loco.locoFunctions[j].initFunction(j, functions[j], latching, FunctionStateOff); 
                     // }
 // ????????????????
-                    roster.set(i, loco);
-                    sendLocoUpdateRequest(address);
+                    // roster.set(i, loco);
+                    // sendLocoUpdateRequest(address);
                 }
+            }
+            bool rslt = true;
+            for (int i=0; i<roster.size(); i++) {
+                if (!roster.get(i)->getIsFromRosterAndReceivedDetails()) {
+                    console->print("processRosterEntry(): not received yet: ~"); console->print(roster.get(i)->getLocoName()); console->print("~ ");console->println(roster.get(i)->getLocoAddress());
+                    rslt = false;
+                    break;
+                }
+            }
+            if (rslt) {
+                console->println("processRosterEntry(): received all");
+                delegate->receivedRosterList(roster.size());
             }
         } 
     }
-    console->println("processRosterEntry()");
+    console->println("processRosterEntry(): end");
 }
 
 // ****************
@@ -398,10 +415,8 @@ void DCCEXProtocol::processTurnoutList(LinkedList<String> &args) {
         } 
         for (int i=1; i<args.size(); i++) {
             int id = args.get(i).toInt();
-            Turnout turnout;
-            bool rslt = turnout.initTurnout(id, "", 0);
-            turnouts.add(turnout);
-            sendTurntableEntryRequest(id);
+            turnouts.add(new Turnout(id, "", 0));
+            sendTurnoutEntryRequest(id);
         }
     }
     console->println("processTurnoutList(): end");
@@ -423,15 +438,27 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
         //find the turnout entry to update
         if (turnouts.size()>0) { 
             for (int i=0; i<turnouts.size(); i++) {
-                Turnout turnoutsTurnout = turnouts.get(i);
                 int id = args.get(1).toInt();
-                if (turnoutsTurnout.getTurnoutId()==id) {
-                    int id = args.get(1).toInt();
-                    Turnout turnout = turnoutsTurnout;
-                    bool rslt = turnout.initTurnout(id, args.get(2), TurnoutClosed);
-                    turnouts.set(i, turnout);
+                if (turnouts.get(i)->getTurnoutId()==id) {
+                    String name = args.get(3);
+                    bool rslt = turnouts.get(i)->setTurnoutId(id);
+                    rslt = turnouts.get(i)->setTurnoutName(name);
+                    turnouts.get(i)->setHasReceivedDetails();
                 }
             }
+
+            bool rslt = true;
+            for (int i=0; i<turnouts.size(); i++) {
+                if (!turnouts.get(i)->getHasReceivedDetails()) {
+                    console->print("processTurnoutsEntry(): not received yet: ~"); console->print(turnouts.get(i)->getTurnoutName()); console->print("~ ");console->println(turnouts.get(i)->getTurnoutId());
+                    rslt = false;
+                    break;
+                }
+            }
+            if (rslt) {
+                console->println("processTurnoutsEntry(): received all");
+                delegate->receivedTurnoutList(turnouts.size());
+            }            
         } 
     }
     console->println("processTurnoutEntry() end");
@@ -451,12 +478,10 @@ void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id sta
         if (turnouts.size()>0) { 
             for (int i=0; i<turnouts.size(); i++) {
                 int id = args.get(1).toInt();
-                Turnout turnoutsTurnout = turnouts.get(i);
-                if (turnoutsTurnout.getTurnoutId()==id) {
+                if (turnouts.get(i)->getTurnoutId()==id) {
                     TurnoutState state = args.get(2).toInt();
-                    Turnout turnout = turnoutsTurnout;
                     if (args.size() >= 3) {
-                        bool rslt = turnout.setTurnoutState(state);
+                        bool rslt = turnouts.get(i)->setTurnoutState(state);
                         delegate->receivedTurnoutAction(id, state);
                     }
                 }
@@ -478,9 +503,7 @@ void DCCEXProtocol::processRouteList(LinkedList<String> &args) {
         } 
         for (int i=1; i<args.size(); i++) {
             int id = args.get(i).toInt();
-            Route route;
-            bool rslt = route.initRoute(id, "");
-            routes.add(route);
+            routes.add(new Route(id, ""));
             sendRouteEntryRequest(id);
         }
     }
@@ -504,14 +527,25 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
         if (routes.size()>0) { 
             for (int i=0; i<routes.size(); i++) {
                 int id = args.get(1).toInt();
-                Route routesRoute = routes.get(i);
-                if (routesRoute.getRouteId()==id) {
-                    int id = args.get(1).toInt();
-                    Route route = routesRoute;
-                    bool rslt = route.initRoute(id, args.get(2));
-                    routes.set(i, route);
+                if (routes.get(i)->getRouteId()==id) {
+                    String name = args.get(2);
+                    bool rslt = routes.get(i)->setRouteName(name);
+                    routes.get(i)->setHasReceivedDetails();
                 }
             }
+
+            bool rslt = true;
+            for (int i=0; i<routes.size(); i++) {
+                if (!routes.get(i)->getHasReceivedDetails()) {
+                    console->print("processRoutesEntry(): not received yet: ~"); console->print(routes.get(i)->getRouteName()); console->print("~ ");console->println(routes.get(i)->getRouteId());
+                    rslt = false;
+                    break;
+                }
+            }
+            if (rslt) {
+                console->println("processRoutesEntry(): received all");
+                delegate->receivedRouteList(routes.size());
+            }            
         } 
     }
     console->println("processRouteEntry() end");
@@ -536,10 +570,8 @@ void DCCEXProtocol::processTurntableList(LinkedList<String> &args) {  // <jO [id
         } 
         for (int i=1; i<args.size(); i++) {
             int id = args.get(i).toInt();
-            Turntable turntable;
-            bool rslt = turntable.initTurntable(id, "", TurntableTypeUnknown, 0);
-            turntables.add(turntable);
-            sendTurnoutEntryRequest(id);
+            turntables.add(new Turntable(id, "", TurntableTypeUnknown, 0));
+            sendTurntableEntryRequest(id);
             sendTurntableIndexEntryRequest(id);
         }
     }
@@ -572,16 +604,19 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
         if (turntables.size()>0) { 
             for (int i=0; i<turntables.size(); i++) {
                 int id = args.get(1).toInt();
-                Turntable turntablesTurntable = turntables.get(i);
-                if (turntablesTurntable.getTurntableId()==id) {
-                    int id = args.get(1).toInt();
-                    Turntable turntable = turntablesTurntable;
-                    if (args.size() <= 3) {  // server did not find the id
-                        bool rslt = turntable.initTurntable(id, "Unknown", TurntableTypeUnknown, 0);
-                    } else {
-                        bool rslt = turntable.initTurntable(id, args.get(5), args.get(2).toInt(), args.get(3).toInt());
+                if (turntables.get(i)->getTurntableId()==id) {
+                    String name = "Unkown";
+                    TurntableType type = TurntableTypeUnknown;
+                    int position = 0;
+                    if (args.size() > 3) {  // server did not find the id
+                        name = args.get(5);
+                        type = args.get(2).toInt();
+                        position = args.get(3).toInt();
                     }
-                    turntables.set(i, turntable);
+                    bool rslt = turntables.get(i)->setTurntableName(name);
+                    rslt = turntables.get(i)->setTurntableType(type);
+                    rslt = turntables.get(i)->setTurntableCurrentPosition(position);
+                    turntables.get(i)->setHasReceivedDetails();
                 }
             }
         } 
@@ -598,18 +633,16 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
             if (turntables.size()>0) { 
                 for (int i=0; i<turntables.size(); i++) {
                     int id = args.get(1).toInt();
-                    Turntable turntablesTurntable = turntables.get(i);
-                    if (turntablesTurntable.getTurntableId()==id) {
-                        int id = args.get(1).toInt();
-                        Turntable turntable = turntablesTurntable;
-
+                    if (turntables.get(i)->getTurntableId()==id) {
                         //this assumes we are always starting from scratch, not updating indexes
                         int index = args.get(2).toInt();
                         int angle = args.get(3).toInt();
                         String name = args.get(4);
 
-                        bool rslt = turntablesTurntable.addTurntableIndex (index, name, angle);
-                        turntables.set(i, turntable);
+                        bool rslt = turntables.get(i)->addTurntableIndex (index, name, angle);
+                        // turntables.set(i, turntable);
+                        // ???????????????????????????????????
+                        // ???????????????????????????????????
                     }
                 }
             }
@@ -627,7 +660,7 @@ void DCCEXProtocol::processTurntableAction(LinkedList<String> &args) { // <i id 
         TurntableState state = args.get(3).toInt();
         int pos = findTurntableListPositionFromId(id);
         if (pos!=newPos) {
-            turntables.get(pos).actionTurntableExternalChange(newPos, state);
+            turntables.get(pos)->actionTurntableExternalChange(newPos, state);
         }
         delegate->receivedTurntableAction(id, newPos, state);
     }
@@ -658,10 +691,12 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg s
                 delegate->receivedDirection(throttleNo, dir);
             }
         } else {
-            console->print("processLocoAction(): unknown loco");
+            console->println("processLocoAction(): unknown loco");
+            return false;
         }
     }
     console->println("processLocoAction() end");
+    return true;
 }
 
 // ******************************************************************************************************
@@ -844,7 +879,7 @@ bool DCCEXProtocol::getRoster() {
 bool DCCEXProtocol::getTurnouts() {
     console->println("getTurnouts()");
     if (delegate) {
-        sendCommand("<T>");
+        sendCommand("<JT>");
     }
     console->println("getTurnouts() end");
     return true;
@@ -860,11 +895,11 @@ bool DCCEXProtocol::getRoutes() {
 }
 
 bool DCCEXProtocol::getTurntables() {
-    console->println("getTurntable()");
+    console->println("getTurntables()");
     if (delegate) {
         sendCommand("<T>");
     }
-    console->println("getTurntable() end");
+    console->println("getTurntables() end");
     return true;
 }
 
@@ -890,7 +925,7 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
 int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
     if (turnouts.size()>0) {
         for (int i=0; i<turnouts.size(); i++) {
-            if (turnouts.get(i).getTurnoutId()==id) {
+            if (turnouts.get(i)->getTurnoutId()==id) {
                 return i;
             }
         }
@@ -901,7 +936,7 @@ int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
 int DCCEXProtocol::findRouteListPositionFromId(int id) {
     if (routes.size()>0) {
         for (int i=0; i<routes.size(); i++) {
-            if (routes.get(i).getRouteId()==id) {
+            if (routes.get(i)->getRouteId()==id) {
                 return i;
             }
         }
@@ -912,7 +947,7 @@ int DCCEXProtocol::findRouteListPositionFromId(int id) {
 int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     if (turntables.size()>0) {
         for (int i=0; i<turntables.size(); i++) {
-            if (turntables.get(i).getTurntableId()==id) {
+            if (turntables.get(i)->getTurntableId()==id) {
                 return i;
             }
         }
@@ -926,6 +961,22 @@ bool DCCEXProtocol::splitCommand(LinkedList<String> &args, String text, char spl
     String s = text;
     if (text.charAt(0)!=splitChar)  s = String(splitChar) + text;  // add a leading space if not already there
     if (text.charAt(text.length()-1)!=splitChar)  s = s + String(splitChar) ;  // add a trailing space if not already there
+
+    String s2 ="";
+    bool inQuote = false;
+    for (int i=0; i<s.length(); i++) {
+        if (s.charAt(i)=='"') {
+            inQuote = !inQuote;
+        }
+        if (s.charAt(i)==splitChar && inQuote) {
+            s2 = s2 + (char)1;
+        } else {
+            s2 = s2 + s.charAt(i);
+        }
+    }
+    s = s2;
+
+
     int splitCount = countSplitCharacters(s, splitChar);
     console->print("splitCommand(): number of splits found: "); console->println(splitCount);
     // LinkedList<String> returnValue = LinkedList<String>();
@@ -938,8 +989,17 @@ bool DCCEXProtocol::splitCommand(LinkedList<String> &args, String text, char spl
         if (s.charAt(index)==splitChar) index=index+1; // clear leading spaces
 
         if(index2 < 0) index2 = s.length() - 1;
-        // returnValue.add(s.substring(index, index2));
-        args.add(s.substring(index, index2));
+
+        String arg = s.substring(index, index2);
+        String arg2 = ""; 
+        for (int j=0; j<arg.length(); j++) { 
+            if (arg.charAt(j)==1) { 
+                arg2 = arg2 + " ";
+            } else {
+                arg2 = arg2 + arg.charAt(j);
+            }
+        }
+        args.add(arg2);
         // console->print(index); console->print("-"); console->print(index);
         // console->print(": "); console->println(s.substring(index, index2));
     }
@@ -999,12 +1059,13 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
 
 // class Loco
 
-    bool Loco::initLoco(int address, String name, LocoSource source) {
+    Loco::Loco(int address, String name, LocoSource source) {
         locoAddress = address;
         locoName = name;
         locoSource = source;
         locoDirection = Forward;
         locoSpeed = 0;
+        rosterReceivedDetails = false;
     }
     bool Loco::setLocoSpeed(int speed) {
         if (locoSpeed!=speed) {
@@ -1025,8 +1086,16 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     int Loco::getLocoAddress() {
         return locoAddress;
     }
+    bool Loco::setLocoName(String name) {
+        locoName = name;
+        return true;
+    }
     String Loco::getLocoName() {
         return locoName;
+    }
+    bool Loco::setLocoSource(LocoSource source) {
+        locoSource = source;
+        return true;
     }
     LocoSource Loco::getLocoSource() {
         return locoSource;
@@ -1037,9 +1106,22 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     Direction Loco::getLocoDirection() {
         return locoDirection;
     }
+    void Loco::setIsFromRosterAndReceivedDetails() {
+        rosterReceivedDetails = true;
+    }
+    bool Loco::getIsFromRosterAndReceivedDetails() {
+        if (locoSource==LocoSourceRoster && rosterReceivedDetails) {
+            return true;
+        }
+        return false;
+    }
 
 // class ConsistLoco : public Loco
 
+    ConsistLoco::ConsistLoco(int address, String name, LocoSource source, Facing facing) 
+    : Loco::Loco(address, name, source) {
+         consistLocoFacing = facing;
+    }
     bool ConsistLoco::setConsistLocoFacing(Facing facing) {
         consistLocoFacing = facing;
     }
@@ -1049,16 +1131,17 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
 
 // class Consist
 
-    bool Consist::initConsist(String name) {
+    Consist::Consist(String name) {
         consistName = name;
     }
     bool Consist::consistAddLoco(Loco loco, Facing facing) {
         int address = loco.getLocoAddress();
         int rslt = consistGetLocoPosition(address);
         if (rslt<0) { // not already in the list, so add it
-            ConsistLoco conLoco;
-            conLoco.initConsistLoco(loco, facing);
+//?????????????????????
+            ConsistLoco conLoco(address, loco.getLocoName(), loco.getLocoSource(), facing);
             consistLocos.add(conLoco);
+//?????????????????????
             return true;
         }
         return false;
@@ -1167,10 +1250,11 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
 
 // class Turnout
 
-    bool Turnout::initTurnout(int id, String name, TurnoutState state) {
+    Turnout::Turnout(int id, String name, TurnoutState state) {
         turnoutId = id;
         turnoutName = name;
         turnoutState = state;
+        hasReceivedDetail = false;
     }
     bool Turnout::setTurnoutState(TurnoutAction action) {
         TurnoutState newState = action;
@@ -1188,28 +1272,16 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         }
         return false;
     }
-    // bool Turnout::sendTurnoutState(TurnoutAction action) {
-    //     TurnoutState newState = action;
-    //     if (action == TurnoutToggle) {
-    //         if (turnoutState == TurnoutClosed ) {
-    //             newState = TurnoutThrown;
-    //         } else { // Thrown or Inconsistant
-    //             newState = TurnoutClosed;
-    //         }
-    //     }
-    //     if (newState<=TurnoutThrow) { // ignore TurnoutExamine
-    //         turnoutState = newState;
-    //         sendTurnoutAction(turnoutId, newState)
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // bool Turnout::actionTurnoutExternalChange(TurnoutState state) {
-    //     turnoutState = state;
-    //     return true;
-    // }
+    bool Turnout::setTurnoutId(int id) {
+        turnoutId = id;
+        return true;
+    }
     int Turnout::getTurnoutId() {
         return turnoutId;
+    }
+    bool Turnout::setTurnoutName(String name) {
+        turnoutName = name;
+        return true;
     }
     String Turnout::getTurnoutName() {
         return turnoutName;
@@ -1217,20 +1289,40 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
     TurnoutState Turnout::getTurnoutState() {
         return turnoutState;
     }
+    void Turnout::setHasReceivedDetails() {
+        hasReceivedDetail = true;
+    }
+    bool Turnout::getHasReceivedDetails() {
+        return hasReceivedDetail;
+    }
 
 // class Route
 
-    bool Route::initRoute(int id, String name) {
+    Route::Route(int id, String name) {
         routeId = id;
         routeName = name;
+        hasReceivedDetail = false;
     }
     int Route::getRouteId() {
         return routeId;
     }
+    bool Route::setRouteName(String name) {
+        routeName = name;
+        return true;
+    }
+    String Route::getRouteName() {
+        return routeName;
+    }
+    void Route::setHasReceivedDetails() {
+        hasReceivedDetail = true;
+    }
+    bool Route::getHasReceivedDetails() {
+        return hasReceivedDetail;
+    }
 
 // class TurntableIndex
 
-    bool TurntableIndex::initTurntableIndex(int index, String name, int angle) {
+    TurntableIndex::TurntableIndex(int index, String name, int angle) {
         turntableIndexIndex = index;
         turntableIndexName = name;
         turntableIndexAngle = angle;
@@ -1239,18 +1331,29 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
 // class Turntable
 
     
-    bool Turntable::initTurntable(int id, String name, TurntableType type, int position) {
+    Turntable::Turntable(int id, String name, TurntableType type, int position) {
         turntableId = id;
         turntableName = name;
         turntableType = type;
         turntableCurrentPosition = position;
     }
 
-    int Turntable:: getTurntableId() {
+    int Turntable::getTurntableId() {
         return turntableId;
+    }
+    bool Turntable::setTurntableName(String name) {
+        turntableName = name;
+        return true;
     }
     String Turntable::getTurntableName() {
         return turntableName;
+    }
+    bool Turntable::setTurntableType(TurntableType type) {
+        turntableType = type;
+        return true;
+    }
+    TurntableType Turntable::getTurntableType() {
+        return turntableType;
     }
     bool Turntable::addTurntableIndex(int index, String indexName, int indexAngle) {
         TurntableIndex turntableIndex;
@@ -1304,4 +1407,10 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
             rslt = TurntableMoving;
         }
         return rslt;
+    }
+    void Turntable::setHasReceivedDetails() {
+        hasReceivedDetail = true;
+    }
+    bool Turntable::getHasReceivedDetails() {
+        return hasReceivedDetail;
     }

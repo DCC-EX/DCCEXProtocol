@@ -10,6 +10,9 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
+void printRoster();
+void printTurnouts();
+
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
   
@@ -23,10 +26,12 @@ class MyDelegate : public DCCEXProtocolDelegate {
     }
 
     virtual void receivedRosterList(int rosterSize) {
-        Serial.print("Received Roster: "); Serial.println(rosterSize);  
+      Serial.print("Received Roster: "); Serial.println(rosterSize);  
+      printRoster();
     }
     virtual void receivedTurnoutList(int turnoutListSize) {
-        Serial.print("Received Turnout List: "); Serial.println(turnoutListSize); 
+      Serial.print("Received Turnout List: "); Serial.println(turnoutListSize); 
+      printTurnouts();
     }    
     virtual void receivedRouteList(int routeListSize) {
         Serial.print("Received Route List: "); Serial.println(routeListSize); 
@@ -48,7 +53,33 @@ int serverPort = 2560;
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-  
+
+void printRoster() {
+  if (dccexProtocol.roster.size()>0) {
+    Serial.println("Roster");
+    for (int i=0; i<dccexProtocol.roster.size()>0; i++) {
+      Serial.print(dccexProtocol.roster.get(i)->getLocoAddress());
+      Serial.print(" ");
+      Serial.println(dccexProtocol.roster.get(i)->getLocoName());
+    }
+  } else {
+    Serial.println("Roster: no entries");
+  }
+}
+
+void printTurnouts() {
+  if (dccexProtocol.turnouts.size()>0) {
+    Serial.println("Turnouts/Points");
+    for (int i=0; i<dccexProtocol.turnouts.size()>0; i++) {
+      Serial.print(dccexProtocol.turnouts.get(i)->getTurnoutId());
+      Serial.print(" ");
+      Serial.println(dccexProtocol.turnouts.get(i)->getTurnoutName());
+    }
+  } else {
+    Serial.println("Turnouts/Points: no entries");
+  }
+}
+
 void setup() {
   
   Serial.begin(115200);
@@ -84,7 +115,8 @@ void setup() {
   dccexProtocol.getRoster();
   dccexProtocol.getTurnouts();
   dccexProtocol.getRoutes();
-  dccexProtocol.getTurntables();
+  // dccexProtocol.getTurntables();
+
 }
   
 void loop() {
