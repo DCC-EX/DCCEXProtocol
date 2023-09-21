@@ -178,7 +178,7 @@ class Consist {
         ConsistLoco* consistGetLocoAtPosition(int position);
         int consistGetLocoPosition(int locoAddress);
 
-        bool actionConsistExternalChange(int speed, Direction direction, Functions functions);
+        bool actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]);
 
         bool consistSetSpeed(int speed);
         int consistGetSpeed();
@@ -354,7 +354,8 @@ class DCCEXProtocol {
     //helper functions
     Direction getDirectionFromSpeedByte(int speedByte);
     int getSpeedFromSpeedByte(int speedByte);
-    Functions getFunctionStatesFromFunctionMap(int * states, int functionMap);
+    void getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap);
+    int bitExtracted(int number, int k, int p);
 
     // *******************
 

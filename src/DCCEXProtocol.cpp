@@ -165,11 +165,16 @@ int DCCEXProtocol::getSpeedFromSpeedByte(int speedByte) {
     return speed;
 }
 
-Functions DCCEXProtocol::getFunctionStatesFromFunctionMap( int * states, int functionMap) {
-    
-    // ??????????????????????????????????
-    Functions fns;
-    return fns;
+void DCCEXProtocol::getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap) {
+ 
+    for (int i=0; i<MAX_FUNCTIONS; i++) {
+        fnStates[i] = bitExtracted(functionMap, 1, i+1);
+    }
+}
+
+int DCCEXProtocol::bitExtracted(int number, int k, int p)
+{
+    return (((1 << k) - 1) & (number >> (p - 1)));
 }
 
 // ******************************************************************************************************
@@ -203,7 +208,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     char char1 = args.get(0).charAt(1);
     int noOfParameters = args.size();
 
-    console->print("processing: "); console->println(s);
+    // console->print("processing: "); console->println(s);
     // for (int i=0; i<args.size();i++) {
     //     console->print("arg"); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
     // }
@@ -279,6 +284,8 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
             }
         } else if (len > 3 && char0 == 'q') { // <q id>
             processSensorEntry(args);
+        } else if (len = 3 && char0 == 'X') { // <X>
+            // error   Nothing we can do with it as we don't know what it is for
         } else {
             processUnknownCommand(s);
         }
@@ -390,7 +397,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                         if (functionName.charAt(0)=='*') {
                             latching = FunctionLatchingFalse;
                         }
-                        roster.get(i)->locoFunctions.initFunction(i, functionName, latching, state);
+                        roster.get(i)->locoFunctions.initFunction(j, functionName, latching, state);
                     }
                 }
             }
@@ -719,12 +726,25 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg s
             if (rslt==0) {  // ignore everything that is not the lead loco
                 int speed = getSpeedFromSpeedByte(speedByte);
                 Direction dir = getDirectionFromSpeedByte(speedByte);
-                int functionStates[MAX_FUNCTIONS];
-                Functions fns = getFunctionStatesFromFunctionMap(functionStates, functMap);
-                bool rslt = throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fns);
+                FunctionState fnStates[MAX_FUNCTIONS];
+                getFunctionStatesFromFunctionMap(fnStates, functMap);
+                for (int i=0; i<MAX_FUNCTIONS; i++) {
+                    if (fnStates[i] != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)) {
+                        console->print(i);
+                        console->print(" - ");
+                        console->print(fnStates[i]);
+                        console->print(" - ");
+                        console->println(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i));
+
+                        delegate->receivedFunction(throttleNo, i, fnStates[i]);
+                        throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
+                    }
+                }
+                bool rslt = throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fnStates);
 
                 delegate->receivedSpeed(throttleNo, speed);
                 delegate->receivedDirection(throttleNo, dir);
+
             }
         } else {
             console->println("processLocoAction(): unknown loco");
@@ -1087,18 +1107,12 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return true;
     }
     bool Functions::setFunctionState(int functionNumber, FunctionState state) {
-
-        // ??????????????????????????????????
-
+        functionState[functionNumber] = state;
         return true;
     }
-
     bool Functions::actionFunctionStateExternalChange(int functionNumber, FunctionState state) {
-
         // ??????????????????????????????????
-
     }
-
     String Functions::getFunctionName(int functionNumber) {
         return functionName[functionNumber];
     }
@@ -1118,6 +1132,9 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         locoDirection = Forward;
         locoSpeed = 0;
         rosterReceivedDetails = false;
+        for (int i=0; i<MAX_FUNCTIONS; i++) {
+            locoFunctions.initFunction(i, "", FunctionLatchingFalse, FunctionStateOff);
+        }
     }
     bool Loco::setLocoSpeed(int speed) {
         if (locoSpeed!=speed) {
@@ -1261,7 +1278,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         consistDirection = direction;
         return true;
     }
-    bool Consist::actionConsistExternalChange(int speed, Direction direction, Functions functions) {
+    bool Consist::actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]) {
         if (consistLocos.size()>0) {
             if ( (consistDirection != direction) || (consistSpeed != speed) ) {
                 for (int i=0; i<consistLocos.size(); i++) {
@@ -1275,13 +1292,19 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
                     }
                     bool rslt = consistLocos.get(i)->setLocoSpeed(consistSpeed);
                     rslt = consistLocos.get(i)->setLocoDirection(locoDir);
+
+                    // if (i==0) {
+                    //     FunctionState fnStates[MAX_FUNCTIONS];
+                    //     for (int i=0; i<MAX_FUNCTIONS; i++) {
+                    //         fnStates[i] = bitExtracted(fnStates,1,i+1);
+                    //         // if (fStates)
+                    //         // ??????????????????????????????????
+                    //     }
+                    // }
                 }
             }
         }
 
-        // ??????????????????????????????????
-
-        // delegate->receivedFunction(throttle, function, state);
         return true;
     }
 
