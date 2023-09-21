@@ -12,6 +12,8 @@
 
 void printRoster();
 void printTurnouts();
+void printRoutes();
+void printTurntables();
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
@@ -35,9 +37,11 @@ class MyDelegate : public DCCEXProtocolDelegate {
     }    
     virtual void receivedRouteList(int routeListSize) {
         Serial.print("Received Route List: "); Serial.println(routeListSize); 
+        printRoutes();
     }
     virtual void receivedTurntablesList(int turntablesListSize) {
         Serial.print("Received Turnout List: "); Serial.println(turntablesListSize); 
+        printTurntables();
     }  
 };
 
@@ -56,28 +60,58 @@ MyDelegate myDelegate;
 
 void printRoster() {
   if (dccexProtocol.roster.size()>0) {
-    Serial.println("Roster");
+    Serial.println("\n\nRoster");
     for (int i=0; i<dccexProtocol.roster.size()>0; i++) {
       Serial.print(dccexProtocol.roster.get(i)->getLocoAddress());
       Serial.print(" ");
       Serial.println(dccexProtocol.roster.get(i)->getLocoName());
     }
   } else {
-    Serial.println("Roster: no entries");
+    Serial.println("\n\nRoster: no entries");
   }
+  Serial.println("\n\n");
 }
 
 void printTurnouts() {
   if (dccexProtocol.turnouts.size()>0) {
-    Serial.println("Turnouts/Points");
+    Serial.println("\n\nTurnouts/Points");
     for (int i=0; i<dccexProtocol.turnouts.size()>0; i++) {
       Serial.print(dccexProtocol.turnouts.get(i)->getTurnoutId());
       Serial.print(" ");
       Serial.println(dccexProtocol.turnouts.get(i)->getTurnoutName());
     }
   } else {
-    Serial.println("Turnouts/Points: no entries");
+    Serial.println("\n\nTurnouts/Points: no entries");
   }
+  Serial.println("\n\n");
+}
+
+void printRoutes() {
+  if (dccexProtocol.routes.size()>0) {
+    Serial.println("\n\nRoutes");
+    for (int i=0; i<dccexProtocol.routes.size()>0; i++) {
+      Serial.print(dccexProtocol.routes.get(i)->getRouteId());
+      Serial.print(" ");
+      Serial.println(dccexProtocol.routes.get(i)->getRouteName());
+    }
+  } else {
+    Serial.println("\n\nRoutes: no entries");
+  }
+  Serial.println("\n\n");
+}
+
+void printTurntables() {
+  if (dccexProtocol.turntables.size()>0) {
+    Serial.println("\n\nTurntables");
+    for (int i=0; i<dccexProtocol.turntables.size()>0; i++) {
+      Serial.print(dccexProtocol.turntables.get(i)->getTurntableId());
+      Serial.print(" ");
+      Serial.println(dccexProtocol.turntables.get(i)->getTurntableName());
+    }
+  } else {
+    Serial.println("\n\nTurntables: no entries");
+  }
+  Serial.println("\n\n");
 }
 
 void setup() {
@@ -101,7 +135,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  // dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -112,10 +146,11 @@ void setup() {
 
   dccexProtocol.sendServerDetailsRequest();
 
+  delay(3000);
   dccexProtocol.getRoster();
   dccexProtocol.getTurnouts();
   dccexProtocol.getRoutes();
-  // dccexProtocol.getTurntables();
+  dccexProtocol.getTurntables();
 
 }
   

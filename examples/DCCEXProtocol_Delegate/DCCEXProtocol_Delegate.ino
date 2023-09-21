@@ -10,24 +10,51 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
+void printRoster();
+void printTurnouts();
+void printRoutes();
+void printTurntables();
+
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
     void receivedServerDescription(String microprocessor, String version) {     
-      Serial.print("Received version: "); Serial.println(version);  
+      Serial.print("\n\nReceived version: "); Serial.println(version);  
     }
 
     void receivedTrackPower(TrackPower state) { 
-      Serial.print("Received Track Power: "); Serial.println(state);  
+      Serial.print("\n\nReceived Track Power: "); Serial.println(state);  
+      Serial.println("\n\n");  
     }
+
+    void receivedRosterList(int rosterSize) {
+      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
+      printRoster();
+    }
+    void receivedTurnoutList(int turnoutListSize) {
+      Serial.print("\n\nReceived Turnouts/Points list: "); Serial.println(turnoutListSize);  
+      printTurnouts();
+      Serial.println("\n\n");  
+    }    
+    void receivedRouteList(int routeListSize) {
+      Serial.print("\n\nReceived Routes List: "); Serial.println(routeListSize);  
+      printRoutes();
+      Serial.println("\n\n");  
+    }
+    void receivedTurntablesList(int turntablesListSize) {
+      Serial.print("\n\nReceived Turntables list: "); Serial.println(turntablesListSize);  
+      printTurntables();
+      Serial.println("\n\n");  
+    }    
+
 };
 
 // WiFi and server configuration
 // const char* ssid = "MySSID";
 // const char* password =  "MyPWD";
-const char* ssid = "DCCEX_1ec919";
-const char* password =  "PASS_1ec919";
+const char* ssid = "DCCEX_44182a";
+const char* password =  "PASS_44182a";
 IPAddress serverAddress(192,168,4,1);
 int serverPort = 2560;
 
@@ -35,7 +62,43 @@ int serverPort = 2560;
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-  
+
+void printRoster() {
+      for (int i=0; i<dccexProtocol.roster.size(); i++) {
+        int address = dccexProtocol.roster.get(i)->getLocoAddress();
+        String name = dccexProtocol.roster.get(i)->getLocoName();
+        Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+      }
+      Serial.println("\n\n");  
+}
+
+void printTurnouts() {
+      for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
+        int id = dccexProtocol.turnouts.get(i)->getTurnoutId();
+        String name = dccexProtocol.turnouts.get(i)->getTurnoutName();
+        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+      }
+      Serial.println("\n\n");  
+}
+
+void printRoutes() {
+      for (int i=0; i<dccexProtocol.routes.size(); i++) {
+        int id = dccexProtocol.routes.get(i)->getRouteId();
+        String name = dccexProtocol.routes.get(i)->getRouteName();
+        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+      }
+      Serial.println("\n\n");  
+}
+
+void printTurntables() {
+      for (int i=0; i<dccexProtocol.turntables.size(); i++) {
+        int id = dccexProtocol.turntables.get(i)->getTurntableId();
+        String name = dccexProtocol.turntables.get(i)->getTurntableName();
+        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+      }
+      Serial.println("\n\n");  
+}
+
 void setup() {
   
   Serial.begin(115200);
@@ -67,6 +130,10 @@ void setup() {
   Serial.println("DCC-EX connected");
 
   dccexProtocol.sendServerDetailsRequest();
+  dccexProtocol.getRoster();
+  dccexProtocol.getTurnouts();
+  dccexProtocol.getRoutes();
+  dccexProtocol.getTurntables();
 }
   
 void loop() {

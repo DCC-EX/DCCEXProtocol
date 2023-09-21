@@ -41,6 +41,9 @@ static const int MAX_FUNCTIONS = 28;
 #define COMMAND_START       '<'
 #define COMMAND_END         '>'
 
+#define UNKNOWN "Unknown"
+#define UnknownIdResponse "X"
+
 // *****************************************************************
 
 typedef int Direction;
@@ -55,7 +58,8 @@ typedef int  TrackPower;
 typedef int TurnoutState;
 #define TurnoutClosed 0
 #define TurnoutThrown 1
-#define TurnoutUnknownId -1
+#define TurnoutResponseClosed "C"
+#define TurnoutResponseThrown "T"
 
 typedef int TurnoutAction;
 #define TurnoutClose 0
@@ -69,11 +73,11 @@ typedef int RouteState;
 #define RouteInconsistent 8
 
 typedef int TrackMode;
-static const String TrackModeMain = "MAIN";
-static const String  TrackModeProg = "PROG";
-static const String  TrackModeDC = "DC";
-static const String  TrackModeDCX = "DCX";
-static const String TrackModeOff = "OFF";
+#define TrackModeMain "MAIN"
+#define  TrackModeProg "PROG"
+#define  TrackModeDC "DC"
+#define  TrackModeDCX "DCX"
+#define TrackModeOff "OFF"
 
 typedef int TurntableState;
 #define TurntableStationary 0
@@ -99,6 +103,10 @@ typedef int LocoSource;
 typedef int Facing;
 #define FacingForward 0
 #define FacingReversed 1
+
+typedef String RouteType;
+#define RouteTypeRoute "R"
+#define RouteTypeAutomation "A"
 
 // *****************************************************************
 
@@ -215,6 +223,8 @@ class Route {
         int getRouteId();
         bool setRouteName(String name);
         String getRouteName();
+        bool setRouteType(String type);
+        RouteType getRouteType();
 
         void setHasReceivedDetails();
         bool getHasReceivedDetails();
@@ -222,6 +232,7 @@ class Route {
     private:
         int routeId;
         String routeName;
+        String routeType;
         bool hasReceivedDetail;
 };
 
@@ -245,7 +256,6 @@ class Turntable {
         Turntable() {}
         Turntable(int id, String name, TurntableType type, int position);
         bool addTurntableIndex(int index, String indexName, int indexAngle);
-        // bool sendTurntableRotateTo(int index);
         LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
 
         int getTurntableId();
@@ -426,6 +436,8 @@ class DCCEXProtocol {
     void sendTurntableEntryRequest(int id);
     void sendTurntableIndexEntryRequest(int id);
 
+    void processSensorEntry(LinkedList<String> &args);
+
     bool processLocoAction(LinkedList<String> &args);
 
     //helper functions
@@ -437,6 +449,7 @@ class DCCEXProtocol {
     bool splitCommand(LinkedList<String> &args, String text, char splitChar);
     int countSplitCharacters(String text, char splitChar);
     String stripLeadAndTrailQuotes(String text);
+    String substituteCharBetweenQuotes(String text, char searchChar, char substituteChar);
 };
 
 #endif // DCCEXPROTOCOL_H

@@ -101,15 +101,6 @@ bool DCCEXProtocol::check() {
     if (stream) {
         while(stream->available()) {
             char b = stream->read();
-            // console->print("check(): char: ~"); console->print(b); console->println("~");
-            // if (b == NEWLINE || b==CR) {
-            //     // server sends TWO newlines after each command, we trigger on the
-            //     // first, and this skips the second one
-            //     if (nextChar != 0) {
-            //         inputbuffer[nextChar] = 0;
-            //         changed |= processCommand(inputbuffer, nextChar);
-            //     }
-            //     nextChar = 0;
             if (b == COMMAND_END) {
                 if (nextChar != 0) {
                     inputbuffer[nextChar] = b;
@@ -213,9 +204,9 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     int noOfParameters = args.size();
 
     console->print("processing: "); console->println(s);
-    for (int i=0; i<args.size();i++) {
-        console->print("arg"); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
-    }
+    // for (int i=0; i<args.size();i++) {
+    //     console->print("arg"); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
+    // }
 
     if (delegate) {
         if (len > 3 && char0 == 'i' && args.get(0) == "iDCC-EX") {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
@@ -240,6 +231,14 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
                 processTurnoutEntry(args); //<jT id state |"[desc]">   or    <jT id X">
             } else {
                 processTurnoutList(args); //<jT [id1 id2 id3 ...]>
+            }
+
+        } else if (len > 3 && char0=='j' && char1=='A' && (noOfParameters > 1)) { 
+            if ( (noOfParameters == 4) && (args.get(3).charAt(0) == '"') 
+            || (noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) {
+                processRouteEntry(args); //<jA id X|type |"desc">   or    <jA id X">
+            } else {
+                processRouteList(args); //<jA [id1 id2 id3 ...]>
             }
 
         } else if (len > 3 && char0 == 'H') { //<H id state>
@@ -275,6 +274,8 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
             } else {
                 processRouteList(args); //<jA [id0 id1 id2 ..]>
             }
+        } else if (len > 3 && char0 == 'q') { // <q id>
+            processSensorEntry(args);
         } else {
             processUnknownCommand(s);
         }
@@ -371,19 +372,23 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                     rslt = roster.get(i)->setLocoSource(LocoSourceRoster);
                     roster.get(i)->setIsFromRosterAndReceivedDetails();
 
-                    // Loco loco(address, name, LocoSourceRoster);
-// ????????????????
-//                    String functions[] = args.get(2).split("/", 999);
-                    // for (int j=0; (j<functions.length() && j<MAX_FUNCTIONS); j++ ) {
-                    //     FunctionLatching latching = FunctionLatchingTrue;
-                    //     if (functions[j].charAt(0)=='*') {
-                    //         latching = FunctionLatchingFalse;
-                    //     }
-                    //     loco.locoFunctions[j].initFunction(j, functions[j], latching, FunctionStateOff); 
-                    // }
-// ????????????????
-                    // roster.set(i, loco);
-                    // sendLocoUpdateRequest(address);
+                    String functions = stripLeadAndTrailQuotes(args.get(3));
+                    LinkedList<String> functionArgs;
+                    rslt = splitCommand(functionArgs, functions, '/');
+                    int noOfParameters = functionArgs.size();
+
+                    console->print("processing Functions: "); console->println(functions);
+
+                    for (int j=0; (j<functionArgs.size() && j<MAX_FUNCTIONS); j++ ) {
+                        // console->print("functionArgs"); console->print(j); console->print(": ~"); console->print(functionArgs.get(j)); console->println("~");
+                        String functionName = functionArgs.get(j);
+                        FunctionState state = FunctionStateOff;
+                        FunctionLatching latching = FunctionLatchingTrue;
+                        if (functionName.charAt(0)=='*') {
+                            latching = FunctionLatchingFalse;
+                        }
+                        roster.get(i)->locoFunctions.initFunction(i, functionName, latching, state);
+                    }
                 }
             }
             bool rslt = true;
@@ -440,7 +445,16 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
             for (int i=0; i<turnouts.size(); i++) {
                 int id = args.get(1).toInt();
                 if (turnouts.get(i)->getTurnoutId()==id) {
-                    String name = args.get(3);
+                    TurnoutState state = TurnoutClosed;
+                    String name = UNKNOWN;
+                    if (args.get(2)!=UnknownIdResponse) {
+                        name = args.get(3);
+                        if (args.get(2)=TurnoutResponseClosed) {
+                            state = TurnoutClosed;
+                        } else {
+                            state = TurnoutThrown;
+                        }
+                    }
                     bool rslt = turnouts.get(i)->setTurnoutId(id);
                     rslt = turnouts.get(i)->setTurnoutName(stripLeadAndTrailQuotes(name));
                     turnouts.get(i)->setHasReceivedDetails();
@@ -528,8 +542,14 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
             for (int i=0; i<routes.size(); i++) {
                 int id = args.get(1).toInt();
                 if (routes.get(i)->getRouteId()==id) {
-                    String name = args.get(2);
+                    String type = RouteTypeRoute;
+                    String name = UNKNOWN;
+                    if (args.get(2)!="X") {
+                        type = args.get(2);
+                        name = args.get(3);
+                    }
                     bool rslt = routes.get(i)->setRouteName(stripLeadAndTrailQuotes(name));
+                    rslt = routes.get(i)->setRouteType(type);
                     routes.get(i)->setHasReceivedDetails();
                 }
             }
@@ -665,6 +685,15 @@ void DCCEXProtocol::processTurntableAction(LinkedList<String> &args) { // <i id 
         delegate->receivedTurntableAction(id, newPos, state);
     }
     console->println("processTurntableAction(): end");
+}
+
+//private
+void DCCEXProtocol::processSensorEntry(LinkedList<String> &args) {  // <jO id type position position_count "[desc]">
+    console->println("processSensorEntry(): ");
+    if (delegate) {
+        //????????????????????????????????????????
+    }
+    console->println("processSensorEntry(): end");
 }
 
 // ****************
@@ -888,7 +917,7 @@ bool DCCEXProtocol::getTurnouts() {
 bool DCCEXProtocol::getRoutes() {
     console->println("getRoutes()");
     if (delegate) {
-        sendCommand("</ROUTES>");
+        sendCommand("<JA>");
     }
     console->println("getRoutes() end");
     return true;
@@ -897,7 +926,7 @@ bool DCCEXProtocol::getRoutes() {
 bool DCCEXProtocol::getTurntables() {
     console->println("getTurntables()");
     if (delegate) {
-        sendCommand("<T>");
+        sendCommand("<JO>");
     }
     console->println("getTurntables() end");
     return true;
@@ -955,61 +984,42 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     return -1;
 }
 
-// LinkedList<String> DCCEXProtocol::splitCommand(String text, char splitChar) {
 bool DCCEXProtocol::splitCommand(LinkedList<String> &args, String text, char splitChar) {
-    console->println("splitCommand()");
+    // console->println("splitCommand()");
     String s = text;
-    if (text.charAt(0)!=splitChar)  s = String(splitChar) + text;  // add a leading space if not already there
-    if (text.charAt(text.length()-1)!=splitChar)  s = s + String(splitChar) ;  // add a trailing space if not already there
+    if (text.charAt(0)!=splitChar)  s = String(splitChar) + text;  // add a leading splitChar if not already there
+    if (text.charAt(text.length()-1)!=splitChar)  s = s + String(splitChar) ;  // add a trailing splitChar if not already there
 
-    String s2 ="";
-    bool inQuote = false;
-    for (int i=0; i<s.length(); i++) {
-        if (s.charAt(i)=='"') {
-            inQuote = !inQuote;
-        }
-        if (s.charAt(i)==splitChar && inQuote) {
-            s2 = s2 + (char)1;
-        } else {
-            s2 = s2 + s.charAt(i);
-        }
-    }
-    s = s2;
-
+    s = substituteCharBetweenQuotes(s, ' ', (char)1);
 
     int splitCount = countSplitCharacters(s, splitChar);
-    console->print("splitCommand(): number of splits found: "); console->println(splitCount);
-    // LinkedList<String> returnValue = LinkedList<String>();
+    // console->print("splitCommand(): number of splits found: "); console->println(splitCount);
+
     int index = -1;
     int index2;
 
     for(int i = 0; i < splitCount; i++) {
         index = s.indexOf(splitChar, index + 1);
         index2 = s.indexOf(splitChar, index + 1);
-        if (s.charAt(index)==splitChar) index=index+1; // clear leading spaces
+        String arg = "";
+        if ((index2-index)>1) {  //not empty
+            if (s.charAt(index)==splitChar) index=index+1; // clear leading splitChar
 
-        if(index2 < 0) index2 = s.length() - 1;
+            if(index2 < 0) index2 = s.length() - 1;
 
-        String arg = s.substring(index, index2);
-        String arg2 = ""; 
-        for (int j=0; j<arg.length(); j++) { 
-            if (arg.charAt(j)==1) { 
-                arg2 = arg2 + " ";
-            } else {
-                arg2 = arg2 + arg.charAt(j);
-            }
+            arg = s.substring(index, index2);
+            arg = substituteCharBetweenQuotes(arg, (char)1, ' ');
         }
-        args.add(arg2);
+        args.add(arg);
         // console->print(index); console->print("-"); console->print(index);
         // console->print(": "); console->println(s.substring(index, index2));
     }
-    console->println("splitCommand(): end");
-    // return returnValue;
+    // console->println("splitCommand(): end");
     return true;
 }
 
 int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
-    console->println("countSplitCharacters()");
+    // console->println("countSplitCharacters()");
     int returnValue = 0;
     int index = 0;
 
@@ -1017,9 +1027,28 @@ int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
         index = text.indexOf(splitChar, index + 1);
         if(index > -1) returnValue+=1;
     }
-    console->println("countSplitCharacters() end");
+    // console->println("countSplitCharacters() end");
     return returnValue;
 } 
+
+String DCCEXProtocol::substituteCharBetweenQuotes(String text, char searchChar, char substituteChar) {
+    String rslt = "";
+    // console->print("substituteCharBetweenQuotes() ~"); console->print(text); console->println("~");
+    bool inQuote = false;
+    for (int i=0; i<text.length(); i++) {
+        if (text.charAt(i)=='"') {
+            inQuote = !inQuote;
+        }
+        if (text.charAt(i)==searchChar && inQuote) {
+            rslt = rslt + substituteChar;
+        } else {
+            rslt = rslt + text.charAt(i);
+        }
+    }
+
+    // console->print("substituteCharBetweenQuotes(): end ~"); console->print(rslt); console->println("~");
+    return rslt;
+}
 
 String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     String s = text;
@@ -1321,6 +1350,13 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     String Route::getRouteName() {
         return routeName;
     }
+    bool Route::setRouteType(String type) {
+        routeType = type;
+        return true;
+    }
+    RouteType Route::getRouteType() {
+        return routeType;
+    }
     void Route::setHasReceivedDetails() {
         hasReceivedDetail = true;
     }
@@ -1395,15 +1431,6 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         }
         return {};
     }
-    // bool Turntable::sendTurntableRotateTo(int index) {
-    //     if (turntableCurrentPosition != index) {
-    //         sendCommand("<I " + String(turntableId) + " " + String(index) + ">");
-    //         turntableCurrentPosition = index;
-    //         turntableIsMoving = TurntableMoving;
-    //         return true;
-    //     }
-    //     return false;
-    // }
     bool Turntable::actionTurntableExternalChange(int index, TurntableState state) {
         turntableCurrentPosition = index;
         turntableIsMoving = state;
