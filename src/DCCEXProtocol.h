@@ -47,8 +47,8 @@ static const int MAX_FUNCTIONS = 28;
 // *****************************************************************
 
 typedef int Direction;
-#define Reverse 0
-#define Forward 1
+#define Reverse 1
+#define Forward 0
 
 typedef int  TrackPower;
 #define PowerOff 0
@@ -74,9 +74,9 @@ typedef int RouteState;
 
 typedef int TrackMode;
 #define TrackModeMain "MAIN"
-#define  TrackModeProg "PROG"
-#define  TrackModeDC "DC"
-#define  TrackModeDCX "DCX"
+#define TrackModeProg "PROG"
+#define TrackModeDC "DC"
+#define TrackModeDCX "DCX"
 #define TrackModeOff "OFF"
 
 typedef int TurntableState;
@@ -175,7 +175,7 @@ class Consist {
         bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
         int consistGetNumberOfLocos();
-        ConsistLoco consistGetLocoAtPosition(int position);
+        ConsistLoco* consistGetLocoAtPosition(int position);
         int consistGetLocoPosition(int locoAddress);
 
         bool actionConsistExternalChange(int speed, Direction direction, Functions functions);
@@ -188,9 +188,9 @@ class Consist {
         bool consistSetFunction(int address, int functionNo, FunctionState state);
 
         String getConsistName();
+        LinkedList<ConsistLoco*> consistLocos = LinkedList<ConsistLoco*>();
 
     private:
-        LinkedList<ConsistLoco> consistLocos = LinkedList<ConsistLoco>();
         int consistSpeed;
         Direction consistDirection;
         String consistName;

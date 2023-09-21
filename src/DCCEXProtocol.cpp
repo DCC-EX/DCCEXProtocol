@@ -666,9 +666,6 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
                         String name = args.get(4);
 
                         turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, stripLeadAndTrailQuotes(name), angle));
-                        
-                        // console->print("size: "); console->print(turntables.get(i)->turntableIndexes.size());
-                        // console->print("  count: "); console->println(turntables.get(i)->getTurntableIndexCount()); 
 
                         if (turntables.get(i)->turntableIndexes.size() == turntables.get(i)->getTurntableIndexCount()) {
                             delegate->receivedTurntableList(turntables.size());
@@ -803,10 +800,10 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
             throttleConsists[throttle].consistSetSpeed(speed);
             throttleConsists[throttle].consistSetDirection(direction);
             for (int i=0; i<throttleConsists[throttle].consistGetNumberOfLocos(); i++) {
-                ConsistLoco conLoco = throttleConsists[throttle].consistGetLocoAtPosition(i);
-                int address = conLoco.getLocoAddress();
+                ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(i);
+                int address = conLoco->getLocoAddress();
                 Direction dir = direction;
-                if (conLoco.getConsistLocoFacing()==Reverse) {
+                if (conLoco->getConsistLocoFacing()==Reverse) {
                     if (direction==Forward) {
                         dir = Reverse;
                     } else {
@@ -953,7 +950,15 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
     for (int i=0; i<MAX_THROTTLES; i++) {
         if (throttleConsists[i].consistGetNumberOfLocos()>0) {
             int pos = throttleConsists[i].consistGetLocoPosition(address);
-            if (pos>0) {
+
+            // console->print("checking consist: "); console->print(i); console->print(" found: "); console->println(pos);
+            // console->print("in consist: "); console->println(throttleConsists[i].consistGetNumberOfLocos()); 
+
+            // for (int j=0; j<throttleConsists[i].consistGetNumberOfLocos(); j++ ) {
+            //      console->print("checking consist X: "); console->print(j); console->print(" is: "); console->println(throttleConsists[i].consistLocos.get(i)->getLocoAddress());
+            // }    
+
+            if (pos>=0) {
                 return i;
             }
         }
@@ -1183,12 +1188,11 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     }
     bool Consist::consistAddLoco(Loco loco, Facing facing) {
         int address = loco.getLocoAddress();
+        String name = loco.getLocoName();
+        LocoSource source = loco.getLocoSource();
         int rslt = consistGetLocoPosition(address);
         if (rslt<0) { // not already in the list, so add it
-//?????????????????????
-            ConsistLoco conLoco(address, loco.getLocoName(), loco.getLocoSource(), facing);
-            consistLocos.add(conLoco);
-//?????????????????????
+            consistLocos.add(new ConsistLoco(address, name, source, facing));
             return true;
         }
         return false;
@@ -1208,17 +1212,16 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     }
     int Consist::consistGetNumberOfLocos() {
         return consistLocos.size();
-        return 0;
     }
-    ConsistLoco Consist::consistGetLocoAtPosition(int position) {
+    ConsistLoco* Consist::consistGetLocoAtPosition(int position) {
         if (position<consistLocos.size()) {
             return consistLocos.get(position);
         }
         return {};
     }
     int Consist::consistGetLocoPosition(int locoAddress) {
-        for (int i; i<consistLocos.size(); i++) {
-            if (consistLocos.get(i).getLocoAddress() == locoAddress) {
+        for (int i=0; i<consistLocos.size(); i++) {
+            if (consistLocos.get(i)->getLocoAddress() == locoAddress) {
                 return i;
             }
         }
@@ -1228,7 +1231,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         if (consistLocos.size()>0) {
             if (consistSpeed!=speed) {
                 for (int i=0; i<consistLocos.size(); i++) {
-                    bool rslt = consistLocos.get(i).setLocoSpeed(speed);
+                    bool rslt = consistLocos.get(i)->setLocoSpeed(speed);
                 }
             }
         }
@@ -1243,15 +1246,15 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
             if (consistDirection!=direction) {
                 for (int i=0; i<consistLocos.size(); i++) {
                     Direction locoDir = direction;
-                    if (consistLocos.get(i).getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
+                    if (consistLocos.get(i)->getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
                         if (direction == Forward) {
                             locoDir = Reverse;
                         } else {
                             locoDir = Forward;
                         }
                     }
-                    bool rslt = consistLocos.get(i).setLocoSpeed(consistSpeed);
-                    rslt = consistLocos.get(i).setLocoDirection(locoDir);
+                    bool rslt = consistLocos.get(i)->setLocoSpeed(consistSpeed);
+                    rslt = consistLocos.get(i)->setLocoDirection(locoDir);
                 }
             }
         }
@@ -1263,15 +1266,15 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
             if ( (consistDirection != direction) || (consistSpeed != speed) ) {
                 for (int i=0; i<consistLocos.size(); i++) {
                     Direction locoDir = direction;
-                    if (consistLocos.get(i).getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
+                    if (consistLocos.get(i)->getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
                         if (direction == Forward) {
                             locoDir = Reverse;
                         } else {
                             locoDir = Forward;
                         }
                     }
-                    bool rslt = consistLocos.get(i).setLocoSpeed(consistSpeed);
-                    rslt = consistLocos.get(i).setLocoDirection(locoDir);
+                    bool rslt = consistLocos.get(i)->setLocoSpeed(consistSpeed);
+                    rslt = consistLocos.get(i)->setLocoDirection(locoDir);
                 }
             }
         }
@@ -1279,6 +1282,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         // ??????????????????????????????????
 
         // delegate->receivedFunction(throttle, function, state);
+        return true;
     }
 
     Direction Consist::consistGetDirection() {

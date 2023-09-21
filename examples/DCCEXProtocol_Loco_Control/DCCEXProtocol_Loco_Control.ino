@@ -27,22 +27,30 @@ class MyDelegate : public DCCEXProtocolDelegate {
       Serial.print("Received Track Power: "); Serial.println(state);  
     }
 
-    virtual void receivedRosterList(int rosterSize) {
+    void receivedRosterList(int rosterSize) {
       Serial.print("Received Roster: "); Serial.println(rosterSize);  
-      printRoster();
     }
-    virtual void receivedTurnoutList(int turnoutListSize) {
+    void receivedTurnoutList(int turnoutListSize) {
       Serial.print("Received Turnout List: "); Serial.println(turnoutListSize); 
-      printTurnouts();
     }    
-    virtual void receivedRouteList(int routeListSize) {
+    void receivedRouteList(int routeListSize) {
         Serial.print("Received Route List: "); Serial.println(routeListSize); 
-        printRoutes();
     }
-    virtual void receivedTurntablesList(int turntablesListSize) {
+    void receivedTurntablesList(int turntablesListSize) {
         Serial.print("Received Turnout List: "); Serial.println(turntablesListSize); 
-        printTurntables();
     }  
+
+
+    void receivedSpeed(int throttleNo, int speed) { 
+        Serial.print("Received Throttle Speed: "); Serial.print(throttleNo); Serial.print(" Speed: "); Serial.println(speed); 
+    }
+    void receivedDirection(int throttleNo, Direction dir) { 
+        Serial.print("Received Throttle Direction: "); Serial.print(throttleNo); Serial.print(" Direction: "); Serial.println(dir); 
+    }
+    void receivedFunction(int throttleNo, int func, bool state) { 
+        Serial.print("Received Throttle Function: "); Serial.print(throttleNo); Serial.print(" function: "); Serial.print(func); Serial.print(" state: "); Serial.println(state);
+    }
+
 };
 
 // WiFi and server configuration
@@ -52,67 +60,16 @@ const char* ssid = "DCCEX_44182a";
 const char* password =  "PASS_44182a";
 IPAddress serverAddress(192,168,4,1);
 int serverPort = 2560;
+unsigned long lastTime = 0;
+
+// for randome spped changes 
+int speed = 0;
+int up = 1;
 
 // Global objects
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-
-void printRoster() {
-  if (dccexProtocol.roster.size()>0) {
-    Serial.println("\n\nRoster");
-    for (int i=0; i<dccexProtocol.roster.size()>0; i++) {
-      Serial.print(dccexProtocol.roster.get(i)->getLocoAddress());
-      Serial.print(" ");
-      Serial.println(dccexProtocol.roster.get(i)->getLocoName());
-    }
-  } else {
-    Serial.println("\n\nRoster: no entries");
-  }
-  Serial.println("\n\n");
-}
-
-void printTurnouts() {
-  if (dccexProtocol.turnouts.size()>0) {
-    Serial.println("\n\nTurnouts/Points");
-    for (int i=0; i<dccexProtocol.turnouts.size()>0; i++) {
-      Serial.print(dccexProtocol.turnouts.get(i)->getTurnoutId());
-      Serial.print(" ");
-      Serial.println(dccexProtocol.turnouts.get(i)->getTurnoutName());
-    }
-  } else {
-    Serial.println("\n\nTurnouts/Points: no entries");
-  }
-  Serial.println("\n\n");
-}
-
-void printRoutes() {
-  if (dccexProtocol.routes.size()>0) {
-    Serial.println("\n\nRoutes");
-    for (int i=0; i<dccexProtocol.routes.size()>0; i++) {
-      Serial.print(dccexProtocol.routes.get(i)->getRouteId());
-      Serial.print(" ");
-      Serial.println(dccexProtocol.routes.get(i)->getRouteName());
-    }
-  } else {
-    Serial.println("\n\nRoutes: no entries");
-  }
-  Serial.println("\n\n");
-}
-
-void printTurntables() {
-  if (dccexProtocol.turntables.size()>0) {
-    Serial.println("\n\nTurntables");
-    for (int i=0; i<dccexProtocol.turntables.size()>0; i++) {
-      Serial.print(dccexProtocol.turntables.get(i)->getTurntableId());
-      Serial.print(" ");
-      Serial.println(dccexProtocol.turntables.get(i)->getTurntableName());
-    }
-  } else {
-    Serial.println("\n\nTurntables: no entries");
-  }
-  Serial.println("\n\n");
-}
 
 void setup() {
   
@@ -146,15 +103,28 @@ void setup() {
 
   dccexProtocol.sendServerDetailsRequest();
 
-  delay(3000);
   dccexProtocol.getRoster();
-  dccexProtocol.getTurnouts();
-  dccexProtocol.getRoutes();
-  dccexProtocol.getTurntables();
 
+  // add a loco to throttle 0 from DCC address 11
+  Loco loco(11, "dummy loco", LocoSourceEntry);
+  dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
+  Serial.print("Locos in Consist: "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+
+
+  lastTime = millis();
 }
   
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
+
+  if ((millis() - lastTime) >= 10000) {
+    if (speed>=100) up = -1;
+    if (speed<=0) up = 1;
+    speed = speed + up;
+    dccexProtocol.sendThrottleAction(0, speed, Forward);
+
+    lastTime = millis();
+  }
+
 }
