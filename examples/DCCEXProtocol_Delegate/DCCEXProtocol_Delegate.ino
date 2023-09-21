@@ -42,7 +42,7 @@ class MyDelegate : public DCCEXProtocolDelegate {
       printRoutes();
       Serial.println("\n\n");  
     }
-    void receivedTurntablesList(int turntablesListSize) {
+    void receivedTurntableList(int turntablesListSize) {
       Serial.print("\n\nReceived Turntables list: "); Serial.println(turntablesListSize);  
       printTurntables();
       Serial.println("\n\n");  
@@ -69,7 +69,7 @@ void printRoster() {
         String name = dccexProtocol.roster.get(i)->getLocoName();
         Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
       }
-      Serial.println("\n\n");  
+      // Serial.println("\n");  
 }
 
 void printTurnouts() {
@@ -78,7 +78,7 @@ void printTurnouts() {
         String name = dccexProtocol.turnouts.get(i)->getTurnoutName();
         Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
       }
-      Serial.println("\n\n");  
+      // Serial.println("\n");  
 }
 
 void printRoutes() {
@@ -87,16 +87,20 @@ void printRoutes() {
         String name = dccexProtocol.routes.get(i)->getRouteName();
         Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
       }
-      Serial.println("\n\n");  
+      // Serial.println("\n");  
 }
 
 void printTurntables() {
       for (int i=0; i<dccexProtocol.turntables.size(); i++) {
         int id = dccexProtocol.turntables.get(i)->getTurntableId();
         String name = dccexProtocol.turntables.get(i)->getTurntableName();
-        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~"); 
+        for (int j=0; j<dccexProtocol.turntables.get(i)->getTurntableNumberOfIndexes(); j++) {
+            String indexName = dccexProtocol.turntables.get(i)->turntableIndexes.get(j)->getTurntableIndexName();
+            Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
+        }
       }
-      Serial.println("\n\n");  
+      // Serial.println("\n");  
 }
 
 void setup() {
@@ -120,7 +124,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  dccexProtocol.setLogStream(&Serial);
+  // dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -130,9 +134,13 @@ void setup() {
   Serial.println("DCC-EX connected");
 
   dccexProtocol.sendServerDetailsRequest();
+  delay(1000);
   dccexProtocol.getRoster();
+  delay(1000);
   dccexProtocol.getTurnouts();
+  delay(1000);
   dccexProtocol.getRoutes();
+  delay(1000);
   dccexProtocol.getTurntables();
 }
   

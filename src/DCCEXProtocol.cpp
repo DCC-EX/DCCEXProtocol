@@ -257,6 +257,9 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
                 processTurntableList(args); //<jO [id1 id2 id3 ...]>
             } 
 
+        } else if (len > 3 && char0=='j' && char1=='P' && (noOfParameters>1)) { // <jP id index angle "[desc]">
+            processTurntableIndexEntry(args); 
+
         } else if (len > 3 && char0=='i' && args.get(0)!="iDCC-EX") { //<i id position>   or   <i id position moving>
             if (delegate) {
                 TurntableState state = TurntableStationary;
@@ -590,12 +593,12 @@ void DCCEXProtocol::processTurntableList(LinkedList<String> &args) {  // <jO [id
         } 
         for (int i=1; i<args.size(); i++) {
             int id = args.get(i).toInt();
-            turntables.add(new Turntable(id, "", TurntableTypeUnknown, 0));
+            turntables.add(new Turntable(id, "", TurntableTypeUnknown, 0, 0));
             sendTurntableEntryRequest(id);
             sendTurntableIndexEntryRequest(id);
         }
     }
-    console->println("processTurntableList(): end");
+    console->print("processTurntableList(): end: size:"); console->println(turntables.size());
 }
 
 //private
@@ -628,14 +631,17 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
                     String name = "Unkown";
                     TurntableType type = TurntableTypeUnknown;
                     int position = 0;
+                    int indexCount = 0;
                     if (args.size() > 3) {  // server did not find the id
                         name = args.get(5);
                         type = args.get(2).toInt();
                         position = args.get(3).toInt();
+                        indexCount = args.get(4).toInt();
                     }
                     bool rslt = turntables.get(i)->setTurntableName(stripLeadAndTrailQuotes(name));
                     rslt = turntables.get(i)->setTurntableType(type);
                     rslt = turntables.get(i)->setTurntableCurrentPosition(position);
+                    rslt = turntables.get(i)->setTurntableIndexCount(indexCount);
                     turntables.get(i)->setHasReceivedDetails();
                 }
             }
@@ -648,7 +654,7 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
 void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <jP id index angle "[desc]">
     console->println("processTurntableIndexEntry(): ");
     if (delegate) {
-        if (args.size() <= 3) {  // server did not find the index
+        if (args.size() > 3) {  // server did not find the index
             //find the Turntable entry to update
             if (turntables.size()>0) { 
                 for (int i=0; i<turntables.size(); i++) {
@@ -659,10 +665,14 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
                         int angle = args.get(3).toInt();
                         String name = args.get(4);
 
-                        bool rslt = turntables.get(i)->addTurntableIndex (index, stripLeadAndTrailQuotes(name), angle);
-                        // turntables.set(i, turntable);
-                        // ???????????????????????????????????
-                        // ???????????????????????????????????
+                        turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, stripLeadAndTrailQuotes(name), angle));
+                        
+                        // console->print("size: "); console->print(turntables.get(i)->turntableIndexes.size());
+                        // console->print("  count: "); console->println(turntables.get(i)->getTurntableIndexCount()); 
+
+                        if (turntables.get(i)->turntableIndexes.size() == turntables.get(i)->getTurntableIndexCount()) {
+                            delegate->receivedTurntableList(turntables.size());
+                        }
                     }
                 }
             }
@@ -1371,17 +1381,25 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         turntableIndexName = name;
         turntableIndexAngle = angle;
     }
+    String TurntableIndex::getTurntableIndexName() {
+        return turntableIndexName;
+    }
+    int TurntableIndex::getTurntableIndexId() {
+        return turntableIndexId;
+    }
+    int TurntableIndex::getTurntableIndexIndex() {
+        return turntableIndexIndex;
+    }
 
 // class Turntable
 
-    
-    Turntable::Turntable(int id, String name, TurntableType type, int position) {
+    Turntable::Turntable(int id, String name, TurntableType type, int position, int indexCount) {
         turntableId = id;
         turntableName = name;
         turntableType = type;
         turntableCurrentPosition = position;
+        turnTableIndexCount = indexCount;
     }
-
     int Turntable::getTurntableId() {
         return turntableId;
     }
@@ -1400,11 +1418,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return turntableType;
     }
     bool Turntable::addTurntableIndex(int index, String indexName, int indexAngle) {
-        TurntableIndex turntableIndex;
-        turntableIndex.turntableIndexIndex = index;
-        turntableIndex.turntableIndexName = indexName;
-        turntableIndex.turntableIndexAngle = indexAngle;
-        turntableIndexes.add(turntableIndex);
+        turntableIndexes.add(new TurntableIndex(index, indexName, indexAngle));
     }
     bool Turntable::setTurntableCurrentPosition(int index) {
         if (turntableCurrentPosition != index) {
@@ -1417,15 +1431,22 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     int Turntable::getTurntableCurrentPosition() {
         return turntableCurrentPosition;
     }
-    int Turntable::getTurntableNumberOfIndexes() {
+    bool Turntable::setTurntableIndexCount(int indexCount) {  // what was listed in the original definition
+        turnTableIndexCount = indexCount;
+        return true;
+    }
+    int Turntable::getTurntableIndexCount() { // what was listed in the original definition
+        return turnTableIndexCount;
+    }
+    int Turntable::getTurntableNumberOfIndexes() { // actual count
         return turntableIndexes.size();
     }
-    TurntableIndex Turntable::getTurntableIndexAt(int positionInLinkedList) {
+    TurntableIndex* Turntable::getTurntableIndexAt(int positionInLinkedList) {
         return turntableIndexes.get(positionInLinkedList);
     }
-    TurntableIndex Turntable::getTurntableIndex(int indexId) {
+    TurntableIndex* Turntable::getTurntableIndex(int indexId) {
         for (int i=0; i<turntableIndexes.size(); i++) {
-            if (turntableIndexes.get(i).turntableIndexId==indexId) {
+            if (turntableIndexes.get(i)->getTurntableIndexId()==indexId) {
                 return turntableIndexes.get(i);
             }
         }

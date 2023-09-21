@@ -249,15 +249,20 @@ class TurntableIndex {
         TurntableIndex(int index, String name, int angle);
         void setHasReceivedDetails();
         bool getHasReceivedDetails();
+        String getTurntableIndexName();
+        int getTurntableIndexId();
+        int getTurntableIndexIndex();
 };
 
 class Turntable {
     public:
         Turntable() {}
-        Turntable(int id, String name, TurntableType type, int position);
+        Turntable(int id, String name, TurntableType type, int position, int indexCount);
         bool addTurntableIndex(int index, String indexName, int indexAngle);
-        LinkedList<TurntableIndex> turntableIndexes = LinkedList<TurntableIndex>();
-
+        LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
+        bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
+        int getTurntableIndexCount(); // what was listed in the original definition
+ 
         int getTurntableId();
         bool setTurntableName(String name);
         String getTurntableName();
@@ -266,8 +271,8 @@ class Turntable {
         TurntableType getTurntableType();
         int getTurntableCurrentPosition();
         int getTurntableNumberOfIndexes();
-        TurntableIndex getTurntableIndexAt(int positionInLinkedList);
-        TurntableIndex getTurntableIndex(int indexId);
+        TurntableIndex* getTurntableIndexAt(int positionInLinkedList);
+        TurntableIndex* getTurntableIndex(int indexId);
         TurntableState getTurntableState();
         bool actionTurntableExternalChange(int index, TurntableState state);
         void setHasReceivedDetails();
@@ -280,6 +285,7 @@ class Turntable {
         int turntableCurrentPosition;
         bool turntableIsMoving;
         bool hasReceivedDetail;
+        int turnTableIndexCount; // what was listed in the original definition
 };
 
 // *****************************************************************
@@ -303,7 +309,7 @@ class DCCEXProtocolDelegate {
     virtual void receivedRosterList(int rosterSize) {}
     virtual void receivedTurnoutList(int turnoutListSize) {}    
     virtual void receivedRouteList(int routeListSize) {}
-    virtual void receivedTurntablesList(int turntablesListSize) {}    
+    virtual void receivedTurntableList(int turntablesListSize) {}    
 
     virtual void receivedSpeed(int throttleNo, int speed) { }
     virtual void receivedDirection(int throttleNo, Direction dir) { }
