@@ -800,6 +800,19 @@ void DCCEXProtocol::sendEmergencyStop() {
 
 // ******************************************************************************************************
 
+bool DCCEXProtocol::sendFunction(int throttle, int funcNum, bool pressed) {
+    console->println("sendFunction(): ");
+    if (delegate) {
+        ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(0);
+        int address = conLoco->getLocoAddress();
+        if (address>=0) {
+            sendCommand("<F " + String(address) + " " + String(funcNum) + " " + String(pressed) + ">");
+        }
+    }
+    console->println("sendFunction(): end"); 
+    return true;
+}
+
 bool DCCEXProtocol::sendFunction(int throttle, String address, int funcNum, bool pressed) {
     console->println("sendFunction(): ");
     if (delegate) {

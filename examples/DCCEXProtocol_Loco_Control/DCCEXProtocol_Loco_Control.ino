@@ -136,6 +136,12 @@ void loop() {
     dccexProtocol.sendThrottleAction(0, speed, Forward);
     dccexProtocol.sendThrottleAction(1, speed, Forward);
 
+    int ttl = random(0, 1);
+    int fn = random(0,28);
+    int fnState = random(0,2);
+
+    dccexProtocol.sendFunction(ttl, fn, fnState);
+
     lastTime = millis();
   }
 

@@ -363,6 +363,7 @@ class DCCEXProtocol {
 
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
+    bool sendFunction(int throttle, int funcNum, bool pressed);
     bool sendFunction(int throttle, String address, int funcNum, bool pressed);
     bool sendLocoUpdateRequest(int address);
 
