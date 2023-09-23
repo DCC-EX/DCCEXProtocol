@@ -1,8 +1,7 @@
 
 # Credits
 
-This library is taken, in part, from the WiThrottle library by 
-**Copyright © 2018-2019 Blue Knobby Systems Inc.**
+This delegate and connection code in this library is taken directly from the WiThrottle library by **Copyright © 2018-2019 Blue Knobby Systems Inc.**
 
 
 # DCC-EX Native network protocol library
@@ -205,25 +204,28 @@ bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activat
 
 ```<LinkedList.h>```  // https://github.com/ivanseidel/LinkedList
 
-This library can be retrieve via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The lirbary has been tested with veriosn ```1.3.3```
+This library can be retrieve via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The library has been tested with version ```1.3.3```
 
 
 ## Throttles
 
-To simplify the handling of Consists/Multiple Unit Trains the libray is implement to behave in a simlar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.
+To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.
 
 The protocol provides ```Consist throttleConsists[MAX_THROTTLES]```
 
-To acquire a loco on throttle 0 (zero) (the first throttle), you must first create a ```Loco``` object.  Details for the Loco can either be a direct dcc adddress or an entry from the Roster.  e.g. 
+To acquire a loco on throttle 0 (zero) (the first throttle), you must first create a ```Loco``` object.  Details for the Loco can either be a direct dcc address or an entry from the Roster.  e.g. 
 
 from DCC Address:
 
-```Loco loco(11, "dummy loco", LocoSourceEntry);```
+```Loco loco(11, "dummy loco", LocoSourceEntry);``` will create a loco with a DCC address of 11  and name of "dummy loco"
 
 from Roster Entry:
 
-```Loco loco2 = Loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());```
+```loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());``` will create a loco from the second entry (1) in the Roster
 
+To then add the loco to the throttle use ```dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);``` to add the loco to Throttle 0. 
+
+Control the speed and direction of all the locos on Throttle 0 with ```dccexProtocol.sendThrottleAction(0, speed, Forward);```
 
 ## Rosters
 
