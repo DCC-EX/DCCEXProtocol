@@ -3,6 +3,9 @@
 
 This delegate and connection code in this library is taken directly from the WiThrottle library by **Copyright © 2018-2019 Blue Knobby Systems Inc.**
 
+----
+----
+----
 
 # DCC-EX Native network protocol library
 
@@ -32,7 +35,6 @@ IPAddress serverAddress(192,168,1,1);
 ```
 Compile and run, you should see the client connect:
 
-
 ### DCCEX_Delegate
 
 Example to show how to implement a delegate class to handle callbacks.
@@ -57,6 +59,84 @@ Example to show how to acquire and control locos.  The Example assumes that you 
 
 Compile and run, you should see in Serial monitor, after 20 second delays, two locos on two throttles change speed, and have functions randomly change.
 
+----
+----
+----
+
+# Usage
+
+## Required Library
+
+```<LinkedList.h>```  // https://github.com/ivanseidel/LinkedList
+
+This library can be retrieved via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The library has been tested with version ```1.3.3```
+
+
+## Throttles
+
+To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.
+
+The protocol provides ```Consist throttleConsists[MAX_THROTTLES]```
+
+To acquire a loco on throttle 0 (zero) (the first throttle), you must first create a ```Loco``` object.  Details for the Loco can either be a direct dcc address or an entry from the Roster.  e.g. 
+
+from DCC Address:
+
+```Loco loco(11, "dummy loco", LocoSourceEntry);``` will create a loco with a DCC address of 11  and name of "dummy loco"
+
+from Roster Entry:
+
+```loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());``` will create a loco from the second entry (1) in the Roster
+
+To then add the loco to the throttle use ```dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);``` to add the loco to Throttle 0. 
+
+Control the speed and direction of all the locos on Throttle 0 with ```dccexProtocol.sendThrottleAction(0, speed, Forward);```
+
+## Rosters
+
+The Roster is stored as a Linked List.
+
+Retrieve the list with ```dccexProtocol.getRoster();```
+
+Retrieve the size of the list (number of locos) with ```dccexProtocol.roster.size()```
+
+Retrieve a ```ConsistLoco``` object from the list with ```dccexProtocol.roster.get(listEntryNumber)``` 
+
+
+## Turnouts/Points
+
+The List of defined Turnouts/Points is stored as a Linked List.
+
+Retrieve the list with ```dccexProtocol.getTurnouts();```
+
+Retrieve the size of the list with ```dccexProtocol.turnouts.size()```
+
+Retrieve a ```Turnout``` object from the list with ```dccexProtocol.turnouts.get(listEntryNumber)``` 
+
+## Routes/Automations
+
+The List of defined Routes/Automations is stored as a Linked List.
+
+Retrieve the list with ```dccexProtocol.getRoutes();```
+
+Retrieve the size of the list with ```dccexProtocol.routes.size()```
+
+Retrieve a ```Route``` object from the list with ```dccexProtocol.routes.get(listEntryNumber)``` 
+
+## Turntables 
+
+The List of defined Turntables is stored as a Linked List.
+
+Retrieve the list with ```dccexProtocol.getTurntables();```
+
+Retrieve the size of the list with ```dccexProtocol.turntables.size()```
+
+Retrieve a ```Turntable``` object from the list with ```dccexProtocol.turntables.get(listEntryNumber)``` 
+
+----
+----
+----
+
 # Structure
 
 ## Classes/Objects
@@ -67,34 +147,200 @@ Adds ```Facing``` to the Loco class.
 
 Used by ```Consist```
 
+#### Public Attributes
+
+    none
+
+#### Public methods
+
+    ConsistLoco() {};
+    ConsistLoco(int address, String name, LocoSource source, Facing facing);
+    bool setConsistLocoFacing(Facing facing);
+    Facing getConsistLocoFacing();
+
+---
+
 ### class Loco
 
-Used by ```Roster```
+Used by ```Roster``` directly.  Used by ```ConsistLoco``` indirectly.
+
+#### Public Attributes
+
+    Functions locoFunctions;
+
+#### Public methods
+
+    Loco() {}
+    Loco(int address, String name, LocoSource source);
+
+    bool setLocoSpeed(int speed);
+    bool setLocoDirection(Direction direction);
+    
+    int getLocoAddress();
+    bool setLocoName(String name);
+    String getLocoName();
+    bool setLocoSource(LocoSource source);
+    LocoSource getLocoSource();
+    int  getLocoSpeed();
+    Direction getLocoDirection();
+    void setIsFromRosterAndReceivedDetails();
+    bool getIsFromRosterAndReceivedDetails();
+
+---
 
 #### class Functions
 
 Used by ```Loco```
 
+#### Public Attributes
+
+    none
+
+#### Public methods
+
+        bool initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
+        bool setFunctionState(int functionNumber, FunctionState state);
+        String getFunctionName(int functionNumber);
+        FunctionState getFunctionState(int functionNumber);
+        FunctionLatching getFunctionLatching(int functionNumber);
+
+---
+
 ### class Consist
 
 Used by ```ConsistThrottle[]```
+
+#### Public Attributes
+
+    LinkedList<ConsistLoco*> consistLocos = LinkedList<ConsistLoco*>();
+
+#### Public methods
+
+    Consist() {}
+    Consist(String name);
+    bool consistAddLoco(Loco loco, Facing facing);
+    bool consistReleaseAllLocos();
+    bool consistReleaseLoco(int locoAddress);
+    int consistGetNumberOfLocos();
+    ConsistLoco* consistGetLocoAtPosition(int position);
+    int consistGetLocoPosition(int locoAddress);
+    bool consistSetLocoPosition(int locoAddress, int position);
+    bool actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]);
+    bool consistSetSpeed(int speed);
+    int consistGetSpeed();
+    bool consistSetDirection(Direction direction);
+    Direction consistGetDirection();
+    bool consistSetFunction(int functionNo, FunctionState state);
+    bool consistSetFunction(int address, int functionNo, FunctionState state);
+
+    String getConsistName();
+
+---
 
 ### class Turnout
 
 Used by ```Turnouts[]```
 
+#### Public Attributes
+
+    none
+
+#### Public methods
+
+    Turnout() {}
+    Turnout(int id, String name, TurnoutState state);
+    bool setTurnoutState(TurnoutAction action);
+    TurnoutState getTurnoutState();
+    bool setTurnoutId(int id);
+    int getTurnoutId();
+    bool setTurnoutName(String name);
+    String getTurnoutName();
+    void setHasReceivedDetails();
+    bool getHasReceivedDetails();
+
+---
+
 ### class Route
 
 Used by ```Routes[]```
+
+#### Public Attributes
+
+    none
+
+#### Public methods
+
+    Route() {}
+    Route(int id, String name);
+    int getRouteId();
+    bool setRouteName(String name);
+    String getRouteName();
+    bool setRouteType(String type);
+    RouteType getRouteType();
+
+    void setHasReceivedDetails();
+    bool getHasReceivedDetails();
+
+---
 
 ### class Turntable
 
 Used by ```Turntables[]```
 
+#### Public Attributes
+
+    LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
+
+#### Public methods
+
+    Turntable() {}
+    Turntable(int id, String name, TurntableType type, int position, int indexCount);
+    bool addTurntableIndex(int index, String indexName, int indexAngle);
+    bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
+    int getTurntableIndexCount(); // what was listed in the original definition
+
+    int getTurntableId();
+    bool setTurntableName(String name);
+    String getTurntableName();
+    bool setTurntableCurrentPosition(int index);
+    bool setTurntableType(TurntableType type);
+    TurntableType getTurntableType();
+    int getTurntableCurrentPosition();
+    int getTurntableNumberOfIndexes();
+    TurntableIndex* getTurntableIndexAt(int positionInLinkedList);
+    TurntableIndex* getTurntableIndex(int indexId);
+    TurntableState getTurntableState();
+    bool actionTurntableExternalChange(int index, TurntableState state);
+    void setHasReceivedDetails();
+    bool getHasReceivedDetails();
+
+---
+
 #### class TurntableIndex
 
 Used by ```Turntable```
 
+#### Public Attributes
+
+    int turntableIndexId;
+    int turntableIndexIndex;
+    String turntableIndexName;
+    int turntableIndexAngle;
+    bool hasReceivedDetail;
+
+#### Public methods
+
+    TurntableIndex() {}
+    TurntableIndex(int index, String name, int angle);
+    void setHasReceivedDetails();
+    bool getHasReceivedDetails();
+    String getTurntableIndexName();
+    int getTurntableIndexId();
+    int getTurntableIndexIndex();
+};
+
+----
+----
 
 ## public Attributes
 
@@ -137,25 +383,37 @@ Linked List of type ```Turntable```
 DCCEXProtocol(bool server = false);
 ```
 
+TBA
+
 ```
 void setDelegate(DCCEXProtocolDelegate *delegate);
 ```
+
+TBA
 
 ```
 void setLogStream(Stream *console);
 ```
 
+TBA
+
 ```
 void connect(Stream *stream);
 ```
+
+TBA
 
 ```
 void disconnect();
 ```
 
+TBA
+
 ```
 bool check();
 ```
+
+TBA
 
 ### Control Related
 
@@ -188,6 +446,12 @@ bool sendFunction(int throttle, String address, int funcNum, bool pressed);
 Send a function a specific loco on a Throttle.
 
 ```
+Consist getThrottleConsist(int throttleNo);
+```
+
+TBA
+
+```
 bool sendLocoAction(int address, int speed, Direction direction);
 ``` 
 
@@ -205,108 +469,105 @@ bool sendLocoUpdateRequest(int address);
 bool sendServerDetailsRequest();
 ```
 
+TBA
+
 ```
 bool getRoster();
 ```
+
+TBA
 
 ```
 bool getTurnouts();
 ```
 
+TBA
+
 ```
 bool getRoutes();
 ```
+
+TBA
 
 ```
 bool getTurntables();
 ```
 
+TBA
+
 ```
 long getLastServerResponseTime();
 ```
+
+TBA
 
 ```
 void sendEmergencyStop();
 ```
 
-```
-Consist getThrottleConsist(int throttleNo);
-```
+TBA
 
 ```
 bool sendTrackPower(TrackPower state);
 ```
 
+TBA
+
 ```
 bool sendTrackPower(TrackPower state, char track);
 ```
+
+#### Turnout/Point commands
 
 ```
 bool sendTurnoutAction(int turnoutId, TurnoutAction action);
 ```
 
+TBA
+
+#### Route/Automation commands
+
 ```
 bool sendRouteAction(int routeId);
 ```
 
+TBA
+
 ```
 bool sendPauseRoutes();
+```
+
+TBA
 
 ```
 bool sendResumeRoutes();
+```
+
+TBA
+
+#### Turntable commands
 
 ```
 bool sendTurntableAction(int turntableId, int position, int activity);
 ```
 
+TBA
+
 ```
 bool sendAccessoryAction(int accessoryAddress, int activate);
 ```
+
+TBA
 
 ```
 bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
 ```
 
-# Usage
+TBA
 
-## Required Library
-
-```<LinkedList.h>```  // https://github.com/ivanseidel/LinkedList
-
-This library can be retrieved via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The library has been tested with version ```1.3.3```
-
-
-## Throttles
-
-To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.
-
-The protocol provides ```Consist throttleConsists[MAX_THROTTLES]```
-
-To acquire a loco on throttle 0 (zero) (the first throttle), you must first create a ```Loco``` object.  Details for the Loco can either be a direct dcc address or an entry from the Roster.  e.g. 
-
-from DCC Address:
-
-```Loco loco(11, "dummy loco", LocoSourceEntry);``` will create a loco with a DCC address of 11  and name of "dummy loco"
-
-from Roster Entry:
-
-```loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());``` will create a loco from the second entry (1) in the Roster
-
-To then add the loco to the throttle use ```dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);``` to add the loco to Throttle 0. 
-
-Control the speed and direction of all the locos on Throttle 0 with ```dccexProtocol.sendThrottleAction(0, speed, Forward);```
-
-## Rosters
-
-The Roster is stored as a Linked List.
-
-Retrieve the list with ```dccexProtocol.getRoster();```
-
-Retrieve the size of the list (number of locos) with ```dccexProtocol.roster.size()```
-
-Retrieve a ```ConLoco``` object from the list with ```dccexProtocol.roster.get(listEntryNumber)``` 
-
-
+----
+----
+----
 
 # License
 ----

@@ -1220,9 +1220,11 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         int address = loco.getLocoAddress();
         String name = loco.getLocoName();
         LocoSource source = loco.getLocoSource();
+        Facing correctedFacing = facing;
         int rslt = consistGetLocoPosition(address);
         if (rslt<0) { // not already in the list, so add it
-            consistLocos.add(new ConsistLoco(address, name, source, facing));
+            if (consistGetNumberOfLocos() == 0) correctedFacing - FacingForward; // first loco in consist is always forward
+            consistLocos.add(new ConsistLoco(address, name, source, correctedFacing));
             return true;
         }
         return false;
@@ -1256,6 +1258,11 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
             }
         }
         return -1;
+    }
+    // set the position of the loco in the consist
+    bool Consist::consistSetLocoPosition(int locoAddress, int position) {
+
+        // ?????????????????????
     }
     bool Consist::consistSetSpeed(int speed) {
         if (consistLocos.size()>0) {

@@ -156,8 +156,6 @@ class Loco {
 
 class ConsistLoco : public Loco {
     public:
-        // ConsistLoco(int address, String name, LocoSource source, Facing facing)
-        //  : Loco(address, name, source) {};
         ConsistLoco() {};
         ConsistLoco(int address, String name, LocoSource source, Facing facing);
         bool setConsistLocoFacing(Facing facing);
@@ -177,6 +175,7 @@ class Consist {
         int consistGetNumberOfLocos();
         ConsistLoco* consistGetLocoAtPosition(int position);
         int consistGetLocoPosition(int locoAddress);
+        bool consistSetLocoPosition(int locoAddress, int position);
 
         bool actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]);
 
