@@ -349,7 +349,6 @@ class DCCEXProtocol {
     LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
     LinkedList<Route*> routes = LinkedList<Route*>();
     LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
-    // LinkedList<String> args = LinkedList<String>();
 
     //helper functions
     Direction getDirectionFromSpeedByte(int speedByte);
