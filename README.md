@@ -59,27 +59,74 @@ Compile and run, you should see in Serial monitor, after 20 second delays, two l
 
 # Structure
 
+## Classes/Objects
+
+### class ConsistLoco : public Loco 
+
+Adds ```Facing``` to the Loco class.
+
+Used by ```Consist```
+
+### class Loco
+
+Used by ```Roster```
+
+#### class Functions
+
+Used by ```Loco```
+
+### class Consist
+
+Used by ```ConsistThrottle[]```
+
+### class Turnout
+
+Used by ```Turnouts[]```
+
+### class Route
+
+Used by ```Routes[]```
+
+### class Turntable
+
+Used by ```Turntables[]```
+
+#### class TurntableIndex
+
+Used by ```Turntable```
+
+
 ## public Attributes
 
 ```
 Consist throttleConsists[MAX_THROTTLES];
 ```
 
+Linked List of type ```Consist```
+
 ```
 LinkedList<Loco*> roster = LinkedList<Loco*>();
 ```
+
+Linked List of type ```Loco```
 
 ```
 LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
 ```
 
+Linked List of type ```Turnout```
+
 ```
 LinkedList<Route*> routes = LinkedList<Route*>();
 ```
 
+Linked List of type ```Route```
+
 ```
 LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
 ```
+
+Linked List of type ```Turntable```
 
 
 ## Public Methods
