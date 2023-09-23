@@ -33,31 +33,25 @@ const char* ssid = "MySSID";
 const char* password =  "MyPWD";
 IPAddress serverAddress(192,168,1,1);
 ```
-Compile and run, you should see the client connect:
+Compile and run, you should see the client connect in the Serial monitor.
 
 ### DCCEX_Delegate
 
 Example to show how to implement a delegate class to handle callbacks.
 
-Compile and run, you should see in Serial monitor the server version, printed by ```void receivedVersion(String version)``` method:
-
-### DCCEX_Delegate
-
-Example to show how to implement a delegate class to handle callbacks.
-
-Compile and run, you should see in Serial monitor the server version printed.
+Compile and run, you should see in the Serial monitor the server version printed.
 
 ### DCCEXProtocol_Roster_etc
 
 Example to show how to retrieve the Roster, Turnouts/Point list, Routes/Automations List, and Turntable List for the Server.
 
-Compile and run, you should see in Serial monitor the lists printed.
+Compile and run, you should see in the Serial monitor the lists printed.
 
-### DCCEXProtocol_Loc_Control
+### DCCEXProtocol_Loco_Control
 
 Example to show how to acquire and control locos.  The Example assumes that you have a Roster on the EX-CommandStation with at least two entries.
 
-Compile and run, you should see in Serial monitor, after 20 second delays, two locos on two throttles change speed, and have functions randomly change.
+Compile and run, you should see in the Serial monitor, after 20 second delays, two locos on two throttles change speed, and have functions randomly change.
 
 ----
 ----
