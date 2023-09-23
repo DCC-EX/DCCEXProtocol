@@ -131,6 +131,8 @@ Linked List of type ```Turntable```
 
 ## Public Methods
 
+### Connection related
+
 ```
 DCCEXProtocol(bool server = false);
 ```
@@ -155,29 +157,49 @@ void disconnect();
 bool check();
 ```
 
+### Control Related
+
+#### general
+
 ```
 void sendCommand(String cmd);
 ```
+
+***This should not be used and will likely be made private***
+
+#### Throttle Control
 
 ```
 bool sendThrottleAction(int throttle, int speed, Direction direction);
 ```
 
-```
-bool sendLocoAction(int address, int speed, Direction direction);
-```
+Send a speed and direction to all locos on a Throttle.
 
 ```
 bool sendFunction(int throttle, int funcNum, bool pressed);
 ```
 
+Send a function to a Throttle.  Generally only the lead loco will get the command.
+
 ```
 bool sendFunction(int throttle, String address, int funcNum, bool pressed);
 ```
 
+Send a function a specific loco on a Throttle.
+
+```
+bool sendLocoAction(int address, int speed, Direction direction);
+``` 
+
+***This should not be used and will likely be made private***
+
 ```
 bool sendLocoUpdateRequest(int address);
 ```
+
+***This should not be used and will likely be made private***
+
+#### Server Info 
 
 ```
 bool sendServerDetailsRequest();
@@ -251,7 +273,7 @@ bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activat
 
 ```<LinkedList.h>```  // https://github.com/ivanseidel/LinkedList
 
-This library can be retrieve via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The library has been tested with version ```1.3.3```
+This library can be retrieved via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The library has been tested with version ```1.3.3```
 
 
 ## Throttles
