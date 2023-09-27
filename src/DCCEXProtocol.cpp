@@ -71,7 +71,7 @@ void DCCEXProtocol::init() {
     //last Response time
     lastServerResponseTime = millis() /1000;
 
-    console->println("init(): end");
+    // console->println("init(): end");
 }
 
 // Set the delegate instance for callbasks
@@ -194,7 +194,7 @@ void DCCEXProtocol::sendCommand(String cmd) {
 
 //private
 bool DCCEXProtocol::processCommand(char *c, int len) {
-    console->println("processCommand()");
+    // console->println("processCommand()");
     bool changed = false;
 
     lastServerResponseTime = millis()/1000;
@@ -230,17 +230,17 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
                 processRosterEntry(args); //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
             }
 
-        } else if (len > 3 && char0=='j' && char1=='T' && (noOfParameters > 1)) { 
-            if ( (noOfParameters == 4) && (args.get(3).charAt(0) == '"') 
-            || (noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) {
+        } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters > 1)) { 
+            if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
+            || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
                 processTurnoutEntry(args); //<jT id state |"[desc]">   or    <jT id X">
             } else {
                 processTurnoutList(args); //<jT [id1 id2 id3 ...]>
             }
 
         } else if (len > 3 && char0=='j' && char1=='A' && (noOfParameters > 1)) { 
-            if ( (noOfParameters == 4) && (args.get(3).charAt(0) == '"') 
-            || (noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) {
+            if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
+            || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
                 processRouteEntry(args); //<jA id X|type |"desc">   or    <jA id X">
             } else {
                 processRouteList(args); //<jA [id1 id2 id3 ...]>
@@ -276,32 +276,32 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
             }
 
         } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters > 1)) { 
-            if ( (noOfParameters == 4) && (args.get(3).charAt(0) == '"') 
-            || (noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) {
+            if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"'))
+            || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
                 processRouteEntry(args); //<jA id type |"desc">   or  <jA id X>
             } else {
                 processRouteList(args); //<jA [id0 id1 id2 ..]>
             }
         } else if (len > 3 && char0 == 'q') { // <q id>
             processSensorEntry(args);
-        } else if (len = 3 && char0 == 'X') { // <X>
+        } else if (len -= 3 && char0 == 'X') { // <X>
             // error   Nothing we can do with it as we don't know what it is for
         } else {
             processUnknownCommand(s);
         }
     }
 
-    console->println("processCommand() end");
+    // console->println("processCommand() end");
     return true;
 }
 
 //private
 void DCCEXProtocol::processUnknownCommand(String unknownCommand) {
-    console->println("processUnknownCommand()");
+    // console->println("processUnknownCommand()");
     if (delegate) {
         console->printf("unknown command '%s'\n", unknownCommand);
     }
-    console->println("processUnknownCommand() end");
+    // console->println("processUnknownCommand() end");
 }
 
 // ******************************************************************************************************
@@ -311,7 +311,7 @@ void DCCEXProtocol::processUnknownCommand(String unknownCommand) {
 
 //private
 void DCCEXProtocol::processServerDescription(LinkedList<String> &args) { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
-    console->println("processServerDescription()");
+    // console->println("processServerDescription()");
     if (delegate) {
         serverVersion = args.get(1);
         serverMicroprocessorType = args.get(3);
@@ -320,12 +320,12 @@ void DCCEXProtocol::processServerDescription(LinkedList<String> &args) { //<iDCC
 
         delegate->receivedServerDescription(serverMicroprocessorType, serverVersion);
     }
-    console->println("processServerDescription(): end");
+    // console->println("processServerDescription(): end");
 }
 
 //private
 void DCCEXProtocol::processTrackPower(LinkedList<String> &args) {
-    console->println("processTrackPower()");
+    // console->println("processTrackPower()");
     if (delegate) {
         TrackPower state = PowerUnknown;
         if (args.get(0).charAt(0)=='0') {
@@ -336,7 +336,7 @@ void DCCEXProtocol::processTrackPower(LinkedList<String> &args) {
 
         delegate->receivedTrackPower(state);
     }
-     console->println("processTrackPower(): end");
+    //  console->println("processTrackPower(): end");
 }
 
 // ****************
@@ -344,7 +344,7 @@ void DCCEXProtocol::processTrackPower(LinkedList<String> &args) {
 
 //private
 void DCCEXProtocol::processRosterList(LinkedList<String> &args) {
-    console->println("processRosterList()");
+    // console->println("processRosterList()");
     if (delegate) {
         if (roster.size()>0) { // already have a roster so this is an update
             roster.clear();
@@ -355,21 +355,21 @@ void DCCEXProtocol::processRosterList(LinkedList<String> &args) {
             sendRosterEntryRequest(address);
         }
     }
-    console->println("processRosterList(): end");
+    // console->println("processRosterList(): end");
 }
 
 //private
 void DCCEXProtocol::sendRosterEntryRequest(int address) {
-    console->println("sendRosterEntryRequest()");
+    // console->println("sendRosterEntryRequest()");
     if (delegate) {
         sendCommand("<JR " + String(address) + ">");
     }
-    console->println("sendRosterEntryRequest(): end");
+    // console->println("sendRosterEntryRequest(): end");
 }
 
 //private
 void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
-    console->println("processRosterEntry()");
+    // console->println("processRosterEntry()");
     if (delegate) {
         //find the roster entry to update
         if (roster.size()>0) { 
@@ -415,7 +415,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
             }
         } 
     }
-    console->println("processRosterEntry(): end");
+    // console->println("processRosterEntry(): end");
 }
 
 // ****************
@@ -423,7 +423,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
 
 //private
 void DCCEXProtocol::processTurnoutList(LinkedList<String> &args) {
-    console->println("processTurnoutList()");
+    // console->println("processTurnoutList()");
     if (delegate) {
         if (turnouts.size()>0) { // already have a turnouts list so this is an update
             turnouts.clear();
@@ -434,21 +434,21 @@ void DCCEXProtocol::processTurnoutList(LinkedList<String> &args) {
             sendTurnoutEntryRequest(id);
         }
     }
-    console->println("processTurnoutList(): end");
+    // console->println("processTurnoutList(): end");
 }
 
 //private
 void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
-    console->println("sendTurnoutEntryRequest()");
+    // console->println("sendTurnoutEntryRequest()");
     if (delegate) {
         sendCommand("<JT " + String(id) + ">");
     }
-    console->println("sendTurnoutEntryRequest() end");
+    // console->println("sendTurnoutEntryRequest() end");
 }
 
 //private
 void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
-    console->println("processTurnoutEntry()");
+    // console->println("processTurnoutEntry()");
     if (delegate) {
         //find the turnout entry to update
         if (turnouts.size()>0) { 
@@ -485,7 +485,7 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
             }            
         } 
     }
-    console->println("processTurnoutEntry() end");
+    // console->println("processTurnoutEntry() end");
 }
 
 //private
@@ -496,7 +496,7 @@ bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
 
 //private
 void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id state>
-    console->println("processTurnoutAction(): ");
+    // console->println("processTurnoutAction(): ");
     if (delegate) {
         //find the Turnout entry to update
         if (turnouts.size()>0) { 
@@ -512,7 +512,7 @@ void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id sta
             }
         } 
     }
-    console->println("processTurnoutAction(): end");
+    // console->println("processTurnoutAction(): end");
 }
 
 // ****************
@@ -520,7 +520,7 @@ void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id sta
 
 //private
 void DCCEXProtocol::processRouteList(LinkedList<String> &args) {
-    console->println("processRouteList()");
+    // console->println("processRouteList()");
     if (delegate) {
         if (routes.size()>0) { // already have a routes list so this is an update
             routes.clear();
@@ -531,21 +531,21 @@ void DCCEXProtocol::processRouteList(LinkedList<String> &args) {
             sendRouteEntryRequest(id);
         }
     }
-    console->println("processRouteList(): end");
+    // console->println("processRouteList(): end");
 }
 
 //private
 void DCCEXProtocol::sendRouteEntryRequest(int address) {
-    console->println("sendRouteEntryRequest()");
+    // console->println("sendRouteEntryRequest()");
     if (delegate) {
         sendCommand("<JA " + String(address) + ">");
     }
-    console->println("sendRouteEntryRequest() end");
+    // console->println("sendRouteEntryRequest() end");
 }
 
 //private
 void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
-    console->println("processRouteEntry()");
+    // console->println("processRouteEntry()");
     if (delegate) {
         //find the Route entry to update
         if (routes.size()>0) { 
@@ -578,7 +578,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
             }            
         } 
     }
-    console->println("processRouteEntry() end");
+    // console->println("processRouteEntry() end");
 }
 
 // void DCCEXProtocol::processRouteAction(LinkedList<String> &args) {
@@ -593,7 +593,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
 // Turntables
 
 void DCCEXProtocol::processTurntableList(LinkedList<String> &args) {  // <jO [id1 id2 id3 ...]>
-    console->println("processTurntableList(): ");
+    // console->println("processTurntableList(): ");
     if (delegate) {
         if (turntables.size()>0) { // already have a turntables list so this is an update
             turntables.clear();
@@ -605,30 +605,30 @@ void DCCEXProtocol::processTurntableList(LinkedList<String> &args) {  // <jO [id
             sendTurntableIndexEntryRequest(id);
         }
     }
-    console->print("processTurntableList(): end: size:"); console->println(turntables.size());
+    // console->print("processTurntableList(): end: size:"); console->println(turntables.size());
 }
 
 //private
 void DCCEXProtocol::sendTurntableEntryRequest(int id) {
-    console->println("sendTurntableEntryRequest()");
+    // console->println("sendTurntableEntryRequest()");
     if (delegate) {
         sendCommand("<JO " + String(id) + ">");
     }
-    console->println("sendTurntableEntryRequest() end");
+    // console->println("sendTurntableEntryRequest() end");
 }
 
 //private
 void DCCEXProtocol::sendTurntableIndexEntryRequest(int id) {
-    console->println("sendTurntableIndexEntryRequest()");
+    // console->println("sendTurntableIndexEntryRequest()");
     if (delegate) {
         sendCommand("<JP " + String(id) + ">");
     }
-    console->println("sendTurntableIndexEntryRequest() end");
+    // console->println("sendTurntableIndexEntryRequest() end");
 }
 
 //private
 void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id type position position_count "[desc]">
-    console->println("processTurntableEntry(): ");
+    // console->println("processTurntableEntry(): ");
     if (delegate) {
         //find the Turntable entry to update
         if (turntables.size()>0) { 
@@ -654,12 +654,12 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
             }
         } 
     }
-    console->println("processTurntableEntry(): end");
+    // console->println("processTurntableEntry(): end");
 }
 
 //private
 void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <jP id index angle "[desc]">
-    console->println("processTurntableIndexEntry(): ");
+    // console->println("processTurntableIndexEntry(): ");
     if (delegate) {
         if (args.size() > 3) {  // server did not find the index
             //find the Turntable entry to update
@@ -682,12 +682,12 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
             }
         }
     }
-    console->println("processTurntableIndexEntry(): end");
+    // console->println("processTurntableIndexEntry(): end");
 }
 
 //private
 void DCCEXProtocol::processTurntableAction(LinkedList<String> &args) { // <i id position moving>
-    console->println("processTurntableAction(): ");
+    // console->println("processTurntableAction(): ");
     if (delegate) {
         int id = args.get(1).toInt();
         int newPos = args.get(2).toInt();
@@ -698,7 +698,7 @@ void DCCEXProtocol::processTurntableAction(LinkedList<String> &args) { // <i id 
         }
         delegate->receivedTurntableAction(id, newPos, state);
     }
-    console->println("processTurntableAction(): end");
+    // console->println("processTurntableAction(): end");
 }
 
 //private
@@ -707,7 +707,7 @@ void DCCEXProtocol::processSensorEntry(LinkedList<String> &args) {  // <jO id ty
     if (delegate) {
         //????????????????????????????????????????
     }
-    console->println("processSensorEntry(): end");
+    // console->println("processSensorEntry(): end");
 }
 
 // ****************
@@ -715,7 +715,7 @@ void DCCEXProtocol::processSensorEntry(LinkedList<String> &args) {  // <jO id ty
 
 //private
 bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg speedByte functMap>
-    console->println("processLocoAction()");
+    // console->println("processLocoAction()");
     if (delegate) {
         int address = args.get(1).toInt();
         int speedByte = args.get(3).toInt();
@@ -751,7 +751,7 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg s
             return false;
         }
     }
-    console->println("processLocoAction() end");
+    // console->println("processLocoAction() end");
     return true;
 }
 
@@ -759,11 +759,11 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg s
 // server commands
 
 bool DCCEXProtocol::sendServerDetailsRequest() {
-    console->println("sendServerDetailsRequest(): ");
+    // console->println("sendServerDetailsRequest(): ");
     if (delegate) {
        sendCommand("<s>");	
     }
-    console->println("sendServerDetailsRequest(): end");
+    // console->println("sendServerDetailsRequest(): end");
     return true; 
 }
 
@@ -771,37 +771,37 @@ bool DCCEXProtocol::sendServerDetailsRequest() {
 // power commands
 
 bool DCCEXProtocol::sendTrackPower(TrackPower state) {
-    console->println("sendTrackPower(): ");
+    // console->println("sendTrackPower(): ");
     if (delegate) {
        sendCommand("<" + String(state) + ">");	
     }
-    console->println("sendTrackPower(): end");
+    // console->println("sendTrackPower(): end");
     return true;
 }
 
 bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
-    console->println("sendTrackPower(): ");
+    // console->println("sendTrackPower(): ");
     if (delegate) {
         sendCommand("<" + String(state) + " " + String(track) + ">");	
     }
-    console->println("sendTrackPower(): end");
+    // console->println("sendTrackPower(): end");
     return true;
 }
 
 // ******************************************************************************************************
 
 void DCCEXProtocol::sendEmergencyStop() {
-    console->println("emergencyStop(): ");
+    // console->println("emergencyStop(): ");
     if (delegate) {
             sendCommand("<!>");
     }
-    console->println("emergencyStop(): end");
+    // console->println("emergencyStop(): end");
 }
 
 // ******************************************************************************************************
 
 bool DCCEXProtocol::sendFunction(int throttle, int funcNum, bool pressed) {
-    console->println("sendFunction(): ");
+    // console->println("sendFunction(): ");
     if (delegate) {
         ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(0);
         int address = conLoco->getLocoAddress();
@@ -809,16 +809,16 @@ bool DCCEXProtocol::sendFunction(int throttle, int funcNum, bool pressed) {
             sendCommand("<F " + String(address) + " " + String(funcNum) + " " + String(pressed) + ">");
         }
     }
-    console->println("sendFunction(): end"); 
+    // console->println("sendFunction(): end"); 
     return true;
 }
 
 bool DCCEXProtocol::sendFunction(int throttle, String address, int funcNum, bool pressed) {
-    console->println("sendFunction(): ");
+    // console->println("sendFunction(): ");
     if (delegate) {
         sendCommand("<F " + String(address) + " " + String(funcNum) + " " + String(pressed) + ">");
     }
-    console->println("sendFunction(): end"); 
+    // console->println("sendFunction(): end"); 
     return true;
 }
 
@@ -827,7 +827,7 @@ bool DCCEXProtocol::sendFunction(int throttle, String address, int funcNum, bool
 // throttle
 
 bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direction) {
-    console->println("sendThrottleAction(): ");
+    // console->println("sendThrottleAction(): ");
     if (delegate) {
         if (throttleConsists[throttle].consistGetNumberOfLocos()>0) {
             throttleConsists[throttle].consistSetSpeed(speed);
@@ -847,7 +847,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
             }
         }
     }
-    console->println("sendThrottleAction(): end");
+    // console->println("sendThrottleAction(): end");
     return true;
 }
 
@@ -858,49 +858,49 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
 // 
 
 bool DCCEXProtocol::sendLocoUpdateRequest(int address) {
-    console->println("sendLocoUpdateRequest()");
+    // console->println("sendLocoUpdateRequest()");
     if (delegate) {
         sendCommand("<t " + String(address) + ">");
     }
-    console->println("sendLocoUpdateRequest() end");
+    // console->println("sendLocoUpdateRequest() end");
     return true;
 }
 
 bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) {
-    console->print("sendLocoAction(): "); console->println(address);
+    // console->print("sendLocoAction(): "); console->println(address);
     if (delegate) {
         sendCommand("<t " + String(address) + " " + String(speed) + " " + String(direction) + ">");
     }
-    console->println("sendLocoAction(): end");
+    // console->println("sendLocoAction(): end");
     return true;
 }
 
 // ******************************************************************************************************
 
 bool DCCEXProtocol::sendRouteAction(int routeId) {
-    console->println("sendRouteAction()");
+    // console->println("sendRouteAction()");
     if (delegate) {
         sendCommand("</START " + String(routeId) + ">");
     }
-    console->println("sendRouteAction() end");
+    // console->println("sendRouteAction() end");
     return true;
 }
 
 bool DCCEXProtocol::sendPauseRoutes() {
-    console->println("sendPauseRoutes()");
+    // console->println("sendPauseRoutes()");
     if (delegate) {
         sendCommand("</PAUSE>");
     }
-    console->println("sendPauseRoutes() end");
+    // console->println("sendPauseRoutes() end");
     return true;
 }
 
 bool DCCEXProtocol::sendResumeRoutes() {
-    console->println("sendResumeRoutes()");
+    // console->println("sendResumeRoutes()");
     if (delegate) {
         sendCommand("</RESUME>");
     }
-    console->println("sendResumeRoutes() end");
+    // console->println("sendResumeRoutes() end");
     return true;
 }
 
@@ -908,67 +908,67 @@ bool DCCEXProtocol::sendResumeRoutes() {
 
 
 bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activity) {
-    console->println("sendTurntable()");
+    // console->println("sendTurntable()");
     if (delegate) {
         sendCommand("<I " + String(turntableId) + " " + String(position) + ">");
     }
-    console->println("sendTurntable() end");
+    // console->println("sendTurntable() end");
     return true;
 }
 
 bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
-    console->println("sendAccessory()");
+    // console->println("sendAccessory()");
     if (delegate) {
         sendCommand("<a " + String(accessoryAddress) + " " + String(activate) + ">");
     }
-    console->println("sendAccessory() end");
+    // console->println("sendAccessory() end");
     return true;
 }
 
 bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate) {
-    console->println("sendAccessory()");
+    // console->println("sendAccessory()");
     if (delegate) {
         sendCommand("<a " + String(accessoryAddress) + " " + String(accessorySubAddr) + " " + String(activate) + ">");
     }
-    console->println("sendAccessory() end");
+    // console->println("sendAccessory() end");
     return true;
 }
 
 // ******************************************************************************************************
 
 bool DCCEXProtocol::getRoster() {
-    console->println("getRoster()");
+    // console->println("getRoster()");
     if (delegate) {
         sendCommand("<JR>");
     }
-    console->println("getRoster() end");
+    // console->println("getRoster() end");
     return true;
 }
 
 bool DCCEXProtocol::getTurnouts() {
-    console->println("getTurnouts()");
+    // console->println("getTurnouts()");
     if (delegate) {
         sendCommand("<JT>");
     }
-    console->println("getTurnouts() end");
+    // console->println("getTurnouts() end");
     return true;
 }
 
 bool DCCEXProtocol::getRoutes() {
-    console->println("getRoutes()");
+    // console->println("getRoutes()");
     if (delegate) {
         sendCommand("<JA>");
     }
-    console->println("getRoutes() end");
+    // console->println("getRoutes() end");
     return true;
 }
 
 bool DCCEXProtocol::getTurntables() {
-    console->println("getTurntables()");
+    // console->println("getTurntables()");
     if (delegate) {
         sendCommand("<JO>");
     }
-    console->println("getTurntables() end");
+    // console->println("getTurntables() end");
     return true;
 }
 
@@ -1333,9 +1333,11 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     }
     bool Consist::consistSetFunction(int functionNo, FunctionState state) {
         // ??????????????????????????????????
+        return true;
     }
     bool Consist::consistSetFunction(int address, int functionNo, FunctionState state) {
         // ??????????????????????????????????
+        return true;
     }
 
     String Consist::getConsistName() {
@@ -1466,6 +1468,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     }
     bool Turntable::addTurntableIndex(int index, String indexName, int indexAngle) {
         turntableIndexes.add(new TurntableIndex(index, indexName, indexAngle));
+        return true;
     }
     bool Turntable::setTurntableCurrentPosition(int index) {
         if (turntableCurrentPosition != index) {
