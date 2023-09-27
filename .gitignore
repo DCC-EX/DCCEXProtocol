@@ -16,3 +16,11 @@
 *~
 .vscode/c_cpp_properties.json
 .vscode/*.*
+
+# example VCS files
+examples/*/.pio
+examples/*/.pio/*.*
+examples/*/.vscode
+examples/*/.vscode/*.*
+examples/*/.gitignore
+examples/*/platform.ini

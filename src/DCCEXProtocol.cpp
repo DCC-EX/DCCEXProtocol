@@ -195,7 +195,6 @@ void DCCEXProtocol::sendCommand(String cmd) {
 //private
 bool DCCEXProtocol::processCommand(char *c, int len) {
     // console->println("processCommand()");
-    bool changed = false;
 
     lastServerResponseTime = millis()/1000;
 
@@ -203,7 +202,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
 
     String s = String(c);
     LinkedList<String> args;
-    bool rslt = splitCommand(args, s.substring(1, s.length() - 1),' ');
+    splitCommand(args, s.substring(1, s.length() - 1),' ');
     char char0 = args.get(0).charAt(0);
     char char1 = args.get(0).charAt(1);
     int noOfParameters = args.size();
@@ -297,11 +296,11 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
 
 //private
 void DCCEXProtocol::processUnknownCommand(String unknownCommand) {
-    // console->println("processUnknownCommand()");
+    console->println(F("processUnknownCommand()"));
     if (delegate) {
         console->printf("unknown command '%s'\n", unknownCommand);
     }
-    // console->println("processUnknownCommand() end");
+    console->println(F("processUnknownCommand() end"));
 }
 
 // ******************************************************************************************************
@@ -378,13 +377,13 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                 if (roster.get(i)->getLocoAddress() == address) {
                     // console->print("processRosterEntry(): found: "); console->println(address);
                     String name = args.get(2);
-                    bool rslt = roster.get(i)->setLocoName(stripLeadAndTrailQuotes(name));
-                    rslt = roster.get(i)->setLocoSource(LocoSourceRoster);
+                    roster.get(i)->setLocoName(stripLeadAndTrailQuotes(name));
+                    roster.get(i)->setLocoSource(LocoSourceRoster);
                     roster.get(i)->setIsFromRosterAndReceivedDetails();
 
                     String functions = stripLeadAndTrailQuotes(args.get(3));
                     LinkedList<String> functionArgs;
-                    rslt = splitCommand(functionArgs, functions, '/');
+                    splitCommand(functionArgs, functions, '/');
                     int noOfParameters = functionArgs.size();
 
                     console->print("processing Functions: "); console->println(functions);
@@ -465,8 +464,8 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
                             state = TurnoutThrown;
                         }
                     }
-                    bool rslt = turnouts.get(i)->setTurnoutId(id);
-                    rslt = turnouts.get(i)->setTurnoutName(stripLeadAndTrailQuotes(name));
+                    turnouts.get(i)->setTurnoutId(id);
+                    turnouts.get(i)->setTurnoutName(stripLeadAndTrailQuotes(name));
                     turnouts.get(i)->setHasReceivedDetails();
                 }
             }
@@ -505,7 +504,7 @@ void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id sta
                 if (turnouts.get(i)->getTurnoutId()==id) {
                     TurnoutState state = args.get(2).toInt();
                     if (args.size() >= 3) {
-                        bool rslt = turnouts.get(i)->setTurnoutState(state);
+                        turnouts.get(i)->setTurnoutState(state);
                         delegate->receivedTurnoutAction(id, state);
                     }
                 }
@@ -558,8 +557,8 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
                         type = args.get(2);
                         name = args.get(3);
                     }
-                    bool rslt = routes.get(i)->setRouteName(stripLeadAndTrailQuotes(name));
-                    rslt = routes.get(i)->setRouteType(type);
+                    routes.get(i)->setRouteName(stripLeadAndTrailQuotes(name));
+                    routes.get(i)->setRouteType(type);
                     routes.get(i)->setHasReceivedDetails();
                 }
             }
@@ -645,10 +644,10 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
                         position = args.get(3).toInt();
                         indexCount = args.get(4).toInt();
                     }
-                    bool rslt = turntables.get(i)->setTurntableName(stripLeadAndTrailQuotes(name));
-                    rslt = turntables.get(i)->setTurntableType(type);
-                    rslt = turntables.get(i)->setTurntableCurrentPosition(position);
-                    rslt = turntables.get(i)->setTurntableIndexCount(indexCount);
+                    turntables.get(i)->setTurntableName(stripLeadAndTrailQuotes(name));
+                    turntables.get(i)->setTurntableType(type);
+                    turntables.get(i)->setTurntableCurrentPosition(position);
+                    turntables.get(i)->setTurntableIndexCount(indexCount);
                     turntables.get(i)->setHasReceivedDetails();
                 }
             }
@@ -740,7 +739,7 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg s
                         throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
                     }
                 }
-                bool rslt = throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fnStates);
+                throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fnStates);
 
                 delegate->receivedSpeed(throttleNo, speed);
                 delegate->receivedDirection(throttleNo, dir);
@@ -1268,7 +1267,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         if (consistLocos.size()>0) {
             if (consistSpeed!=speed) {
                 for (int i=0; i<consistLocos.size(); i++) {
-                    bool rslt = consistLocos.get(i)->setLocoSpeed(speed);
+                    consistLocos.get(i)->setLocoSpeed(speed);
                 }
             }
         }
@@ -1290,8 +1289,8 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
                             locoDir = Forward;
                         }
                     }
-                    bool rslt = consistLocos.get(i)->setLocoSpeed(consistSpeed);
-                    rslt = consistLocos.get(i)->setLocoDirection(locoDir);
+                    consistLocos.get(i)->setLocoSpeed(consistSpeed);
+                    consistLocos.get(i)->setLocoDirection(locoDir);
                 }
             }
         }
@@ -1310,8 +1309,8 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
                             locoDir = Forward;
                         }
                     }
-                    bool rslt = consistLocos.get(i)->setLocoSpeed(consistSpeed);
-                    rslt = consistLocos.get(i)->setLocoDirection(locoDir);
+                    consistLocos.get(i)->setLocoSpeed(consistSpeed);
+                    consistLocos.get(i)->setLocoDirection(locoDir);
 
                     // if (i==0) {
                     //     FunctionState fnStates[MAX_FUNCTIONS];
