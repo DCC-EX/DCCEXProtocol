@@ -167,7 +167,7 @@ int DCCEXProtocol::getSpeedFromSpeedByte(int speedByte) {
 
 void DCCEXProtocol::getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap) {
  
-    for (int i=0; i<MAX_FUNCTIONS; i++) {
+    for (uint i=0; i<MAX_FUNCTIONS; i++) {
         fnStates[i] = bitExtracted(functionMap, 1, i+1);
     }
 }
@@ -208,7 +208,7 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
     int noOfParameters = args.size();
 
     // console->print("processing: "); console->println(s);
-    // for (int i=0; i<args.size();i++) {
+    // for (uint i=0; i<args.size();i++) {
     //     console->print("arg"); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
     // }
 
@@ -324,10 +324,15 @@ void DCCEXProtocol::processServerDescription(LinkedList<String> &args) { //<iDCC
         serverMicroprocessorType = args.get(3);
         serverMotorcontrollerType = args.get(5);
         // serverBuildNumber = args.get(6);
-
+        
+        haveReceivedServerDetails = true;
         delegate->receivedServerDescription(serverMicroprocessorType, serverVersion);
     }
     // console->println(F("processServerDescription(): end"));
+}
+
+bool DCCEXProtocol::isServerDetailsReceived() {
+    return haveReceivedServerDetails;
 }
 
 //private
@@ -380,7 +385,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
     if (delegate) {
         //find the roster entry to update
         if (roster.size()>0) { 
-            for (int i=0; i<roster.size(); i++) {
+            for (uint i=0; i<roster.size(); i++) {
                 int address = args.get(1).toInt();
                 if (roster.get(i)->getLocoAddress() == address) {
                     // console->print("processRosterEntry(): found: "); console->println(address);
@@ -409,7 +414,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                 }
             }
             bool rslt = true;
-            for (int i=0; i<roster.size(); i++) {
+            for (uint i=0; i<roster.size(); i++) {
                 if (!roster.get(i)->getIsFromRosterAndReceivedDetails()) {
                     console->print(F("processRosterEntry(): not received yet: ~")); console->print(roster.get(i)->getLocoName()); console->print("~ ");console->println(roster.get(i)->getLocoAddress());
                     rslt = false;
@@ -460,7 +465,7 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
     if (delegate) {
         //find the turnout entry to update
         if (turnouts.size()>0) { 
-            for (int i=0; i<turnouts.size(); i++) {
+            for (uint i=0; i<turnouts.size(); i++) {
                 int id = args.get(1).toInt();
                 if (turnouts.get(i)->getTurnoutId()==id) {
                     TurnoutState state = TurnoutClosed;
@@ -481,7 +486,7 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
             }
 
             bool rslt = true;
-            for (int i=0; i<turnouts.size(); i++) {
+            for (uint i=0; i<turnouts.size(); i++) {
                 if (!turnouts.get(i)->getHasReceivedDetails()) {
                     console->print(F("processTurnoutsEntry(): not received yet: ~")); console->print(turnouts.get(i)->getTurnoutName()); console->print(F("~ "));console->println(turnouts.get(i)->getTurnoutId());
                     rslt = false;
@@ -510,7 +515,7 @@ void DCCEXProtocol::processTurnoutAction(LinkedList<String> &args) { //<H id sta
     if (delegate) {
         //find the Turnout entry to update
         if (turnouts.size()>0) { 
-            for (int i=0; i<turnouts.size(); i++) {
+            for (uint i=0; i<turnouts.size(); i++) {
                 int id = args.get(1).toInt();
                 if (turnouts.get(i)->getTurnoutId()==id) {
                     TurnoutState state = args.get(2).toInt();
@@ -559,7 +564,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
     if (delegate) {
         //find the Route entry to update
         if (routes.size()>0) { 
-            for (int i=0; i<routes.size(); i++) {
+            for (uint i=0; i<routes.size(); i++) {
                 int id = args.get(1).toInt();
                 if (routes.get(i)->getRouteId()==id) {
                     String type = RouteTypeRoute;
@@ -575,7 +580,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
             }
 
             bool rslt = true;
-            for (int i=0; i<routes.size(); i++) {
+            for (uint i=0; i<routes.size(); i++) {
                 if (!routes.get(i)->getHasReceivedDetails()) {
                     console->print(F("processRoutesEntry(): not received yet: ~")); console->print(routes.get(i)->getRouteName()); console->print(F("~ "));console->println(routes.get(i)->getRouteId());
                     rslt = false;
@@ -643,7 +648,7 @@ void DCCEXProtocol::processTurntableEntry(LinkedList<String> &args) {  // <jO id
     if (delegate) {
         //find the Turntable entry to update
         if (turntables.size()>0) { 
-            for (int i=0; i<turntables.size(); i++) {
+            for (uint i=0; i<turntables.size(); i++) {
                 int id = args.get(1).toInt();
                 if (turntables.get(i)->getTurntableId()==id) {
                     String name = "Unkown";
@@ -675,7 +680,7 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
         if (args.size() > 3) {  // server did not find the index
             //find the Turntable entry to update
             if (turntables.size()>0) { 
-                for (int i=0; i<turntables.size(); i++) {
+                for (uint i=0; i<turntables.size(); i++) {
                     int id = args.get(1).toInt();
                     if (turntables.get(i)->getTurntableId()==id) {
                         //this assumes we are always starting from scratch, not updating indexes
@@ -742,7 +747,7 @@ bool DCCEXProtocol::processLocoAction(LinkedList<String> &args) { //<l cab reg s
                 Direction dir = getDirectionFromSpeedByte(speedByte);
                 FunctionState fnStates[MAX_FUNCTIONS];
                 getFunctionStatesFromFunctionMap(fnStates, functMap);
-                for (int i=0; i<MAX_FUNCTIONS; i++) {
+                for (uint i=0; i<MAX_FUNCTIONS; i++) {
                     if (fnStates[i] != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)) {
                         console->print(i);
                         console->print(" - ");
@@ -846,7 +851,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
         if (throttleConsists[throttle].consistGetNumberOfLocos()>0) {
             throttleConsists[throttle].consistSetSpeed(speed);
             throttleConsists[throttle].consistSetDirection(direction);
-            for (int i=0; i<throttleConsists[throttle].consistGetNumberOfLocos(); i++) {
+            for (uint i=0; i<throttleConsists[throttle].consistGetNumberOfLocos(); i++) {
                 ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(i);
                 int address = conLoco->getLocoAddress();
                 Direction dir = direction;
@@ -1012,7 +1017,7 @@ bool DCCEXProtocol::isTurntableListFullyReceived() {
 // private
 // find which, if any, throttle has this loco selected
 int DCCEXProtocol::findThrottleWithLoco(int address) {
-    for (int i=0; i<MAX_THROTTLES; i++) {
+    for (uint i=0; i<MAX_THROTTLES; i++) {
         if (throttleConsists[i].consistGetNumberOfLocos()>0) {
             int pos = throttleConsists[i].consistGetLocoPosition(address);
 
@@ -1033,7 +1038,7 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
 
 int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
     if (turnouts.size()>0) {
-        for (int i=0; i<turnouts.size(); i++) {
+        for (uint i=0; i<turnouts.size(); i++) {
             if (turnouts.get(i)->getTurnoutId()==id) {
                 return i;
             }
@@ -1044,7 +1049,7 @@ int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
 
 int DCCEXProtocol::findRouteListPositionFromId(int id) {
     if (routes.size()>0) {
-        for (int i=0; i<routes.size(); i++) {
+        for (uint i=0; i<routes.size(); i++) {
             if (routes.get(i)->getRouteId()==id) {
                 return i;
             }
@@ -1055,7 +1060,7 @@ int DCCEXProtocol::findRouteListPositionFromId(int id) {
 
 int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     if (turntables.size()>0) {
-        for (int i=0; i<turntables.size(); i++) {
+        for (uint i=0; i<turntables.size(); i++) {
             if (turntables.get(i)->getTurntableId()==id) {
                 return i;
             }
@@ -1178,7 +1183,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         locoDirection = Forward;
         locoSpeed = 0;
         rosterReceivedDetails = false;
-        for (int i=0; i<MAX_FUNCTIONS; i++) {
+        for (uint i=0; i<MAX_FUNCTIONS; i++) {
             locoFunctions.initFunction(i, "", FunctionLatchingFalse, FunctionStateOff);
         }
     }
@@ -1239,6 +1244,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     }
     bool ConsistLoco::setConsistLocoFacing(Facing facing) {
         consistLocoFacing = facing;
+        return true;
     }
     Facing ConsistLoco::getConsistLocoFacing() {
         return consistLocoFacing;
@@ -1286,7 +1292,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return {};
     }
     int Consist::consistGetLocoPosition(int locoAddress) {
-        for (int i=0; i<consistLocos.size(); i++) {
+        for (uint i=0; i<consistLocos.size(); i++) {
             if (consistLocos.get(i)->getLocoAddress() == locoAddress) {
                 return i;
             }
@@ -1297,11 +1303,12 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     bool Consist::consistSetLocoPosition(int locoAddress, int position) {
 
         // ?????????????????????
+        return true;
     }
     bool Consist::consistSetSpeed(int speed) {
         if (consistLocos.size()>0) {
             if (consistSpeed!=speed) {
-                for (int i=0; i<consistLocos.size(); i++) {
+                for (uint i=0; i<consistLocos.size(); i++) {
                     consistLocos.get(i)->setLocoSpeed(speed);
                 }
             }
@@ -1315,7 +1322,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     bool Consist::consistSetDirection(Direction direction) {
         if (consistLocos.size()>0) {
             if (consistDirection!=direction) {
-                for (int i=0; i<consistLocos.size(); i++) {
+                for (uint i=0; i<consistLocos.size(); i++) {
                     Direction locoDir = direction;
                     if (consistLocos.get(i)->getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
                         if (direction == Forward) {
@@ -1335,7 +1342,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     bool Consist::actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]) {
         if (consistLocos.size()>0) {
             if ( (consistDirection != direction) || (consistSpeed != speed) ) {
-                for (int i=0; i<consistLocos.size(); i++) {
+                for (uint i=0; i<consistLocos.size(); i++) {
                     Direction locoDir = direction;
                     if (consistLocos.get(i)->getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
                         if (direction == Forward) {
@@ -1349,7 +1356,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
 
                     // if (i==0) {
                     //     FunctionState fnStates[MAX_FUNCTIONS];
-                    //     for (int i=0; i<MAX_FUNCTIONS; i++) {
+                    //     for (uint i=0; i<MAX_FUNCTIONS; i++) {
                     //         fnStates[i] = bitExtracted(fnStates,1,i+1);
                     //         // if (fStates)
                     //         // ??????????????????????????????????
@@ -1529,7 +1536,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return turntableIndexes.get(positionInLinkedList);
     }
     TurntableIndex* Turntable::getTurntableIndex(int indexId) {
-        for (int i=0; i<turntableIndexes.size(); i++) {
+        for (uint i=0; i<turntableIndexes.size(); i++) {
             if (turntableIndexes.get(i)->getTurntableIndexId()==indexId) {
                 return turntableIndexes.get(i);
             }

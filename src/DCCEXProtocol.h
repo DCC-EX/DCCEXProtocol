@@ -340,6 +340,7 @@ class DCCEXProtocol {
     String serverMicroprocessorType;
     String serverMotorcontrollerType;
     String serverBuildNumber;
+    bool isServerDetailsReceived;
 
     // *******************
 
@@ -420,6 +421,7 @@ class DCCEXProtocol {
     void processUnknownCommand(String unknownCommand);
 
     void processServerDescription(LinkedList<String> &args);	
+    bool haveReceivedServerDetails = false;
 
     void processTrackPower(LinkedList<String> &args);
 
