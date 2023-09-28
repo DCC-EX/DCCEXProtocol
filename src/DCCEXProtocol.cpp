@@ -1115,7 +1115,7 @@ String DCCEXProtocol::substituteCharBetweenQuotes(String text, char searchChar, 
     String rslt = "";
     // console->print(F("substituteCharBetweenQuotes() ~")); console->print(text); console->println(F("~"));
     bool inQuote = false;
-    for (int i=0; i<text.length(); i++) {
+    for (uint i=0; i<text.length(); i++) {
         if (text.charAt(i)=='"') {
             inQuote = !inQuote;
         }
