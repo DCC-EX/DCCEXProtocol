@@ -324,7 +324,7 @@ void DCCEXProtocol::processServerDescription(LinkedList<String> &args) { //<iDCC
         serverMicroprocessorType = args.get(3);
         serverMotorcontrollerType = args.get(5);
         // serverBuildNumber = args.get(6);
-        
+
         haveReceivedServerDetails = true;
         delegate->receivedServerDescription(serverMicroprocessorType, serverVersion);
     }
@@ -690,14 +690,36 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
 
                         turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, stripLeadAndTrailQuotes(name), angle));
 
-                        if (turntables.get(i)->turntableIndexes.size() == turntables.get(i)->getTurntableIndexCount()) {
-                            turntableListFullyReceived = true;
-                            delegate->receivedTurntableList(turntables.size());
+                        // if (turntables.get(i)->turntableIndexes.size() == turntables.get(i)->getTurntableIndexCount()) {
+                        //     turntableListFullyReceived = true;
+                        //     delegate->receivedTurntableList(turntables.size());
                             
-                            // ??????????????  this is wrong.  will only work for one.  needs to check all turntables
+                        //     //??????????????  this is wrong.  will only work for one.  needs to check all turntables
+                        // }
+                        break;
+                    }
+                }
+
+                bool rslt = true;
+                for (uint i=0; i<turntables.size(); i++) {
+                    if (!turntables.get(i)->getHasReceivedDetails()) {
+                        console->print(F("processTurntableIndexEntry(): not received yet: ~")); console->print(turntables.get(i)->getTurntableName()); console->print(F("~ ")); console->println(turntables.get(i)->getTurntableId());
+                        rslt = false;
+                        break;
+                    } else { // got the main entry. check the index entries as well
+                        if (turntables.get(i)->turntableIndexes.size() != turntables.get(i)->getTurntableIndexCount()) {
+                            console->print(F("processTurntableIndexEntry(): not received index entry yet: ~")); console->print(turntables.get(i)->getTurntableName()); console->print(F("~ ")); console->println(turntables.get(i)->getTurntableId());
+                            rslt = false;
+                            break;
                         }
                     }
                 }
+                if (rslt) {
+                    turntableListFullyReceived = true;
+                    console->println(F("processTurntableIndexEntry(): received all"));
+                    delegate->receivedTurntableList(turntables.size());
+                }  
+                
             }
         }
     }

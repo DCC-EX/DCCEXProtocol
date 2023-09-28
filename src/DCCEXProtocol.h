@@ -340,7 +340,7 @@ class DCCEXProtocol {
     String serverMicroprocessorType;
     String serverMotorcontrollerType;
     String serverBuildNumber;
-    bool isServerDetailsReceived;
+    bool isServerDetailsReceived();
 
     // *******************
 
