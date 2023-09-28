@@ -388,7 +388,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
 
                     console->print("processing Functions: "); console->println(functions);
 
-                    for (int j=0; (j<functionArgs.size() && j<MAX_FUNCTIONS); j++ ) {
+                    for (int j=0; (j<noOfParameters && j<MAX_FUNCTIONS); j++ ) {
                         // console->print("functionArgs"); console->print(j); console->print(": ~"); console->print(functionArgs.get(j)); console->println("~");
                         String functionName = functionArgs.get(j);
                         FunctionState state = FunctionStateOff;
@@ -409,6 +409,7 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                 }
             }
             if (rslt) {
+                rosterFullyReceived = true;
                 console->println("processRosterEntry(): received all");
                 delegate->receivedRosterList(roster.size());
             }
@@ -467,6 +468,7 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
                     turnouts.get(i)->setTurnoutId(id);
                     turnouts.get(i)->setTurnoutName(stripLeadAndTrailQuotes(name));
                     turnouts.get(i)->setHasReceivedDetails();
+                    turnouts.get(i)->setTurnoutState(state);
                 }
             }
 
@@ -479,6 +481,7 @@ void DCCEXProtocol::processTurnoutEntry(LinkedList<String> &args) {
                 }
             }
             if (rslt) {
+                turnoutListFullyReceived = true;
                 console->println("processTurnoutsEntry(): received all");
                 delegate->receivedTurnoutList(turnouts.size());
             }            
@@ -572,6 +575,7 @@ void DCCEXProtocol::processRouteEntry(LinkedList<String> &args) {
                 }
             }
             if (rslt) {
+                routeListFullyReceived = true;
                 console->println("processRoutesEntry(): received all");
                 delegate->receivedRouteList(routes.size());
             }            
@@ -674,7 +678,10 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
                         turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, stripLeadAndTrailQuotes(name), angle));
 
                         if (turntables.get(i)->turntableIndexes.size() == turntables.get(i)->getTurntableIndexCount()) {
+                            turntableListFullyReceived = true;
                             delegate->receivedTurntableList(turntables.size());
+                            
+                            // ??????????????  this is wrong.  will only work for one.  needs to check all turntables
                         }
                     }
                 }
@@ -944,6 +951,12 @@ bool DCCEXProtocol::getRoster() {
     return true;
 }
 
+bool DCCEXProtocol::isRosterFullyReceived() {
+    // console->println(F("isRosterFullyReceived()"));
+    // if (rosterFullyReceived) console->println(F("true"));
+    return rosterFullyReceived;
+}
+
 bool DCCEXProtocol::getTurnouts() {
     // console->println("getTurnouts()");
     if (delegate) {
@@ -951,6 +964,10 @@ bool DCCEXProtocol::getTurnouts() {
     }
     // console->println("getTurnouts() end");
     return true;
+}
+
+bool DCCEXProtocol::isTurnoutListFullyReceived() {
+    return turnoutListFullyReceived;
 }
 
 bool DCCEXProtocol::getRoutes() {
@@ -962,6 +979,10 @@ bool DCCEXProtocol::getRoutes() {
     return true;
 }
 
+bool DCCEXProtocol::isRouteListFullyReceived() {
+    return routeListFullyReceived;
+}
+
 bool DCCEXProtocol::getTurntables() {
     // console->println("getTurntables()");
     if (delegate) {
@@ -969,6 +990,10 @@ bool DCCEXProtocol::getTurntables() {
     }
     // console->println("getTurntables() end");
     return true;
+}
+
+bool DCCEXProtocol::isTurntableListFullyReceived() {
+    return turntableListFullyReceived;
 }
 
 // ******************************************************************************************************
@@ -1124,6 +1149,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
     }
     bool Functions::actionFunctionStateExternalChange(int functionNumber, FunctionState state) {
         // ??????????????????????????????????
+        return true;
     }
     String Functions::getFunctionName(int functionNumber) {
         return functionName[functionNumber];
@@ -1222,7 +1248,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         Facing correctedFacing = facing;
         int rslt = consistGetLocoPosition(address);
         if (rslt<0) { // not already in the list, so add it
-            if (consistGetNumberOfLocos() == 0) correctedFacing - FacingForward; // first loco in consist is always forward
+            if (consistGetNumberOfLocos() == 0) correctedFacing = FacingForward; // first loco in consist is always forward
             consistLocos.add(new ConsistLoco(address, name, source, correctedFacing));
             return true;
         }
@@ -1232,6 +1258,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         if (consistLocos.size()>0) {
             consistLocos.clear();
         }
+        return true;
     }
     bool Consist::consistReleaseLoco(int locoAddress)  {
         int rslt = consistGetLocoPosition(locoAddress);

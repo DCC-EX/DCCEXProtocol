@@ -113,7 +113,7 @@ void loop() {
   // parse incoming messages
   dccexProtocol.check();
 
-  if ((millis()) >= 20000  && !done)   { // need to wait till the roster laods
+  if (dccexProtocol.isRosterFullyReceived() && !done ) { // need to wait till the roster loads
     done = true;
 
     // add a loco to throttle 0 from DCC address 11

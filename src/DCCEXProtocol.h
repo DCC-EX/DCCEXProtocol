@@ -370,9 +370,13 @@ class DCCEXProtocol {
     bool sendServerDetailsRequest();
 
     bool getRoster();
+    bool isRosterFullyReceived();
     bool getTurnouts();
+    bool isTurnoutListFullyReceived();
     bool getRoutes();
+    bool isRouteListFullyReceived();
     bool getTurntables();
+    bool isTurntableListFullyReceived();
 
     long getLastServerResponseTime();  // seconds since Arduino start
 
@@ -421,20 +425,24 @@ class DCCEXProtocol {
 
     // *******************
 
+    bool rosterFullyReceived = false;
     void processRosterEntry(LinkedList<String> &args);
     void processRosterList(LinkedList<String> &args);
     void sendRosterEntryRequest(int address);
 
+    bool turnoutListFullyReceived = false;
     void processTurnoutEntry(LinkedList<String> &args);
     void processTurnoutList(LinkedList<String> &args);
     void processTurnoutAction(LinkedList<String> &args);
     void sendTurnoutEntryRequest(int id);
 
+    bool routeListFullyReceived = false;
     void processRouteList(LinkedList<String> &args);
     void processRouteEntry(LinkedList<String> &args);
     void sendRouteEntryRequest(int id);
     // void processRouteAction(LinkedList<String> &args);
 
+    bool turntableListFullyReceived = false;
     void processTurntableEntry(LinkedList<String> &args);
     void processTurntableList(LinkedList<String> &args);
     void processTurntableIndexEntry(LinkedList<String> &args);
