@@ -689,13 +689,6 @@ void DCCEXProtocol::processTurntableIndexEntry(LinkedList<String> &args) { // <j
                         String name = args.get(4);
 
                         turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, stripLeadAndTrailQuotes(name), angle));
-
-                        // if (turntables.get(i)->turntableIndexes.size() == turntables.get(i)->getTurntableIndexCount()) {
-                        //     turntableListFullyReceived = true;
-                        //     delegate->receivedTurntableList(turntables.size());
-                            
-                        //     //??????????????  this is wrong.  will only work for one.  needs to check all turntables
-                        // }
                         break;
                     }
                 }
@@ -746,7 +739,7 @@ void DCCEXProtocol::processTurntableAction(LinkedList<String> &args) { // <i id 
 void DCCEXProtocol::processSensorEntry(LinkedList<String> &args) {  // <jO id type position position_count "[desc]">
     console->println(F("processSensorEntry(): "));
     if (delegate) {
-        //????????????????????????????????????????
+        //????????????????? TODO
     }
     console->println(F("processSensorEntry(): end"));
 }
@@ -1183,7 +1176,8 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return true;
     }
     bool Functions::actionFunctionStateExternalChange(int functionNumber, FunctionState state) {
-        // ??????????????????????????????????
+        //????????????????? TODO
+        //  This may not be needed
         return true;
     }
     String Functions::getFunctionName(int functionNumber) {
@@ -1322,9 +1316,25 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return -1;
     }
     // set the position of the loco in the consist
+    // Assumes the loco is already in the consist
     bool Consist::consistSetLocoPosition(int locoAddress, int position) {
+        int currentPosition = consistGetLocoPosition(locoAddress);
+        if (currentPosition < 0  || currentPosition == position)  {
+            return false;
+        } else {
+            ConsistLoco* loco = consistGetLocoAtPosition(currentPosition);
+            consistLocos.remove(currentPosition);
+            int address = loco->getLocoAddress();
+            String name = loco->getLocoName();
+            LocoSource source = loco->getLocoSource();
+            Facing correctedFacing = loco->getConsistLocoFacing();
+            // if (consistGetNumberOfLocos() == 0 || position == 0) {
+            //     correctedFacing = FacingForward; // first loco in consist is always forward
+            // }
+            consistLocos.add(position, new ConsistLoco(address, name, source, correctedFacing));
 
-        // ?????????????????????
+            consistGetLocoAtPosition(0)->setConsistLocoFacing(FacingForward); // first loco in consist is always forward
+        }
         return true;
     }
     bool Consist::consistSetSpeed(int speed) {
@@ -1381,7 +1391,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
                     //     for (uint i=0; i<MAX_FUNCTIONS; i++) {
                     //         fnStates[i] = bitExtracted(fnStates,1,i+1);
                     //         // if (fStates)
-                    //         // ??????????????????????????????????
+                    //         //????????????????? TODO
                     //     }
                     // }
                 }
@@ -1395,11 +1405,11 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return consistDirection;
     }
     bool Consist::consistSetFunction(int functionNo, FunctionState state) {
-        // ??????????????????????????????????
+        //????????????????? TODO
         return true;
     }
     bool Consist::consistSetFunction(int address, int functionNo, FunctionState state) {
-        // ??????????????????????????????????
+        //????????????????? TODO
         return true;
     }
 
