@@ -472,7 +472,19 @@ bool getRoster();
 TBA
 
 ```
+bool isRosterFullyReceived();
+```
+
+TBA
+
+```
 bool getTurnouts();
+```
+
+TBA
+
+```
+bool isTurnoutListFullyReceived();
 ```
 
 TBA
@@ -484,7 +496,19 @@ bool getRoutes();
 TBA
 
 ```
+bool isRouteListFullyReceived();
+```
+
+TBA
+
+```
 bool getTurntables();
+```
+
+TBA
+
+```
+bool isTurntableListFullyReceived();
 ```
 
 TBA

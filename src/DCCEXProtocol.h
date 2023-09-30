@@ -246,8 +246,8 @@ class TurntableIndex {
 
         TurntableIndex() {}
         TurntableIndex(int index, String name, int angle);
-        void setHasReceivedDetails();
-        bool getHasReceivedDetails();
+        void setHasReceivedDetails(); //????????????????? Probably not needed
+        bool getHasReceivedDetails(); //????????????????? Probably not needed
         String getTurntableIndexName();
         int getTurntableIndexId();
         int getTurntableIndexIndex();
