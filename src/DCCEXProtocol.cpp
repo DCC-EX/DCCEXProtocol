@@ -1568,7 +1568,7 @@ String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {
         return turntableIndexes.get(positionInLinkedList);
     }
     TurntableIndex* Turntable::getTurntableIndex(int indexId) {
-        for (uint i=0; i<turntableIndexes.size(); i++) {
+        for (int i=0; i<turntableIndexes.size(); i++) {
             if (turntableIndexes.get(i)->getTurntableIndexId()==indexId) {
                 return turntableIndexes.get(i);
             }
