@@ -202,101 +202,225 @@ bool DCCEXProtocol::processCommand(char *c, int len) {
 
     String s = String(c);
     LinkedList<String> args;
-    splitCommand(args, s.substring(1, s.length() - 1),' ');
+    // splitCommand(args, s.substring(1, s.length() - 1),' ');
+    splitValues(args, c);
     char char0 = args.get(0).charAt(0);
     char char1 = args.get(0).charAt(1);
     int noOfParameters = args.size();
 
-    // console->print("processing: "); console->println(s);
+    console->print("processing: "); console->println(s);
     // for (uint i=0; i<args.size();i++) {
     //     console->print("arg"); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
     // }
 
+    bool processed = false;
     if (delegate) {
-        if (len > 3 && char0 == 'i' && args.get(0) == "iDCC-EX") {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
-            processServerDescription(args);
-
-        } else if (len > 1 && char0 == 'p') { //<p onOff>
-            processTrackPower(args);
-
-        } else if (len > 3 && char0 == 'l') { //<l cab reg speedByte functMap>
-            processLocoAction(args);
-
-        } else if (len > 3 && char0 == 'j' && char1 == 'R' && (noOfParameters == 1)) {  // empty roster
-            rosterFullyReceived = true;
-        } else if (len > 3 && char0 == 'j' && char1 == 'R' && (noOfParameters > 1)) { 
-            if ( (noOfParameters<3) || (args.get(2).charAt(0) != '"') ) {  // loco list
-                processRosterList(args); //<jR [id1 id2 id3 ...]>
-            } else { // individual
-                processRosterEntry(args); //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
-            }
-
-        } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters == 1)) { // empty list
-            turnoutListFullyReceived = true;
-        } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters > 1)) { 
-            if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
-            || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
-                processTurnoutEntry(args); //<jT id state |"[desc]">   or    <jT id X">
+        if (char0=='i') {
+            if (args.get(0) == "iDCC-EX") {
+                //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+                processServerDescription(args);
+                processed = true;
             } else {
-                processTurnoutList(args); //<jT [id1 id2 id3 ...]>
-            }
-
-        } else if (len > 3 && char0=='j' && char1=='A' && (noOfParameters == 1)) {  // empty list
-            routeListFullyReceived = true;
-        } else if (len > 3 && char0=='j' && char1=='A' && (noOfParameters > 1)) { 
-            if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
-            || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
-                processRouteEntry(args); //<jA id X|type |"desc">   or    <jA id X">
-            } else {
-                processRouteList(args); //<jA [id1 id2 id3 ...]>
-            }
-
-        } else if (len > 3 && char0 == 'H') { //<H id state>
-            if (delegate) {
-                // TurnoutState state = (int) args.get(2).toInt();
-                if (args.size()==3) {
-                    processTurnoutAction(args);
-                    delegate->receivedTurnoutAction(args.get(1).toInt(), args.get(2).toInt());
-                }
-            }
-
-        } else if (len > 3 && char0=='j' && char1=='O' && (noOfParameters == 1)) {  // empty list
-            turntableListFullyReceived = true;
-        } else if (len > 3 && char0=='j' && char1=='O' && (noOfParameters>1)) { 
-            if ( (noOfParameters == 6) && (args.get(5).charAt(0) == '"') ) { //<jO id type position position_count "[desc]">
-                processTurntableEntry(args); 
-            } else {
-                processTurntableList(args); //<jO [id1 id2 id3 ...]>
-            } 
-
-        } else if (len > 3 && char0=='j' && char1=='P' && (noOfParameters>1)) { // <jP id index angle "[desc]">
-            processTurntableIndexEntry(args); 
-
-        } else if (len > 3 && char0=='i' && args.get(0)!="iDCC-EX") { //<i id position>   or   <i id position moving>
-            if (delegate) {
+                //<i id position>   or   <i id position moving>
                 TurntableState state = TurntableStationary;
                 if (args.size()<3) { 
                     state = TurntableMoving;
+                    processed = true;
                 }
                 processTurntableAction(args);
                 delegate->receivedTurntableAction(args.get(1).toInt(), args.get(2).toInt(), state);
+                processed = true;
             }
 
-        } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters > 1)) { 
-            if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"'))
-            || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
-                processRouteEntry(args); //<jA id type |"desc">   or  <jA id X>
-            } else {
-                processRouteList(args); //<jA [id0 id1 id2 ..]>
+        } else if (char0 == 'p') {
+            //<p onOff>
+            processTrackPower(args);
+            processed = true;
+
+        } else if (char0 == 'l') {
+            //<l cab reg speedByte functMap>
+            processLocoAction(args);
+            processed = true;
+
+        } else if (char0 == 'j') {
+            if( char1 == 'R' ) {
+                if (noOfParameters == 1) {  // empty roster
+                    rosterFullyReceived = true;
+                    processed = true;
+                } else if (noOfParameters > 1) { 
+                    if ( (noOfParameters<3) || (args.get(2).charAt(0) != '"') ) {  // loco list
+                        //<jR [id1 id2 id3 ...]>
+                        processRosterList(args); 
+                        processed = true;
+                    } else { // individual
+                        //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
+                        processRosterEntry(args); 
+                        processed = true;
+                    }
+                }
+            } else if (char1 == 'T') {
+                if (noOfParameters == 1) { // empty list
+                    turnoutListFullyReceived = true;
+                    processed = true;
+                } else if (noOfParameters > 1) { 
+                    if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
+                    || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
+                        //<jT id state |"[desc]">   or    <jT id X">
+                        processTurnoutEntry(args); 
+                        processed = true;
+                    } else {
+                        //<jT [id1 id2 id3 ...]>
+                        processTurnoutList(args); 
+                        processed = true;
+                    }
+                }
+
+            } else if (char1=='O') {
+                if (noOfParameters == 1) {  // empty list
+                    turntableListFullyReceived = true;
+                    processed = true;
+                } else if (noOfParameters>1) { 
+                    if ( (noOfParameters == 6) && (args.get(5).charAt(0) == '"') ) { 
+                        //<jO id type position position_count "[desc]">
+                        processTurntableEntry(args); 
+                            processed = true;
+                    } else {
+                        //<jO [id1 id2 id3 ...]>
+                        processTurntableList(args); 
+                            processed = true;
+                    } 
+                }
+            } else if  (char1=='P') {
+                if (noOfParameters>1) { 
+                    // <jP id index angle "[desc]">
+                    processTurntableIndexEntry(args); 
+                    processed = true;
+                }
+
+            } else if (char1 == 'A') {
+                if (noOfParameters > 1) { 
+                    if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"'))
+                    || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
+                        //<jA id type |"desc">   or  <jA id X>
+                        processRouteEntry(args); 
+                        processed = true;
+                    } else {
+                        //<jA [id0 id1 id2 ..]>
+                        processRouteList(args); 
+                        processed = true;
+                    }
+                }
             }
-        } else if (len > 3 && char0 == 'q') { // <q id>
+
+        } else if (char0 == 'H') {
+            // TurnoutState state = (int) args.get(2).toInt();
+            if (args.size()==3) {
+                processTurnoutAction(args);
+                delegate->receivedTurnoutAction(args.get(1).toInt(), args.get(2).toInt());
+                processed = true;
+            }
+
+        } else if (char0 == 'q') {
+            // <q id>
             processSensorEntry(args);
-        } else if (len -= 3 && char0 == 'X') { // <X>
+            processed = true;
+
+        } else if (char0 == 'X') {
             // error   Nothing we can do with it as we don't know what it is for
-        } else {
+            processed = true;
+        } 
+
+        if (!processed) {
             processUnknownCommand(s);
         }
+
     }
+
+    // if (delegate) {
+    //     if (len > 3 && char0 == 'i' && args.get(0) == "iDCC-EX") {  //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+    //         processServerDescription(args);
+
+    //     } else if (len > 1 && char0 == 'p') { //<p onOff>
+    //         processTrackPower(args);
+
+    //     } else if (len > 3 && char0 == 'l') { //<l cab reg speedByte functMap>
+    //         processLocoAction(args);
+
+    //     } else if (len > 3 && char0 == 'j' && char1 == 'R' && (noOfParameters == 1)) {  // empty roster
+    //         rosterFullyReceived = true;
+    //     } else if (len > 3 && char0 == 'j' && char1 == 'R' && (noOfParameters > 1)) { 
+    //         if ( (noOfParameters<3) || (args.get(2).charAt(0) != '"') ) {  // loco list
+    //             processRosterList(args); //<jR [id1 id2 id3 ...]>
+    //         } else { // individual
+    //             processRosterEntry(args); //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
+    //         }
+
+    //     } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters == 1)) { // empty list
+    //         turnoutListFullyReceived = true;
+    //     } else if (len > 3 && char0 == 'j' && char1 == 'T' && (noOfParameters > 1)) { 
+    //         if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
+    //         || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
+    //             processTurnoutEntry(args); //<jT id state |"[desc]">   or    <jT id X">
+    //         } else {
+    //             processTurnoutList(args); //<jT [id1 id2 id3 ...]>
+    //         }
+
+    //     } else if (len > 3 && char0=='j' && char1=='A' && (noOfParameters == 1)) {  // empty list
+    //         routeListFullyReceived = true;
+    //     } else if (len > 3 && char0=='j' && char1=='A' && (noOfParameters > 1)) { 
+    //         if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"')) 
+    //         || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
+    //             processRouteEntry(args); //<jA id X|type |"desc">   or    <jA id X">
+    //         } else {
+    //             processRouteList(args); //<jA [id1 id2 id3 ...]>
+    //         }
+
+    //     } else if (len > 3 && char0 == 'H') { //<H id state>
+    //         if (delegate) {
+    //             // TurnoutState state = (int) args.get(2).toInt();
+    //             if (args.size()==3) {
+    //                 processTurnoutAction(args);
+    //                 delegate->receivedTurnoutAction(args.get(1).toInt(), args.get(2).toInt());
+    //             }
+    //         }
+
+    //     } else if (len > 3 && char0=='j' && char1=='O' && (noOfParameters == 1)) {  // empty list
+    //         turntableListFullyReceived = true;
+    //     } else if (len > 3 && char0=='j' && char1=='O' && (noOfParameters>1)) { 
+    //         if ( (noOfParameters == 6) && (args.get(5).charAt(0) == '"') ) { //<jO id type position position_count "[desc]">
+    //             processTurntableEntry(args); 
+    //         } else {
+    //             processTurntableList(args); //<jO [id1 id2 id3 ...]>
+    //         } 
+
+    //     } else if (len > 3 && char0=='j' && char1=='P' && (noOfParameters>1)) { // <jP id index angle "[desc]">
+    //         processTurntableIndexEntry(args); 
+
+    //     } else if (len > 3 && char0=='i' && args.get(0)!="iDCC-EX") { //<i id position>   or   <i id position moving>
+    //         if (delegate) {
+    //             TurntableState state = TurntableStationary;
+    //             if (args.size()<3) { 
+    //                 state = TurntableMoving;
+    //             }
+    //             processTurntableAction(args);
+    //             delegate->receivedTurntableAction(args.get(1).toInt(), args.get(2).toInt(), state);
+    //         }
+
+    //     } else if (len > 3 && char0 == 'j' && char1 == 'A' && (noOfParameters > 1)) { 
+    //         if ( ((noOfParameters == 4) && (args.get(3).charAt(0) == '"'))
+    //         || ((noOfParameters == 3) && (args.get(2).charAt(0) == 'X')) ) {
+    //             processRouteEntry(args); //<jA id type |"desc">   or  <jA id X>
+    //         } else {
+    //             processRouteList(args); //<jA [id0 id1 id2 ..]>
+    //         }
+    //     } else if (len > 3 && char0 == 'q') { // <q id>
+    //         processSensorEntry(args);
+    //     } else if (len >= 3 && char0 == 'X') { // <X>
+    //         // error   Nothing we can do with it as we don't know what it is for
+    //     } else {
+    //         processUnknownCommand(s);
+    //     }
+    // }
 
     // console->println(F("processCommand() end"));
     return true;
@@ -394,10 +518,19 @@ void DCCEXProtocol::processRosterEntry(LinkedList<String> &args) { //<jR id ""|"
                     roster.get(i)->setLocoSource(LocoSourceRoster);
                     roster.get(i)->setIsFromRosterAndReceivedDetails();
 
-                    String functions = stripLeadAndTrailQuotes(args.get(3));
+                    // String functions = stripLeadAndTrailQuotes(args.get(3));
+                    String functions = args.get(3);
+
                     LinkedList<String> functionArgs;
-                    splitCommand(functionArgs, functions, '/');
+                    char* fns = new char[functions.length()+1];
+                    strcpy(fns, functions.c_str());
+                    // console->print("~~");console->print(fns);console->println("~~");
+                    splitFunctions(functionArgs, fns);
                     int noOfParameters = functionArgs.size();
+
+                    // for (uint i=0; i<functionArgs.size();i++) {
+                    //     console->print("fn"); console->print(i); console->print(": ~"); console->print(functionArgs.get(i)); console->println("~");
+                    // }
 
                     console->print("processing Functions: "); console->println(functions);
 
@@ -1084,70 +1217,144 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     return -1;
 }
 
-bool DCCEXProtocol::splitCommand(LinkedList<String> &args, String text, char splitChar) {
-    // console->println(F("splitCommand()"));
-    String s = text;
-    if (text.charAt(0)!=splitChar)  s = String(splitChar) + text;  // add a leading splitChar if not already there
-    if (text.charAt(text.length()-1)!=splitChar)  s = s + String(splitChar) ;  // add a trailing splitChar if not already there
+bool DCCEXProtocol::splitValues(LinkedList<String> &args, char *cmd) {
+    byte parameterCount = 0;
+    
+    int currentCharIndex = 0; // pointer to the next character to process
+    splitState state = FIND_START;
+    String currentArg = "";
+    byte currentArgLength = 0;
+    
+    while (parameterCount < MAX_COMMAND_PARAMS)
+    {
+        char currentChar = cmd[currentCharIndex];
+        // In this switch, 'break' will go on to next char but 'continue' will rescan the current char. 
+        switch (state) {
+        case FIND_START: // looking for '<'
+            if (currentChar == COMMAND_START) state = SKIP_SPACES;   // '<'
+            break;
 
-    s = substituteCharBetweenQuotes(s, ' ', (char)1);
+        case SKIP_SPACES: // skipping spaces before a param
+            if (currentChar == ' ') break; // ignore
+            state = CHECK_FOR_LEADING_QUOTE;
+            continue;
 
-    int splitCount = countSplitCharacters(s, splitChar);
-    // console->print(F("splitCommand(): number of splits found: ")); console->println(splitCount);
+        case CHECK_FOR_LEADING_QUOTE: // checking for quotes at the start of the parameter
+            if (currentChar == '"') {
+                state = BUILD_QUOTED_PARAM;
+                continue;
+            } 
+            state = BUILD_PARAM;
+            continue;
 
-    int index = -1;
-    int index2;
+        case BUILD_QUOTED_PARAM: 
+            if (currentChar == '>') {
+                state = CHECK_FOR_END;
+                continue;
+            }
+            currentArg = currentArg + String(currentChar);
+            // console->println(currentArg);
+            currentArgLength++;
+            if ( (currentArgLength>1) && (currentChar == '"') ) { // trailing quote
+                args.add( currentArg );
+                currentArg = "";
+                currentArgLength = 0;
+                state = SKIP_SPACES;
+            }
+            break;
 
-    for(int i = 0; i < splitCount; i++) {
-        index = s.indexOf(splitChar, index + 1);
-        index2 = s.indexOf(splitChar, index + 1);
-        String arg = "";
-        if ((index2-index)>1) {  //not empty
-            if (s.charAt(index)==splitChar) index=index+1; // clear leading splitChar
+        case BUILD_PARAM: // building a parameter
+            if (currentChar == COMMAND_END) {  // '>'
+                state = CHECK_FOR_END;
+                continue;
+            }
+            if (currentChar != ' ') {
+                currentArg = currentArg + String(currentChar);
+                // console->println(currentArg);
+                currentArgLength++;
+                break;
+            }
 
-            if(index2 < 0) index2 = s.length() - 1;
-
-            arg = s.substring(index, index2);
-            arg = substituteCharBetweenQuotes(arg, (char)1, ' ');
+            // space - end of parameter detected 
+            args.add( currentArg );
+            currentArg = "";
+            currentArgLength = 0;
+            parameterCount++;
+            state = SKIP_SPACES;
+            continue;
+        
+        case CHECK_FOR_END:
+            if ( (currentChar=='\0') || (currentChar == '>') ) {
+                if (currentArgLength>0) { // in case there was a param we started but didn't find the proper end
+                    args.add( currentArg );
+                }
+                return true;  
+            }
+            break;
         }
-        args.add(arg);
-        // console->print(index); console->print(F("-")); console->print(index);
-        // console->print(F(": ")); console->println(s.substring(index, index2));
+        currentCharIndex++;
     }
-    // console->println(F("splitCommand(): end"));
     return true;
+    
 }
 
-int DCCEXProtocol::countSplitCharacters(String text, char splitChar) {
-    // console->println(F("countSplitCharacters()"));
-    int returnValue = 0;
-    int index = 0;
+bool DCCEXProtocol::splitFunctions(LinkedList<String> &args, char *cmd) {
+    byte parameterCount = 0;
+    
+    int currentCharIndex = 0; // pointer to the next character to process
+    splitState state = FIND_START;
+    String currentArg = "";
+    byte currentArgLength = 0;
+    
+    while (parameterCount < MAX_FUNCTIONS)
+    {
+        char currentChar = cmd[currentCharIndex];
+        // console->print("..."); console->print(currentChar); console->println("...");
+        // In this switch, 'break' will go on to next char but 'continue' will rescan the current char. 
+        switch (state) {
+        case CHECK_FOR_LEADING_QUOTE:
+        case FIND_START: // looking for leading '"'
+            if (currentChar == '"') state = SKIP_SPACES;
+            break;
 
-    while (index > -1) {
-        index = text.indexOf(splitChar, index + 1);
-        if(index > -1) returnValue+=1;
-    }
-    // console->println(F("countSplitCharacters() end"));
-    return returnValue;
-} 
+        case SKIP_SPACES: // skipping spaces or slashes before a param
+            if ( (currentChar == ' ') || (currentChar == '/') ) break; // ignore
+            state = BUILD_PARAM;
+            continue;
 
-String DCCEXProtocol::substituteCharBetweenQuotes(String text, char searchChar, char substituteChar) {
-    String rslt = "";
-    // console->print(F("substituteCharBetweenQuotes() ~")); console->print(text); console->println(F("~"));
-    bool inQuote = false;
-    for (uint i=0; i<text.length(); i++) {
-        if (text.charAt(i)=='"') {
-            inQuote = !inQuote;
+        case BUILD_QUOTED_PARAM:
+        case BUILD_PARAM: // building a parameter
+            if (currentChar == '"') {
+                state = CHECK_FOR_END;
+                continue;
+            }
+            if (currentChar != '/') {
+                currentArg = currentArg + String(currentChar);
+                // console->println(currentArg);
+                currentArgLength++;
+                break;
+            }
+
+            // end of parameter detected  '/')
+            args.add( currentArg );
+            currentArg = "";
+            currentArgLength = 0;
+            parameterCount++;
+            state = SKIP_SPACES;
+            continue;
+        
+        case CHECK_FOR_END:
+            if ( (currentChar == '\0') || (currentChar == '"') ) {
+                if (currentArgLength>0) { // in case there was a param we started but didn't find the proper end
+                    args.add( currentArg );
+                }
+                return true;  
+            }
+            break;
         }
-        if (text.charAt(i)==searchChar && inQuote) {
-            rslt = rslt + substituteChar;
-        } else {
-            rslt = rslt + text.charAt(i);
-        }
+        currentCharIndex++;
     }
-
-    // console->print(F("substituteCharBetweenQuotes(): end ~")); console->print(rslt); console->println(F("~"));
-    return rslt;
+    return true;
 }
 
 String DCCEXProtocol::stripLeadAndTrailQuotes(String text) {

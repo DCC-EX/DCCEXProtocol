@@ -44,6 +44,11 @@ static const int MAX_FUNCTIONS = 28;
 #define UNKNOWN "Unknown"
 #define UnknownIdResponse "X"
 
+enum splitState {FIND_START,SKIP_SPACES,CHECK_FOR_LEADING_QUOTE,BUILD_QUOTED_PARAM,BUILD_PARAM,CHECK_FOR_END};
+
+#define MAX_COMMAND_PARAMS 50
+#define MAX_COMMAND_BUFFER 500
+
 // *****************************************************************
 
 typedef int Direction;
@@ -462,10 +467,12 @@ class DCCEXProtocol {
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
     // LinkedList<String> splitCommand(String text, char splitChar);
-    bool splitCommand(LinkedList<String> &args, String text, char splitChar);
-    int countSplitCharacters(String text, char splitChar);
+    bool splitValues(LinkedList<String> &args, char *cmd);
+    bool splitFunctions(LinkedList<String> &args, char *cmd);
+    // bool splitCommand(LinkedList<String> &args, String text, char splitChar);
+    // int countSplitCharacters(String text, char splitChar);
     String stripLeadAndTrailQuotes(String text);
-    String substituteCharBetweenQuotes(String text, char searchChar, char substituteChar);
+    // String substituteCharBetweenQuotes(String text, char searchChar, char substituteChar);
 };
 
 #endif // DCCEXPROTOCOL_H

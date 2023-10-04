@@ -65,8 +65,9 @@ MyDelegate myDelegate;
 
 void printRoster() {
       for (int i=0; i<dccexProtocol.roster.size(); i++) {
-        int address = dccexProtocol.roster.get(i)->getLocoAddress();
-        String name = dccexProtocol.roster.get(i)->getLocoName();
+        Loco* loco = dccexProtocol.roster.get(i);
+        int address = loco->getLocoAddress();
+        String name = loco->getLocoName();
         Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
       }
       // Serial.println("\n");  
@@ -74,8 +75,9 @@ void printRoster() {
 
 void printTurnouts() {
       for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
-        int id = dccexProtocol.turnouts.get(i)->getTurnoutId();
-        String name = dccexProtocol.turnouts.get(i)->getTurnoutName();
+        Turnout* turnout = dccexProtocol.turnouts.get(i);
+        int id = turnout->getTurnoutId();
+        String name = turnout->getTurnoutName();
         Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
       }
       // Serial.println("\n");  
@@ -83,8 +85,9 @@ void printTurnouts() {
 
 void printRoutes() {
       for (int i=0; i<dccexProtocol.routes.size(); i++) {
-        int id = dccexProtocol.routes.get(i)->getRouteId();
-        String name = dccexProtocol.routes.get(i)->getRouteName();
+        Route* route = dccexProtocol.routes.get(i);
+        int id = route->getRouteId();
+        String name = route->getRouteName();
         Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
       }
       // Serial.println("\n");  
@@ -92,12 +95,14 @@ void printRoutes() {
 
 void printTurntables() {
       for (int i=0; i<dccexProtocol.turntables.size(); i++) {
-        int id = dccexProtocol.turntables.get(i)->getTurntableId();
-        String name = dccexProtocol.turntables.get(i)->getTurntableName();
+        Turntable* turntable = dccexProtocol.turntables.get(i);
+        int id = turntable->getTurntableId();
+        String name = turntable->getTurntableName();
         Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~"); 
-        for (int j=0; j<dccexProtocol.turntables.get(i)->getTurntableNumberOfIndexes(); j++) {
-            String indexName = dccexProtocol.turntables.get(i)->turntableIndexes.get(j)->getTurntableIndexName();
-            Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
+        for (int j=0; j<turntable->getTurntableNumberOfIndexes(); j++) {
+          TurntableIndex* turntableIndex = turntable->turntableIndexes.get(j);
+          String indexName = turntableIndex->getTurntableIndexName();
+          Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
         }
       }
       // Serial.println("\n");  
@@ -124,7 +129,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  dccexProtocol.setLogStream(&Serial);
+  // dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
