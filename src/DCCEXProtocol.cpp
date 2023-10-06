@@ -1094,6 +1094,7 @@ Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
 
 // ******************************************************************************************************
 
+// by default only send to the lead loco
 bool DCCEXProtocol::sendFunction(int throttle, int funcNum, FunctionState pressed) {
     // console->println(F("sendFunction(): "));
     if (delegate) {
@@ -1107,6 +1108,7 @@ bool DCCEXProtocol::sendFunction(int throttle, int funcNum, FunctionState presse
     return true;
 }
 
+// send to a specific address on the throttle
 bool DCCEXProtocol::sendFunction(int throttle, int address, int funcNum, FunctionState pressed) { // throttle is ignored
     // console->println(F("sendFunction(): "));
     if (delegate) {
@@ -1134,6 +1136,17 @@ bool DCCEXProtocol::sendFunction(int throttle, int address, int funcNum, Functio
     return true;
 }
 
+// by default only check the lead loco on the throttle
+bool DCCEXProtocol::isFunctionOn(int throttle, int funcNum) {
+    if (delegate) {
+        ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(0);
+        int address = conLoco->getLocoAddress();
+        if (address>=0) {
+            conLoco->isFunctionOn(funcNum);
+        }
+    }
+    return false;
+}
 
 // ******************************************************************************************************
 // throttle
@@ -1729,6 +1742,9 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
             locoFunctions.initFunction(i, fnName, FunctionLatchingFalse, FunctionStateOff);
         }
     }
+    bool Loco::isFunctionOn(int functionNumber) {
+        return (locoFunctions.getFunctionState(functionNumber)==FunctionStateOn) ? true : false;
+    }
     bool Loco::setLocoSpeed(int speed) {
         if (locoSpeed!=speed) {
             locoSpeed = speed;
@@ -1967,13 +1983,26 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     Direction Consist::consistGetDirection() {
         return consistDirection;
     }
+    // by default only set the function on the lead loco
     bool Consist::consistSetFunction(int functionNo, FunctionState state) {
-        //????????????????? TODO
-        return true;
+        if (consistLocos.size()>0) {
+            // ConsistLoco* loco = consistGetLocoAtPosition(0);
+            //????????????????? TODO
+            return true;
+        }
+        return false;
     }
     bool Consist::consistSetFunction(int address, int functionNo, FunctionState state) {
         //????????????????? TODO
+        // individual loco
         return true;
+    }
+    bool Consist::isFunctionOn(int functionNumber) {
+        if (consistLocos.size()>0) {
+            ConsistLoco* loco = consistGetLocoAtPosition(0);
+            return loco->isFunctionOn(functionNumber);
+        }
+        return false;
     }
     bool Consist::setConsistName(char* name) {
         if (consistName != nullptr) {

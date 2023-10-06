@@ -158,6 +158,7 @@ class Loco {
         Loco() {}
         Loco(int address, char* name, LocoSource source);
         Functions locoFunctions;
+        bool isFunctionOn(int functionNumber);
 
         bool setLocoSpeed(int speed);
         bool setLocoDirection(Direction direction);
@@ -213,7 +214,7 @@ class Consist {
         Direction consistGetDirection();
         bool consistSetFunction(int functionNo, FunctionState state);
         bool consistSetFunction(int address, int functionNo, FunctionState state);
-
+        bool isFunctionOn(int functionNumber);
         bool setConsistName(char* name);
         char* getConsistName();
         LinkedList<ConsistLoco*> consistLocos = LinkedList<ConsistLoco*>();
@@ -399,6 +400,7 @@ class DCCEXProtocol {
     bool sendLocoAction(int address, int speed, Direction direction);
     bool sendFunction(int throttle, int funcNum, FunctionState pressed);
     bool sendFunction(int throttle, int address, int funcNum, FunctionState pressed);
+    bool isFunctionOn(int throttle, int funcNum);
     bool sendLocoUpdateRequest(int address);
 
     // *******************
