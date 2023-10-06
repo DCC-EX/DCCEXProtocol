@@ -146,11 +146,7 @@ long DCCEXProtocol::getLastServerResponseTime() {
 //helper functions
 
 Direction DCCEXProtocol::getDirectionFromSpeedByte(int speedByte) {
-    Direction dir = Forward;
-    if (speedByte >= 128) {
-        dir = Reverse;
-    }
-    return dir;
+    return (speedByte>=128) ? Forward : Reverse; 
 }
 
 int DCCEXProtocol::getSpeedFromSpeedByte(int speedByte) {
