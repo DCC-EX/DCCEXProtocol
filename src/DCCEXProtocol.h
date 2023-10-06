@@ -34,6 +34,11 @@
 
 static const int MAX_THROTTLES = 6;
 static const int MAX_FUNCTIONS = 28;
+#define MAX_COMMAND_PARAMS 100
+#define MAX_SINGLE_COMMAND_PARAM_LENGTH 500  // Unfortunately includes the function list for an individual loco
+#define MAX_SINGLE_FUNCTION_LENGTH 30 
+#define MAX_OBJECT_NAME_LENGTH 30  // including Loco name, Turnout/Point names, Route names, etc. names
+#define MAX_OUTBOUND_COMMAND_LENGTH 100
 
 // Protocol special characters
 #define NEWLINE 			'\n'
@@ -41,41 +46,40 @@ static const int MAX_FUNCTIONS = 28;
 #define COMMAND_START       '<'
 #define COMMAND_END         '>'
 
-#define UNKNOWN "Unknown"
+static const char NAME_UNKNOWN[] = "Unknown";
+static const char NAME_BLANK[] = "";
 #define UnknownIdResponse "X"
 
 enum splitState {FIND_START,SKIP_SPACES,CHECK_FOR_LEADING_QUOTE,BUILD_QUOTED_PARAM,BUILD_PARAM,CHECK_FOR_END};
 
-#define MAX_COMMAND_PARAMS 50
-#define MAX_COMMAND_BUFFER 500
 
 // *****************************************************************
 
-typedef int Direction;
-#define Reverse 1
-#define Forward 0
+typedef char Direction;
+#define Reverse '1'
+#define Forward '0'
 
-typedef int  TrackPower;
-#define PowerOff 0
-#define PowerOn 1
-#define PowerUnknown 2
+typedef char TrackPower;
+#define PowerOff '0'
+#define PowerOn '1'
+#define PowerUnknown '2'
 
-typedef int TurnoutState;
-#define TurnoutClosed 0
-#define TurnoutThrown 1
-#define TurnoutResponseClosed "C"
-#define TurnoutResponseThrown "T"
+typedef char TurnoutState;
+#define TurnoutClosed '0'
+#define TurnoutThrown '1'
+#define TurnoutResponseClosed 'C'
+#define TurnoutResponseThrown 'T'
 
-typedef int TurnoutAction;
-#define TurnoutClose 0
-#define TurnoutThrow 1
-#define TurnoutToggle 2
-#define TurnoutExamine 9     // "X" needs to be sent
+typedef char TurnoutAction;
+#define TurnoutClose '0'
+#define TurnoutThrow '1'
+#define TurnoutToggle '2'
+#define TurnoutExamine '9'     // "X" needs to be sent
 
-typedef int RouteState;
-#define RouteActive 2
-#define RouteInactive 4
-#define RouteInconsistent 8
+typedef char RouteState;
+#define RouteActive '2'
+#define RouteInactive '4'
+#define RouteInconsistent '8'
 
 typedef int TrackMode;
 #define TrackModeMain "MAIN"
@@ -84,47 +88,65 @@ typedef int TrackMode;
 #define TrackModeDCX "DCX"
 #define TrackModeOff "OFF"
 
-typedef int TurntableState;
-#define TurntableStationary 0
-#define TurntableMoving 1
+typedef char TurntableState;
+#define TurntableStationary '0'
+#define TurntableMoving '1'
 
-typedef int TurntableType;
-#define TurntableTypeDCC 0
-#define TurntableTypeEXTT 1
-#define TurntableTypeUnknown 9 // returns 'X'
+typedef char TurntableType;
+#define TurntableTypeDCC '0'
+#define TurntableTypeEXTT '1'
+#define TurntableTypeUnknown '9' // returns 'X'
 
-typedef int FunctionState;
-#define FunctionStateOff 0
-#define FunctionStateOn 1
+typedef char FunctionState;
+#define FunctionStateOff '0'
+#define FunctionStateOn '1'
 
-typedef int FunctionLatching;
-#define FunctionLatchingTrue 1
-#define FunctionLatchingFalse 0
+typedef char FunctionLatching;
+#define FunctionLatchingTrue '1'
+#define FunctionLatchingFalse '0'
 
-typedef int LocoSource;
-#define LocoSourceRoster 0
-#define LocoSourceEntry 1
+typedef char LocoSource;
+#define LocoSourceRoster '0'
+#define LocoSourceEntry '1'
 
-typedef int Facing;
-#define FacingForward 0
-#define FacingReversed 1
+typedef char Facing;
+#define FacingForward '0'
+#define FacingReversed '1'
 
-typedef String RouteType;
-#define RouteTypeRoute "R"
-#define RouteTypeAutomation "A"
+typedef char RouteType;
+#define RouteTypeRoute 'R'
+#define RouteTypeAutomation 'A'
 
 // *****************************************************************
 
+// used to split the command arguments
+class CommandArgument {
+    public:
+        char* arg;
+        CommandArgument(char* argValue);
+        bool clearCommandArgument();
+};
+
+// used to split the function labels
+class FunctionArgument {
+    public:
+        char* arg;
+        FunctionArgument(char* argValue);
+        bool clearFunctionArgument();
+};
+
 class Functions {
     public:
-        bool initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
+        bool initFunction(int functionNumber, char* label, FunctionLatching latching, FunctionState state);
         bool setFunctionState(int functionNumber, FunctionState state);
-        String getFunctionName(int functionNumber);
+        bool setFunctionName(int functionNumber, char* label);
+        char* getFunctionName(int functionNumber);
         FunctionState getFunctionState(int functionNumber);
         FunctionLatching getFunctionLatching(int functionNumber);
+        bool clearFunctionNames();
     
     private:
-        String functionName[MAX_FUNCTIONS];
+        char* functionName[MAX_FUNCTIONS];
         int functionState[MAX_FUNCTIONS];
         int functionLatching[MAX_FUNCTIONS];
 
@@ -134,25 +156,26 @@ class Functions {
 class Loco {
     public:
         Loco() {}
-        Loco(int address, String name, LocoSource source);
+        Loco(int address, char* name, LocoSource source);
         Functions locoFunctions;
 
         bool setLocoSpeed(int speed);
         bool setLocoDirection(Direction direction);
         
         int getLocoAddress();
-        bool setLocoName(String name);
-        String getLocoName();
+        bool setLocoName(char* name);
+        char* getLocoName();
         bool setLocoSource(LocoSource source);
         LocoSource getLocoSource();
         int  getLocoSpeed();
         Direction getLocoDirection();
         void setIsFromRosterAndReceivedDetails();
         bool getIsFromRosterAndReceivedDetails();
+        bool clearLocoNameAndFunctions();
 
     private:
         int locoAddress;
-        String locoName;
+        char* locoName;
         int locoSpeed;
         Direction locoDirection;
         LocoSource locoSource;
@@ -162,7 +185,7 @@ class Loco {
 class ConsistLoco : public Loco {
     public:
         ConsistLoco() {};
-        ConsistLoco(int address, String name, LocoSource source, Facing facing);
+        ConsistLoco(int address, char* name, LocoSource source, Facing facing);
         bool setConsistLocoFacing(Facing facing);
         Facing getConsistLocoFacing();
 
@@ -173,7 +196,7 @@ class ConsistLoco : public Loco {
 class Consist {
     public:
         Consist() {}
-        Consist(String name);
+        Consist(char* name);
         bool consistAddLoco(Loco loco, Facing facing);
         bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
@@ -191,31 +214,35 @@ class Consist {
         bool consistSetFunction(int functionNo, FunctionState state);
         bool consistSetFunction(int address, int functionNo, FunctionState state);
 
-        String getConsistName();
+        bool setConsistName(char* name);
+        char* getConsistName();
         LinkedList<ConsistLoco*> consistLocos = LinkedList<ConsistLoco*>();
 
     private:
         int consistSpeed;
         Direction consistDirection;
-        String consistName;
+        char* consistName;
 };
 
 class Turnout {
     public:
         Turnout() {}
-        Turnout(int id, String name, TurnoutState state);
+        Turnout(int id, char* name, TurnoutState state);
         bool setTurnoutState(TurnoutAction action);
         TurnoutState getTurnoutState();
+        bool throwTurnout();
+        bool closeTurnout();
+        bool toggleTurnout();
         bool setTurnoutId(int id);
         int getTurnoutId();
-        bool setTurnoutName(String name);
-        String getTurnoutName();
+        bool setTurnoutName(char* name);
+        char* getTurnoutName();
         void setHasReceivedDetails();
         bool getHasReceivedDetails();
 
     private:
         int turnoutId;
-        String turnoutName;
+        char* turnoutName;
         TurnoutState turnoutState;
         bool hasReceivedDetail;
 };
@@ -223,11 +250,11 @@ class Turnout {
 class Route {
     public:
         Route() {}
-        Route(int id, String name);
+        Route(int id, char* name);
         int getRouteId();
-        bool setRouteName(String name);
-        String getRouteName();
-        bool setRouteType(String type);
+        bool setRouteName(char* name);
+        char* getRouteName();
+        bool setRouteType(RouteType type);
         RouteType getRouteType();
 
         void setHasReceivedDetails();
@@ -235,8 +262,8 @@ class Route {
         
     private:
         int routeId;
-        String routeName;
-        String routeType;
+        char* routeName;
+        char routeType;
         bool hasReceivedDetail;
 };
 
@@ -245,15 +272,15 @@ class TurntableIndex {
     public:
         int turntableIndexId;
         int turntableIndexIndex;
-        String turntableIndexName;
+        char* turntableIndexName;
         int turntableIndexAngle;
         bool hasReceivedDetail;
 
         TurntableIndex() {}
-        TurntableIndex(int index, String name, int angle);
+        TurntableIndex(int index, char* name, int angle);
         void setHasReceivedDetails(); //????????????????? Probably not needed
         bool getHasReceivedDetails(); //????????????????? Probably not needed
-        String getTurntableIndexName();
+        char* getTurntableIndexName();
         int getTurntableIndexId();
         int getTurntableIndexIndex();
 };
@@ -261,15 +288,15 @@ class TurntableIndex {
 class Turntable {
     public:
         Turntable() {}
-        Turntable(int id, String name, TurntableType type, int position, int indexCount);
-        bool addTurntableIndex(int index, String indexName, int indexAngle);
+        Turntable(int id, char* name, TurntableType type, int position, int indexCount);
+        bool addTurntableIndex(int index, char* indexName, int indexAngle);
         LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
         bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
         int getTurntableIndexCount(); // what was listed in the original definition
  
         int getTurntableId();
-        bool setTurntableName(String name);
-        String getTurntableName();
+        bool setTurntableName(char* name);
+        char* getTurntableName();
         bool setTurntableCurrentPosition(int index);
         bool setTurntableType(TurntableType type);
         TurntableType getTurntableType();
@@ -285,7 +312,7 @@ class Turntable {
     private:
         int turntableId;
         TurntableType turntableType;
-        String turntableName;
+        char* turntableName;
         int turntableCurrentPosition;
         bool turntableIsMoving;
         bool hasReceivedDetail;
@@ -308,7 +335,7 @@ class NullStream : public Stream {
 
 class DCCEXProtocolDelegate {
   public:
-    virtual void receivedServerDescription(String microprocessor, String version) {}
+    virtual void receivedServerDescription(char* version) {}
   
     virtual void receivedRosterList(int rosterSize) {}
     virtual void receivedTurnoutList(int turnoutListSize) {}    
@@ -341,10 +368,10 @@ class DCCEXProtocol {
 
     bool check();
 
-    String serverVersion;
-    String serverMicroprocessorType;
-    String serverMotorcontrollerType;
-    String serverBuildNumber;
+    char *serverVersion;
+    char *serverMicroprocessorType;
+    char *serverMotorcontrollerType;
+    char *serverBuildNumber;
     bool isServerDetailsReceived();
 
     // *******************
@@ -355,6 +382,9 @@ class DCCEXProtocol {
     LinkedList<Route*> routes = LinkedList<Route*>();
     LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
 
+    LinkedList<CommandArgument*> argz = LinkedList<CommandArgument*>();
+    LinkedList<FunctionArgument*> functionArgs = LinkedList<FunctionArgument*>();
+
     //helper functions
     Direction getDirectionFromSpeedByte(int speedByte);
     int getSpeedFromSpeedByte(int speedByte);
@@ -363,12 +393,12 @@ class DCCEXProtocol {
 
     // *******************
 
-    void sendCommand(String cmd);
+    void sendCommand();
 
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
-    bool sendFunction(int throttle, int funcNum, bool pressed);
-    bool sendFunction(int throttle, String address, int funcNum, bool pressed);
+    bool sendFunction(int throttle, int funcNum, FunctionState pressed);
+    bool sendFunction(int throttle, int address, int funcNum, FunctionState pressed);
     bool sendLocoUpdateRequest(int address);
 
     // *******************
@@ -393,6 +423,7 @@ class DCCEXProtocol {
 	bool sendTrackPower(TrackPower state);
 	bool sendTrackPower(TrackPower state, char track);
 
+    Turnout* getTurnoutById(int turnoutId);
     bool sendTurnoutAction(int turnoutId, TurnoutAction action);
 
     bool sendRouteAction(int routeId);
@@ -413,66 +444,67 @@ class DCCEXProtocol {
     Stream *console;
     NullStream nullStream;
 	
+    char outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH];
+
     DCCEXProtocolDelegate *delegate = NULL;
 
     long lastServerResponseTime;
 
-    char inputbuffer[32767];
+    // char inputbuffer[32767];
+    // char inputbuffer[16383];    
+    char inputbuffer[512];    
     ssize_t nextChar;  // where the next character to be read goes in the buffer
 
     void init();
 
     bool processCommand(char *c, int len);
-    void processUnknownCommand(String unknownCommand);
+    void processUnknownCommand(char* unknownCommand);
 
-    void processServerDescription(LinkedList<String> &args);	
+    void processServerDescription();	
     bool haveReceivedServerDetails = false;
 
-    void processTrackPower(LinkedList<String> &args);
+    void processTrackPower();
 
     // *******************
 
     bool rosterFullyReceived = false;
-    void processRosterEntry(LinkedList<String> &args);
-    void processRosterList(LinkedList<String> &args);
+    void processRosterEntry();
+    void processRosterList();
     void sendRosterEntryRequest(int address);
 
     bool turnoutListFullyReceived = false;
-    void processTurnoutEntry(LinkedList<String> &args);
-    void processTurnoutList(LinkedList<String> &args);
-    void processTurnoutAction(LinkedList<String> &args);
+    void processTurnoutEntry();
+    void processTurnoutList();
+    void processTurnoutAction();
     void sendTurnoutEntryRequest(int id);
 
     bool routeListFullyReceived = false;
-    void processRouteList(LinkedList<String> &args);
-    void processRouteEntry(LinkedList<String> &args);
+    void processRouteList();
+    void processRouteEntry();
     void sendRouteEntryRequest(int id);
-    // void processRouteAction(LinkedList<String> &args);
+    // void processRouteAction();
 
     bool turntableListFullyReceived = false;
-    void processTurntableEntry(LinkedList<String> &args);
-    void processTurntableList(LinkedList<String> &args);
-    void processTurntableIndexEntry(LinkedList<String> &args);
-    void processTurntableAction(LinkedList<String> &args);
+    void processTurntableEntry();
+    void processTurntableList();
+    void processTurntableIndexEntry();
+    void processTurntableAction();
     void sendTurntableEntryRequest(int id);
     void sendTurntableIndexEntryRequest(int id);
 
-    void processSensorEntry(LinkedList<String> &args);
+    void processSensorEntry();
 
-    bool processLocoAction(LinkedList<String> &args);
+    bool processLocoAction();
 
     //helper functions
     int findThrottleWithLoco(int address);
     int findTurnoutListPositionFromId(int id);
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
-    // LinkedList<String> splitCommand(String text, char splitChar);
-    bool splitValues(LinkedList<String> &args, char *cmd);
-    bool splitFunctions(LinkedList<String> &args, char *cmd);
-    // bool splitCommand(LinkedList<String> &args, String text, char splitChar);
-    // int countSplitCharacters(String text, char splitChar);
-    String stripLeadAndTrailQuotes(String text);
-    // String substituteCharBetweenQuotes(String text, char searchChar, char substituteChar);
+    bool splitValues(char *cmd);
+    bool splitFunctions(char *cmd);
+    bool stripLeadAndTrailQuotes(char* rslt, char* text);
+    // char* substituteCharBetweenQuotes(char* text, char searchChar, char substituteChar);
 };
 
 #endif // DCCEXPROTOCOL_H

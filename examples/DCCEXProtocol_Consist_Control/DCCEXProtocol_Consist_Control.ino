@@ -10,17 +10,15 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
-void printRoster();
-void printTurnouts();
-void printRoutes();
-void printTurntables();
+void printServer();
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(String microprocessor, String version) {     
-        Serial.print("Received version: "); Serial.println(version);  
+    void receivedServerDescription(char* version) {   
+      Serial.println("\n\nReceived Server Description: ");
+      printServer();  
     }
 
     void receivedTrackPower(TrackPower state) { 
@@ -65,12 +63,22 @@ unsigned long lastTime = 0;
 // for random speed changes 
 int speed = 0;
 int up = 1;
+Direction dir = Forward;
+FunctionState _fnState;
 bool done = false;
 
 // Global objects
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
+
+void printServer() {
+  Serial.print("  Server Version:  "); Serial.println(dccexProtocol.serverVersion);
+  Serial.print("  Server MP Type:  "); Serial.println(dccexProtocol.serverMicroprocessorType);
+  Serial.print("  Server MC Type:  "); Serial.println(dccexProtocol.serverMotorcontrollerType);
+  Serial.print("  Server Build No: "); Serial.println(dccexProtocol.serverBuildNumber);
+  Serial.println("\n\n");  
+}
 
 void setup() {
   
@@ -93,7 +101,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  dccexProtocol.setLogStream(&Serial);
+  // dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -117,33 +125,46 @@ void loop() {
     done = true;
 
     // add a loco to throttle 0 from DCC address 11
-    Loco loco(11, "dummy loco", LocoSourceEntry);
+    char loco1name[] = "dummy loco 1";
+    Loco loco(11, loco1name, LocoSourceEntry);
     dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
-    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 12
-    Loco loco2 = Loco(12, "dummy loco 2", LocoSourceEntry);
+    char loco2name[] = "dummy loco 2";
+    Loco loco2 = Loco(12, loco2name, LocoSourceEntry);
     dccexProtocol.throttleConsists[0].consistAddLoco(loco2, FacingForward);
-    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 13
-    Loco loco3 = Loco(13, "dummy loco 3", LocoSourceEntry);
+    char loco3name[] = "dummy loco 3";
+    Loco loco3 = Loco(13, loco3name, LocoSourceEntry);
     dccexProtocol.throttleConsists[0].consistAddLoco(loco3, FacingReversed);
-    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
 
   }
 
-  if ((millis() - lastTime) >= 20000) {
-    if (speed>=100) up = -1;
-    if (speed<=0) up = 1;
+  if ((millis() - lastTime) >= 10000) {
+    if (speed>=100) {
+      up = -10;
+    }
+    if (speed<=0) {
+      up = 10;
+      if (dir==Forward) {
+        dir = Reverse;
+      } else { 
+        dir = Forward;
+      }
+    }
     speed = speed + up;
-    dccexProtocol.sendThrottleAction(0, speed, Forward);
+    dccexProtocol.sendThrottleAction(0, speed, dir);
 
     int ttl = random(0, 1);
     int fn = random(0,28);
-    int fnState = random(0,2);
+    int _fns = random(0,1);
+    if (_fns==0) {_fnState=FunctionStateOn;}  else {_fnState=FunctionStateOn; }
 
-    dccexProtocol.sendFunction(ttl, fn, fnState);
+    dccexProtocol.sendFunction(ttl, fn, _fnState);
 
     lastTime = millis();
   }

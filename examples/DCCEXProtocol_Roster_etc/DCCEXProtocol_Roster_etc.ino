@@ -10,6 +10,7 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
+void printServer();
 void printRoster();
 void printTurnouts();
 void printRoutes();
@@ -19,8 +20,9 @@ void printTurntables();
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(String microprocessor, String version) {     
-      Serial.print("\n\nReceived version: "); Serial.println(version);  
+    void receivedServerDescription(char* version) {   
+      Serial.println("\n\nReceived Server Description: ");
+      printServer();  
     }
 
     void receivedTrackPower(TrackPower state) { 
@@ -58,54 +60,71 @@ const char* password =  "PASS_44182a";
 IPAddress serverAddress(192,168,4,1);
 int serverPort = 2560;
 
+unsigned long lastTime = 0;
+
 // Global objects
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
+bool done = false;
+
+void printServer() {
+  Serial.print("  Server Version:  "); Serial.println(dccexProtocol.serverVersion);
+  Serial.print("  Server MP Type:  "); Serial.println(dccexProtocol.serverMicroprocessorType);
+  Serial.print("  Server MC Type:  "); Serial.println(dccexProtocol.serverMotorcontrollerType);
+  Serial.print("  Server Build No: "); Serial.println(dccexProtocol.serverBuildNumber);
+  Serial.println("\n\n");  
+}
 
 void printRoster() {
-      for (int i=0; i<dccexProtocol.roster.size(); i++) {
-        Loco* loco = dccexProtocol.roster.get(i);
-        int address = loco->getLocoAddress();
-        String name = loco->getLocoName();
-        Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
-      }
-      // Serial.println("\n");  
+  for (int i=0; i<dccexProtocol.roster.size(); i++) {
+    Loco* loco = dccexProtocol.roster.get(i);
+    int address = loco->getLocoAddress();
+    char* name = loco->getLocoName();
+    Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+    Functions fns = loco->locoFunctions;
+    for (int j=0; j<MAX_FUNCTIONS; j++) {
+      char* functionName = fns.getFunctionName(j);
+      Serial.print("  fn"); Serial.print(j); Serial.print(" ~"); Serial.print(functionName); Serial.print("~");  
+    }
+    Serial.println("\n");  
+  }
+  Serial.println("\n");  
 }
 
 void printTurnouts() {
-      for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
-        Turnout* turnout = dccexProtocol.turnouts.get(i);
-        int id = turnout->getTurnoutId();
-        String name = turnout->getTurnoutName();
-        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
-      }
-      // Serial.println("\n");  
+  for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
+    Turnout* turnout = dccexProtocol.turnouts.get(i);
+    int id = turnout->getTurnoutId();
+    char* name = turnout->getTurnoutName();
+    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  }
+  Serial.println("\n");  
 }
 
 void printRoutes() {
-      for (int i=0; i<dccexProtocol.routes.size(); i++) {
-        Route* route = dccexProtocol.routes.get(i);
-        int id = route->getRouteId();
-        String name = route->getRouteName();
-        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
-      }
-      // Serial.println("\n");  
+  for (int i=0; i<dccexProtocol.routes.size(); i++) {
+    Route* route = dccexProtocol.routes.get(i);
+    int id = route->getRouteId();
+    char* name = route->getRouteName();
+    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  }
+  Serial.println("\n");  
 }
 
 void printTurntables() {
-      for (int i=0; i<dccexProtocol.turntables.size(); i++) {
-        Turntable* turntable = dccexProtocol.turntables.get(i);
-        int id = turntable->getTurntableId();
-        String name = turntable->getTurntableName();
-        Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~"); 
-        for (int j=0; j<turntable->getTurntableNumberOfIndexes(); j++) {
-          TurntableIndex* turntableIndex = turntable->turntableIndexes.get(j);
-          String indexName = turntableIndex->getTurntableIndexName();
-          Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
-        }
-      }
-      // Serial.println("\n");  
+  for (int i=0; i<dccexProtocol.turntables.size(); i++) {
+    Turntable* turntable = dccexProtocol.turntables.get(i);
+    int id = turntable->getTurntableId();
+    char* name = turntable->getTurntableName();
+    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~"); 
+    for (int j=0; j<turntable->getTurntableNumberOfIndexes(); j++) {
+      TurntableIndex* turntableIndex = turntable->turntableIndexes.get(j);
+      char* indexName = turntableIndex->getTurntableIndexName();
+      Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
+    }
+  }
+  Serial.println("\n");  
 }
 
 void setup() {
@@ -147,9 +166,19 @@ void setup() {
   dccexProtocol.getRoutes();
   delay(1000);
   dccexProtocol.getTurntables();
+
+  lastTime = millis();
 }
   
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
+
+  // if (!done && dccexProtocol.isServerDetailsReceived()) {
+  //   done = true;
+  // }
+
+//   if ((millis() - lastTime) >= 10000) {
+//     lastTime = millis();
+//   }  
 }
