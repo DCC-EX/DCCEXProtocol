@@ -62,11 +62,12 @@ int serverPort = 2560;
 
 unsigned long lastTime = 0;
 
+bool done = false;
+
 // Global objects
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-bool done = false;
 
 void printServer() {
   Serial.print("  Server Version:  "); Serial.println(dccexProtocol.serverVersion);
@@ -148,7 +149,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  // dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -158,14 +159,7 @@ void setup() {
   Serial.println("DCC-EX connected");
 
   dccexProtocol.sendServerDetailsRequest();
-  delay(1000);
-  dccexProtocol.getRoster();
-  delay(1000);
-  dccexProtocol.getTurnouts();
-  delay(1000);
-  dccexProtocol.getRoutes();
-  delay(1000);
-  dccexProtocol.getTurntables();
+  dccexProtocol.sendTrackPower(PowerOn);
 
   lastTime = millis();
 }
@@ -173,6 +167,10 @@ void setup() {
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
+
+  // sequentially request and get the required lists. To avoid overloading the buffer
+  //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
+  dccexProtocol.getLists(true, true, true, true);
 
   // if (!done && dccexProtocol.isServerDetailsReceived()) {
   //   done = true;

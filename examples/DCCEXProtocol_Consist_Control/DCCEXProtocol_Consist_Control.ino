@@ -112,7 +112,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Uncomment for logging on Serial
-  // dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -123,7 +123,7 @@ void setup() {
 
   dccexProtocol.sendServerDetailsRequest();
 
-  dccexProtocol.getRoster();
+  // dccexProtocol.getRoster();
 
   lastTime = millis();
 }
@@ -131,6 +131,10 @@ void setup() {
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
+
+  // sequentially request and get the required lists. To avoid overloading the buffer
+  //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
+  dccexProtocol.getLists(true, false, false, false);
 
   if (dccexProtocol.isRosterFullyReceived() && !done ) { // need to wait till the roster loads
     done = true;

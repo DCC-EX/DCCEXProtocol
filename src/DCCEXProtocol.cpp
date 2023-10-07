@@ -1354,16 +1354,58 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 
 // ******************************************************************************************************
 
+// sequentially request and get the required lists. To avoid overloading the buffer
+bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
+
+    if (!allRequiredListsReceived) {
+        if (!rosterRequested) {
+            getRoster();
+        } else { 
+            if (rosterFullyReceived) {
+
+                if (!turnoutListRequested) {
+                    getTurnouts();
+                } else { 
+                    if (turnoutListFullyReceived) {
+
+                        if (!routeListRequested) {
+                            getRoutes();
+                        } else { 
+                            if (routeListFullyReceived) {
+
+                                if (!turntableListRequested) {
+                                    getTurntables();
+                                } else { 
+                                    if (turntableListFullyReceived) {
+
+                                        allRequiredListsReceived = true;
+                                        console->println(F("Lists Fully Received"));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+  return true;
+}
+
 bool DCCEXProtocol::getRoster() {
     // console->println(F("getRoster()"));
     if (delegate) {
         strcpy(outboundCommand, "<JR>");
         sendCommand();
+        rosterRequested = true;
     }
     // console->println(F("getRoster() end"));
     return true;
 }
 
+bool DCCEXProtocol::isRosterRequested() {
+    return rosterRequested;
+}
 bool DCCEXProtocol::isRosterFullyReceived() {
     // console->println(F("isRosterFullyReceived()"));
     // if (rosterFullyReceived) console->println(F("true"));
@@ -1375,11 +1417,15 @@ bool DCCEXProtocol::getTurnouts() {
     if (delegate) {
         strcpy(outboundCommand, "<JT>");
         sendCommand();
+        turnoutListRequested = true;
     }
     // console->println(F("getTurnouts() end"));
     return true;
 }
 
+bool DCCEXProtocol::isTurnoutListRequested() {
+    return turnoutListRequested;
+}
 bool DCCEXProtocol::isTurnoutListFullyReceived() {
     return turnoutListFullyReceived;
 }
@@ -1389,11 +1435,15 @@ bool DCCEXProtocol::getRoutes() {
     if (delegate) {
         strcpy(outboundCommand, "<JA>");
         sendCommand();
+        routeListRequested = true;
     }
     // console->println(F("getRoutes() end"));
     return true;
 }
 
+bool DCCEXProtocol::isRouteListRequested() {
+    return routeListRequested;
+}
 bool DCCEXProtocol::isRouteListFullyReceived() {
     return routeListFullyReceived;
 }
@@ -1403,11 +1453,15 @@ bool DCCEXProtocol::getTurntables() {
     if (delegate) {
         strcpy(outboundCommand, "<JO>");
         sendCommand();
+        turntableListRequested = true;
     }
     // console->println(F("getTurntables() end"));
     return true;
 }
 
+bool DCCEXProtocol::isTurntableListRequested() {
+    return turntableListRequested;
+}
 bool DCCEXProtocol::isTurntableListFullyReceived() {
     return turntableListFullyReceived;
 }
@@ -1576,7 +1630,7 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
     byte parameterCount = 0;
     
     int currentCharIndex = 0; // pointer to the next character to process
-    splitState state = FIND_START;
+    splitFunctionsState state = FIND_FUNCTION_START;
     char currentArg[MAX_SINGLE_COMMAND_PARAM_LENGTH];
     currentArg[0]='\0';
     int currentArgLength = 0;
@@ -1587,20 +1641,23 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
         // console->print("..."); console->print(currentChar); console->println("...");
         // In this switch, 'break' will go on to next char but 'continue' will rescan the current char. 
         switch (state) {
-        case CHECK_FOR_LEADING_QUOTE:
-        case FIND_START: // looking for leading '"'
-            if (currentChar == '"') state = SKIP_SPACES;
+        case FIND_FUNCTION_START: // looking for leading '"'
+            if (currentChar == '"') state = SKIP_FUNCTION_SPACES;
             break;
 
-        case SKIP_SPACES: // skipping spaces or slashes before a param
-            if ( (currentChar == ' ') || (currentChar == '/') ) break; // ignore
-            state = BUILD_PARAM;
+        case SKIP_FUNCTION_LEADING_SLASH_SPACES: // skipping only 1 "/" before a param
+            state = SKIP_FUNCTION_SPACES;
+            if (currentChar == '/') break; // ignore
             continue;
 
-        case BUILD_QUOTED_PARAM:
-        case BUILD_PARAM: // building a parameter
+        case SKIP_FUNCTION_SPACES: // skipping spaces before a param
+            if (currentChar == ' ') break; // ignore
+            state = BUILD_FUNCTION_PARAM;
+            continue;
+
+        case BUILD_FUNCTION_PARAM: // building a parameter
             if (currentChar == '"') {
-                state = CHECK_FOR_END;
+                state = CHECK_FOR_FUNCTION_END;
                 continue;
             }
             if (currentChar != '/') {
@@ -1616,14 +1673,13 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
             currentArg[0]='\0';
             currentArgLength = 0;
             parameterCount++;
-            state = SKIP_SPACES;
+            state = SKIP_FUNCTION_LEADING_SLASH_SPACES;
             continue;
         
-        case CHECK_FOR_END:
+        case CHECK_FOR_FUNCTION_END:
             if ( (currentChar == '\0') || (currentChar == '"') ) {
-                if (currentArgLength>0) { // in case there was a param we started but didn't find the proper end
-                    functionArgs.add( new FunctionArgument(currentArg));
-                }
+                // trailing function
+                functionArgs.add( new FunctionArgument(currentArg));
                 return true;  
             }
             break;
@@ -1631,7 +1687,7 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
         currentCharIndex++;
     }
     
-    // console->println(F("splitFunctions(): end"));
+    console->println(F("splitFunctions(): end"));
     return true;
 }
 

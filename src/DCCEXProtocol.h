@@ -31,7 +31,6 @@
 #include <Arduino.h>
 #include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
 
-
 static const int MAX_THROTTLES = 6;
 static const int MAX_FUNCTIONS = 28;
 #define MAX_COMMAND_PARAMS 100
@@ -50,8 +49,8 @@ static const char NAME_UNKNOWN[] = "Unknown";
 static const char NAME_BLANK[] = "";
 #define UnknownIdResponse "X"
 
-enum splitState {FIND_START,SKIP_SPACES,CHECK_FOR_LEADING_QUOTE,BUILD_QUOTED_PARAM,BUILD_PARAM,CHECK_FOR_END};
-
+enum splitState {FIND_START, SKIP_SPACES, CHECK_FOR_LEADING_QUOTE, BUILD_QUOTED_PARAM, BUILD_PARAM, CHECK_FOR_END};
+enum splitFunctionsState {FIND_FUNCTION_START, SKIP_FUNCTION_LEADING_SLASH_SPACES, SKIP_FUNCTION_SPACES, BUILD_FUNCTION_PARAM, CHECK_FOR_FUNCTION_END};
 
 // *****************************************************************
 
@@ -408,13 +407,18 @@ class DCCEXProtocol {
 
     bool sendServerDetailsRequest();
 
+    bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
     bool getRoster();
+    bool isRosterRequested();
     bool isRosterFullyReceived();
     bool getTurnouts();
+    bool isTurnoutListRequested();
     bool isTurnoutListFullyReceived();
     bool getRoutes();
+    bool isRouteListRequested();
     bool isRouteListFullyReceived();
     bool getTurntables();
+    bool isTurntableListRequested();
     bool isTurntableListFullyReceived();
 
     long getLastServerResponseTime();  // seconds since Arduino start
@@ -471,23 +475,29 @@ class DCCEXProtocol {
 
     // *******************
 
+    bool allRequiredListsReceived = false;
+    
+    bool rosterRequested = false;
     bool rosterFullyReceived = false;
     void processRosterEntry();
     void processRosterList();
     void sendRosterEntryRequest(int address);
 
+    bool turnoutListRequested = false;
     bool turnoutListFullyReceived = false;
     void processTurnoutEntry();
     void processTurnoutList();
     void processTurnoutAction();
     void sendTurnoutEntryRequest(int id);
 
+    bool routeListRequested = false;
     bool routeListFullyReceived = false;
     void processRouteList();
     void processRouteEntry();
     void sendRouteEntryRequest(int id);
     // void processRouteAction();
 
+    bool turntableListRequested = false;
     bool turntableListFullyReceived = false;
     void processTurntableEntry();
     void processTurntableList();
