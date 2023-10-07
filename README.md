@@ -92,6 +92,8 @@ The Roster is stored as a Linked List.
 
 Retrieve the list with ```dccexProtocol.getRoster();```
 
+Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
+
 Retrieve the size of the list (number of locos) with ```dccexProtocol.roster.size()```
 
 Retrieve a ```ConsistLoco``` object from the list with ```dccexProtocol.roster.get(listEntryNumber)``` 
@@ -103,6 +105,8 @@ The List of defined Turnouts/Points is stored as a Linked List.
 
 Retrieve the list with ```dccexProtocol.getTurnouts();```
 
+Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
+
 Retrieve the size of the list with ```dccexProtocol.turnouts.size()```
 
 Retrieve a ```Turnout``` object from the list with ```dccexProtocol.turnouts.get(listEntryNumber)``` 
@@ -113,6 +117,8 @@ The List of defined Routes/Automations is stored as a Linked List.
 
 Retrieve the list with ```dccexProtocol.getRoutes();```
 
+Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
+
 Retrieve the size of the list with ```dccexProtocol.routes.size()```
 
 Retrieve a ```Route``` object from the list with ```dccexProtocol.routes.get(listEntryNumber)``` 
@@ -122,6 +128,8 @@ Retrieve a ```Route``` object from the list with ```dccexProtocol.routes.get(lis
 The List of defined Turntables is stored as a Linked List.
 
 Retrieve the list with ```dccexProtocol.getTurntables();```
+
+Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
 
 Retrieve the size of the list with ```dccexProtocol.turntables.size()```
 
@@ -192,11 +200,35 @@ Used by ```Loco```
 
 #### Public methods
 
-        bool initFunction(int functionNumber, String label, FunctionLatching latching, FunctionState state);
-        bool setFunctionState(int functionNumber, FunctionState state);
-        String getFunctionName(int functionNumber);
-        FunctionState getFunctionState(int functionNumber);
-        FunctionLatching getFunctionLatching(int functionNumber);
+    Loco(int address, char* name, LocoSource source);
+    Functions locoFunctions;
+    bool isFunctionOn(int functionNumber);
+    bool setLocoSpeed(int speed);
+    bool setLocoDirection(Direction direction);
+    int getLocoAddress();
+    bool setLocoName(char* name);
+    char* getLocoName();
+    bool setLocoSource(LocoSource source);
+    LocoSource getLocoSource();
+    int  getLocoSpeed();
+    Direction getLocoDirection();
+    void setIsFromRosterAndReceivedDetails();
+    bool getIsFromRosterAndReceivedDetails();
+    bool clearLocoNameAndFunctions();
+
+---
+
+### class ConsistLoco : public Loco
+
+#### Public Attributes
+
+    none
+
+#### Public methods
+
+    ConsistLoco(int address, char* name, LocoSource source, Facing facing);
+    bool setConsistLocoFacing(Facing facing);
+    Facing getConsistLocoFacing();
 
 ---
 
@@ -210,8 +242,7 @@ Used by ```ConsistThrottle[]```
 
 #### Public methods
 
-    Consist() {}
-    Consist(String name);
+    Consist(char* name);
     bool consistAddLoco(Loco loco, Facing facing);
     bool consistReleaseAllLocos();
     bool consistReleaseLoco(int locoAddress);
@@ -226,8 +257,9 @@ Used by ```ConsistThrottle[]```
     Direction consistGetDirection();
     bool consistSetFunction(int functionNo, FunctionState state);
     bool consistSetFunction(int address, int functionNo, FunctionState state);
-
-    String getConsistName();
+    bool isFunctionOn(int functionNumber);
+    bool setConsistName(char* name);
+    char* getConsistName();
 
 ---
 
@@ -241,14 +273,16 @@ Used by ```Turnouts[]```
 
 #### Public methods
 
-    Turnout() {}
-    Turnout(int id, String name, TurnoutState state);
+    Turnout(int id, char* name, TurnoutState state);
     bool setTurnoutState(TurnoutAction action);
     TurnoutState getTurnoutState();
+    bool throwTurnout();
+    bool closeTurnout();
+    bool toggleTurnout();
     bool setTurnoutId(int id);
     int getTurnoutId();
-    bool setTurnoutName(String name);
-    String getTurnoutName();
+    bool setTurnoutName(char* name);
+    char* getTurnoutName();
     void setHasReceivedDetails();
     bool getHasReceivedDetails();
 
@@ -264,14 +298,12 @@ Used by ```Routes[]```
 
 #### Public methods
 
-    Route() {}
-    Route(int id, String name);
+    Route(int id, char* name);
     int getRouteId();
-    bool setRouteName(String name);
-    String getRouteName();
-    bool setRouteType(String type);
+    bool setRouteName(char* name);
+    char* getRouteName();
+    bool setRouteType(RouteType type);
     RouteType getRouteType();
-
     void setHasReceivedDetails();
     bool getHasReceivedDetails();
 
@@ -287,15 +319,14 @@ Used by ```Turntables[]```
 
 #### Public methods
 
-    Turntable() {}
-    Turntable(int id, String name, TurntableType type, int position, int indexCount);
-    bool addTurntableIndex(int index, String indexName, int indexAngle);
+    Turntable(int id, char* name, TurntableType type, int position, int indexCount);
+    bool addTurntableIndex(int index, char* indexName, int indexAngle);
     bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
     int getTurntableIndexCount(); // what was listed in the original definition
 
     int getTurntableId();
-    bool setTurntableName(String name);
-    String getTurntableName();
+    bool setTurntableName(char* name);
+    char* getTurntableName();
     bool setTurntableCurrentPosition(int index);
     bool setTurntableType(TurntableType type);
     TurntableType getTurntableType();
@@ -324,14 +355,12 @@ Used by ```Turntable```
 
 #### Public methods
 
-    TurntableIndex() {}
-    TurntableIndex(int index, String name, int angle);
-    void setHasReceivedDetails();
-    bool getHasReceivedDetails();
-    String getTurntableIndexName();
+    TurntableIndex(int index, char* name, int angle);
+    void setHasReceivedDetails(); //????????????????? Probably not needed
+    bool getHasReceivedDetails(); //????????????????? Probably not needed
+    char* getTurntableIndexName();
     int getTurntableIndexId();
     int getTurntableIndexIndex();
-};
 
 ----
 ----
@@ -440,6 +469,12 @@ bool sendFunction(int throttle, String address, int funcNum, bool pressed);
 Send a function a specific loco on a Throttle.
 
 ```
+bool isFunctionOn(int throttle, int functionNumber);
+```
+
+TBA
+
+```
 Consist getThrottleConsist(int throttleNo);
 ```
 
@@ -466,7 +501,19 @@ bool sendServerDetailsRequest();
 TBA
 
 ```
+bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+```
+
+TBA
+
+```
 bool getRoster();
+```
+
+TBA
+
+```
+bool isRosterRequested();
 ```
 
 TBA
@@ -484,6 +531,12 @@ bool getTurnouts();
 TBA
 
 ```
+bool isTurnoutListRequested();
+```
+
+TBA
+
+```
 bool isTurnoutListFullyReceived();
 ```
 
@@ -496,6 +549,12 @@ bool getRoutes();
 TBA
 
 ```
+bool isRouteListRequested();
+```
+
+TBA
+
+```
 bool isRouteListFullyReceived();
 ```
 
@@ -503,6 +562,12 @@ TBA
 
 ```
 bool getTurntables();
+```
+
+TBA
+
+```
+bool isTurntableListRequested();
 ```
 
 TBA
