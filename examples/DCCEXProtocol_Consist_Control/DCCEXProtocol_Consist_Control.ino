@@ -11,6 +11,7 @@
 #include <DCCEXProtocol.h>
 
 void printServer();
+void checkFunction(int throttleNo, int func);
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
@@ -45,8 +46,9 @@ class MyDelegate : public DCCEXProtocolDelegate {
     void receivedDirection(int throttleNo, Direction dir) { 
         Serial.print("Received Throttle Direction: "); Serial.print(throttleNo); Serial.print(" Direction: "); Serial.println(dir); 
     }
-    void receivedFunction(int throttleNo, int func, bool state) { 
+    void receivedFunction(int throttleNo, int func, FunctionState state) { 
         Serial.print("Received Throttle Function change: "); Serial.print(throttleNo); Serial.print(" function: "); Serial.print(func); Serial.print(" state: "); Serial.println(state);
+        checkFunction(throttleNo, func);
     }
 
 };
@@ -78,6 +80,15 @@ void printServer() {
   Serial.print("  Server MC Type:  "); Serial.println(dccexProtocol.serverMotorcontrollerType);
   Serial.print("  Server Build No: "); Serial.println(dccexProtocol.serverBuildNumber);
   Serial.println("\n\n");  
+}
+
+void checkFunction(int throttleNo, int func) {
+  Serial.print("Function "); Serial.print(func); Serial.print(": ");
+  if (dccexProtocol.isFunctionOn(throttleNo, func)) {
+    Serial.println("is on");
+  } else {
+    Serial.println("is off");
+  }
 }
 
 void setup() {
@@ -161,8 +172,8 @@ void loop() {
 
     int ttl = random(0, 1);
     int fn = random(0,28);
-    int _fns = random(0,1);
-    if (_fns==0) {_fnState=FunctionStateOn;}  else {_fnState=FunctionStateOn; }
+    int _fns = random(0,100);
+    if (_fns>=50) {_fnState=FunctionStateOn;}  else {_fnState=FunctionStateOff; }
 
     dccexProtocol.sendFunction(ttl, fn, _fnState);
 

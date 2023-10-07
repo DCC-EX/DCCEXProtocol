@@ -147,7 +147,7 @@ class Functions {
     
     private:
         char* functionName[MAX_FUNCTIONS];
-        int functionState[MAX_FUNCTIONS];
+        FunctionState functionState[MAX_FUNCTIONS];
         int functionLatching[MAX_FUNCTIONS];
 
         bool actionFunctionStateExternalChange(int functionNumber, FunctionState state);
@@ -345,7 +345,7 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedSpeed(int throttleNo, int speed) { }
     virtual void receivedDirection(int throttleNo, Direction dir) { }
-    virtual void receivedFunction(int throttleNo, int func, bool state) { }
+    virtual void receivedFunction(int throttleNo, int func, FunctionState state) { }
 
     virtual void receivedTrackPower(TrackPower state) { }
 
@@ -391,6 +391,7 @@ class DCCEXProtocol {
     int getSpeedFromSpeedByte(int speedByte);
     void getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap);
     int bitExtracted(int number, int k, int p);
+    char* charToCharArray(char c);
 
     // *******************
 
@@ -398,9 +399,9 @@ class DCCEXProtocol {
 
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
-    bool sendFunction(int throttle, int funcNum, FunctionState pressed);
-    bool sendFunction(int throttle, int address, int funcNum, FunctionState pressed);
-    bool isFunctionOn(int throttle, int funcNum);
+    bool sendFunction(int throttle, int functionNumber, FunctionState pressed);
+    bool sendFunction(int throttle, int address, int functionNumber, FunctionState pressed);
+    bool isFunctionOn(int throttle, int functionNumber);
     bool sendLocoUpdateRequest(int address);
 
     // *******************
@@ -456,6 +457,7 @@ class DCCEXProtocol {
     // char inputbuffer[16383];    
     char inputbuffer[512];    
     ssize_t nextChar;  // where the next character to be read goes in the buffer
+    char charToCharArrayVal[2];  // common. used to convert sinle char to char array.
 
     void init();
 
