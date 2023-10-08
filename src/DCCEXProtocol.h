@@ -198,6 +198,8 @@ class Consist {
         Consist() {}
         Consist(char* name);
         bool consistAddLoco(Loco loco, Facing facing);
+        bool consistAddLocoFromRoster(LinkedList<Loco*> roster, int address, Facing facing);
+        bool consistAddLocoFromAddress(int address, char* name, Facing facing);
         bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
         int consistGetNumberOfLocos();
@@ -396,6 +398,7 @@ class DCCEXProtocol {
 
     void sendCommand();
 
+    Loco findLocoInRoster(int address);
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
     bool sendFunction(int throttle, int functionNumber, FunctionState pressed);

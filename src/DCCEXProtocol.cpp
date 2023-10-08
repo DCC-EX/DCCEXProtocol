@@ -1471,6 +1471,18 @@ bool DCCEXProtocol::isTurntableListFullyReceived() {
 // ******************************************************************************************************
 // helper functions
 
+//private
+Loco DCCEXProtocol::findLocoInRoster(int address) {
+    if (roster.size()>0) { 
+        for (int i=0; i<roster.size(); i++) {
+            if (roster.get(i)->getLocoAddress() == address) {
+                return *roster.get(i);
+            }
+        }
+    }
+    return {};
+}
+
 // private
 // find which, if any, throttle has this loco selected
 int DCCEXProtocol::findThrottleWithLoco(int address) {
@@ -1924,6 +1936,24 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
             return true;
         }
         return false;
+    }
+    // create from a DCC Address
+    bool Consist::consistAddLocoFromRoster(LinkedList<Loco*> roster, int address, Facing facing) {
+        if (roster.size()>0) { 
+            for (int i=0; i<roster.size(); i++) {
+                if (roster.get(i)->getLocoAddress() == address) {
+                    consistAddLoco(*roster.get(i), facing);
+                    return  true;
+                }
+            }
+        }
+        return false;
+    }
+    // create from a DCC Address
+    bool Consist::consistAddLocoFromAddress(int address, char* name, Facing facing) {
+        Loco loco = Loco(address, name, LocoSourceEntry);
+        consistAddLoco(loco, facing);
+        return true;
     }
     bool Consist::consistReleaseAllLocos()  {
         if (consistLocos.size()>0) {
