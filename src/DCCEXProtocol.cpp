@@ -1029,11 +1029,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
         _track[0] = track;
         _track[1] = '\0';
 
-        strcpy(outboundCommand, "<");
-        strcat(outboundCommand, _state);
-        strcat(outboundCommand, " ");
-        strcat(outboundCommand, _track);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<%c %c>", _state, _track);
 
         sendCommand();
     }
@@ -1046,7 +1042,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
 void DCCEXProtocol::sendEmergencyStop() {
     // console->println(F("emergencyStop(): "));
     if (delegate) {
-        strcpy(outboundCommand, "<!>");
+        sprintf(outboundCommand, "<!>");
         sendCommand();
     }
     // console->println(F("emergencyStop(): end"));
