@@ -1006,11 +1006,7 @@ bool DCCEXProtocol::sendServerDetailsRequest() {
 bool DCCEXProtocol::sendTrackPower(TrackPower state) {
     // console->println(F("sendTrackPower(): "));
     if (delegate) {
-        char _state[2];
-        _state[0] = state;
-        _state[1] = '\0';
-
-        sprintf(outboundCommand, "<%c>", _state);
+        sprintf(outboundCommand, "<%c>", state);
 
         sendCommand();
     }
@@ -1021,15 +1017,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state) {
 bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
     // console->println(F("sendTrackPower(): "));
     if (delegate) {
-        char _state[2];
-        _state[0] = state;
-        _state[1] = '\0';
-
-        char _track[2];
-        _track[0] = track;
-        _track[1] = '\0';
-
-        sprintf(outboundCommand, "<%c %c>", _state, _track);
+        sprintf(outboundCommand, "<%c %c>", state, track);
 
         sendCommand();
     }
