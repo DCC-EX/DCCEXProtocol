@@ -1185,7 +1185,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
             }
         }
     }
-    console->println(F(sendThrottleAction(): end));
+    console->println(F("sendThrottleAction(): end"));
     return true;
 }
 
