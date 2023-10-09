@@ -1180,24 +1180,7 @@ bool DCCEXProtocol::sendLocoUpdateRequest(int address) {
 bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) {
     console->print(F("sendLocoAction(): ")); console->println(address);
     if (delegate) {
-        char val[6];
-        itoa(address, val, 10);
-        
-        char val2[3];
-        itoa(speed, val2, 10);
-
-        char _direction[2];
-        _direction[0] = direction;
-        _direction[1] = '\0';
-
-        strcpy(outboundCommand, "<t ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, " ");
-        strcat(outboundCommand, val2);
-        strcat(outboundCommand, " ");
-        strcat(outboundCommand, _direction);
-        strcat(outboundCommand, ">");
-
+        sprintf(outboundCommand, "<t %d %d %c>", address, speed, direction);
         sendCommand();
     }
     console->println(F("sendLocoAction(): end"));
