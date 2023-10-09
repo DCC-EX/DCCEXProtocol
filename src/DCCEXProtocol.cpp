@@ -1211,13 +1211,6 @@ bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) 
 bool DCCEXProtocol::sendRouteAction(int routeId) {
     // console->println(F("sendRouteAction()"));
     if (delegate) {
-        // char val[6];
-        // itoa(routeId, val, 10);
-
-        // strcpy(outboundCommand, "</START ");
-        // strcat(outboundCommand, val);
-        // strcat(outboundCommand, ">");
-
         sprintf(outboundCommand, "</START  %d >", routeId);
         sendCommand();
     }
@@ -1228,7 +1221,6 @@ bool DCCEXProtocol::sendRouteAction(int routeId) {
 bool DCCEXProtocol::sendPauseRoutes() {
     // console->println(F("sendPauseRoutes()"));
     if (delegate) {
-        // strcpy(outboundCommand, "</PAUSE>");
         sprintf(outboundCommand, "</PAUSE>");
         sendCommand();
     }
@@ -1239,7 +1231,6 @@ bool DCCEXProtocol::sendPauseRoutes() {
 bool DCCEXProtocol::sendResumeRoutes() {
     // console->println(F("sendResumeRoutes()"));
     if (delegate) {
-        // strcpy(outboundCommand, "</RESUME>");
         sprintf(outboundCommand, "</RESUME>");
         sendCommand();
     }
@@ -1253,25 +1244,7 @@ bool DCCEXProtocol::sendResumeRoutes() {
 bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activity) {
     // console->println(F("sendTurntable()"));
     if (delegate) {
-        // char val[6];
-        // itoa(turntableId, val, 10);
-        
-        // char val2[3];
-        // itoa(activity, val2, 10);
-
-        // char val3[3];
-        // itoa(position, val3, 10);
-
-        // strcpy(outboundCommand, "<I ");
-        // strcat(outboundCommand, val);
-        // strcat(outboundCommand, " ");
-        // strcat(outboundCommand, val2);
-        // strcat(outboundCommand, " ");
-        // strcat(outboundCommand, val3);
-        // strcat(outboundCommand, ">");
-
         sprintf(outboundCommand, "<I %d %d %d>", turntableId, position, activity);
-
         sendCommand();
     }
     // console->println(F("sendTurntable() end"));
@@ -1281,20 +1254,7 @@ bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activ
 bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
     // console->println(F("sendAccessory()"));
     if (delegate) {
-        // char val[6];
-        // itoa(accessoryAddress, val, 10);
-        
-        // char val2[3];
-        // itoa(activate, val2, 10);
-
-        // strcpy(outboundCommand, "<a ");
-        // strcat(outboundCommand, val);
-        // strcat(outboundCommand, " ");
-        // strcat(outboundCommand, val2);
-        // strcat(outboundCommand, ">");
-
         sprintf(outboundCommand, "<a %d %d %d>", accessoryAddress, activate);
-
         sendCommand();
     }
     // console->println(F("sendAccessory() end"));
@@ -1304,23 +1264,6 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
 bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate) {
     // console->println(F("sendAccessory()"));
     if (delegate) {
-        // char val[6];
-        // itoa(accessoryAddress, val, 10);
-        
-        // char val2[3];
-        // itoa(accessorySubAddr, val2, 10);
-
-        // char val3[3];
-        // itoa(activate, val3, 10);
-
-        // strcpy(outboundCommand, "<a ");
-        // strcat(outboundCommand, val);
-        // strcat(outboundCommand, " ");
-        // strcat(outboundCommand, val2);
-        // strcat(outboundCommand, " ");
-        // strcat(outboundCommand, val3);
-        // strcat(outboundCommand, ">");
-
         sprintf(outboundCommand, "<a %d %d %d>", accessoryAddress, accessorySubAddr, activate);
         sendCommand();
     }
@@ -1371,7 +1314,6 @@ bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
 bool DCCEXProtocol::getRoster() {
     // console->println(F("getRoster()"));
     if (delegate) {
-        // strcpy(outboundCommand, "<JR>");
         sprintf(outboundCommand, "<JR>");
         sendCommand();
         rosterRequested = true;
@@ -1392,7 +1334,6 @@ bool DCCEXProtocol::isRosterFullyReceived() {
 bool DCCEXProtocol::getTurnouts() {
     // console->println(F("getTurnouts()"));
     if (delegate) {
-        // strcpy(outboundCommand, "<JT>");
         sprintf(outboundCommand, "<JT>");
         sendCommand();
         turnoutListRequested = true;
@@ -1411,7 +1352,6 @@ bool DCCEXProtocol::isTurnoutListFullyReceived() {
 bool DCCEXProtocol::getRoutes() {
     // console->println(F("getRoutes()"));
     if (delegate) {
-        // strcpy(outboundCommand, "<JA>");
         sprintf(outboundCommand, "<JA>");
         sendCommand();
         routeListRequested = true;
@@ -1430,7 +1370,6 @@ bool DCCEXProtocol::isRouteListFullyReceived() {
 bool DCCEXProtocol::getTurntables() {
     // console->println(F("getTurntables()"));
     if (delegate) {
-        // strcpy(outboundCommand, "<JO>");
         sprintf(outboundCommand, "<JO>");
         sendCommand();
         turntableListRequested = true;
