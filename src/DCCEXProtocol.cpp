@@ -1196,7 +1196,7 @@ bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activ
 bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
     // console->println(F("sendAccessory()"));
     if (delegate) {
-        sprintf(outboundCommand, "<a %d %d %d>", accessoryAddress, activate);
+        sprintf(outboundCommand, "<a %d %d>", accessoryAddress, activate);
         sendCommand();
     }
     // console->println(F("sendAccessory() end"));
