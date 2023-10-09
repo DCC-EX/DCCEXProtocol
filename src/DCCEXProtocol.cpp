@@ -561,12 +561,7 @@ void DCCEXProtocol::processTurnoutList() {
 void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
     // console->println(F("sendTurnoutEntryRequest()"));
     if (delegate) {
-        char val[6];
-        itoa(id, val, 10);
-
-        strcpy(outboundCommand, "<JT ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<JT %d>", id);
 
         sendCommand();
     }
