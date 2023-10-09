@@ -455,12 +455,7 @@ void DCCEXProtocol::processRosterList() {
 void DCCEXProtocol::sendRosterEntryRequest(int address) {
     // console->println(F("sendRosterEntryRequest()"));
     if (delegate) {
-        char val[6];
-        itoa(address, val, 10);
-
-        strcpy(outboundCommand, "<JR ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<JR %d>", address);
 
         sendCommand();
     }
