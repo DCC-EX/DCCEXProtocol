@@ -90,7 +90,7 @@ void DCCEXProtocol::connect(Stream *stream) {
 }
 
 void DCCEXProtocol::disconnect() {
-    strcpy(outboundCommand, "<U DISCONNECT>");
+    strncpy(outboundCommand, "<U DISCONNECT>", 15);
     sendCommand();
     this->stream = NULL;
 }
