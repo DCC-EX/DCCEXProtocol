@@ -187,7 +187,8 @@ void DCCEXProtocol::sendCommand() {
         }
         console->print("==> "); console->println(outboundCommand);
 
-        strcpy(outboundCommand, ""); // clear it once it has been sent
+        // strncpy(outboundCommand, "\0", 1); // clear it once it has been sent
+        *outboundCommand = 0; // clear it once it has been sent
     }
 }
 
@@ -215,12 +216,17 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
     char char1 = argz.get(0)->arg[1];
     char arg1[MAX_SINGLE_COMMAND_PARAM_LENGTH];
     char arg2[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-    strcpy(arg1, "\0");
-    strcpy(arg2, "\0");
+    // strncpy(arg1, "\0", 1);
+    // strncpy(arg2, "\0", 1);
+    *arg1 = 0;
+    *arg1 = 0;
+
     if (argz.size()>1) {
-        strcpy(arg1, argz.get(1)->arg); strcat(arg1, "\0");
+        // strcpy(arg1, argz.get(1)->arg); strcat(arg1, "\0");
+        sprintf(arg1,"%s",argz.get(1)->arg);
         if (argz.size()>2) {
-            strcpy(arg2, argz.get(2)->arg); strcat(arg2, "\0");
+            // strcpy(arg2, argz.get(2)->arg); strcat(arg2, "\0");
+            sprintf(arg1,"%s",argz.get(1)->arg);
         }
     }
     int noOfParameters = argz.size();
@@ -376,22 +382,26 @@ void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microproces
     if (delegate) {
         char *_serverVersion;
         _serverVersion = (char *) malloc(strlen(argz.get(1)->arg)+1);
-        strcpy(_serverVersion, argz.get(1)->arg);
+        // strcpy(_serverVersion, argz.get(1)->arg);
+        sprintf(_serverVersion,"%s",argz.get(1)->arg);
         serverVersion = _serverVersion;
 
         char *_serverMicroprocessorType;
         _serverMicroprocessorType = (char *) malloc(strlen(argz.get(3)->arg)+1);
-        strcpy(_serverMicroprocessorType, argz.get(3)->arg);
+        // strcpy(_serverMicroprocessorType, argz.get(3)->arg);
+        sprintf(_serverMicroprocessorType,"%s",argz.get(3)->arg);
         serverMicroprocessorType = _serverMicroprocessorType;
 
         char *_serverMotorcontrollerType;
         _serverMotorcontrollerType = (char *) malloc(strlen(argz.get(5)->arg)+1);
-        strcpy(_serverMotorcontrollerType, argz.get(5)->arg);
+        // strcpy(_serverMotorcontrollerType, argz.get(5)->arg);
+        sprintf(_serverMotorcontrollerType,"%s",argz.get(5)->arg);
         serverMotorcontrollerType = _serverMotorcontrollerType;
 
         char *_serverBuildNumber;
         _serverBuildNumber = (char *) malloc(strlen(argz.get(6)->arg)+1);
-        strcpy(_serverBuildNumber, argz.get(6)->arg);
+        // strcpy(_serverBuildNumber, argz.get(6)->arg);
+        sprintf(_serverBuildNumber,"%s",argz.get(6)->arg);
         serverBuildNumber = _serverBuildNumber;        
 
         // strcpy(serverVersion, argz.get(1)->arg);
@@ -414,9 +424,9 @@ void DCCEXProtocol::processTrackPower() {
     // console->println(F("processTrackPower()"));
     if (delegate) {
         TrackPower state = PowerUnknown;
-        if (argz.get(0)->arg[0]=='0') {
+        if (argz.get(0)->arg[0]==PowerOff) {
             state = PowerOff;
-        } else if (argz.get(0)->arg[1]=='1') {
+        } else if (argz.get(0)->arg[1]==PowerOn) {
             state = PowerOn;
         }
 
@@ -440,9 +450,10 @@ void DCCEXProtocol::processRosterList() {
         char arg[MAX_OBJECT_NAME_LENGTH];
         char name[MAX_OBJECT_NAME_LENGTH];
         for (int i=1; i<argz.size(); i++) {
-            strcpy(arg, argz.get(i)->arg); strcat(arg, "\0");
+            // strcpy(arg, argz.get(i)->arg); strcat(arg, "\0");
+            sprintf(arg,"%s",argz.get(i)->arg);
             int address = atoi(arg);
-            strcpy(name, NAME_UNKNOWN);
+            strncpy(name, NAME_UNKNOWN, sizeof(NAME_UNKNOWN)+1);
 
             roster.add(new Loco(address, name, LocoSourceRoster));
             sendRosterEntryRequest(address);
@@ -456,7 +467,6 @@ void DCCEXProtocol::sendRosterEntryRequest(int address) {
     // console->println(F("sendRosterEntryRequest()"));
     if (delegate) {
         sprintf(outboundCommand, "<JR %d>", address);
-
         sendCommand();
     }
     // console->println(F("sendRosterEntryRequest(): end"));
@@ -473,12 +483,14 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
             char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<roster.size(); i++) {
-                strcpy(arg, argz.get(1)->arg); strcat(arg, "\0");
+                // strcpy(arg, argz.get(1)->arg); strcat(arg, "\0");
+                sprintf(arg,"%s",argz.get(1)->arg);
                 int address = atoi(arg);
 
                 if (roster.get(i)->getLocoAddress() == address) {
                     // console->print("processRosterEntry(): found: "); console->println(address);
-                    strcpy(name, argz.get(2)->arg);
+                    // strcpy(name, argz.get(2)->arg);
+                    sprintf(name,"%s",argz.get(2)->arg);
                     strcat(name, "\0");
                     stripLeadAndTrailQuotes(cleanName, name);
                     roster.get(i)->setLocoName(cleanName);
@@ -486,7 +498,8 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
                     roster.get(i)->setIsFromRosterAndReceivedDetails();
 
                     char functions[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-                    strcpy(functions, argz.get(3)->arg);
+                    // strcpy(functions, argz.get(3)->arg);
+                    sprintf(functions,"%s",argz.get(3)->arg);
 
                     for( int i=0; i<functionArgs.size(); i++) { functionArgs.get(i)->clearFunctionArgument(); }
                     functionArgs.clear();
