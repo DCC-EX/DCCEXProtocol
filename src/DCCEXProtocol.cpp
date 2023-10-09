@@ -697,12 +697,7 @@ void DCCEXProtocol::processRouteList() {
 void DCCEXProtocol::sendRouteEntryRequest(int address) {
     // console->println(F("sendRouteEntryRequest()"));
     if (delegate) {
-        char val[6];
-        itoa(address, val, 10);
-        
-        strcpy(outboundCommand, "<JA ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<JA %d>", address);
 
         sendCommand();
     }
@@ -795,12 +790,7 @@ void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
 void DCCEXProtocol::sendTurntableEntryRequest(int id) {
     // console->println(F("sendTurntableEntryRequest()"));
     if (delegate) {
-        char val[6];
-        itoa(id, val, 10);
-
-        strcpy(outboundCommand, "<JO ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<JO %d>", id);
 
         sendCommand();
     }
@@ -811,12 +801,7 @@ void DCCEXProtocol::sendTurntableEntryRequest(int id) {
 void DCCEXProtocol::sendTurntableIndexEntryRequest(int id) {
     // console->println(F("sendTurntableIndexEntryRequest()"));
     if (delegate) {
-        char val[6];
-        itoa(id, val, 10);
-
-        strcpy(outboundCommand, "<JP ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<JP %d>", id);
 
         sendCommand();
     }
