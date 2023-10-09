@@ -453,7 +453,9 @@ void DCCEXProtocol::processRosterList() {
             // strcpy(arg, argz.get(i)->arg); strcat(arg, "\0");
             sprintf(arg,"%s",argz.get(i)->arg);
             int address = atoi(arg);
-            strncpy(name, NAME_UNKNOWN, sizeof(NAME_UNKNOWN)+1);
+            // strcpy(name, NAME_UNKNOWN);
+            // strncpy(name, NAME_UNKNOWN, sizeof(NAME_UNKNOWN)+1);
+            sprintf(name, "%s", NAME_UNKNOWN);
 
             roster.add(new Loco(address, name, LocoSourceRoster));
             sendRosterEntryRequest(address);
@@ -489,9 +491,9 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
 
                 if (roster.get(i)->getLocoAddress() == address) {
                     // console->print("processRosterEntry(): found: "); console->println(address);
-                    // strcpy(name, argz.get(2)->arg);
+                    // strcpy(name, argz.get(2)->arg); strcat(name, "\0");
                     sprintf(name,"%s",argz.get(2)->arg);
-                    strcat(name, "\0");
+                    
                     stripLeadAndTrailQuotes(cleanName, name);
                     roster.get(i)->setLocoName(cleanName);
                     roster.get(i)->setLocoSource(LocoSourceRoster);
@@ -559,9 +561,11 @@ void DCCEXProtocol::processTurnoutList() {
         char name[MAX_OBJECT_NAME_LENGTH];
 
         for (int i=1; i<argz.size(); i++) {
-            strcpy(val, argz.get(i)->arg); strcat(val, "\0");
+            // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
+            sprintf(val,"%s",argz.get(i)->arg);
             int id = atoi(val);
-            strcpy(name, NAME_UNKNOWN);
+            // strcpy(name, NAME_UNKNOWN);
+            sprintf(name, "%s", NAME_UNKNOWN);
             
             turnouts.add(new Turnout(id, name, 0));
             sendTurnoutEntryRequest(id);
@@ -592,15 +596,17 @@ void DCCEXProtocol::processTurnoutEntry() {
             char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<turnouts.size(); i++) {
-                strcpy(val, argz.get(1)->arg);
-                strcat(val, "\0");
+                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                sprintf(val,"%s",argz.get(1)->arg);
                 int id = atoi(val);
                 if (turnouts.get(i)->getTurnoutId()==id) {
                     TurnoutState state = TurnoutClosed;
-                    strcpy(name, NAME_UNKNOWN);
+                    // strcpy(name, NAME_UNKNOWN);
+                    sprintf(name, "%s", NAME_UNKNOWN);
 
                     if (strcmp(argz.get(2)->arg,UnknownIdResponse) != 0 ) {
-                        strcpy(name, argz.get(3)->arg);
+                        // strcpy(name, argz.get(3)->arg);
+                        sprintf(name,"%s",argz.get(3)->arg);
                         if (argz.get(2)->arg[0] == TurnoutResponseClosed) {
                             state = TurnoutClosed;
                         } else {
@@ -662,13 +668,15 @@ void DCCEXProtocol::processTurnoutAction() { //<H id state>
             char val[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<turnouts.size(); i++) {
-                strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                sprintf(val,"%s",argz.get(1)->arg);
                 int id = atoi(val);
                 
                 if (turnouts.get(i)->getTurnoutId()==id) {
-                    strcpy(val, argz.get(2)->arg); strcat(val, "\0");
-                    TurnoutState state = atoi(val);
+                    // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+                    // TurnoutState state = atoi(val);
                     if (argz.size() >= 3) {
+                        TurnoutState state = argz.get(2)->arg[0];
                         turnouts.get(i)->setTurnoutState(state);
                         delegate->receivedTurnoutAction(id, state);
                     }
