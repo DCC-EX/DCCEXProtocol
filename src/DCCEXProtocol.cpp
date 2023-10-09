@@ -1160,13 +1160,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
 bool DCCEXProtocol::sendLocoUpdateRequest(int address) {
     // console->println(F("sendLocoUpdateRequest()"));
     if (delegate) {
-        char val[6];
-        itoa(address, val, 10);
-        
-        strcpy(outboundCommand, "<t ");
-        strcat(outboundCommand, val);
-        strcat(outboundCommand, ">");
-
+        sprintf(outboundCommand, "<t %d>", address);
         sendCommand();
     }
     // console->println(F("sendLocoUpdateRequest() end"));
