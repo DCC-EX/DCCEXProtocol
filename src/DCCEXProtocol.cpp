@@ -633,14 +633,7 @@ Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
 
 bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
     if (delegate) {
-        char val[6];
-        itoa(turnoutId, val, 10);
-
-        strcpy(outboundCommand, "<T ");
-        strncat(outboundCommand, val, 6);
-        strncat(outboundCommand, " ", 2);
-        strncat(outboundCommand, action==TurnoutThrow ? "1" : "0", 1);
-        strncat(outboundCommand, ">", 2);
+        sprintf(outboundCommand, "<T %d %c>", turnoutId, action);
 
         sendCommand();
     }
