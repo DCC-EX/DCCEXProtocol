@@ -1071,24 +1071,7 @@ bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, FunctionState
 bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, FunctionState pressed) { // throttle is ignored
     // console->println(F("sendFunction(): "));
     if (delegate) {
-        char _address[6];
-        itoa(address, _address, 10);
-        
-        char _functionNumber[3];
-        itoa(functionNumber, _functionNumber, 10);
-
-        char _pressed[2];
-        _pressed[0] = pressed;
-        _pressed[1] = '\0';
-
-        strcpy(outboundCommand, "<F ");
-        strcat(outboundCommand, _address);
-        strcat(outboundCommand, " ");
-        strcat(outboundCommand, _functionNumber);
-        strcat(outboundCommand, " ");
-        strcat(outboundCommand, _pressed);
-        strcat(outboundCommand, ">");
-
+        sprintf(outboundCommand, "<F %d %d %c>", address, functionNumber, pressed);
         sendCommand();
     }
     // console->println(F("sendFunction(): end")); 
