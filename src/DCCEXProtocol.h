@@ -399,6 +399,7 @@ class DCCEXProtocol {
     void sendCommand();
 
     Loco findLocoInRoster(int address);
+    
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
     bool sendFunction(int throttle, int functionNumber, FunctionState pressed);
