@@ -993,7 +993,7 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
 bool DCCEXProtocol::sendServerDetailsRequest() {
     // console->println(F("sendServerDetailsRequest(): "));
     if (delegate) {
-        strcpy(outboundCommand, "<s>");
+        sprintf(outboundCommand, "<s>");
         sendCommand();        
     }
     // console->println(F("sendServerDetailsRequest(): end"));
@@ -1010,9 +1010,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state) {
         _state[0] = state;
         _state[1] = '\0';
 
-        strcpy(outboundCommand, "<");
-        strcat(outboundCommand, _state);
-        strcat(outboundCommand, ">");
+        sprintf(outboundCommand, "<%c>", _state);
 
         sendCommand();
     }
