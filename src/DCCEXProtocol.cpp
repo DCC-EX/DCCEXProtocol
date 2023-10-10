@@ -195,7 +195,7 @@ void DCCEXProtocol::sendCommand() {
 
 //private
 bool DCCEXProtocol::processCommand(char* c, int len) {
-    // console->println(F("processCommand()"));
+    console->println(F("processCommand()"));
 
     lastServerResponseTime = millis()/1000;
 
@@ -353,7 +353,7 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
         }
     }
 
-    // console->println(F("processCommand() end"));
+    console->println(F("processCommand() end"));
     return true;
 }
 
