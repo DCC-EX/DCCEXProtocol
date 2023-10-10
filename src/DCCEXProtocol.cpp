@@ -977,7 +977,7 @@ void DCCEXProtocol::processSensorEntry() {  // <jO id type position position_cou
 
 //private
 bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
-    // console->println(F("processLocoAction()"));
+    console->println(F("processLocoAction()"));
     if (delegate) {
         char val[MAX_OBJECT_NAME_LENGTH];
         // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
@@ -999,16 +999,18 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
                 FunctionState fnStates[MAX_FUNCTIONS];
                 getFunctionStatesFromFunctionMap(fnStates, functMap);
                 for (uint i=0; i<MAX_FUNCTIONS; i++) {
+                    console->print(F("processLocoAction(): checking function: ")); console->println(i);
                     if (fnStates[i] != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)) {
 
                         throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
 
-                        // console->print(i);
-                        // console->print(" - ");
-                        // console->print(charToCharArray(fnStates[i]));
-                        // console->print(" - ");
-                        // console->print(charToCharArray(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)));
-                        // console->println(" - ");
+                        console->println(F("processLocoAction(): "));
+                        console->print(i);
+                        console->print(" - ");
+                        console->print(charToCharArray(fnStates[i]));
+                        console->print(" - ");
+                        console->print(charToCharArray(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)));
+                        console->println(" - ");
 
                         delegate->receivedFunction(throttleNo, i, fnStates[i]);
                     }
@@ -1024,7 +1026,7 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
             return false;
         }
     }
-    // console->println(F("processLocoAction() end"));
+    console->println(F("processLocoAction() end"));
     return true;
 }
 
