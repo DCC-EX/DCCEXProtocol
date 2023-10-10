@@ -334,7 +334,7 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
         } else if (char0 == 'H') {
             if (argz.size()==3) {
                 processTurnoutAction();
-                delegate->receivedTurnoutAction(atoi(arg1), atoi(arg2));
+                delegate->receivedTurnoutAction(atoi(arg1), arg2[0]);
                 processed = true;
             }
 
@@ -653,7 +653,6 @@ Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
 bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
     if (delegate) {
         sprintf(outboundCommand, "<T %d %c>", turnoutId, action);
-
         sendCommand();
     }
     return true;
@@ -1261,25 +1260,25 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
 
     if (!allRequiredListsReceived) {
-        if (!rosterRequested) {
+        if (rosterRequired && !rosterRequested) {
             getRoster();
         } else { 
-            if (rosterFullyReceived) {
+            if (!rosterRequired || rosterFullyReceived) {
 
-                if (!turnoutListRequested) {
+                if (turnoutListRequired && !turnoutListRequested) {
                     getTurnouts();
                 } else { 
-                    if (turnoutListFullyReceived) {
+                    if (!turnoutListRequired || turnoutListFullyReceived) {
 
-                        if (!routeListRequested) {
+                        if (routeListRequired && !routeListRequested) {
                             getRoutes();
                         } else { 
-                            if (routeListFullyReceived) {
+                            if (!routeListRequired || routeListFullyReceived) {
 
-                                if (!turntableListRequested) {
+                                if (turntableListRequired && !turntableListRequested) {
                                     getTurntables();
                                 } else { 
-                                    if (turntableListFullyReceived) {
+                                    if (!turntableListRequired || turntableListFullyReceived) {
 
                                         allRequiredListsReceived = true;
                                         console->println(F("Lists Fully Received"));
