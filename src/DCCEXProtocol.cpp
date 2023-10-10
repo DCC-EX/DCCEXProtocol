@@ -90,7 +90,8 @@ void DCCEXProtocol::connect(Stream *stream) {
 }
 
 void DCCEXProtocol::disconnect() {
-    strncpy(outboundCommand, "<U DISCONNECT>", 15);
+    // strcpy(outboundCommand, "<U DISCONNECT>");
+    sprintf(outboundCommand,"%s","<U DISCONNECT>");
     sendCommand();
     this->stream = NULL;
 }
@@ -187,7 +188,7 @@ void DCCEXProtocol::sendCommand() {
         }
         console->print("==> "); console->println(outboundCommand);
 
-        // strncpy(outboundCommand, "\0", 1); // clear it once it has been sent
+        // strcpy(outboundCommand, "\0"); // clear it once it has been sent
         *outboundCommand = 0; // clear it once it has been sent
     }
 }
@@ -216,8 +217,8 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
     char char1 = argz.get(0)->arg[1];
     char arg1[MAX_SINGLE_COMMAND_PARAM_LENGTH];
     char arg2[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-    // strncpy(arg1, "\0", 1);
-    // strncpy(arg2, "\0", 1);
+    // strcpy(arg1, "\0");
+    // strcpy(arg2, "\0");
     *arg1 = 0;
     *arg1 = 0;
 
@@ -454,7 +455,6 @@ void DCCEXProtocol::processRosterList() {
             sprintf(arg,"%s",argz.get(i)->arg);
             int address = atoi(arg);
             // strcpy(name, NAME_UNKNOWN);
-            // strncpy(name, NAME_UNKNOWN, sizeof(NAME_UNKNOWN)+1);
             sprintf(name, "%s", NAME_UNKNOWN);
 
             roster.add(new Loco(address, name, LocoSourceRoster));
@@ -738,9 +738,8 @@ void DCCEXProtocol::processRouteEntry() {
             char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<routes.size(); i++) {
-                // strcpy(val, argz.get(1)->arg);
+                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
                 sprintf(val,"%s",argz.get(1)->arg);
-                strcat(val, "\0");
                 int id = atoi(val);
                 if (routes.get(i)->getRouteId()==id) {
                     char type = RouteTypeRoute;
@@ -982,11 +981,14 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
     // console->println(F("processLocoAction()"));
     if (delegate) {
         char val[MAX_OBJECT_NAME_LENGTH];
-        strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+        // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+        sprintf(val,"%s",argz.get(1)->arg);
         int address = atoi(val);
-        strcpy(val, argz.get(3)->arg); strcat(val, "\0");
+        // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
+        sprintf(val,"%s",argz.get(3)->arg);
         int speedByte = atoi(val);
-        strcpy(val, argz.get(4)->arg); strcat(val, "\0");
+        // strcpy(val, argz.get(4)->arg); strcat(val, "\0");
+        sprintf(val,"%s",argz.get(4)->arg);
         int functMap = atoi(val);
 
         int throttleNo = findThrottleWithLoco(address);
@@ -1627,7 +1629,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     CommandArgument::CommandArgument(char* argValue) {
         char *dynName;
         dynName = (char *) malloc(strlen(argValue)+1);
-        strcpy(dynName, argValue);
+        // strcpy(dynName, argValue);
+        sprintf(dynName,"%s",argValue);
 
         arg = dynName;
     }
@@ -1641,7 +1644,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     FunctionArgument::FunctionArgument(char* argValue) {
         char *dynName;
         dynName = (char *) malloc(strlen(argValue)+1);
-        strcpy(dynName, argValue);
+        // strcpy(dynName, argValue);
+        sprintf(dynName,"%s",argValue);
 
         arg = dynName;        
     }
@@ -1660,7 +1664,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         
         char *dynName;
         dynName = (char *) malloc(strlen(label)+1);
-        strcpy(dynName, label);
+        // strcpy(dynName, label);
+        sprintf(dynName,"%s",label);
         functionName[functionNumber] = dynName;
         return true;
     }
@@ -1680,7 +1685,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         }
         char *dynName;
         dynName = (char *) malloc(strlen(label)+1);
-        strcpy(dynName, label);
+        // strcpy(dynName, label);
+        sprintf(dynName,"%s",label);
 
         functionName[functionNumber] = dynName;
         return true;
@@ -1716,11 +1722,13 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
         locoName = dynName;
 
         for (uint i=0; i<MAX_FUNCTIONS; i++) {
-            strcpy(fnName, NAME_BLANK);
+            // strcpy(fnName, NAME_BLANK);
+            *fnName = 0;  // blank
             locoFunctions.initFunction(i, fnName, FunctionLatchingFalse, FunctionStateOff);
         }
     }
@@ -1752,7 +1760,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         }
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
 
         locoName = dynName;
         return true;
@@ -1810,13 +1819,15 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     Consist::Consist(char* name) {
         char *_name;
         _name = (char *) malloc(strlen(name)+1);
-        strcpy(_name, name);
+        // strcpy(_name, name);
+        sprintf(_name,"%s",name);
         consistName = _name;
     }
     bool Consist::consistAddLoco(Loco loco, Facing facing) {
         int address = loco.getLocoAddress();
         char name[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-        strcpy(name, loco.getLocoName());
+        // strcpy(name, loco.getLocoName());
+        sprintf(name,"%s",loco.getLocoName());
         LocoSource source = loco.getLocoSource();
         Facing correctedFacing = facing;
         int rslt = consistGetLocoPosition(address);
@@ -1826,11 +1837,13 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
             //fix the name of the consist
             char _consistName[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-            strcpy(_consistName, consistLocos.get(0)->getLocoName());
-            if (rslt>1) { // must be more than two now
+            // strcpy(_consistName, consistLocos.get(0)->getLocoName());
+             sprintf(_consistName,"%s",consistLocos.get(0)->getLocoName());
+            if (rslt>1) { // must be more than one now
                 for (int i=1; i<consistLocos.size(); i++) {
-                    strcat(_consistName, ", ");
-                    strcat(_consistName, consistLocos.get(i)->getLocoName());
+                    // strcat(_consistName, ", ");
+                    // strcat(_consistName, consistLocos.get(i)->getLocoName());
+                    sprintf(_consistName,", %s",consistLocos.get(i)->getLocoName());
                 }
                 setConsistName(_consistName);
             }
@@ -1863,7 +1876,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
             }
             consistLocos.clear();
             char _consistName[1];
-            strcpy(_consistName, "\0");
+            // strcpy(_consistName, "\0");
+            *_consistName = 0;
             setConsistName(_consistName);
         }
         return true;
@@ -2012,7 +2026,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         }
         char *_name;
         _name = (char *) malloc(strlen(name)+1);
-        strcpy(_name, name);
+        // strcpy(_name, name);
+        sprintf(_name,"%s",name);
         consistName = _name;
         return true;
     }
@@ -2029,7 +2044,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
         turnoutName = dynName;
     }
     bool Turnout::throwTurnout() {
@@ -2074,7 +2090,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         }
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
 
         turnoutName = dynName;
         return true;
@@ -2100,7 +2117,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
         routeName = dynName;
     }
     int Route::getRouteId() {
@@ -2113,7 +2131,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         }
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
 
         routeName = dynName;
         return true;
@@ -2143,7 +2162,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
 
         turntableIndexName = dynName;
     }
@@ -2167,7 +2187,9 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
+
         turntableName = dynName;
     }
     int Turntable::getTurntableId() {
@@ -2180,7 +2202,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         }
         char *dynName;
         dynName = (char *) malloc(strlen(name)+1);
-        strcpy(dynName, name);
+        // strcpy(dynName, name);
+        sprintf(dynName,"%s",name);
 
         turntableName = dynName;
         return true;

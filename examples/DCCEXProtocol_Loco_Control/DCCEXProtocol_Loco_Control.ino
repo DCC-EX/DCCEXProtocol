@@ -42,13 +42,13 @@ class MyDelegate : public DCCEXProtocolDelegate {
 
 
     void receivedSpeed(int throttleNo, int speed) { 
-        Serial.print("Received Throttle Speed: "); Serial.print(throttleNo); Serial.print(" Speed: "); Serial.println(speed); 
+        Serial.print("Received Throttle Speed: Throttle: "); Serial.print(throttleNo); Serial.print(" Speed: "); Serial.println(speed); 
     }
     void receivedDirection(int throttleNo, Direction dir) { 
-        Serial.print("Received Throttle Direction: "); Serial.print(throttleNo); Serial.print(" Direction: "); Serial.println(dir); 
+        Serial.print("Received Throttle Direction: Throttle: "); Serial.print(throttleNo); Serial.print(" Direction: "); Serial.println(dir); 
     }
-    void receivedFunction(int throttleNo, int func, bool state) { 
-        Serial.print("Received Throttle Function change: "); Serial.print(throttleNo); Serial.print(" function: "); Serial.print(func); Serial.print(" state: "); Serial.println(state);
+    void receivedFunction(int throttleNo, int func, FunctionState state) { 
+        Serial.print("Received Throttle Function change: Throttle: "); Serial.print(throttleNo); Serial.print(" function: "); Serial.print(func); Serial.print(" state: "); Serial.println(state);
     }
 
 };
@@ -117,32 +117,46 @@ void loop() {
     done = true;
 
     // add a loco to throttle 0 from DCC address 11
-    Loco loco(11, "dummy loco", LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
+    char dummyLocoName[] = "dummy loco";
+    dccexProtocol.throttleConsists[0].consistAddLocoFromAddress(11, dummyLocoName, FacingForward);
+
+    // alternate method using the loco object
+    // Loco loco(11, "dummy loco", LocoSourceEntry);
+    // dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
+
     Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
 
     if (dccexProtocol.roster.size()>=2) {
       // add a loco to throttle 1 from the second entry in the roster
-      Loco loco2 = Loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());
-      dccexProtocol.throttleConsists[1].consistAddLoco(loco2, FacingForward);
+
+      int addr = dccexProtocol.roster.get(1)->getLocoAddress();
+      dccexProtocol.throttleConsists[1].consistAddLocoFromRoster(dccexProtocol.roster, addr, FacingForward);
+
+      // alternate method using the loco object
+      // Loco loco2 = Loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());
+      // dccexProtocol.throttleConsists[1].consistAddLoco(loco2, FacingForward);
+
       Serial.print("\n\nLocos in Consist 1: "); Serial.println(dccexProtocol.throttleConsists[1].consistGetNumberOfLocos());
     }
   }
 
-  if ((millis() - lastTime) >= 20000) {
-    if (speed>=100) up = -1;
-    if (speed<=0) up = 1;
-    speed = speed + up;
-    dccexProtocol.sendThrottleAction(0, speed, Forward);
-    dccexProtocol.sendThrottleAction(1, speed, Forward);
+  if (done) {
+    if ((millis() - lastTime) >= 10000) {
+      if (speed>=100) up = -1;
+      if (speed<=0) up = 1;
+      speed = speed + up;
+      dccexProtocol.sendThrottleAction(0, speed, Forward);
+      dccexProtocol.sendThrottleAction(1, speed, Forward);
 
-    int ttl = random(0, 1);
-    int fn = random(0,28);
-    int fnState = random(0,2);
+      int ttl = random(0, 1);
+      int fn = random(0,28);
+      int fns = random(0,100);
+      FunctionState fnState = (fns<50) ? FunctionStateOff : FunctionStateOn;
 
-    dccexProtocol.sendFunction(ttl, fn, fnState);
+      dccexProtocol.sendFunction(ttl, fn, fnState);
 
-    lastTime = millis();
+      lastTime = millis();
+    }
   }
 
 }
