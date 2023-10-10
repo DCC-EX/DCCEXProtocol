@@ -703,9 +703,11 @@ void DCCEXProtocol::processRouteList() {
         char name[MAX_OBJECT_NAME_LENGTH];
 
         for (int i=1; i<argz.size(); i++) {
-            strcpy(val, argz.get(i)->arg); strcat(val, "\0");
+            // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
+            sprintf(val,"%s",argz.get(i)->arg);
             int id = atoi(val);
-            strcpy(name, NAME_UNKNOWN);
+            // strcpy(name, NAME_UNKNOWN);
+            sprintf(name, "%s", NAME_UNKNOWN);
 
             routes.add(new Route(id, name));
             sendRouteEntryRequest(id);
@@ -736,16 +738,19 @@ void DCCEXProtocol::processRouteEntry() {
             char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<routes.size(); i++) {
-                strcpy(val, argz.get(1)->arg);
+                // strcpy(val, argz.get(1)->arg);
+                sprintf(val,"%s",argz.get(1)->arg);
                 strcat(val, "\0");
                 int id = atoi(val);
                 if (routes.get(i)->getRouteId()==id) {
                     char type = RouteTypeRoute;
-                    strcpy(name, NAME_UNKNOWN);
+                    // strcpy(name, NAME_UNKNOWN);
+                    sprintf(name, "%s", NAME_UNKNOWN);
 
                     if (strcmp(argz.get(2)->arg,"X") != 0) {
                         type = argz.get(2)->arg[0];
-                        strcpy(name, argz.get(3)->arg);
+                        // strcpy(name, argz.get(3)->arg);
+                        sprintf(name,"%s",argz.get(3)->arg);
                     }
                     stripLeadAndTrailQuotes(cleanName, name);
                     routes.get(i)->setRouteName(cleanName);
@@ -795,9 +800,11 @@ void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
         char name[MAX_OBJECT_NAME_LENGTH];
 
         for (int i=1; i<argz.size(); i++) {
-            strcpy(val, argz.get(i)->arg); strcat(val, "\0");
+            // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
+            sprintf(val,"%s",argz.get(i)->arg);
             int id = atoi(val);
-            strcpy(name, NAME_UNKNOWN);
+            // strcpy(name, NAME_UNKNOWN);
+            sprintf(name, "%s", NAME_UNKNOWN);
 
             turntables.add(new Turntable(id, name, TurntableTypeUnknown, 0, 0));
             sendTurntableEntryRequest(id);
@@ -840,21 +847,27 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
             char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<turntables.size(); i++) {
-                strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                sprintf(val,"%s",argz.get(1)->arg);
                 int id = atoi(val);
                 if (turntables.get(i)->getTurntableId()==id) {
-                    strcpy(name, NAME_UNKNOWN);
+                    // strcpy(name, NAME_UNKNOWN);
+                    sprintf(name, "%s", NAME_UNKNOWN);
                     TurntableType type = TurntableTypeUnknown;
                     int position = 0;
                     int indexCount = 0;
 
                     if (argz.size() > 3) {  // server did not find the id
-                        strcpy(name, argz.get(5)->arg);
-                        strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+                        // strcpy(name, argz.get(5)->arg);
+                        sprintf(name,"%s",argz.get(5)->arg);
+                        // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+                        sprintf(val,"%s",argz.get(2)->arg);
                         type = atoi(val);
-                        strcpy(val, argz.get(3)->arg); strcat(val, "\0");
+                        // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
+                        sprintf(val,"%s",argz.get(3)->arg);
                         position = atoi(val);
-                        strcpy(val, argz.get(4)->arg); strcat(val, "\0");
+                        // strcpy(val, argz.get(4)->arg); strcat(val, "\0");
+                        sprintf(val,"%s",argz.get(4)->arg);
                         indexCount = atoi(val);
                     }
                     stripLeadAndTrailQuotes(cleanName, name);
@@ -882,16 +895,20 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
                 char cleanName[MAX_OBJECT_NAME_LENGTH];
 
                 for (int i=0; i<turntables.size(); i++) {
-                    strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                    // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+                    sprintf(val,"%s",argz.get(1)->arg);
                     int id = atoi(val);
 
                     if (turntables.get(i)->getTurntableId()==id) {
                         //this assumes we are always starting from scratch, not updating indexes
-                        strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+                        // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+                        sprintf(val,"%s",argz.get(2)->arg);
                         int index = atoi(val);
-                        strcpy(val, argz.get(3)->arg); strcat(val, "\0");
+                        // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
+                        sprintf(val,"%s",argz.get(3)->arg);
                         int angle = atoi(val);
-                        strcpy(name, argz.get(4)->arg);
+                        // strcpy(name, argz.get(4)->arg);
+                        sprintf(name,"%s",argz.get(4)->arg);
 
                         stripLeadAndTrailQuotes(cleanName, name);
                         turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, cleanName, angle));
@@ -930,9 +947,11 @@ void DCCEXProtocol::processTurntableAction() { // <i id position moving>
     // console->println(F("processTurntableAction(): "));
     if (delegate) {
         char val[MAX_OBJECT_NAME_LENGTH];
-        strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+        // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
+        sprintf(val,"%s",argz.get(1)->arg);
         int id = atoi(val);
-        strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+        // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
+        sprintf(val,"%s",argz.get(2)->arg);
         int newPos = atoi(val);
         TurntableState state = argz.get(3)->arg[0];
 
