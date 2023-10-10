@@ -30,14 +30,19 @@
 
 #include <Arduino.h>
 #include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
+#include "DCCEXInbound.h"
 
 static const int MAX_THROTTLES = 6;
 static const int MAX_FUNCTIONS = 28;
-#define MAX_COMMAND_PARAMS 100
+// #define MAX_COMMAND_PARAMS 100
 #define MAX_SINGLE_COMMAND_PARAM_LENGTH 500  // Unfortunately includes the function list for an individual loco
 #define MAX_SINGLE_FUNCTION_LENGTH 30 
 #define MAX_OBJECT_NAME_LENGTH 30  // including Loco name, Turnout/Point names, Route names, etc. names
 #define MAX_OUTBOUND_COMMAND_LENGTH 100
+
+// DCCEXInbound params
+const int MAX_COMMAND_PARAMS = 50;
+const int MAX_COMMAND_BUFFER = 500;
 
 // Protocol special characters
 #define NEWLINE 			'\n'
@@ -454,6 +459,9 @@ class DCCEXProtocol {
     Stream *stream;
     Stream *console;
     NullStream nullStream;
+
+    int bufflen;
+    char cmdBuffer[MAX_COMMAND_BUFFER];
 	
     char outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH];
 

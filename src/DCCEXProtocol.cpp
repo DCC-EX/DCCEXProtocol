@@ -54,6 +54,10 @@ DCCEXProtocol::DCCEXProtocol(bool server) {
 	// init streams
     stream = &nullStream;
 	console = &nullStream;
+
+    DCCEXInbound::setup(MAX_COMMAND_PARAMS);
+    cmdBuffer[0] = 0;
+    bufflen = 0;
 }
 
 // ******************************************************************************************************
@@ -102,6 +106,23 @@ bool DCCEXProtocol::check() {
 
     if (stream) {
         while(stream->available()) {
+            // Read from our stream
+            int r=stream->read();
+            if (bufflen<MAX_COMMAND_BUFFER-1) {
+                cmdBuffer[bufflen]=r;
+                bufflen++;
+                cmdBuffer[bufflen]=0;
+            }
+
+            if (r=='>') {
+                DCCEXInbound::parse(cmdBuffer);
+                // Process stuff here
+                // Clear buffer after use
+                cmdBuffer[0]=0;
+                bufflen=0;
+            }
+            
+            /* Original check function from here:
             char b = stream->read();
             if (b == COMMAND_END) {
                 if (nextChar != 0) {
@@ -124,6 +145,7 @@ bool DCCEXProtocol::check() {
                     nextChar = 0;
                 }
             }
+            -- to here */
             // console->println(F("check(): end-loop"));
         }
         // console->println(F("check(): end-stream"));
