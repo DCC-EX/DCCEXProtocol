@@ -1484,7 +1484,7 @@ bool DCCEXProtocol::splitValues(char *cmd) {
             if (currentArgLength < (MAX_SINGLE_COMMAND_PARAM_LENGTH-1)) {
                 currentArg[currentArgLength] = currentChar;
                 currentArg[currentArgLength+1]='\0';
-                // console->println(currentArg);
+                console->println(currentArg);
                 currentArgLength++;
             }
             if ( (currentArgLength>1) && (currentChar == '"') ) { // trailing quote
@@ -1504,7 +1504,7 @@ bool DCCEXProtocol::splitValues(char *cmd) {
                 if (currentArgLength < (MAX_SINGLE_COMMAND_PARAM_LENGTH-1)) {
                     currentArg[currentArgLength] = currentChar;
                     currentArg[currentArgLength+1]='\0';
-                    // console->println(currentArg);
+                    console->println(currentArg);
                     currentArgLength++;
                 }
                 break;
