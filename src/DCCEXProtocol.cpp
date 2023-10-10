@@ -1004,13 +1004,13 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
 
                         throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
 
-                        console->println(F("processLocoAction(): "));
-                        console->print(i);
-                        console->print(" - ");
-                        console->print(charToCharArray(fnStates[i]));
-                        console->print(" - ");
-                        console->print(charToCharArray(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)));
-                        console->println(" - ");
+                        // console->println(F("processLocoAction(): "));
+                        // console->print(i);
+                        // console->print(" - ");
+                        // console->print(charToCharArray(fnStates[i]));
+                        // console->print(" - ");
+                        // console->print(charToCharArray(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)));
+                        // console->println(" - ");
 
                         delegate->receivedFunction(throttleNo, i, fnStates[i]);
                     }
