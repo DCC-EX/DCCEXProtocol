@@ -1390,6 +1390,7 @@ Loco DCCEXProtocol::findLocoInRoster(int address) {
 // private
 // find which, if any, throttle has this loco selected
 int DCCEXProtocol::findThrottleWithLoco(int address) {
+    console->println(F("findThrottleWithLoco()"));
     for (uint i=0; i<MAX_THROTTLES; i++) {
         if (throttleConsists[i].consistGetNumberOfLocos()>0) {
             int pos = throttleConsists[i].consistGetLocoPosition(address);
@@ -1402,10 +1403,12 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
             // }    
 
             if (pos>=0) {
+                console->println(F("findThrottleWithLoco(): end. found"));
                 return i;
             }
         }
     }
+    console->println(F("findThrottleWithLoco(): end. not found"));
     return -1;  //not found
 }
 
