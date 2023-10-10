@@ -220,7 +220,7 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
     // strcpy(arg1, "\0");
     // strcpy(arg2, "\0");
     *arg1 = 0;
-    *arg1 = 0;
+    *arg2 = 0;
 
     if (argz.size()>1) {
         // strcpy(arg1, argz.get(1)->arg); strcat(arg1, "\0");
@@ -334,7 +334,7 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
         } else if (char0 == 'H') {
             if (argz.size()==3) {
                 processTurnoutAction();
-                delegate->receivedTurnoutAction(atoi(arg1), arg2[0]);
+                // delegate->receivedTurnoutAction(atoi(arg1), arg2[0]);
                 processed = true;
             }
 
