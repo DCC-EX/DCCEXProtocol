@@ -97,7 +97,7 @@ void DCCEXProtocol::disconnect() {
 }
 
 bool DCCEXProtocol::check() {
-    console->println(F("check()"));
+    // console->println(F("check()"));
     bool changed = false;
 
     if (stream) {
@@ -124,13 +124,13 @@ bool DCCEXProtocol::check() {
                     nextChar = 0;
                 }
             }
-            console->println(F("check(): end-loop"));
+            // console->println(F("check(): end-loop"));
         }
-        console->println(F("check(): end-stream"));
+        // console->println(F("check(): end-stream"));
         return changed;
     }
     else {
-        console->println(F("check(): end"));
+        // console->println(F("check(): end"));
         return false;
     }
 }
