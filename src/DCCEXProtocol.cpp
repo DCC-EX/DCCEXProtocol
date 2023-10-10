@@ -1455,8 +1455,7 @@ bool DCCEXProtocol::splitValues(char *cmd) {
     currentArg[0]='\0';
     int currentArgLength = 0;
     
-    while (parameterCount < MAX_COMMAND_PARAMS)
-    {
+    while ((parameterCount < MAX_COMMAND_PARAMS) && (currentCharIndex < MAX_SINGLE_COMMAND_PARAM_LENGTH-1)) {
         char currentChar = cmd[currentCharIndex];
         // In this switch, 'break' will go on to next char but 'continue' will rescan the current char. 
         switch (state) {
