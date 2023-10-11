@@ -37,7 +37,7 @@ static const int MAX_FUNCTIONS = 28;
 // #define MAX_COMMAND_PARAMS 100
 #define MAX_SINGLE_COMMAND_PARAM_LENGTH 500  // Unfortunately includes the function list for an individual loco
 #define MAX_SINGLE_FUNCTION_LENGTH 30 
-#define MAX_OBJECT_NAME_LENGTH 30  // including Loco name, Turnout/Point names, Route names, etc. names
+const int MAX_OBJECT_NAME_LENGTH = 30;  // including Loco name, Turnout/Point names, Route names, etc. names
 #define MAX_OUTBOUND_COMMAND_LENGTH 100
 
 // DCCEXInbound params
@@ -79,17 +79,28 @@ enum TrackPower {
     PowerUnknown = 2,
 };
 
-typedef char TurnoutState;
-#define TurnoutClosed '0'
-#define TurnoutThrown '1'
-#define TurnoutResponseClosed 'C'
-#define TurnoutResponseThrown 'T'
+// typedef char TurnoutState;
+// #define TurnoutClosed '0'
+// #define TurnoutThrown '1'
+// #define TurnoutResponseClosed 'C'
+// #define TurnoutResponseThrown 'T'
 
-typedef char TurnoutAction;
-#define TurnoutClose '0'
-#define TurnoutThrow '1'
-#define TurnoutToggle '2'
-#define TurnoutExamine '9'     // "X" needs to be sent
+enum TurnoutStates {
+    TurnoutClosed = 0,
+    TurnoutThrown = 1,
+    TurnoutResponseClosed = 'C',
+    TurnoutResponseThrown = 'T',
+    TurnoutClose = 0,
+    TurnoutThrow = 1,
+    TurnoutToggle = 2,
+    TurnoutExamine = 9,
+};
+
+// typedef char TurnoutAction;
+// #define TurnoutClose '0'
+// #define TurnoutThrow '1'
+// #define TurnoutToggle '2'
+// #define TurnoutExamine '9'     // "X" needs to be sent
 
 typedef char RouteState;
 #define RouteActive '2'
@@ -245,9 +256,9 @@ class Consist {
 class Turnout {
     public:
         Turnout() {}
-        Turnout(int id, char* name, TurnoutState state);
-        bool setTurnoutState(TurnoutAction action);
-        TurnoutState getTurnoutState();
+        Turnout(int id, char* name, TurnoutStates state);
+        bool setTurnoutState(TurnoutStates action);
+        TurnoutStates getTurnoutState();
         bool throwTurnout();
         bool closeTurnout();
         bool toggleTurnout();
@@ -261,7 +272,7 @@ class Turnout {
     private:
         int turnoutId;
         char* turnoutName;
-        TurnoutState turnoutState;
+        TurnoutStates turnoutState;
         bool hasReceivedDetail;
 };
 
@@ -366,7 +377,7 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    virtual void receivedTurnoutAction(int turnoutId, TurnoutState state) { }
+    virtual void receivedTurnoutAction(int turnoutId, TurnoutStates state) { }
     virtual void receivedRouteAction(int routeId, RouteState state) { }
     virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
 };
@@ -451,7 +462,7 @@ class DCCEXProtocol {
 	bool sendTrackPower(TrackPower state, char track);
 
     Turnout* getTurnoutById(int turnoutId);
-    bool sendTurnoutAction(int turnoutId, TurnoutAction action);
+    bool sendTurnoutAction(int turnoutId, TurnoutStates action);
 
     bool sendRouteAction(int routeId);
     bool sendPauseRoutes();

@@ -273,9 +273,9 @@ Used by ```Turnouts[]```
 
 #### Public methods
 
-    Turnout(int id, char* name, TurnoutState state);
-    bool setTurnoutState(TurnoutAction action);
-    TurnoutState getTurnoutState();
+    Turnout(int id, char* name, TurnoutStates state);
+    bool setTurnoutState(TurnoutStates action);
+    TurnoutStates getTurnoutState();
     bool throwTurnout();
     bool closeTurnout();
     bool toggleTurnout();
@@ -603,7 +603,7 @@ bool sendTrackPower(TrackPower state, char track);
 #### Turnout/Point commands
 
 ```
-bool sendTurnoutAction(int turnoutId, TurnoutAction action);
+bool sendTurnoutAction(int turnoutId, TurnoutStates action);
 ```
 
 TBA

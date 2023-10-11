@@ -247,24 +247,29 @@ void DCCEXProtocol::processCommand() {
                 break;
 
             case 'j':   // Throttle list response jA|O|P|R|T
-
                 if (DCCEXInbound::isTextParameter(0)) break;
-                if (DCCEXInbound::getNumber(0) == 'A') {
+                if (DCCEXInbound::getNumber(0)=='A') {
 
-                } else if (DCCEXInbound::getNumber(0) == 'O') {
+                } else if (DCCEXInbound::getNumber(0)=='O') {
 
-                } else if (DCCEXInbound::getNumber(0) == 'P') {
+                } else if (DCCEXInbound::getNumber(0)=='P') {
 
-                } else if (DCCEXInbound::getNumber(0) == 'R') {
+                } else if (DCCEXInbound::getNumber(0)=='R') {
 
-                } else if (DCCEXInbound::getNumber(0) == 'T') {
-
+                } else if (DCCEXInbound::getNumber(0)=='T') {   // Receive turnout info
+                    if (DCCEXInbound::getParameterCount()==1) { // Empty list, no turnouts defined
+                        turnoutListFullyReceived = true;
+                    } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(3)) {  // Turnout entry
+                        processTurnoutEntry();
+                    } else {    // Turnout list
+                        processTurnoutList();
+                    }
                 }
                 break;
 
             case 'H':   // Turnout broadcast
                 if (DCCEXInbound::isTextParameter(0)) break;
-
+                processTurnoutAction();
                 break;
 
             case 'q':   // Sensor broadcast
@@ -654,17 +659,19 @@ void DCCEXProtocol::processTurnoutList() {
             console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
             return;
         } 
-        char val[MAX_OBJECT_NAME_LENGTH];
+        // char val[MAX_OBJECT_NAME_LENGTH];
         char name[MAX_OBJECT_NAME_LENGTH];
 
-        for (int i=1; i<argz.size(); i++) {
+        // for (int i=1; i<argz.size(); i++) {
+        for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
             // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
-            sprintf(val,"%s",argz.get(i)->arg);
-            int id = atoi(val);
+            // sprintf(val,"%s",argz.get(i)->arg);
+            // int id = atoi(val);
             // strcpy(name, NAME_UNKNOWN);
+            int id = DCCEXInbound::getNumber(i);
             sprintf(name, "%s", NAME_UNKNOWN);
             
-            turnouts.add(new Turnout(id, name, 0));
+            turnouts.add(new Turnout(id, name, TurnoutClosed));
             sendTurnoutEntryRequest(id);
         }
     }
@@ -684,37 +691,41 @@ void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
 
 //private
 void DCCEXProtocol::processTurnoutEntry() {
+    if (DCCEXInbound::getParameterCount()!=4) return;
     // console->println(F("processTurnoutEntry()"));
     if (delegate) {
         //find the turnout entry to update
         if (turnouts.size()>0) { 
-            char val[MAX_OBJECT_NAME_LENGTH];
-            char name[MAX_OBJECT_NAME_LENGTH];
-            char cleanName[MAX_OBJECT_NAME_LENGTH];
+            // char val[MAX_OBJECT_NAME_LENGTH];
+            // char name[MAX_OBJECT_NAME_LENGTH];
+            // char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<turnouts.size(); i++) {
                 // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                sprintf(val,"%s",argz.get(1)->arg);
-                int id = atoi(val);
+                // sprintf(val,"%s",argz.get(1)->arg);
+                // int id = atoi(val);
+                int id = DCCEXInbound::getNumber(1);
                 if (turnouts.get(i)->getTurnoutId()==id) {
-                    TurnoutState state = TurnoutClosed;
+                    // TurnoutState state = TurnoutClosed;
                     // strcpy(name, NAME_UNKNOWN);
-                    sprintf(name, "%s", NAME_UNKNOWN);
-
-                    if (strcmp(argz.get(2)->arg,UnknownIdResponse) != 0 ) {
-                        // strcpy(name, argz.get(3)->arg);
-                        sprintf(name,"%s",argz.get(3)->arg);
-                        if (argz.get(2)->arg[0] == TurnoutResponseClosed) {
-                            state = TurnoutClosed;
-                        } else {
-                            state = TurnoutThrown;
-                        }
-                    }
+                    // sprintf(name, "%s", NAME_UNKNOWN);
                     turnouts.get(i)->setTurnoutId(id);
-                    stripLeadAndTrailQuotes(cleanName, name);
-                    turnouts.get(i)->setTurnoutName(cleanName);
+                    turnouts.get(i)->setTurnoutState((TurnoutStates)DCCEXInbound::getNumber(2));
+                    turnouts.get(i)->setTurnoutName(DCCEXInbound::getSafeText(3));
+                    // if (strcmp(argz.get(2)->arg,UnknownIdResponse) != 0 ) {
+                    //     // strcpy(name, argz.get(3)->arg);
+                    //     sprintf(name,"%s",argz.get(3)->arg);
+                    //     if (argz.get(2)->arg[0] == TurnoutResponseClosed) {
+                    //         state = TurnoutClosed;
+                    //     } else {
+                    //         state = TurnoutThrown;
+                    //     }
+                    // }
+                    // turnouts.get(i)->setTurnoutId(id);
+                    // stripLeadAndTrailQuotes(cleanName, name);
+                    // turnouts.get(i)->setTurnoutName(cleanName);
                     turnouts.get(i)->setHasReceivedDetails();
-                    turnouts.get(i)->setTurnoutState(state);
+                    // turnouts.get(i)->setTurnoutState(state);
                 }
             }
 
@@ -747,9 +758,9 @@ Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
     return nullptr;  // not found
 }
 
-bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
+bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutStates action) {
     if (delegate) {
-        sprintf(outboundCommand, "<T %d %c>", turnoutId, action);
+        sprintf(outboundCommand, "<T %d %d>", turnoutId, action);
         sendCommand();
     }
     return true;
@@ -758,24 +769,29 @@ bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutAction action) {
 //private
 void DCCEXProtocol::processTurnoutAction() { //<H id state>
     // console->println(F("processTurnoutAction(): "));
+    if (DCCEXInbound::getParameterCount()!=2) return;
     if (delegate) {
         //find the Turnout entry to update
         if (turnouts.size()>0) { 
-            char val[MAX_OBJECT_NAME_LENGTH];
+            // char val[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<turnouts.size(); i++) {
                 // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                sprintf(val,"%s",argz.get(1)->arg);
-                int id = atoi(val);
+                // sprintf(val,"%s",argz.get(1)->arg);
+                // int id = atoi(val);
+                int id = DCCEXInbound::getNumber(0);
                 
                 if (turnouts.get(i)->getTurnoutId()==id) {
                     // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
                     // TurnoutState state = atoi(val);
-                    if (argz.size() >= 3) {
-                        TurnoutState state = argz.get(2)->arg[0];
-                        turnouts.get(i)->setTurnoutState(state);
-                        delegate->receivedTurnoutAction(id, state);
-                    }
+                    // if (argz.size() >= 3) {
+                    //     TurnoutState state = argz.get(2)->arg[0];
+                    //     turnouts.get(i)->setTurnoutState(state);
+                    //     delegate->receivedTurnoutAction(id, state);
+                    // }
+                    TurnoutStates state = (TurnoutStates)DCCEXInbound::getNumber(1);
+                    turnouts.get(i)->setTurnoutState(state);
+                    delegate->receivedTurnoutAction(id, state);
                 }
             }
         } 
@@ -2140,7 +2156,7 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
 // class Turnout
 
-    Turnout::Turnout(int id, char* name, TurnoutState state) {
+    Turnout::Turnout(int id, char* name, TurnoutStates state) {
         turnoutId = id;
         turnoutState = state;
         hasReceivedDetail = false;
@@ -2163,8 +2179,8 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         setTurnoutState(TurnoutToggle);
         return true;
     }
-    bool Turnout::setTurnoutState(TurnoutAction action) {
-        TurnoutState newState = action;
+    bool Turnout::setTurnoutState(TurnoutStates action) {
+        TurnoutStates newState = action;
         if (action == TurnoutToggle) {
             if (turnoutState == TurnoutClosed ) {
                 newState = TurnoutThrown;
@@ -2202,7 +2218,7 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     char* Turnout::getTurnoutName() {
         return turnoutName;
     }
-    TurnoutState Turnout::getTurnoutState() {
+    TurnoutStates Turnout::getTurnoutState() {
         return turnoutState;
     }
     void Turnout::setHasReceivedDetails() {
