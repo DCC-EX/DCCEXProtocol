@@ -63,10 +63,16 @@ typedef char Direction;
 #define Reverse '1'
 #define Forward '0'
 
-typedef char TrackPower;
-#define PowerOff '0'
-#define PowerOn '1'
-#define PowerUnknown '2'
+// typedef char TrackPower;
+// #define PowerOff '0'
+// #define PowerOn '1'
+// #define PowerUnknown '2'
+
+enum TrackPower {
+    PowerOff = 0,
+    PowerOn = 1,
+    PowerUnknown = 2,
+};
 
 typedef char TurnoutState;
 #define TurnoutClosed '0'

@@ -52,6 +52,14 @@ enum splitState:byte {FIND_START,SET_OPCODE,SKIP_SPACES,CHECK_SIGN,
         return cmdBuffer + (parameterValues[parameterNumber] & ~QUOTE_FLAG_AREA);;
     }
     
+    char * DCCEXInbound::getSafeText(int16_t parameterNumber) {
+      char * unsafe=getText(parameterNumber);
+      if (!unsafe) return unsafe; // bad parameter number probabaly
+      char * safe=(char *) malloc(strlen(unsafe)+1);
+      strcpy(safe,unsafe);
+      return safe; 
+    }
+    
     bool DCCEXInbound::isTextInternal(int16_t n) {
         return  ((parameterValues[n] & QUOTE_FLAG_AREA)==QUOTE_FLAG);
     }
@@ -147,4 +155,28 @@ bool DCCEXInbound::parse(char* command) {
         remainingCmd++;
     }
     return false; // we ran out of max parameters
+}
+
+void DCCEXInbound::dump(Print * out) {
+   
+  out->print(F("\nDCCEXInbound Opcode='"));
+  if (opcode) out->write(opcode); 
+  else out->print(F("\\0"));  
+  out->println('\'');
+  
+  for (int i=0; i<getParameterCount();i++) {
+    if (isTextParameter(i)) {
+        out->print(F("getText("));
+        out->print(i);
+        out->print(F(")=\""));     
+        out->print(getText(i)); 
+        out->println('"');
+    }
+    else {
+        out->print(F("getNumber("));
+        out->print(i);
+        out->print(F(")="));     
+        out->println(getNumber(i)); 
+    }
+  }
 }

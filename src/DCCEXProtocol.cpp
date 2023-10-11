@@ -117,6 +117,7 @@ bool DCCEXProtocol::check() {
             if (r=='>') {
                 if (DCCEXInbound::parse(cmdBuffer)) {
                     // Process stuff here
+                    processCommand();
                 } else {
                     // Parsing failed here
                 }
@@ -221,21 +222,58 @@ void DCCEXProtocol::sendCommand() {
 
 //private
 void DCCEXProtocol::processCommand() {
-    // Get our opcode first, switch on this
-    char opcode=DCCEXInbound::getOpcode();
+    if (delegate) {
+        switch (DCCEXInbound::getOpcode()) {
+            case 'i':   // iDCC-EX server info
+                processServerDescription();
+                break;
 
-    console->print(F("Recevied opcode "));
-        console->print(opcode);
-        console->print(F(" with "));
-        console->print(DCCEXInbound::getParameterCount());
-        console->println(F(" params"));
+            case 'p':   // Power broadcast
+                if (DCCEXInbound::isTextParameter(0)) break;
+                processTrackPower();
+                break;
 
-    // switch (opcode) {
-        
-    // }
+            case 'l':   // Loco/cab broadcast
+                if (DCCEXInbound::isTextParameter(0)) break;
+
+                break;
+
+            case 'j':   // Throttle list response jA|O|P|R|T
+
+                if (DCCEXInbound::isTextParameter(0)) break;
+                if (DCCEXInbound::getNumber(0) == 'A') {
+
+                } else if (DCCEXInbound::getNumber(0) == 'O') {
+
+                } else if (DCCEXInbound::getNumber(0) == 'P') {
+
+                } else if (DCCEXInbound::getNumber(0) == 'R') {
+
+                } else if (DCCEXInbound::getNumber(0) == 'T') {
+
+                }
+                break;
+
+            case 'H':   // Turnout broadcast
+                if (DCCEXInbound::isTextParameter(0)) break;
+
+                break;
+
+            case 'q':   // Sensor broadcast
+                if (DCCEXInbound::isTextParameter(0)) break;
+
+                break;
+
+            case 'X':   // Error
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
-/* Oled processCommand() starts here --
+/* Old processCommand() starts here --
 bool DCCEXProtocol::processCommand(char* c, int len) {
     console->println(F("processCommand()"));
 
@@ -424,6 +462,9 @@ char* DCCEXProtocol::charToCharArray(char c) {
 void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
     // console->println(F("processServerDescription()"));
     if (delegate) {
+        
+        
+        /* Old processServerDescription --
         char *_serverVersion;
         _serverVersion = (char *) malloc(strlen(argz.get(1)->arg)+1);
         // strcpy(_serverVersion, argz.get(1)->arg);
@@ -448,10 +489,12 @@ void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microproces
         sprintf(_serverBuildNumber,"%s",argz.get(6)->arg);
         serverBuildNumber = _serverBuildNumber;        
 
-        // strcpy(serverVersion, argz.get(1)->arg);
+        strcpy(serverVersion, argz.get(1)->arg);
+
         // strcpy(serverMicroprocessorType, argz.get(3)->arg);
         // strcpy(serverMotorcontrollerType, argz.get(5)->arg);
         // strcpy(serverBuildNumber, argz.get(6)->arg);
+        -- end old processServerDescription */
 
         haveReceivedServerDetails = true;
         delegate->receivedServerDescription(serverVersion);
@@ -468,9 +511,9 @@ void DCCEXProtocol::processTrackPower() {
     // console->println(F("processTrackPower()"));
     if (delegate) {
         TrackPower state = PowerUnknown;
-        if (argz.get(0)->arg[0]==PowerOff) {
+        if (DCCEXInbound::getNumber(0)==PowerOff) {
             state = PowerOff;
-        } else if (argz.get(0)->arg[1]==PowerOn) {
+        } else if (DCCEXInbound::getNumber(0)==PowerOn) {
             state = PowerOn;
         }
 
@@ -1092,7 +1135,7 @@ bool DCCEXProtocol::sendServerDetailsRequest() {
 bool DCCEXProtocol::sendTrackPower(TrackPower state) {
     // console->println(F("sendTrackPower(): "));
     if (delegate) {
-        sprintf(outboundCommand, "<%c>", state);
+        sprintf(outboundCommand, "<%d>", state);
 
         sendCommand();
     }

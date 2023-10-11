@@ -34,10 +34,20 @@ public:
    /// @return 
    static bool isTextParameter(int16_t parameterNumber);
 
-   /// @brief gets address of text type parameter
+   /// @brief gets address of text type parameter.
+   ///         does not create permenant copy 
    /// @param parameterNumber 
    /// @return 
    static char * getText(int16_t parameterNumber);
+   
+   /// @brief gets address of a heap copy of text type parameter.
+   /// @param parameterNumber 
+   /// @return 
+   static char * getSafeText(int16_t parameterNumber);
+
+   /// @brief dump list of parameters obtained
+   /// @param  Address of output e.g. &Serial
+   static void dump(Print *);
 
 private:
     static int16_t maxParams;
