@@ -1146,7 +1146,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state) {
 bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
     // console->println(F("sendTrackPower(): "));
     if (delegate) {
-        sprintf(outboundCommand, "<%c %c>", state, track);
+        sprintf(outboundCommand, "<%d %c>", state, track);
 
         sendCommand();
     }
