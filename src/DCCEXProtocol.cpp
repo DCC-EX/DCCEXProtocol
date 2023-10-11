@@ -229,15 +229,21 @@ void DCCEXProtocol::processCommand() {
                     processServerDescription();
                 }
                 break;
+            
+            case 'I':   // Turntable broadcast
+                if (DCCEXInbound::getParameterCount()==3) {
+                    // processTurntableAction();
+                }
+                break;
 
             case 'p':   // Power broadcast
-                if (DCCEXInbound::isTextParameter(0)) break;
+                if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount()!=1) break;
                 processTrackPower();
                 break;
 
             case 'l':   // Loco/cab broadcast
-                if (DCCEXInbound::isTextParameter(0)) break;
-
+                if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount()!=4) break;
+                processLocoAction();
                 break;
 
             case 'j':   // Throttle list response jA|O|P|R|T
@@ -1068,18 +1074,21 @@ void DCCEXProtocol::processSensorEntry() {  // <jO id type position position_cou
 
 //private
 bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
-    console->println(F("processLocoAction()"));
+    // console->println(F("processLocoAction()"));
     if (delegate) {
-        char val[MAX_OBJECT_NAME_LENGTH];
+        // char val[MAX_OBJECT_NAME_LENGTH];
         // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-        sprintf(val,"%s",argz.get(1)->arg);
-        int address = atoi(val);
+        // sprintf(val,"%s",argz.get(1)->arg);
+        // int address = atoi(val);
+        int address = DCCEXInbound::getNumber(0);
         // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
-        sprintf(val,"%s",argz.get(3)->arg);
-        int speedByte = atoi(val);
+        // sprintf(val,"%s",argz.get(3)->arg);
+        // int speedByte = atoi(val);
+        int speedByte = DCCEXInbound::getNumber(2);
         // strcpy(val, argz.get(4)->arg); strcat(val, "\0");
-        sprintf(val,"%s",argz.get(4)->arg);
-        int functMap = atoi(val);
+        // sprintf(val,"%s",argz.get(4)->arg);
+        // int functMap = atoi(val);
+        int functMap = DCCEXInbound::getNumber(3);
 
         int throttleNo = findThrottleWithLoco(address);
         if (throttleNo>=0) {
@@ -1090,7 +1099,7 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
                 FunctionState fnStates[MAX_FUNCTIONS];
                 getFunctionStatesFromFunctionMap(fnStates, functMap);
                 for (uint i=0; i<MAX_FUNCTIONS; i++) {
-                    console->print(F("processLocoAction(): checking function: ")); console->println(i);
+                    // console->print(F("processLocoAction(): checking function: ")); console->println(i);
                     if (fnStates[i] != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)) {
 
                         throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
@@ -1113,11 +1122,11 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
 
             }
         } else {
-            console->println(F("processLocoAction(): unknown loco"));
+            // console->println(F("processLocoAction(): unknown loco"));
             return false;
         }
     }
-    console->println(F("processLocoAction() end"));
+    // console->println(F("processLocoAction() end"));
     return true;
 }
 
@@ -1232,7 +1241,7 @@ bool DCCEXProtocol::isFunctionOn(int throttle, int functionNumber) {
 // throttle
 
 bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direction) {
-    console->println(F("sendThrottleAction(): "));
+    // console->println(F("sendThrottleAction(): "));
     if (delegate) {
         if (throttleConsists[throttle].consistGetNumberOfLocos()>0) {
             throttleConsists[throttle].consistSetSpeed(speed);
@@ -1252,7 +1261,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
             }
         }
     }
-    console->println(F("sendThrottleAction(): end"));
+    // console->println(F("sendThrottleAction(): end"));
     return true;
 }
 
@@ -1273,12 +1282,12 @@ bool DCCEXProtocol::sendLocoUpdateRequest(int address) {
 }
 
 bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) {
-    console->print(F("sendLocoAction(): ")); console->println(address);
+    // console->print(F("sendLocoAction(): ")); console->println(address);
     if (delegate) {
-        sprintf(outboundCommand, "<t %d %d %c>", address, speed, direction);
+        sprintf(outboundCommand, "<t %d %d %d>", address, speed, direction);
         sendCommand();
     }
-    console->println(F("sendLocoAction(): end"));
+    // console->println(F("sendLocoAction(): end"));
     return true;
 }
 

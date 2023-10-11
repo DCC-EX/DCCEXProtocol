@@ -59,9 +59,14 @@ enum splitFunctionsState {FIND_FUNCTION_START, SKIP_FUNCTION_LEADING_SLASH_SPACE
 
 // *****************************************************************
 
-typedef char Direction;
-#define Reverse '1'
-#define Forward '0'
+// typedef char Direction;
+// #define Reverse '1'
+// #define Forward '0'
+
+enum Direction {
+    Reverse = 0,
+    Forward = 1,
+};
 
 // typedef char TrackPower;
 // #define PowerOff '0'
