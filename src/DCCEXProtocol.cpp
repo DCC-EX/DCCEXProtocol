@@ -115,8 +115,12 @@ bool DCCEXProtocol::check() {
             }
 
             if (r=='>') {
-                DCCEXInbound::parse(cmdBuffer);
-                // Process stuff here
+                if (DCCEXInbound::parse(cmdBuffer)) {
+                    // Process stuff here
+                } else {
+                    // Parsing failed here
+                }
+                
                 // Clear buffer after use
                 cmdBuffer[0]=0;
                 bufflen=0;
@@ -216,6 +220,22 @@ void DCCEXProtocol::sendCommand() {
 }
 
 //private
+void DCCEXProtocol::processCommand() {
+    // Get our opcode first, switch on this
+    char opcode=DCCEXInbound::getOpcode();
+
+    console->print(F("Recevied opcode "));
+        console->print(opcode);
+        console->print(F(" with "));
+        console->print(DCCEXInbound::getParameterCount());
+        console->println(F(" params"));
+
+    // switch (opcode) {
+        
+    // }
+}
+
+/* Oled processCommand() starts here --
 bool DCCEXProtocol::processCommand(char* c, int len) {
     console->println(F("processCommand()"));
 
@@ -378,6 +398,7 @@ bool DCCEXProtocol::processCommand(char* c, int len) {
     console->println(F("processCommand() end"));
     return true;
 }
+-- old processCommand() ends here */
 
 //private
 void DCCEXProtocol::processUnknownCommand(char* unknownCommand) {

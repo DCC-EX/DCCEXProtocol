@@ -477,7 +477,8 @@ class DCCEXProtocol {
 
     void init();
 
-    bool processCommand(char *c, int len);
+    void processCommand();
+    // bool processCommand(char *c, int len);
     void processUnknownCommand(char* unknownCommand);
 
     void processServerDescription();	
