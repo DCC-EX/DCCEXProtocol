@@ -225,7 +225,9 @@ void DCCEXProtocol::processCommand() {
     if (delegate) {
         switch (DCCEXInbound::getOpcode()) {
             case 'i':   // iDCC-EX server info
-                processServerDescription();
+                if (DCCEXInbound::isTextParameter(0)) {
+                    processServerDescription();
+                }
                 break;
 
             case 'p':   // Power broadcast
@@ -462,39 +464,42 @@ char* DCCEXProtocol::charToCharArray(char c) {
 void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
     // console->println(F("processServerDescription()"));
     if (delegate) {
+        console->print(F("Process server description with "));
+        console->print(DCCEXInbound::getParameterCount());
+        console->println(F(" params"));
         
-        
-        /* Old processServerDescription --
         char *_serverVersion;
-        _serverVersion = (char *) malloc(strlen(argz.get(1)->arg)+1);
-        // strcpy(_serverVersion, argz.get(1)->arg);
-        sprintf(_serverVersion,"%s",argz.get(1)->arg);
+        // _serverVersion = (char *) malloc(strlen(argz.get(1)->arg)+1);
+        // // strcpy(_serverVersion, argz.get(1)->arg);
+        // sprintf(_serverVersion,"%s",argz.get(1)->arg);
+        _serverVersion = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
+        sprintf(_serverVersion,"%s",DCCEXInbound::getText(0));
         serverVersion = _serverVersion;
+        console->println(serverVersion);
 
-        char *_serverMicroprocessorType;
-        _serverMicroprocessorType = (char *) malloc(strlen(argz.get(3)->arg)+1);
-        // strcpy(_serverMicroprocessorType, argz.get(3)->arg);
-        sprintf(_serverMicroprocessorType,"%s",argz.get(3)->arg);
-        serverMicroprocessorType = _serverMicroprocessorType;
+        // char *_serverMicroprocessorType;
+        // _serverMicroprocessorType = (char *) malloc(strlen(argz.get(3)->arg)+1);
+        // // strcpy(_serverMicroprocessorType, argz.get(3)->arg);
+        // sprintf(_serverMicroprocessorType,"%s",argz.get(3)->arg);
+        // serverMicroprocessorType = _serverMicroprocessorType;
 
-        char *_serverMotorcontrollerType;
-        _serverMotorcontrollerType = (char *) malloc(strlen(argz.get(5)->arg)+1);
-        // strcpy(_serverMotorcontrollerType, argz.get(5)->arg);
-        sprintf(_serverMotorcontrollerType,"%s",argz.get(5)->arg);
-        serverMotorcontrollerType = _serverMotorcontrollerType;
+        // char *_serverMotorcontrollerType;
+        // _serverMotorcontrollerType = (char *) malloc(strlen(argz.get(5)->arg)+1);
+        // // strcpy(_serverMotorcontrollerType, argz.get(5)->arg);
+        // sprintf(_serverMotorcontrollerType,"%s",argz.get(5)->arg);
+        // serverMotorcontrollerType = _serverMotorcontrollerType;
 
-        char *_serverBuildNumber;
-        _serverBuildNumber = (char *) malloc(strlen(argz.get(6)->arg)+1);
-        // strcpy(_serverBuildNumber, argz.get(6)->arg);
-        sprintf(_serverBuildNumber,"%s",argz.get(6)->arg);
-        serverBuildNumber = _serverBuildNumber;        
+        // char *_serverBuildNumber;
+        // _serverBuildNumber = (char *) malloc(strlen(argz.get(6)->arg)+1);
+        // // strcpy(_serverBuildNumber, argz.get(6)->arg);
+        // sprintf(_serverBuildNumber,"%s",argz.get(6)->arg);
+        // serverBuildNumber = _serverBuildNumber;        
 
-        strcpy(serverVersion, argz.get(1)->arg);
+        // strcpy(serverVersion, argz.get(1)->arg);
 
         // strcpy(serverMicroprocessorType, argz.get(3)->arg);
         // strcpy(serverMotorcontrollerType, argz.get(5)->arg);
         // strcpy(serverBuildNumber, argz.get(6)->arg);
-        -- end old processServerDescription */
 
         haveReceivedServerDetails = true;
         delegate->receivedServerDescription(serverVersion);
