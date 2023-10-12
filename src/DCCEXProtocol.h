@@ -572,7 +572,8 @@ class DCCEXProtocol {
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
     // bool splitValues(char *cmd);
-    bool splitFunctions(char *cmd);
+    bool splitFunctions(char *functionNames);
+    // bool splitFunctions(char *cmd);
     bool stripLeadAndTrailQuotes(char* rslt, char* text);
     // char* substituteCharBetweenQuotes(char* text, char searchChar, char substituteChar);
 };

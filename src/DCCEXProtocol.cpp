@@ -622,6 +622,7 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
             r->setIsFromRosterAndReceivedDetails();
 
             console->println(DCCEXInbound::getText(3));
+            splitFunctions(funcs);
 
             /* STOP FUNCTIONS
             for( int i=0; i<functionArgs.size(); i++) { functionArgs.get(i)->clearFunctionArgument(); }
@@ -1553,106 +1554,47 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     return -1;
 }
 
-/*
-bool DCCEXProtocol::splitValues(char *cmd) {
-    // console->println(F("splitValues(): "));
-    byte parameterCount = 0;
-    
-    int currentCharIndex = 0; // pointer to the next character to process
-    splitState state = FIND_START;
-    char currentArg[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-    currentArg[0]='\0';
-    int currentArgLength = 0;
-    
-    while ((parameterCount < MAX_COMMAND_PARAMS) && (currentCharIndex < MAX_SINGLE_COMMAND_PARAM_LENGTH-1)) {
-        char currentChar = cmd[currentCharIndex];
-        // In this switch, 'break' will go on to next char but 'continue' will rescan the current char. 
-        switch (state) {
-        case FIND_START: // looking for '<'
-            if (currentChar == COMMAND_START) state = SKIP_SPACES;   // '<'
-            break;
-
-        case SKIP_SPACES: // skipping spaces before a param
-            if (currentChar == ' ') break; // ignore
-            state = CHECK_FOR_LEADING_QUOTE;
-            continue;
-
-        case CHECK_FOR_LEADING_QUOTE: // checking for quotes at the start of the parameter
-            if (currentChar == '"') {
-                state = BUILD_QUOTED_PARAM;
-                continue;
-            } 
-            state = BUILD_PARAM;
-            continue;
-
-        case BUILD_QUOTED_PARAM: 
-            if (currentChar == '>') {
-                state = CHECK_FOR_END;
-                continue;
-            }
-            if (currentArgLength < (MAX_SINGLE_COMMAND_PARAM_LENGTH-1)) {
-                currentArg[currentArgLength] = currentChar;
-                currentArg[currentArgLength+1]='\0';
-                console->println(currentArg);
-                currentArgLength++;
-            }
-            if ( (currentArgLength>1) && (currentChar == '"') ) { // trailing quote
-                argz.add( new CommandArgument(currentArg) );
-                currentArg[0]='\0';
-                currentArgLength = 0;
-                state = SKIP_SPACES;
-            }
-            break;
-
-        case BUILD_PARAM: // building a parameter
-            if (currentChar == COMMAND_END) {  // '>'
-                state = CHECK_FOR_END;
-                continue;
-            }
-            if (currentChar != ' ') {
-                if (currentArgLength < (MAX_SINGLE_COMMAND_PARAM_LENGTH-1)) {
-                    currentArg[currentArgLength] = currentChar;
-                    currentArg[currentArgLength+1]='\0';
-                    console->println(currentArg);
-                    currentArgLength++;
-                }
-                break;
-            }
-
-            // space - end of parameter detected 
-            argz.add( new CommandArgument(currentArg) );
-
-            currentArg[0]='\0';
-            currentArgLength = 0;
-            parameterCount++;
-            state = SKIP_SPACES;
-
-                // for (uint i=0; i<argz.size();i++) {
-                //     // console->print("args b "); console->print(i); console->print(": ~"); console->print(args.get(i)); console->println("~");
-                //     console->print("argz b "); console->print(i); console->print(": ~"); console->print(argz.get(i)->arg); console->println("~");
-                // }
-
-            continue;
-        
-        case CHECK_FOR_END:
-            if ( (currentChar=='\0') || (currentChar == '>') ) {
-                if (currentArgLength>0) { // in case there was a param we started but didn't find the proper end
-                    argz.add( new CommandArgument(currentArg));
-                }
-                // console->println(F("splitValues(): end"));
-                return true;  
-            }
-            break;
+bool DCCEXProtocol::splitFunctions(char *functionNames) {
+  // Importtant note: 
+  // The functionNames string is modified in place. 
+  console->print(F("Splitting \""));
+  console->print(functionNames);
+  console->println(F("\""));
+  char * t=functionNames;
+  int fkey=0;
+  
+  while(*t) {
+       bool momentary=false;
+       if(*t=='*')  {
+        momentary=true;
+        t++;
+       }
+       char * fName=t;  // function name starts here
+       while(*t) { // loop completes at end of name ('/' or 0)
+        if (*t=='/') {
+          // found end of name
+          *t='\0'; // mark name ends here 
+          t++;
+          break;
         }
-        currentCharIndex++;
-    }
+        t++;
+       }
 
-    // console->println(F("splitValues(): end"));
-    return true;
-    
+       // At this point we have a function key
+       // int fkey = function number 0....
+       // bool momentary = is it a momentary
+       // fName = pointer to the function name 
+       console->print("Function ");
+       console->print(fkey);
+       console->print(momentary ? F("  Momentary ") : F(""));
+       console->print(" ");
+       console->println(fName);
+       fkey++;
+  }
+  return true;
 }
-*/
 
+/* -- OLD SPLITFUNCTIONS
 bool DCCEXProtocol::splitFunctions(char *cmd) {
     // console->println(F("splitFunctions(): "));
     byte parameterCount = 0;
@@ -1718,6 +1660,7 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
     console->println(F("splitFunctions(): end"));
     return true;
 }
+-- OLD SPLITFUNCTIONS */
 
 bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     if (text[0]=='"' && text[strlen(text)-1]=='"') {
