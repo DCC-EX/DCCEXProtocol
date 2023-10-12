@@ -272,8 +272,10 @@ void DCCEXProtocol::processCommand() {
                     if (DCCEXInbound::getParameterCount()==1) { // Empty list, no roster
                         rosterFullyReceived = true;
                     } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(2) && DCCEXInbound::isTextParameter(3)) {  // Roster entry
+                        // <jR id "desc" "func1/func2/func3/...">
                         processRosterEntry();
                     } else {    // Roster list
+                        // <jR id1 id2 id3 ...>
                         processRosterList();
                     }
                 } else if (DCCEXInbound::getNumber(0)=='T') {   // Receive turnout info
@@ -604,77 +606,61 @@ void DCCEXProtocol::sendRosterEntryRequest(int address) {
 //private
 void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
     // console->println(F("processRosterEntry()"));
-    if (delegate) {
-        //find the roster entry to update
-        if (roster.size()>0) { 
-            // char arg[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-            char name[MAX_OBJECT_NAME_LENGTH];
-            // char cleanName[MAX_OBJECT_NAME_LENGTH];
+    //find the roster entry to update
+    int address=DCCEXInbound::getNumber(1);
+    char *name=DCCEXInbound::getSafeText(2);
+    char *funcs=DCCEXInbound::getSafeText(3);
+    bool missingRosters=false;
+    
+    for (int i=0; i<roster.size(); i++) {
+        auto r=roster.get(i);
+        if (r->getLocoAddress() == address) {
+            // console->print("processRosterEntry(): found: "); console->println(address);
 
-            for (int i=0; i<roster.size(); i++) {
-                // strcpy(arg, argz.get(1)->arg); strcat(arg, "\0");
-                // sprintf(arg,"%s",argz.get(1)->arg);
-                // int address = atoi(arg);
-                int address = DCCEXInbound::getNumber(1);
+            r->setLocoName(name);
+            r->setLocoSource(LocoSourceRoster);
+            r->setIsFromRosterAndReceivedDetails();
 
-                if (roster.get(i)->getLocoAddress() == address) {
-                    // console->print("processRosterEntry(): found: "); console->println(address);
-                    // strcpy(name, argz.get(2)->arg); strcat(name, "\0");
-                    // sprintf(name,"%s",argz.get(2)->arg);
-                    sprintf(name, DCCEXInbound::getSafeText(2));
-                    
-                    // stripLeadAndTrailQuotes(cleanName, name);
-                    // roster.get(i)->setLocoName(cleanName);
-                    roster.get(i)->setLocoName(name);
-                    roster.get(i)->setLocoSource(LocoSourceRoster);
-                    roster.get(i)->setIsFromRosterAndReceivedDetails();
+            console->println(DCCEXInbound::getText(3));
 
-                    char functions[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-                    // strcpy(functions, argz.get(3)->arg);
-                    // sprintf(functions,"%s",argz.get(3)->arg);
-                    sprintf(functions, DCCEXInbound::getSafeText(3));
-                    console->println(DCCEXInbound::getText(3));
+            /* STOP FUNCTIONS
+            for( int i=0; i<functionArgs.size(); i++) { functionArgs.get(i)->clearFunctionArgument(); }
+            functionArgs.clear();
 
-                    /* STOP FUNCTIONS
-                    for( int i=0; i<functionArgs.size(); i++) { functionArgs.get(i)->clearFunctionArgument(); }
-                    functionArgs.clear();
+            splitFunctions(functions);
+            int noOfParameters = functionArgs.size();
 
-                    splitFunctions(functions);
-                    int noOfParameters = functionArgs.size();
+            for (uint i=0; i<functionArgs.size();i++) {
+                console->print("fn"); console->print(i); console->print(": ~"); console->print(functionArgs.get(i)->arg); console->println("~");
+            }
 
-                    for (uint i=0; i<functionArgs.size();i++) {
-                        console->print("fn"); console->print(i); console->print(": ~"); console->print(functionArgs.get(i)->arg); console->println("~");
-                    }
+            console->print("processing Functions: "); console->println(functions);
 
-                    console->print("processing Functions: "); console->println(functions);
-
-                    for (int j=0; (j<noOfParameters && j<MAX_FUNCTIONS); j++ ) {
-                        // console->print("functionArgs"); console->print(j); console->print(": ~"); console->print(functionArgs.get(j)->arg); console->println("~");
-                        char* functionName = functionArgs.get(j)->arg;
-                        FunctionState state = FunctionStateOff;
-                        FunctionLatching latching = FunctionLatchingTrue;
-                        if (functionName[0]=='*') {
-                            latching = FunctionLatchingFalse;
-                        }
-                        roster.get(i)->locoFunctions.initFunction(j, functionName, latching, state);
-                    }
-                    STOP FUNCTIONS */
+            for (int j=0; (j<noOfParameters && j<MAX_FUNCTIONS); j++ ) {
+                // console->print("functionArgs"); console->print(j); console->print(": ~"); console->print(functionArgs.get(j)->arg); console->println("~");
+                char* functionName = functionArgs.get(j)->arg;
+                FunctionState state = FunctionStateOff;
+                FunctionLatching latching = FunctionLatchingTrue;
+                if (functionName[0]=='*') {
+                    latching = FunctionLatchingFalse;
                 }
+                roster.get(i)->locoFunctions.initFunction(j, functionName, latching, state);
             }
-            bool rslt = true;
-            for (int i=0; i<roster.size(); i++) {
-                if (!roster.get(i)->getIsFromRosterAndReceivedDetails()) {
-                    console->print(F("processRosterEntry(): not received yet: ~")); console->print(roster.get(i)->getLocoName()); console->print("~ ");console->println(roster.get(i)->getLocoAddress());
-                    rslt = false;
-                    break;
-                }
+            STOP FUNCTIONS */
+        } else {
+            if (!r->getIsFromRosterAndReceivedDetails()) {
+                console->print(F("processRosterEntry(): not received yet: ~"));
+                console->print(r->getLocoName());
+                console->print("~ ");
+                console->println(r->getLocoAddress());
+                missingRosters=true;
             }
-            if (rslt) {
-                rosterFullyReceived = true;
-                console->println(F("processRosterEntry(): received all"));
-                delegate->receivedRosterList(roster.size());
-            }
-        } 
+        }
+    }
+    if (!missingRosters) {
+        rosterFullyReceived = true;
+        console->println(F("processRosterEntry(): received all"));
+        delegate->receivedRosterList(roster.size());
     }
     // console->println(F("processRosterEntry(): end"));
 }
