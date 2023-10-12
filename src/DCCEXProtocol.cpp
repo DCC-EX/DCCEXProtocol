@@ -280,8 +280,10 @@ void DCCEXProtocol::processCommand() {
                     if (DCCEXInbound::getParameterCount()==1) { // Empty list, no turnouts defined
                         turnoutListFullyReceived = true;
                     } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(3)) {  // Turnout entry
+                        // <jT id state "desc">
                         processTurnoutEntry();
                     } else {    // Turnout list
+                        // <jT id1 id2 id3 ...>
                         processTurnoutList();
                     }
                 }
@@ -682,30 +684,23 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
 
 //private
 void DCCEXProtocol::processTurnoutList() {
-    // console->println(F("processTurnoutList()"));
-    if (delegate) {
-        if (turnouts.size()>0) { // already have a turnouts list so this is an update
-            // turnouts.clear();
-            console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
-            return;
-        } 
-        // char val[MAX_OBJECT_NAME_LENGTH];
-        char name[MAX_OBJECT_NAME_LENGTH];
+    // <jT id1 id2 id3 ...>
+    console->println(F("processTurnoutList()"));
+    if (turnouts.size()>0) { // already have a turnouts list so this is an update
+        // turnouts.clear();
+        console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
+        return;
+    } 
+    char name[MAX_OBJECT_NAME_LENGTH];
 
-        // for (int i=1; i<argz.size(); i++) {
-        for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-            // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
-            // sprintf(val,"%s",argz.get(i)->arg);
-            // int id = atoi(val);
-            // strcpy(name, NAME_UNKNOWN);
-            int id = DCCEXInbound::getNumber(i);
-            sprintf(name, "%s", NAME_UNKNOWN);
-            
-            turnouts.add(new Turnout(id, name, TurnoutClosed));
-            sendTurnoutEntryRequest(id);
-        }
+    for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
+        int id = DCCEXInbound::getNumber(i);
+        sprintf(name, "%s", NAME_UNKNOWN);
+        
+        turnouts.add(new Turnout(id, name, TurnoutClosed));
+        sendTurnoutEntryRequest(id);
     }
-    // console->println(F("processTurnoutList(): end"));
+    console->println(F("processTurnoutList(): end"));
 }
 
 //private
@@ -723,56 +718,33 @@ void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
 void DCCEXProtocol::processTurnoutEntry() {
     if (DCCEXInbound::getParameterCount()!=4) return;
     // console->println(F("processTurnoutEntry()"));
-    if (delegate) {
-        //find the turnout entry to update
-        if (turnouts.size()>0) { 
-            // char val[MAX_OBJECT_NAME_LENGTH];
-            // char name[MAX_OBJECT_NAME_LENGTH];
-            // char cleanName[MAX_OBJECT_NAME_LENGTH];
+    //find the turnout entry to update
+    int id=DCCEXInbound::getNumber(1);
+    TurnoutStates state=DCCEXInbound::getNumber(2)==1 ? TurnoutThrown : TurnoutClosed;
+    char* name=DCCEXInbound::getSafeText(3);
 
-            for (int i=0; i<turnouts.size(); i++) {
-                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                // sprintf(val,"%s",argz.get(1)->arg);
-                // int id = atoi(val);
-                int id = DCCEXInbound::getNumber(1);
-                if (turnouts.get(i)->getTurnoutId()==id) {
-                    // TurnoutState state = TurnoutClosed;
-                    // strcpy(name, NAME_UNKNOWN);
-                    // sprintf(name, "%s", NAME_UNKNOWN);
-                    turnouts.get(i)->setTurnoutId(id);
-                    turnouts.get(i)->setTurnoutState((TurnoutStates)DCCEXInbound::getNumber(2));
-                    turnouts.get(i)->setTurnoutName(DCCEXInbound::getSafeText(3));
-                    // if (strcmp(argz.get(2)->arg,UnknownIdResponse) != 0 ) {
-                    //     // strcpy(name, argz.get(3)->arg);
-                    //     sprintf(name,"%s",argz.get(3)->arg);
-                    //     if (argz.get(2)->arg[0] == TurnoutResponseClosed) {
-                    //         state = TurnoutClosed;
-                    //     } else {
-                    //         state = TurnoutThrown;
-                    //     }
-                    // }
-                    // turnouts.get(i)->setTurnoutId(id);
-                    // stripLeadAndTrailQuotes(cleanName, name);
-                    // turnouts.get(i)->setTurnoutName(cleanName);
-                    turnouts.get(i)->setHasReceivedDetails();
-                    // turnouts.get(i)->setTurnoutState(state);
-                }
-            }
+    for (int i=0; i<turnouts.size(); i++) {
+        auto t=turnouts.get(i);
+        if (t->getTurnoutId()==id) {
+            t->setTurnoutId(id);
+            t->setTurnoutState(state);
+            t->setTurnoutName(name);
+            t->setHasReceivedDetails();
+        }
+    }
 
-            bool rslt = true;
-            for (int i=0; i<turnouts.size(); i++) {
-                if (!turnouts.get(i)->getHasReceivedDetails()) {
-                    console->print(F("processTurnoutsEntry(): not received yet: ~")); console->print(turnouts.get(i)->getTurnoutName()); console->print(F("~ "));console->println(turnouts.get(i)->getTurnoutId());
-                    rslt = false;
-                    break;
-                }
-            }
-            if (rslt) {
-                turnoutListFullyReceived = true;
-                console->println(F("processTurnoutsEntry(): received all"));
-                delegate->receivedTurnoutList(turnouts.size());
-            }            
-        } 
+    bool rslt = true;
+    for (int i=0; i<turnouts.size(); i++) {
+        if (!turnouts.get(i)->getHasReceivedDetails()) {
+            console->print(F("processTurnoutsEntry(): not received yet: ~")); console->print(turnouts.get(i)->getTurnoutName()); console->print(F("~ "));console->println(turnouts.get(i)->getTurnoutId());
+            rslt = false;
+            break;
+        }
+    }
+    if (rslt) {
+        turnoutListFullyReceived = true;
+        console->println(F("processTurnoutsEntry(): received all"));
+        delegate->receivedTurnoutList(turnouts.size());
     }
     // console->println(F("processTurnoutEntry() end"));
 }
@@ -800,31 +772,15 @@ bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutStates action) {
 void DCCEXProtocol::processTurnoutAction() { //<H id state>
     // console->println(F("processTurnoutAction(): "));
     if (DCCEXInbound::getParameterCount()!=2) return;
-    if (delegate) {
-        //find the Turnout entry to update
-        if (turnouts.size()>0) { 
-            // char val[MAX_OBJECT_NAME_LENGTH];
-
-            for (int i=0; i<turnouts.size(); i++) {
-                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                // sprintf(val,"%s",argz.get(1)->arg);
-                // int id = atoi(val);
-                int id = DCCEXInbound::getNumber(0);
-                
-                if (turnouts.get(i)->getTurnoutId()==id) {
-                    // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
-                    // TurnoutState state = atoi(val);
-                    // if (argz.size() >= 3) {
-                    //     TurnoutState state = argz.get(2)->arg[0];
-                    //     turnouts.get(i)->setTurnoutState(state);
-                    //     delegate->receivedTurnoutAction(id, state);
-                    // }
-                    TurnoutStates state = (TurnoutStates)DCCEXInbound::getNumber(1);
-                    turnouts.get(i)->setTurnoutState(state);
-                    delegate->receivedTurnoutAction(id, state);
-                }
-            }
-        } 
+    //find the Turnout entry to update
+    int id = DCCEXInbound::getNumber(0);
+    TurnoutStates state = DCCEXInbound::getNumber(1)==1 ? TurnoutThrown : TurnoutClosed;
+    for (int i=0; i<turnouts.size(); i++) {
+        auto t=turnouts.get(i);
+        if (t->getTurnoutId()==id) {
+            t->setTurnoutState(state);
+            delegate->receivedTurnoutAction(id, state);
+        }
     }
     // console->println(F("processTurnoutAction(): end"));
 }
