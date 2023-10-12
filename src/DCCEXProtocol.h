@@ -131,9 +131,14 @@ typedef char FunctionLatching;
 #define FunctionLatchingTrue '1'
 #define FunctionLatchingFalse '0'
 
-typedef char LocoSource;
-#define LocoSourceRoster '0'
-#define LocoSourceEntry '1'
+// typedef char LocoSource;
+// #define LocoSourceRoster '0'
+// #define LocoSourceEntry '1'
+
+enum LocoSource {
+    LocoSourceRoster = 0,
+    LocoSourceEntry = 1,
+};
 
 typedef char Facing;
 #define FacingForward '0'

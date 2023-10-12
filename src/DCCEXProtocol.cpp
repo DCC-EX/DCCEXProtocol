@@ -254,8 +254,14 @@ void DCCEXProtocol::processCommand() {
 
                 } else if (DCCEXInbound::getNumber(0)=='P') {
 
-                } else if (DCCEXInbound::getNumber(0)=='R') {
-
+                } else if (DCCEXInbound::getNumber(0)=='R') {   // Receive roster info
+                    if (DCCEXInbound::getParameterCount()==1) { // Empty list, no roster
+                        rosterFullyReceived = true;
+                    } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(2) && DCCEXInbound::isTextParameter(3)) {  // Roster entry
+                        processRosterEntry();
+                    } else {    // Roster list
+                        processRosterList();
+                    }
                 } else if (DCCEXInbound::getNumber(0)=='T') {   // Receive turnout info
                     if (DCCEXInbound::getParameterCount()==1) { // Empty list, no turnouts defined
                         turnoutListFullyReceived = true;
@@ -550,18 +556,24 @@ void DCCEXProtocol::processRosterList() {
             console->println(F("processRosterList(): roster list already received. Ignoring this!"));
             return;
         } 
-        char arg[MAX_OBJECT_NAME_LENGTH];
+        // char arg[MAX_OBJECT_NAME_LENGTH];
         char name[MAX_OBJECT_NAME_LENGTH];
-        for (int i=1; i<argz.size(); i++) {
-            // strcpy(arg, argz.get(i)->arg); strcat(arg, "\0");
-            sprintf(arg,"%s",argz.get(i)->arg);
-            int address = atoi(arg);
-            // strcpy(name, NAME_UNKNOWN);
+        for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
+            int address = DCCEXInbound::getNumber(i);
             sprintf(name, "%s", NAME_UNKNOWN);
-
             roster.add(new Loco(address, name, LocoSourceRoster));
             sendRosterEntryRequest(address);
         }
+        // for (int i=1; i<argz.size(); i++) {
+        //     // strcpy(arg, argz.get(i)->arg); strcat(arg, "\0");
+        //     sprintf(arg,"%s",argz.get(i)->arg);
+        //     int address = atoi(arg);
+        //     // strcpy(name, NAME_UNKNOWN);
+        //     sprintf(name, "%s", NAME_UNKNOWN);
+
+        //     roster.add(new Loco(address, name, LocoSourceRoster));
+        //     sendRosterEntryRequest(address);
+        // }
     }
     // console->println(F("processRosterList(): end"));
 }
@@ -582,29 +594,34 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
     if (delegate) {
         //find the roster entry to update
         if (roster.size()>0) { 
-            char arg[MAX_SINGLE_COMMAND_PARAM_LENGTH];
+            // char arg[MAX_SINGLE_COMMAND_PARAM_LENGTH];
             char name[MAX_OBJECT_NAME_LENGTH];
-            char cleanName[MAX_OBJECT_NAME_LENGTH];
+            // char cleanName[MAX_OBJECT_NAME_LENGTH];
 
             for (int i=0; i<roster.size(); i++) {
                 // strcpy(arg, argz.get(1)->arg); strcat(arg, "\0");
-                sprintf(arg,"%s",argz.get(1)->arg);
-                int address = atoi(arg);
+                // sprintf(arg,"%s",argz.get(1)->arg);
+                // int address = atoi(arg);
+                int address = DCCEXInbound::getNumber(1);
 
                 if (roster.get(i)->getLocoAddress() == address) {
                     // console->print("processRosterEntry(): found: "); console->println(address);
                     // strcpy(name, argz.get(2)->arg); strcat(name, "\0");
-                    sprintf(name,"%s",argz.get(2)->arg);
+                    // sprintf(name,"%s",argz.get(2)->arg);
+                    sprintf(name, DCCEXInbound::getSafeText(2));
                     
-                    stripLeadAndTrailQuotes(cleanName, name);
-                    roster.get(i)->setLocoName(cleanName);
+                    // stripLeadAndTrailQuotes(cleanName, name);
+                    // roster.get(i)->setLocoName(cleanName);
+                    roster.get(i)->setLocoName(name);
                     roster.get(i)->setLocoSource(LocoSourceRoster);
                     roster.get(i)->setIsFromRosterAndReceivedDetails();
 
                     char functions[MAX_SINGLE_COMMAND_PARAM_LENGTH];
                     // strcpy(functions, argz.get(3)->arg);
-                    sprintf(functions,"%s",argz.get(3)->arg);
+                    // sprintf(functions,"%s",argz.get(3)->arg);
+                    sprintf(functions, DCCEXInbound::getSafeText(3));
 
+                    /* STOP FUNCTIONS
                     for( int i=0; i<functionArgs.size(); i++) { functionArgs.get(i)->clearFunctionArgument(); }
                     functionArgs.clear();
 
@@ -627,6 +644,7 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
                         }
                         roster.get(i)->locoFunctions.initFunction(j, functionName, latching, state);
                     }
+                    STOP FUNCTIONS */
                 }
             }
             bool rslt = true;
