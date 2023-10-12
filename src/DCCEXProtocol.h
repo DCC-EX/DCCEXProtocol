@@ -114,14 +114,25 @@ typedef int TrackMode;
 #define TrackModeDCX "DCX"
 #define TrackModeOff "OFF"
 
-typedef char TurntableState;
-#define TurntableStationary '0'
-#define TurntableMoving '1'
+// typedef char TurntableState;
+// #define TurntableStationary '0'
+// #define TurntableMoving '1'
 
-typedef char TurntableType;
-#define TurntableTypeDCC '0'
-#define TurntableTypeEXTT '1'
-#define TurntableTypeUnknown '9' // returns 'X'
+enum TurntableState {
+    TurntableStationary = 0,
+    TurntableMoving = 1,
+};
+
+// typedef char TurntableType;
+// #define TurntableTypeDCC '0'
+// #define TurntableTypeEXTT '1'
+// #define TurntableTypeUnknown '9' // returns 'X'
+
+enum TurntableType {
+    TurntableTypeDCC = 0,
+    TurntableTypeEXTT = 1,
+    TurntableTypeUnknown = 9,
+};
 
 typedef char FunctionState;
 #define FunctionStateOff '0'
@@ -144,9 +155,14 @@ typedef char Facing;
 #define FacingForward '0'
 #define FacingReversed '1'
 
-typedef char RouteType;
-#define RouteTypeRoute 'R'
-#define RouteTypeAutomation 'A'
+// typedef char RouteType;
+// #define RouteTypeRoute 'R'
+// #define RouteTypeAutomation 'A'
+
+enum RouteType {
+    RouteTypeRoute = 'R',
+    RouteTypeAutomation = 'A',
+};
 
 // *****************************************************************
 
@@ -416,7 +432,7 @@ class DCCEXProtocol {
     LinkedList<Route*> routes = LinkedList<Route*>();
     LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
 
-    LinkedList<CommandArgument*> argz = LinkedList<CommandArgument*>();
+    // LinkedList<CommandArgument*> argz = LinkedList<CommandArgument*>();
     LinkedList<FunctionArgument*> functionArgs = LinkedList<FunctionArgument*>();
 
     //helper functions
@@ -555,7 +571,7 @@ class DCCEXProtocol {
     int findTurnoutListPositionFromId(int id);
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
-    bool splitValues(char *cmd);
+    // bool splitValues(char *cmd);
     bool splitFunctions(char *cmd);
     bool stripLeadAndTrailQuotes(char* rslt, char* text);
     // char* substituteCharBetweenQuotes(char* text, char searchChar, char substituteChar);
