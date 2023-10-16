@@ -678,13 +678,13 @@ void DCCEXProtocol::processTurnoutList() {
         console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
         return;
     } 
-    char name[MAX_OBJECT_NAME_LENGTH];
+    // char name[MAX_OBJECT_NAME_LENGTH];
 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-        int id = DCCEXInbound::getNumber(i);
-        sprintf(name, "%s", NAME_UNKNOWN);
-        
-        turnouts.add(new Turnout(id, name, TurnoutClosed));
+        // int id = DCCEXInbound::getNumber(i);
+        // sprintf(name, "%s", NAME_UNKNOWN);
+        auto id = DCCEXInbound::getNumber(i);
+        turnouts.add(new Turnout(id, TurnoutClosed));
         sendTurnoutEntryRequest(id);
     }
     console->println(F("processTurnoutList(): end"));
@@ -2093,16 +2093,17 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
 // class Turnout
 
-    Turnout::Turnout(int id, char* name, TurnoutStates state) {
+    // Turnout::Turnout(int id, char* name, TurnoutStates state) {
+    Turnout::Turnout(int id, TurnoutStates state) {
         turnoutId = id;
         turnoutState = state;
         hasReceivedDetail = false;
-
-        char *dynName;
-        dynName = (char *) malloc(strlen(name)+1);
-        // strcpy(dynName, name);
-        sprintf(dynName,"%s",name);
-        turnoutName = dynName;
+        turnoutName = nullptr;
+        // char *dynName;
+        // dynName = (char *) malloc(strlen(name)+1);
+        // // strcpy(dynName, name);
+        // sprintf(dynName,"%s",name);
+        // turnoutName = dynName;
     }
     bool Turnout::throwTurnout() {
         setTurnoutState(TurnoutThrow);
@@ -2140,16 +2141,17 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         return turnoutId;
     }
     bool Turnout::setTurnoutName(char* name) {
-        if (turnoutName != nullptr) {
-            free(turnoutName);
-            turnoutName=nullptr; 
-        }
-        char *dynName;
-        dynName = (char *) malloc(strlen(name)+1);
-        // strcpy(dynName, name);
-        sprintf(dynName,"%s",name);
+        // if (turnoutName != nullptr) {
+        //     free(turnoutName);
+        //     turnoutName=nullptr; 
+        // }
+        // char *dynName;
+        // dynName = (char *) malloc(strlen(name)+1);
+        // // strcpy(dynName, name);
+        // sprintf(dynName,"%s",name);
 
-        turnoutName = dynName;
+        // turnoutName = dynName;
+        turnoutName = name;
         return true;
     }
     char* Turnout::getTurnoutName() {

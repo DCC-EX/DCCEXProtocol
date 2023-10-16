@@ -277,7 +277,8 @@ class Consist {
 class Turnout {
     public:
         Turnout() {}
-        Turnout(int id, char* name, TurnoutStates state);
+        // Turnout(int id, char* name, TurnoutStates state);
+        Turnout(int id, TurnoutStates state);
         bool setTurnoutState(TurnoutStates action);
         TurnoutStates getTurnoutState();
         bool throwTurnout();
