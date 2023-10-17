@@ -301,9 +301,11 @@ class Turnout {
 class Route {
     public:
         Route() {}
-        Route(int id, char* name);
+        // Route(int id, char* name);
+        Route(int id);
         int getRouteId();
-        bool setRouteName(char* name);
+        // bool setRouteName(char* name);
+        void setRouteName(char* name);
         char* getRouteName();
         bool setRouteType(RouteType type);
         RouteType getRouteType();
@@ -339,14 +341,16 @@ class TurntableIndex {
 class Turntable {
     public:
         Turntable() {}
-        Turntable(int id, char* name, TurntableType type, int position, int indexCount);
+        // Turntable(int id, char* name, TurntableType type, int position, int indexCount);
+        Turntable(int id, TurntableType type, int position, int indexCount);
         bool addTurntableIndex(int index, char* indexName, int indexAngle);
         LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
         bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
         int getTurntableIndexCount(); // what was listed in the original definition
  
         int getTurntableId();
-        bool setTurntableName(char* name);
+        // bool setTurntableName(char* name);
+        void setTurntableName(char* name);
         char* getTurntableName();
         bool setTurntableCurrentPosition(int index);
         bool setTurntableType(TurntableType type);

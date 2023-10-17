@@ -785,7 +785,7 @@ void DCCEXProtocol::processRouteList() {
             return;
         } 
         // char val[MAX_OBJECT_NAME_LENGTH];
-        char name[MAX_OBJECT_NAME_LENGTH];
+        // char name[MAX_OBJECT_NAME_LENGTH];
 
         // for (int i=1; i<argz.size(); i++) {
         for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
@@ -794,9 +794,10 @@ void DCCEXProtocol::processRouteList() {
             // int id = atoi(val);
             // strcpy(name, NAME_UNKNOWN);
             int id = DCCEXInbound::getNumber(i);
-            sprintf(name, "%s", NAME_UNKNOWN);
+            // sprintf(name, "%s", NAME_UNKNOWN);
 
-            routes.add(new Route(id, name));
+            // routes.add(new Route(id, name));
+            routes.add(new Route(id));
             sendRouteEntryRequest(id);
         }
     }
@@ -820,38 +821,24 @@ void DCCEXProtocol::processRouteEntry() {
     if (delegate) {
         //find the Route entry to update
         if (routes.size()>0) { 
-            // char val[MAX_OBJECT_NAME_LENGTH];
-            // char name[MAX_OBJECT_NAME_LENGTH];
-            // char cleanName[MAX_OBJECT_NAME_LENGTH];
-
             for (int i=0; i<routes.size(); i++) {
-                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                // sprintf(val,"%s",argz.get(1)->arg);
-                // int id = atoi(val);
                 int id = DCCEXInbound::getNumber(1);
-                if (routes.get(i)->getRouteId()==id) {
-                    // char type = RouteTypeRoute;
-                    // strcpy(name, NAME_UNKNOWN);
-                    // sprintf(name, "%s", NAME_UNKNOWN);
-
-                    // if (strcmp(argz.get(2)->arg,"X") != 0) {
-                    //     type = argz.get(2)->arg[0];
-                    //     // strcpy(name, argz.get(3)->arg);
-                    //     sprintf(name,"%s",argz.get(3)->arg);
-                    // }
-                    // stripLeadAndTrailQuotes(cleanName, name);
-                    // routes.get(i)->setRouteName(cleanName);
-                    // routes.get(i)->setRouteType(type);
-                    routes.get(i)->setRouteType((RouteType)DCCEXInbound::getNumber(2));
-                    routes.get(i)->setRouteName(DCCEXInbound::getSafeText(3));
-                    routes.get(i)->setHasReceivedDetails();
+                auto r = routes.get(i);
+                if (r->getRouteId()==id) {
+                    r->setRouteType((RouteType)DCCEXInbound::getNumber(2));
+                    r->setRouteName(DCCEXInbound::getSafeText(3));
+                    r->setHasReceivedDetails();
                 }
             }
 
             bool rslt = true;
             for (int i=0; i<routes.size(); i++) {
-                if (!routes.get(i)->getHasReceivedDetails()) {
-                    console->print(F("processRoutesEntry(): not received yet: ~")); console->print(routes.get(i)->getRouteName()); console->print(F("~ "));console->println(routes.get(i)->getRouteId());
+                auto r = routes.get(i);
+                if (!r->getHasReceivedDetails()) {
+                    console->print(F("processRoutesEntry(): not received yet: ~"));
+                    console->print(r->getRouteName());
+                    console->print(F("~ "));
+                    console->println(r->getRouteId());
                     rslt = false;
                     break;
                 }
@@ -866,14 +853,6 @@ void DCCEXProtocol::processRouteEntry() {
     // console->println(F("processRouteEntry() end"));
 }
 
-// void DCCEXProtocol::processRouteAction() {
-//     console->println(F("processRouteAction(): "));
-//     if (delegate) {
-
-//     }
-//     console->println(F("processRouteAction(): end"));
-// }
-
 // ****************
 // Turntables
 
@@ -885,19 +864,9 @@ void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
             console->println(F("processTurntableList(): Turntable list already received. Ignoring this!"));
             return;
         } 
-        // char val[MAX_OBJECT_NAME_LENGTH];
-        char name[MAX_OBJECT_NAME_LENGTH];
-
-        // for (int i=1; i<argz.size(); i++) {
         for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-            // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
-            // sprintf(val,"%s",argz.get(i)->arg);
-            // int id = atoi(val);
-            // strcpy(name, NAME_UNKNOWN);
             int id = DCCEXInbound::getNumber(i);
-            sprintf(name, "%s", NAME_UNKNOWN);
-
-            turntables.add(new Turntable(id, name, TurntableTypeUnknown, 0, 0));
+            turntables.add(new Turntable(id, TurntableTypeUnknown, 0, 0));
             sendTurntableEntryRequest(id);
             sendTurntableIndexEntryRequest(id);
         }
@@ -933,45 +902,15 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
     if (delegate) {
         //find the Turntable entry to update
         if (turntables.size()>0) { 
-            // char val[MAX_OBJECT_NAME_LENGTH];
-            // char name[MAX_OBJECT_NAME_LENGTH];
-            // char cleanName[MAX_OBJECT_NAME_LENGTH];
-
             for (int i=0; i<turntables.size(); i++) {
-                // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                // sprintf(val,"%s",argz.get(1)->arg);
-                // int id = atoi(val);
                 int id = DCCEXInbound::getNumber(i);
-                if (turntables.get(i)->getTurntableId()==id) {
-                    // strcpy(name, NAME_UNKNOWN);
-                    // sprintf(name, "%s", NAME_UNKNOWN);
-                    // TurntableType type = TurntableTypeUnknown;
-                    // int position = 0;
-                    // int indexCount = 0;
-
-                    // if (argz.size() > 3) {  // server did not find the id
-                    //     // strcpy(name, argz.get(5)->arg);
-                    //     sprintf(name,"%s",argz.get(5)->arg);
-                    //     // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
-                    //     sprintf(val,"%s",argz.get(2)->arg);
-                    //     type = atoi(val);
-                    //     // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
-                    //     sprintf(val,"%s",argz.get(3)->arg);
-                    //     position = atoi(val);
-                    //     // strcpy(val, argz.get(4)->arg); strcat(val, "\0");
-                    //     sprintf(val,"%s",argz.get(4)->arg);
-                    //     indexCount = atoi(val);
-                    // }
-                    // stripLeadAndTrailQuotes(cleanName, name);
-                    // turntables.get(i)->setTurntableName(cleanName);
-                    // turntables.get(i)->setTurntableType(type);
-                    // turntables.get(i)->setTurntableCurrentPosition(position);
-                    // turntables.get(i)->setTurntableIndexCount(indexCount);
-                    turntables.get(i)->setTurntableType((TurntableType)DCCEXInbound::getNumber(2));
-                    turntables.get(i)->setTurntableCurrentPosition(DCCEXInbound::getNumber(3));
-                    turntables.get(i)->setTurntableIndexCount(DCCEXInbound::getNumber(4));
-                    turntables.get(i)->setTurntableName(DCCEXInbound::getSafeText(5));
-                    turntables.get(i)->setHasReceivedDetails();
+                auto tt = turntables.get(i);
+                if (tt->getTurntableId()==id) {
+                    tt->setTurntableType((TurntableType)DCCEXInbound::getNumber(2));
+                    tt->setTurntableCurrentPosition(DCCEXInbound::getNumber(3));
+                    tt->setTurntableIndexCount(DCCEXInbound::getNumber(4));
+                    tt->setTurntableName(DCCEXInbound::getSafeText(5));
+                    tt->setHasReceivedDetails();
                 }
             }
         } 
@@ -983,36 +922,16 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
 void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]">
     // console->println(F("processTurntableIndexEntry(): "));
     if (delegate) {
-        // if (argz.size() > 3) {  // server did not find the index
         if (DCCEXInbound::getParameterCount()==5) {
             //find the Turntable entry to update
             if (turntables.size()>0) { 
-                // char val[MAX_OBJECT_NAME_LENGTH];
-                // char name[MAX_OBJECT_NAME_LENGTH];
-                // char cleanName[MAX_OBJECT_NAME_LENGTH];
-
                 for (int i=0; i<turntables.size(); i++) {
-                    // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-                    // sprintf(val,"%s",argz.get(1)->arg);
-                    // int id = atoi(val);
                     int id = DCCEXInbound::getNumber(i);
-
-                    if (turntables.get(i)->getTurntableId()==id) {
-                        //this assumes we are always starting from scratch, not updating indexes
-                        // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
-                        // sprintf(val,"%s",argz.get(2)->arg);
-                        // int index = atoi(val);
-                        // // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
-                        // sprintf(val,"%s",argz.get(3)->arg);
-                        // int angle = atoi(val);
-                        // // strcpy(name, argz.get(4)->arg);
-                        // sprintf(name,"%s",argz.get(4)->arg);
-
-                        // stripLeadAndTrailQuotes(cleanName, name);
-                        // turntables.get(i)->turntableIndexes.add(new TurntableIndex(index, cleanName, angle));
-                        turntables.get(i)->turntableIndexes.add(new TurntableIndex(DCCEXInbound::getNumber(2),
-                                                                                    DCCEXInbound::getSafeText(4),
-                                                                                    DCCEXInbound::getNumber(3)));
+                    auto tt = turntables.get(i);
+                    if (tt->getTurntableId()==id) {
+                        tt->turntableIndexes.add(new TurntableIndex(DCCEXInbound::getNumber(2),
+                                                                    DCCEXInbound::getSafeText(4),
+                                                                    DCCEXInbound::getNumber(3)));
                         break;
                     }
                 }
@@ -1047,14 +966,6 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
 void DCCEXProtocol::processTurntableAction() { // <I id position moving>
     // console->println(F("processTurntableAction(): "));
     if (delegate) {
-        // char val[MAX_OBJECT_NAME_LENGTH];
-        // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(1)->arg);
-        // int id = atoi(val);
-        // strcpy(val, argz.get(2)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(2)->arg);
-        // int newPos = atoi(val);
-        // TurntableState state = argz.get(3)->arg[0];
         int id = DCCEXInbound::getNumber(0);
         int newPos = DCCEXInbound::getNumber(1);
         TurntableState state = (TurntableState)DCCEXInbound::getNumber(2);
@@ -2169,31 +2080,35 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
 // class Route
 
-    Route::Route(int id, char* name) {
+    // Route::Route(int id, char* name) {
+    Route::Route(int id) {
         routeId = id;
         hasReceivedDetail = false;
 
-        char *dynName;
-        dynName = (char *) malloc(strlen(name)+1);
-        // strcpy(dynName, name);
-        sprintf(dynName,"%s",name);
-        routeName = dynName;
+        // char *dynName;
+        // dynName = (char *) malloc(strlen(name)+1);
+        // // strcpy(dynName, name);
+        // sprintf(dynName,"%s",name);
+        // routeName = dynName;
+        routeName = nullptr;
     }
     int Route::getRouteId() {
         return routeId;
     }
-    bool Route::setRouteName(char* name) {
-        if (routeName != nullptr) {
-            free(routeName);
-            routeName=nullptr; 
-        }
-        char *dynName;
-        dynName = (char *) malloc(strlen(name)+1);
-        // strcpy(dynName, name);
-        sprintf(dynName,"%s",name);
+    // bool Route::setRouteName(char* name) {
+    void Route::setRouteName(char* name) {
+        // if (routeName != nullptr) {
+        //     free(routeName);
+        //     routeName=nullptr; 
+        // }
+        // char *dynName;
+        // dynName = (char *) malloc(strlen(name)+1);
+        // // strcpy(dynName, name);
+        // sprintf(dynName,"%s",name);
 
-        routeName = dynName;
-        return true;
+        // routeName = dynName;
+        // return true;
+        routeName = name;
     }
     char* Route::getRouteName() {
         return routeName;
@@ -2237,34 +2152,38 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
 // class Turntable
 
-    Turntable::Turntable(int id, char* name, TurntableType type, int position, int indexCount) {
+    // Turntable::Turntable(int id, char* name, TurntableType type, int position, int indexCount) {
+    Turntable::Turntable(int id, TurntableType type, int position, int indexCount) {
         turntableId = id;
         turntableType = type;
         turntableCurrentPosition = position;
         turnTableIndexCount = indexCount;
 
-        char *dynName;
-        dynName = (char *) malloc(strlen(name)+1);
-        // strcpy(dynName, name);
-        sprintf(dynName,"%s",name);
+        // char *dynName;
+        // dynName = (char *) malloc(strlen(name)+1);
+        // // strcpy(dynName, name);
+        // sprintf(dynName,"%s",name);
 
-        turntableName = dynName;
+        // turntableName = dynName;
+        turntableName = nullptr;
     }
     int Turntable::getTurntableId() {
         return turntableId;
     }
-    bool Turntable::setTurntableName(char* name) {
-        if (turntableName != nullptr) {
-            free(turntableName);
-            turntableName=nullptr; 
-        }
-        char *dynName;
-        dynName = (char *) malloc(strlen(name)+1);
-        // strcpy(dynName, name);
-        sprintf(dynName,"%s",name);
+    // bool Turntable::setTurntableName(char* name) {
+    void Turntable::setTurntableName(char* name) {
+        // if (turntableName != nullptr) {
+        //     free(turntableName);
+        //     turntableName=nullptr; 
+        // }
+        // char *dynName;
+        // dynName = (char *) malloc(strlen(name)+1);
+        // // strcpy(dynName, name);
+        // sprintf(dynName,"%s",name);
 
-        turntableName = dynName;
-        return true;
+        // turntableName = dynName;
+        // return true;
+        turntableName = name;
     }
     char* Turntable::getTurntableName() {
         return turntableName;
