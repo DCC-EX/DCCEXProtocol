@@ -1572,20 +1572,20 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
 }
 -- OLD SPLITFUNCTIONS */
 
-bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
-    if (text[0]=='"' && text[strlen(text)-1]=='"') {
-        for(size_t i=1; i<strlen(text)-1; i++) {
-            rslt[i-1] = text[i];
-        }
-        rslt[strlen(text)-2]='\0';
-    } else {
-        for(size_t i=0; i<strlen(text); i++) {
-            rslt[i] = text[i];
-        }
-        rslt[strlen(text)]='\0';
-    }
-    return true;
-}
+// bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
+//     if (text[0]=='"' && text[strlen(text)-1]=='"') {
+//         for(size_t i=1; i<strlen(text)-1; i++) {
+//             rslt[i-1] = text[i];
+//         }
+//         rslt[strlen(text)-2]='\0';
+//     } else {
+//         for(size_t i=0; i<strlen(text); i++) {
+//             rslt[i] = text[i];
+//         }
+//         rslt[strlen(text)]='\0';
+//     }
+//     return true;
+// }
 
 // ******************************************************************************************************
 // ******************************************************************************************************

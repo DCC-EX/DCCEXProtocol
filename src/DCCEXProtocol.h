@@ -581,7 +581,7 @@ class DCCEXProtocol {
     // bool splitValues(char *cmd);
     bool splitFunctions(char *functionNames);
     // bool splitFunctions(char *cmd);
-    bool stripLeadAndTrailQuotes(char* rslt, char* text);
+    // bool stripLeadAndTrailQuotes(char* rslt, char* text);
     // char* substituteCharBetweenQuotes(char* text, char searchChar, char substituteChar);
 };
 
