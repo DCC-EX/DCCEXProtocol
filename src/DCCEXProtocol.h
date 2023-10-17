@@ -363,6 +363,8 @@ class Turntable {
         bool actionTurntableExternalChange(int index, TurntableState state);
         void setHasReceivedDetails();
         bool getHasReceivedDetails();
+        void setHasReceivedIndexes();
+        bool getHasReceivedIndexes();
 
     private:
         int turntableId;
@@ -371,6 +373,7 @@ class Turntable {
         int turntableCurrentPosition;
         bool turntableIsMoving;
         bool hasReceivedDetail;
+        bool hasReceivedIndexes;
         int turnTableIndexCount; // what was listed in the original definition
 };
 

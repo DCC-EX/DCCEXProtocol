@@ -14,8 +14,7 @@
 
 # Emacs backup files
 *~
-.vscode/c_cpp_properties.json
-.vscode/*.*
+.vscode
 
 # example VCS files
 examples/*/.pio
