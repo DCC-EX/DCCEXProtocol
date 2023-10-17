@@ -933,11 +933,11 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         int index=DCCEXInbound::getNumber(2);
         int angle=DCCEXInbound::getNumber(3);
         char *name=DCCEXInbound::getSafeText(4);
-        bool receivedIndexes=true;
+        // bool receivedIndexes=true;
 
         for (int i=0; i<turntables.size(); i++) {
             auto tt = turntables.get(i);
-            if (tt->getHasReceivedDetails()) {
+            // if (tt->getHasReceivedDetails()) {
                 console->print(i);
                 console->print(F(" i: "));
                 console->print(tt->getTurntableName());
@@ -946,31 +946,35 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
                 console->print(F(" ("));
                 console->print(tt->getTurntableNumberOfIndexes());
                 console->println(F(") indexes"));
-                if (!tt->getHasReceivedIndexes()) {
-                    receivedIndexes=false;
-                    console->println(F("Not received all indexes yet"));
-                }
+                // if (!tt->getHasReceivedIndexes()) {
+                //     // receivedIndexes=false;
+                //     console->println(F("Not received all indexes yet"));
+                // }
                 if (tt->getTurntableId()==id) {
                     tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
                     console->println(name);
-                    receivedIndexes=false;
-                } else {
-                    if (tt->getTurntableIndexCount()!=tt->getTurntableNumberOfIndexes()) {
-                        // console->print(F("processTurntableIndexEntry(): not received yet: ~"));
-                        // console->print(tt->getTurntableName());
-                        // console->print(F("~ "));
-                        // console->println(tt->getTurntableId());
-                        receivedIndexes=false;
-                    } else {
-                        tt->setHasReceivedIndexes();
-                        console->println(F("Received all indexes now"));
-                    }
+                    // receivedIndexes=false;
+                // } else {
+                //     if (tt->getTurntableIndexCount()!=tt->getTurntableNumberOfIndexes()) {
+                //         // console->print(F("processTurntableIndexEntry(): not received yet: ~"));
+                //         // console->print(tt->getTurntableName());
+                //         // console->print(F("~ "));
+                //         // console->println(tt->getTurntableId());
+                //         // receivedIndexes=false;
+                //     } else {
+                //         tt->setHasReceivedIndexes();
+                //         console->println(F("Received all indexes now"));
+                //     }
                 }
-            } else {
-                receivedIndexes = false;
-            }
+            // }
         }
         
+        bool receivedIndexes=true;
+
+        for (int i=0; i<turntables.size(); i++) {
+            auto tt=turntables.get(i);
+            if (tt->getTurntableIndexCount()!=tt->getTurntableNumberOfIndexes()) receivedIndexes=false;
+        }
         if (receivedIndexes) {
             turntableListFullyReceived = true;
             console->println(F("processTurntableIndexEntry(): received all"));
