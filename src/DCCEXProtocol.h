@@ -331,11 +331,10 @@ class TurntableIndex {
 
         TurntableIndex() {}
         TurntableIndex(int index, char* name, int angle);
-        void setHasReceivedDetails(); //????????????????? Probably not needed
-        bool getHasReceivedDetails(); //????????????????? Probably not needed
         char* getTurntableIndexName();
         int getTurntableIndexId();
         int getTurntableIndexIndex();
+        int getTurntableIndexAngle();
 };
 
 class Turntable {
