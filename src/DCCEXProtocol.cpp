@@ -916,7 +916,6 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
                     console->print(tt->getTurntableName());
                     console->print("~ ");
                     console->println(tt->getTurntableId());
-                    // missingTurntables=true;
                 }
             }
         }
@@ -933,49 +932,27 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         int index=DCCEXInbound::getNumber(2);
         int angle=DCCEXInbound::getNumber(3);
         char *name=DCCEXInbound::getSafeText(4);
-        // bool receivedIndexes=true;
 
         for (int i=0; i<turntables.size(); i++) {
             auto tt = turntables.get(i);
-            // if (tt->getHasReceivedDetails()) {
-                console->print(i);
-                console->print(F(" i: "));
-                console->print(tt->getTurntableName());
-                console->print(F(" with "));
-                console->print(tt->getTurntableIndexCount());
-                console->print(F(" ("));
-                console->print(tt->getTurntableNumberOfIndexes());
-                console->println(F(") indexes"));
-                // if (!tt->getHasReceivedIndexes()) {
-                //     // receivedIndexes=false;
-                //     console->println(F("Not received all indexes yet"));
-                // }
-                if (tt->getTurntableId()==id) {
-                    tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
-                    console->println(name);
-                    // receivedIndexes=false;
-                // } else {
-                //     if (tt->getTurntableIndexCount()!=tt->getTurntableNumberOfIndexes()) {
-                //         // console->print(F("processTurntableIndexEntry(): not received yet: ~"));
-                //         // console->print(tt->getTurntableName());
-                //         // console->print(F("~ "));
-                //         // console->println(tt->getTurntableId());
-                //         // receivedIndexes=false;
-                //     } else {
-                //         tt->setHasReceivedIndexes();
-                //         console->println(F("Received all indexes now"));
-                //     }
+            if (tt->getHasReceivedIndexes()) break; // no need to process as all received
+
+            if (tt->getTurntableId()==id) {
+                tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
+                if (tt->getTurntableIndexCount()==tt->getTurntableNumberOfIndexes()) {
+                    tt->setHasReceivedIndexes();
                 }
-            // }
+            }
         }
         
-        bool receivedIndexes=true;
+        bool receivedAll=true;
 
         for (int i=0; i<turntables.size(); i++) {
             auto tt=turntables.get(i);
-            if (tt->getTurntableIndexCount()!=tt->getTurntableNumberOfIndexes()) receivedIndexes=false;
+            if (!tt->getHasReceivedDetails() || !tt->getHasReceivedIndexes()) receivedAll=false;
         }
-        if (receivedIndexes) {
+
+        if (receivedAll) {
             turntableListFullyReceived = true;
             console->println(F("processTurntableIndexEntry(): received all"));
             delegate->receivedTurntableList(turntables.size());
@@ -2178,7 +2155,6 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
 
 // class Turntable
 
-    // Turntable::Turntable(int id, char* name, TurntableType type, int position, int indexCount) {
     Turntable::Turntable(int id, TurntableType type, int position, int indexCount) {
         turntableId = id;
         turntableType = type;
@@ -2191,7 +2167,6 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
     int Turntable::getTurntableId() {
         return turntableId;
     }
-    // bool Turntable::setTurntableName(char* name) {
     void Turntable::setTurntableName(char* name) {
         turntableName = name;
     }
@@ -2246,7 +2221,7 @@ bool DCCEXProtocol::stripLeadAndTrailQuotes(char* rslt, char* text) {
         turntableIsMoving = state;
         return true;
     }
-   TurntableState Turntable::getTurntableState() {
+    TurntableState Turntable::getTurntableState() {
         TurntableState rslt = TurntableStationary;
         if (turntableIsMoving) {
             rslt = TurntableMoving;
