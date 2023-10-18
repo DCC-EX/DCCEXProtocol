@@ -45,45 +45,29 @@ const int MAX_COMMAND_PARAMS = 50;
 const int MAX_COMMAND_BUFFER = 500;
 
 // Protocol special characters
-#define NEWLINE 			'\n'
-#define CR 					'\r'
-#define COMMAND_START       '<'
-#define COMMAND_END         '>'
+// #define NEWLINE 			'\n'
+// #define CR 					'\r'
+// #define COMMAND_START       '<'
+// #define COMMAND_END         '>'
 
 static const char NAME_UNKNOWN[] = "Unknown";
-static const char NAME_BLANK[] = "";
-#define UnknownIdResponse "X"
+// static const char NAME_BLANK[] = "";
 
-enum splitState {FIND_START, SKIP_SPACES, CHECK_FOR_LEADING_QUOTE, BUILD_QUOTED_PARAM, BUILD_PARAM, CHECK_FOR_END};
-enum splitFunctionsState {FIND_FUNCTION_START, SKIP_FUNCTION_LEADING_SLASH_SPACES, SKIP_FUNCTION_SPACES, BUILD_FUNCTION_PARAM, CHECK_FOR_FUNCTION_END};
+// enum splitState {FIND_START, SKIP_SPACES, CHECK_FOR_LEADING_QUOTE, BUILD_QUOTED_PARAM, BUILD_PARAM, CHECK_FOR_END};
+// enum splitFunctionsState {FIND_FUNCTION_START, SKIP_FUNCTION_LEADING_SLASH_SPACES, SKIP_FUNCTION_SPACES, BUILD_FUNCTION_PARAM, CHECK_FOR_FUNCTION_END};
 
 // *****************************************************************
-
-// typedef char Direction;
-// #define Reverse '1'
-// #define Forward '0'
 
 enum Direction {
     Reverse = 0,
     Forward = 1,
 };
 
-// typedef char TrackPower;
-// #define PowerOff '0'
-// #define PowerOn '1'
-// #define PowerUnknown '2'
-
 enum TrackPower {
     PowerOff = 0,
     PowerOn = 1,
     PowerUnknown = 2,
 };
-
-// typedef char TurnoutState;
-// #define TurnoutClosed '0'
-// #define TurnoutThrown '1'
-// #define TurnoutResponseClosed 'C'
-// #define TurnoutResponseThrown 'T'
 
 enum TurnoutStates {
     TurnoutClosed = 0,
@@ -95,12 +79,6 @@ enum TurnoutStates {
     TurnoutToggle = 2,
     TurnoutExamine = 9,
 };
-
-// typedef char TurnoutAction;
-// #define TurnoutClose '0'
-// #define TurnoutThrow '1'
-// #define TurnoutToggle '2'
-// #define TurnoutExamine '9'     // "X" needs to be sent
 
 typedef char RouteState;
 #define RouteActive '2'
@@ -114,19 +92,10 @@ typedef int TrackMode;
 #define TrackModeDCX "DCX"
 #define TrackModeOff "OFF"
 
-// typedef char TurntableState;
-// #define TurntableStationary '0'
-// #define TurntableMoving '1'
-
 enum TurntableState {
     TurntableStationary = 0,
     TurntableMoving = 1,
 };
-
-// typedef char TurntableType;
-// #define TurntableTypeDCC '0'
-// #define TurntableTypeEXTT '1'
-// #define TurntableTypeUnknown '9' // returns 'X'
 
 enum TurntableType {
     TurntableTypeDCC = 0,
@@ -142,10 +111,6 @@ typedef char FunctionLatching;
 #define FunctionLatchingTrue '1'
 #define FunctionLatchingFalse '0'
 
-// typedef char LocoSource;
-// #define LocoSourceRoster '0'
-// #define LocoSourceEntry '1'
-
 enum LocoSource {
     LocoSourceRoster = 0,
     LocoSourceEntry = 1,
@@ -154,10 +119,6 @@ enum LocoSource {
 typedef char Facing;
 #define FacingForward '0'
 #define FacingReversed '1'
-
-// typedef char RouteType;
-// #define RouteTypeRoute 'R'
-// #define RouteTypeAutomation 'A'
 
 enum RouteType {
     RouteTypeRoute = 'R',
