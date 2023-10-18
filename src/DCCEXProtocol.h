@@ -31,6 +31,9 @@
 #include <Arduino.h>
 #include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
 #include "DCCEXInbound.h"
+#include "DCCEXRoutes.h"
+#include "DCCEXTurnouts.h"
+#include "DCCEXTurntables.h"
 
 static const int MAX_THROTTLES = 6;
 static const int MAX_FUNCTIONS = 28;
@@ -69,39 +72,12 @@ enum TrackPower {
     PowerUnknown = 2,
 };
 
-enum TurnoutStates {
-    TurnoutClosed = 0,
-    TurnoutThrown = 1,
-    TurnoutResponseClosed = 'C',
-    TurnoutResponseThrown = 'T',
-    TurnoutClose = 0,
-    TurnoutThrow = 1,
-    TurnoutToggle = 2,
-    TurnoutExamine = 9,
-};
-
-typedef char RouteState;
-#define RouteActive '2'
-#define RouteInactive '4'
-#define RouteInconsistent '8'
-
 typedef int TrackMode;
 #define TrackModeMain "MAIN"
 #define TrackModeProg "PROG"
 #define TrackModeDC "DC"
 #define TrackModeDCX "DCX"
 #define TrackModeOff "OFF"
-
-enum TurntableState {
-    TurntableStationary = 0,
-    TurntableMoving = 1,
-};
-
-enum TurntableType {
-    TurntableTypeDCC = 0,
-    TurntableTypeEXTT = 1,
-    TurntableTypeUnknown = 9,
-};
 
 typedef char FunctionState;
 #define FunctionStateOff '0'
@@ -119,11 +95,6 @@ enum LocoSource {
 typedef char Facing;
 #define FacingForward '0'
 #define FacingReversed '1'
-
-enum RouteType {
-    RouteTypeRoute = 'R',
-    RouteTypeAutomation = 'A',
-};
 
 // *****************************************************************
 
@@ -233,108 +204,6 @@ class Consist {
         int consistSpeed;
         Direction consistDirection;
         char* consistName;
-};
-
-class Turnout {
-    public:
-        Turnout() {}
-        // Turnout(int id, char* name, TurnoutStates state);
-        Turnout(int id, TurnoutStates state);
-        bool setTurnoutState(TurnoutStates action);
-        TurnoutStates getTurnoutState();
-        bool throwTurnout();
-        bool closeTurnout();
-        bool toggleTurnout();
-        bool setTurnoutId(int id);
-        int getTurnoutId();
-        bool setTurnoutName(char* name);
-        char* getTurnoutName();
-        void setHasReceivedDetails();
-        bool getHasReceivedDetails();
-
-    private:
-        int turnoutId;
-        char* turnoutName;
-        TurnoutStates turnoutState;
-        bool hasReceivedDetail;
-};
-
-class Route {
-    public:
-        Route() {}
-        // Route(int id, char* name);
-        Route(int id);
-        int getRouteId();
-        // bool setRouteName(char* name);
-        void setRouteName(char* name);
-        char* getRouteName();
-        bool setRouteType(RouteType type);
-        RouteType getRouteType();
-
-        void setHasReceivedDetails();
-        bool getHasReceivedDetails();
-        
-    private:
-        int routeId;
-        char* routeName;
-        char routeType;
-        bool hasReceivedDetail;
-};
-
-
-class TurntableIndex {
-    public:
-        int turntableIndexId;
-        int turntableIndexIndex;
-        char* turntableIndexName;
-        int turntableIndexAngle;
-        bool hasReceivedDetail;
-
-        TurntableIndex() {}
-        TurntableIndex(int index, char* name, int angle);
-        char* getTurntableIndexName();
-        int getTurntableIndexId();
-        int getTurntableIndexIndex();
-        int getTurntableIndexAngle();
-};
-
-class Turntable {
-    public:
-        Turntable() {}
-        // Turntable(int id, char* name, TurntableType type, int position, int indexCount);
-        Turntable(int id, TurntableType type, int position, int indexCount);
-        bool addTurntableIndex(int index, char* indexName, int indexAngle);
-        LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
-        bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
-        int getTurntableIndexCount(); // what was listed in the original definition
- 
-        int getTurntableId();
-        // bool setTurntableName(char* name);
-        void setTurntableName(char* name);
-        char* getTurntableName();
-        bool setTurntableCurrentPosition(int index);
-        bool setTurntableType(TurntableType type);
-        TurntableType getTurntableType();
-        int getTurntableCurrentPosition();
-        int getTurntableNumberOfIndexes();
-        TurntableIndex* getTurntableIndexAt(int positionInLinkedList);
-        TurntableIndex* getTurntableIndex(int indexId);
-        TurntableState getTurntableState();
-        bool actionTurntableExternalChange(int index, TurntableState state);
-        void setHasReceivedDetails();
-        bool getHasReceivedDetails();
-        void setHasReceivedIndexes();
-        bool getHasReceivedIndexes();
-
-    private:
-        int turntableId;
-        TurntableType turntableType;
-        char* turntableName;
-        int turntableCurrentPosition;
-        bool turntableIsMoving;
-        bool hasReceivedDetail;
-        bool hasReceivedIndexes;
-        int turnTableIndexCount; // what was listed in the original definition
 };
 
 // *****************************************************************
