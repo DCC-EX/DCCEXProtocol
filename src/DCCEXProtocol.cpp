@@ -920,13 +920,6 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
                 tt->setTurntableIndexCount(posCount);
                 tt->setTurntableName(name);
                 tt->setHasReceivedDetails();
-            } else {
-                if (!tt->getHasReceivedDetails()) {
-                    console->print(F("processTurntableEntry(): not received yet: ~"));
-                    console->print(tt->getTurntableName());
-                    console->print("~ ");
-                    console->println(tt->getTurntableId());
-                }
             }
         }
     } 
@@ -961,7 +954,7 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
 
         if (receivedAll) {
             turntableListFullyReceived = true;
-            console->println(F("processTurntableIndexEntry(): received all"));
+            // console->println(F("processTurntableIndexEntry(): received all"));
             delegate->receivedTurntableList(turntables.size());
         }      
     }
