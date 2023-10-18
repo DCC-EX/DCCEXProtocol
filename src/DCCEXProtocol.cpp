@@ -672,7 +672,7 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
 //private
 void DCCEXProtocol::processTurnoutList() {
     // <jT id1 id2 id3 ...>
-    console->println(F("processTurnoutList()"));
+    // console->println(F("processTurnoutList()"));
     if (turnouts.size()>0) { // already have a turnouts list so this is an update
         // turnouts.clear();
         console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
@@ -684,7 +684,7 @@ void DCCEXProtocol::processTurnoutList() {
         turnouts.add(new Turnout(id, TurnoutClosed));
         sendTurnoutEntryRequest(id);
     }
-    console->println(F("processTurnoutList(): end"));
+    // console->println(F("processTurnoutList(): end"));
 }
 
 //private
@@ -717,10 +717,10 @@ void DCCEXProtocol::processTurnoutEntry() {
             t->setHasReceivedDetails();
         } else {
             if (!t->getHasReceivedDetails()) {
-                console->print(F("processTurnoutsEntry(): not received yet: ~"));
-                console->print(t->getTurnoutName());
-                console->print(F("~ "));
-                console->println(t->getTurnoutId());
+                // console->print(F("processTurnoutsEntry(): not received yet: ~"));
+                // console->print(t->getTurnoutName());
+                // console->print(F("~ "));
+                // console->println(t->getTurnoutId());
                 missingTurnouts = true;
             }
         }
@@ -750,6 +750,16 @@ bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutStates action) {
         sendCommand();
     }
     return true;
+}
+
+Turntable* DCCEXProtocol::getTurntableById(int turntableId) {
+    for (int i = 0; i < turntables.size(); i++) {
+        Turntable* tt = turntables.get(i);
+        if (tt->getTurntableId() == turntableId) {
+            return tt;
+        }
+    }
+    return nullptr;
 }
 
 //private
@@ -933,18 +943,17 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         int angle=DCCEXInbound::getNumber(3);
         char *name=DCCEXInbound::getSafeText(4);
 
-        for (int i=0; i<turntables.size(); i++) {
-            auto tt = turntables.get(i);
-            if (tt->getHasReceivedIndexes()) break; // no need to process as all received
-
-            if (tt->getTurntableId()==id) {
-                tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
-                if (tt->getTurntableIndexCount()==tt->getTurntableNumberOfIndexes()) {
-                    tt->setHasReceivedIndexes();
-                }
+        Turntable* tt=getTurntableById(id);
+        
+        if (tt && !tt->getHasReceivedIndexes()) {
+            tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
+            console->print(F("Add new index for "));
+            console->println(name);
+            if (tt->getTurntableIndexCount()==tt->getTurntableNumberOfIndexes()) {
+                tt->setHasReceivedIndexes();
             }
         }
-        
+
         bool receivedAll=true;
 
         for (int i=0; i<turntables.size(); i++) {

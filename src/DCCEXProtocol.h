@@ -492,6 +492,8 @@ class DCCEXProtocol {
     Turnout* getTurnoutById(int turnoutId);
     bool sendTurnoutAction(int turnoutId, TurnoutStates action);
 
+    Turntable* getTurntableById(int turntableId);
+
     bool sendRouteAction(int routeId);
     bool sendPauseRoutes();
     bool sendResumeRoutes();
