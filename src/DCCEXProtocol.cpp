@@ -947,8 +947,6 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         
         if (tt && !tt->getHasReceivedIndexes()) {
             tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
-            console->print(F("Add new index for "));
-            console->println(name);
             if (tt->getTurntableIndexCount()==tt->getTurntableNumberOfIndexes()) {
                 tt->setHasReceivedIndexes();
             }
