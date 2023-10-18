@@ -1387,21 +1387,6 @@ bool DCCEXProtocol::splitFunctions(char *cmd) {
 // ******************************************************************************************************
 // subsidary classes
 
-    CommandArgument::CommandArgument(char* argValue) {
-        char *dynName;
-        dynName = (char *) malloc(strlen(argValue)+1);
-        // strcpy(dynName, argValue);
-        sprintf(dynName,"%s",argValue);
-
-        arg = dynName;
-    }
-    bool CommandArgument::clearCommandArgument() {
-        free(arg);
-        arg = nullptr;
-
-        return true;
-    }
-
     FunctionArgument::FunctionArgument(char* argValue) {
         char *dynName;
         dynName = (char *) malloc(strlen(argValue)+1);

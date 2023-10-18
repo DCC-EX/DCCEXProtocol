@@ -98,14 +98,6 @@ typedef char Facing;
 
 // *****************************************************************
 
-// used to split the command arguments
-class CommandArgument {
-    public:
-        char* arg;
-        CommandArgument(char* argValue);
-        bool clearCommandArgument();
-};
-
 // used to split the function labels
 class FunctionArgument {
     public:
