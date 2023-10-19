@@ -19,7 +19,7 @@ void printTurntables();
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(String microprocessor, String version) {     
+    void receivedServerDescription(char* version) {     
         Serial.print("Received version: "); Serial.println(version);  
     }
 

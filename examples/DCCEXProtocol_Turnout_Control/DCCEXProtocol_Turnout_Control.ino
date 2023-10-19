@@ -46,7 +46,7 @@ class MyDelegate : public DCCEXProtocolDelegate {
       Serial.println("\n\n");  
     }    
 
-    void receivedTurnoutAction(int turnoutId, TurnoutState state) { 
+    void receivedTurnoutAction(int turnoutId, TurnoutStates state) { 
       Serial.print("Received Turnout Action: Id: "); Serial.print(turnoutId); Serial.print(" state: ");Serial.println(state);  
       // Serial.println("\n");  
     }
@@ -180,7 +180,7 @@ void loop() {
   if ((millis() - lastTime) >= 10000) {
     if (doneTurnouts) {
       int action = random(0, 100);
-      TurnoutState tAction = (action>50) ? TurnoutThrow : TurnoutClose;
+      TurnoutStates tAction = (action>50) ? TurnoutThrow : TurnoutClose;
       dccexProtocol.sendTurnoutAction(turnout1, tAction);
       action = random(0, 100);
       tAction = (action>50) ? TurnoutThrow : TurnoutClose;
