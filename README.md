@@ -143,6 +143,29 @@ Retrieve a ```Turntable``` object from the list with ```dccexProtocol.turntables
 
 ## Classes/Objects
 
+### DCCEXProtocolDelegate
+
+#### Public methods
+
+    virtual void receivedServerDescription(char* version) {}
+  
+    virtual void receivedRosterList(int rosterSize) {}
+    virtual void receivedTurnoutList(int turnoutListSize) {}    
+    virtual void receivedRouteList(int routeListSize) {}
+    virtual void receivedTurntableList(int turntablesListSize) {}    
+
+    virtual void receivedSpeed(int throttleNo, int speed) { }
+    virtual void receivedDirection(int throttleNo, Direction dir) { }
+    virtual void receivedFunction(int throttleNo, int func, FunctionState state) { }
+
+    virtual void receivedTrackPower(TrackPower state) { }
+
+    virtual void receivedTurnoutAction(int turnoutId, TurnoutStates state) { }
+    virtual void receivedRouteAction(int routeId, RouteState state) { }
+    virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
+
+---
+
 ### class ConsistLoco : public Loco 
 
 Adds ```Facing``` to the Loco class.

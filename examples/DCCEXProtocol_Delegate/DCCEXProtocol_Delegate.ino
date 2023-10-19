@@ -14,7 +14,7 @@
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(String microprocessor, String version) {     
+    void receivedServerDescription(char* version) {     
       Serial.print("\n\nReceived version: "); Serial.println(version);  
     }
 };
@@ -31,8 +31,6 @@ int serverPort = 2560;
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-
-}
 
 void setup() {
   
@@ -65,7 +63,8 @@ void setup() {
   Serial.println("DCC-EX connected");
 
   dccexProtocol.sendServerDetailsRequest();
-  
+}
+
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
