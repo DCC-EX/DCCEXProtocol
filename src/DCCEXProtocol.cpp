@@ -282,21 +282,6 @@ void DCCEXProtocol::processCommand() {
     }
 }
 
-//private
-void DCCEXProtocol::processUnknownCommand(char* unknownCommand) {
-    console->println(F("processUnknownCommand()"));
-    if (delegate) {
-        console->print("unknown command '"); console->print("'"); console->println(unknownCommand);
-    }
-    console->println(F("processUnknownCommand() end"));
-}
-
-char* DCCEXProtocol::charToCharArray(char c) {
-    charToCharArrayVal[0] = c;
-    charToCharArrayVal[1] = '\0';
-    return charToCharArrayVal;
-}
-
 // ******************************************************************************************************
 // ******************************************************************************************************
 // ******************************************************************************************************

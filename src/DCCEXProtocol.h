@@ -151,7 +151,6 @@ class DCCEXProtocol {
     int getSpeedFromSpeedByte(int speedByte);
     void getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap);
     int bitExtracted(int number, int k, int p);
-    char* charToCharArray(char c);
 
     // *******************
 
@@ -224,9 +223,7 @@ class DCCEXProtocol {
     DCCEXProtocolDelegate *delegate = NULL;
 
     long lastServerResponseTime;
-
-    // char inputbuffer[32767];
-    // char inputbuffer[16383];    
+    
     char inputbuffer[512];    
     ssize_t nextChar;  // where the next character to be read goes in the buffer
     char charToCharArrayVal[2];  // common. used to convert sinle char to char array.
@@ -234,8 +231,6 @@ class DCCEXProtocol {
     void init();
 
     void processCommand();
-    // bool processCommand(char *c, int len);
-    void processUnknownCommand(char* unknownCommand);
 
     void processServerDescription();	
     bool haveReceivedServerDetails = false;
