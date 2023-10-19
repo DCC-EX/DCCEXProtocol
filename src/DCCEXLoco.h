@@ -13,13 +13,13 @@ enum Direction {
     Forward = 1,
 };
 
-typedef char FunctionState;
-#define FunctionStateOff '0'
-#define FunctionStateOn '1'
+// typedef char FunctionState;
+// #define FunctionStateOff '0'
+// #define FunctionStateOn '1'
 
-typedef char FunctionLatching;
-#define FunctionLatchingTrue '1'
-#define FunctionLatchingFalse '0'
+// typedef char FunctionLatching;
+// #define FunctionLatchingTrue '1'
+// #define FunctionLatchingFalse '0'
 
 enum LocoSource {
     LocoSourceRoster = 0,
@@ -33,18 +33,22 @@ typedef char Facing;
 class Functions {
     public:
         bool initFunction(int functionNumber, char* label, FunctionLatching latching, FunctionState state);
-        bool setFunctionState(int functionNumber, FunctionState state);
+        // bool setFunctionState(int functionNumber, FunctionState state);
+        void setFunctionState(int functionNumber, bool state);
         bool setFunctionName(int functionNumber, char* label);
         char* getFunctionName(int functionNumber);
-        FunctionState getFunctionState(int functionNumber);
-        FunctionLatching getFunctionLatching(int functionNumber);
+        // FunctionState getFunctionState(int functionNumber);
+        // FunctionLatching getFunctionLatching(int functionNumber);
+        bool getFunctionState(int functionNumber);
+        bool getFunctionLatching(int functionNumber);
         bool clearFunctionNames();
     
     private:
-        char* functionName[MAX_FUNCTIONS];
-        FunctionState functionState[MAX_FUNCTIONS];
-        int functionLatching[MAX_FUNCTIONS];
-
+        char* functionNames[MAX_FUNCTIONS];
+        // FunctionState functionState[MAX_FUNCTIONS];
+        // int functionLatching[MAX_FUNCTIONS];
+        int32_t functionMap;
+        int32_t momentaryFlags;
         bool actionFunctionStateExternalChange(int functionNumber, FunctionState state);
 };
 

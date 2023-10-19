@@ -14,9 +14,12 @@ bool Functions::initFunction(int functionNumber, char* label, FunctionLatching l
     return true;
 }
 
-bool Functions::setFunctionState(int functionNumber, FunctionState state) {
-    functionState[functionNumber] = state;
-    return true;
+// bool Functions::setFunctionState(int functionNumber, FunctionState state) {
+void Functions::setFunctionState(int functionNumber, bool state) {
+    // functionStates[functionNumber] = state;
+    // return true;
+    // Send function command here
+    // This should never update function states directly, they should be updated by <l ...> broadcast only
 }
 
 bool Functions::actionFunctionStateExternalChange(int functionNumber, FunctionState state) {
@@ -42,12 +45,16 @@ char* Functions::getFunctionName(int functionNumber) {
     return functionName[functionNumber];
 }
 
-FunctionState Functions::getFunctionState(int functionNumber) {
-    return functionState[functionNumber];
+// FunctionState Functions::getFunctionState(int functionNumber) {
+bool Functions::getFunctionState(int functionNumber) {
+    // return functionState[functionNumber];
+    return functionMap & (1<<functionNumber);
 }
 
-FunctionLatching Functions::getFunctionLatching(int functionNumber) {
-    return functionLatching[functionNumber];
+// FunctionLatching Functions::getFunctionLatching(int functionNumber) {
+bool Functions::getFunctionLatching(int functionNumber) {
+    // return functionLatching[functionNumber];
+    return momentaryFlags & (1<<functionNumber);
 }
 
 // private
