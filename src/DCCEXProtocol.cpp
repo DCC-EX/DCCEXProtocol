@@ -165,11 +165,17 @@ int DCCEXProtocol::getSpeedFromSpeedByte(int speedByte) {
     return speed;
 }
 
-void DCCEXProtocol::getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap) {
- 
-    for (uint i=0; i<MAX_FUNCTIONS; i++) {
-        fnStates[i] = (bitExtracted(functionMap, 1, i+1)==0) ? FunctionStateOff : FunctionStateOn;
+// void DCCEXProtocol::getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap) {
+int DCCEXProtocol::getValidFunctionMap(int functionMap) {
+    // for (uint i=0; i<MAX_FUNCTIONS; i++) {
+    //     fnStates[i] = (bitExtracted(functionMap, 1, i+1)==0) ? FunctionStateOff : FunctionStateOn;
+    // }
+    // Mask off anything above 28 bits/28 functions
+    if (functionMap > 0xFFFFFFF) {
+        functionMap &= 0xFFFFFFF;
     }
+    return functionMap;
+    // This needs to set the current loco function map now
 }
 
 int DCCEXProtocol::bitExtracted(int number, int k, int p)
@@ -366,24 +372,14 @@ void DCCEXProtocol::processRosterList() {
             console->println(F("processRosterList(): roster list already received. Ignoring this!"));
             return;
         } 
-        // char arg[MAX_OBJECT_NAME_LENGTH];
-        char name[MAX_OBJECT_NAME_LENGTH];
+        // char name[MAX_OBJECT_NAME_LENGTH];
         for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
             int address = DCCEXInbound::getNumber(i);
-            sprintf(name, "%s", NAME_UNKNOWN);
-            roster.add(new Loco(address, name, LocoSourceRoster));
+            // sprintf(name, "%s", NAME_UNKNOWN);
+            // roster.add(new Loco(address, name, LocoSourceRoster));
+            roster.add(new Loco(address, LocoSourceRoster));
             sendRosterEntryRequest(address);
         }
-        // for (int i=1; i<argz.size(); i++) {
-        //     // strcpy(arg, argz.get(i)->arg); strcat(arg, "\0");
-        //     sprintf(arg,"%s",argz.get(i)->arg);
-        //     int address = atoi(arg);
-        //     // strcpy(name, NAME_UNKNOWN);
-        //     sprintf(name, "%s", NAME_UNKNOWN);
-
-        //     roster.add(new Loco(address, name, LocoSourceRoster));
-        //     sendRosterEntryRequest(address);
-        // }
     }
     // console->println(F("processRosterList(): end"));
 }
@@ -415,9 +411,10 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
             r->setLocoName(name);
             r->setLocoSource(LocoSourceRoster);
             r->setIsFromRosterAndReceivedDetails();
+            r->setupFunctions(funcs);
 
-            console->println(DCCEXInbound::getText(3));
-            splitFunctions(funcs);
+            // console->println(DCCEXInbound::getText(3));
+            // splitFunctions(funcs);
 
             /* STOP FUNCTIONS
             for( int i=0; i<functionArgs.size(); i++) { functionArgs.get(i)->clearFunctionArgument(); }
@@ -789,56 +786,48 @@ void DCCEXProtocol::processSensorEntry() {  // <jO id type position position_cou
 //private
 bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
     // console->println(F("processLocoAction()"));
-    if (delegate) {
-        // char val[MAX_OBJECT_NAME_LENGTH];
-        // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(1)->arg);
-        // int address = atoi(val);
-        int address = DCCEXInbound::getNumber(0);
-        // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(3)->arg);
-        // int speedByte = atoi(val);
-        int speedByte = DCCEXInbound::getNumber(2);
-        // strcpy(val, argz.get(4)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(4)->arg);
-        // int functMap = atoi(val);
-        int functMap = DCCEXInbound::getNumber(3);
+    int address = DCCEXInbound::getNumber(0);
+    int speedByte = DCCEXInbound::getNumber(2);
+    int functMap = getValidFunctionMap(DCCEXInbound::getNumber(3));
+    int throttleNo = findThrottleWithLoco(address);
+    if (throttleNo>=0) {
+        int rslt = throttleConsists[throttleNo].consistGetLocoPosition(address);
+        if (rslt==0) {  // ignore everything that is not the lead loco
+            int speed = getSpeedFromSpeedByte(speedByte);
+            Direction dir = getDirectionFromSpeedByte(speedByte);
+            // FunctionState fnStates[MAX_FUNCTIONS];
+            // getFunctionStatesFromFunctionMap(fnStates, functMap);
+            // setFunctionStatesFromFunctionMap(functMap);
+            // for (uint i=0; i<MAX_FUNCTIONS; i++) {
+            //     // console->print(F("processLocoAction(): checking function: ")); console->println(i);
+            //     if (fnStates[i] != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)) {
 
-        int throttleNo = findThrottleWithLoco(address);
-        if (throttleNo>=0) {
-            int rslt = throttleConsists[throttleNo].consistGetLocoPosition(address);
-            if (rslt==0) {  // ignore everything that is not the lead loco
-                int speed = getSpeedFromSpeedByte(speedByte);
-                Direction dir = getDirectionFromSpeedByte(speedByte);
-                FunctionState fnStates[MAX_FUNCTIONS];
-                getFunctionStatesFromFunctionMap(fnStates, functMap);
-                for (uint i=0; i<MAX_FUNCTIONS; i++) {
-                    // console->print(F("processLocoAction(): checking function: ")); console->println(i);
-                    if (fnStates[i] != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)) {
+            //         throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
 
-                        throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.setFunctionState(i, fnStates[i]);
+            //         // console->println(F("processLocoAction(): "));
+            //         // console->print(i);
+            //         // console->print(" - ");
+            //         // console->print(charToCharArray(fnStates[i]));
+            //         // console->print(" - ");
+            //         // console->print(charToCharArray(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)));
+            //         // console->println(" - ");
 
-                        // console->println(F("processLocoAction(): "));
-                        // console->print(i);
-                        // console->print(" - ");
-                        // console->print(charToCharArray(fnStates[i]));
-                        // console->print(" - ");
-                        // console->print(charToCharArray(throttleConsists[throttleNo].consistGetLocoAtPosition(0)->locoFunctions.getFunctionState(i)));
-                        // console->println(" - ");
-
-                        delegate->receivedFunction(throttleNo, i, fnStates[i]);
-                    }
-                }
-                throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fnStates);
-
-                delegate->receivedSpeed(throttleNo, speed);
-                delegate->receivedDirection(throttleNo, dir);
-
+            //         delegate->receivedFunction(throttleNo, i, fnStates[i]);
+            //     }
+            // }
+            if (functMap != throttleConsists[throttleNo].consistGetLocoAtPosition(0)->getFunctionStates()) {
+                throttleConsists[throttleNo].consistGetLocoAtPosition(0)->setFunctionStates(functMap);
             }
-        } else {
-            // console->println(F("processLocoAction(): unknown loco"));
-            return false;
+            // throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, fnStates);
+            throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, functMap);
+
+            delegate->receivedSpeed(throttleNo, speed);
+            delegate->receivedDirection(throttleNo, dir);
+
         }
+    } else {
+        // console->println(F("processLocoAction(): unknown loco"));
+        return false;
     }
     // console->println(F("processLocoAction() end"));
     return true;
@@ -911,7 +900,8 @@ Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
 // ******************************************************************************************************
 
 // by default only send to the lead loco
-bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, FunctionState pressed) {
+// bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, FunctionState pressed) {
+bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, bool pressed) {
     // console->println(F("sendFunction(): "));
     if (delegate) {
         ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(0);
@@ -925,10 +915,12 @@ bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, FunctionState
 }
 
 // send to a specific address on the throttle
-bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, FunctionState pressed) { // throttle is ignored
+// bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, FunctionState pressed) { // throttle is ignored
+bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, bool pressed) { // throttle is ignored
     // console->println(F("sendFunction(): "));
     if (delegate) {
-        sprintf(outboundCommand, "<F %d %d %c>", address, functionNumber, pressed);
+        // sprintf(outboundCommand, "<F %d %d %c>", address, functionNumber, pressed);
+        sprintf(outboundCommand, "<F %d %d %d>", address, functionNumber, pressed);
         sendCommand();
     }
     // console->println(F("sendFunction(): end")); 
@@ -942,11 +934,13 @@ bool DCCEXProtocol::isFunctionOn(int throttle, int functionNumber) {
         int address = conLoco->getLocoAddress();
         if (address>=0) {
             console->print(" '");
-            console->print(conLoco->locoFunctions.getFunctionState(functionNumber));
+            // console->print(conLoco->locoFunctions.getFunctionState(functionNumber));
+            console->print(conLoco->isFunctionOn(functionNumber));
             console->print("' ");
             conLoco->isFunctionOn(functionNumber);
         }
-        return (conLoco->locoFunctions.getFunctionState(functionNumber)==FunctionStateOn) ? true : false;
+        // return (conLoco->locoFunctions.getFunctionState(functionNumber)==FunctionStateOn) ? true : false;
+        return conLoco->isFunctionOn(functionNumber);
     }
     return false;
 }
@@ -1259,45 +1253,45 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     return -1;
 }
 
-bool DCCEXProtocol::splitFunctions(char *functionNames) {
-  // Importtant note: 
-  // The functionNames string is modified in place. 
-  console->print(F("Splitting \""));
-  console->print(functionNames);
-  console->println(F("\""));
-  char * t=functionNames;
-  int fkey=0;
+// bool DCCEXProtocol::splitFunctions(char *functionNames) {
+//   // Importtant note: 
+//   // The functionNames string is modified in place. 
+//   console->print(F("Splitting \""));
+//   console->print(functionNames);
+//   console->println(F("\""));
+//   char * t=functionNames;
+//   int fkey=0;
   
-  while(*t) {
-       bool momentary=false;
-       if(*t=='*')  {
-        momentary=true;
-        t++;
-       }
-       char * fName=t;  // function name starts here
-       while(*t) { // loop completes at end of name ('/' or 0)
-        if (*t=='/') {
-          // found end of name
-          *t='\0'; // mark name ends here 
-          t++;
-          break;
-        }
-        t++;
-       }
+//   while(*t) {
+//        bool momentary=false;
+//        if(*t=='*')  {
+//         momentary=true;
+//         t++;
+//        }
+//        char * fName=t;  // function name starts here
+//        while(*t) { // loop completes at end of name ('/' or 0)
+//         if (*t=='/') {
+//           // found end of name
+//           *t='\0'; // mark name ends here 
+//           t++;
+//           break;
+//         }
+//         t++;
+//        }
 
-       // At this point we have a function key
-       // int fkey = function number 0....
-       // bool momentary = is it a momentary
-       // fName = pointer to the function name 
-       console->print("Function ");
-       console->print(fkey);
-       console->print(momentary ? F("  Momentary ") : F(""));
-       console->print(" ");
-       console->println(fName);
-       fkey++;
-  }
-  return true;
-}
+//        // At this point we have a function key
+//        // int fkey = function number 0....
+//        // bool momentary = is it a momentary
+//        // fName = pointer to the function name 
+//        console->print("Function ");
+//        console->print(fkey);
+//        console->print(momentary ? F("  Momentary ") : F(""));
+//        console->print(" ");
+//        console->println(fName);
+//        fkey++;
+//   }
+//   return true;
+// }
 
 /* -- OLD SPLITFUNCTIONS
 bool DCCEXProtocol::splitFunctions(char *cmd) {

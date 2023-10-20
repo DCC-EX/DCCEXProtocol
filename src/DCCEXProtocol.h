@@ -43,17 +43,7 @@ static const int MAX_THROTTLES = 6;
 const int MAX_COMMAND_PARAMS = 50;
 const int MAX_COMMAND_BUFFER = 500;
 
-// Protocol special characters
-// #define NEWLINE 			'\n'
-// #define CR 					'\r'
-// #define COMMAND_START       '<'
-// #define COMMAND_END         '>'
-
-static const char NAME_UNKNOWN[] = "Unknown";
-// static const char NAME_BLANK[] = "";
-
-// enum splitState {FIND_START, SKIP_SPACES, CHECK_FOR_LEADING_QUOTE, BUILD_QUOTED_PARAM, BUILD_PARAM, CHECK_FOR_END};
-// enum splitFunctionsState {FIND_FUNCTION_START, SKIP_FUNCTION_LEADING_SLASH_SPACES, SKIP_FUNCTION_SPACES, BUILD_FUNCTION_PARAM, CHECK_FOR_FUNCTION_END};
+// static const char NAME_UNKNOWN[] = "Unknown";
 
 // *****************************************************************
 
@@ -105,7 +95,8 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedSpeed(int throttleNo, int speed) { }
     virtual void receivedDirection(int throttleNo, Direction dir) { }
-    virtual void receivedFunction(int throttleNo, int func, FunctionState state) { }
+    // virtual void receivedFunction(int throttleNo, int func, FunctionState state) { }
+    virtual void receivedFunction(int throttleNo, int func, bool state) { }
 
     virtual void receivedTrackPower(TrackPower state) { }
 
@@ -149,7 +140,8 @@ class DCCEXProtocol {
     //helper functions
     Direction getDirectionFromSpeedByte(int speedByte);
     int getSpeedFromSpeedByte(int speedByte);
-    void getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap);
+    // void getFunctionStatesFromFunctionMap(FunctionState fnStates[], int functionMap);
+    int getValidFunctionMap(int functionMap);
     int bitExtracted(int number, int k, int p);
 
     // *******************
@@ -160,8 +152,10 @@ class DCCEXProtocol {
     
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
-    bool sendFunction(int throttle, int functionNumber, FunctionState pressed);
-    bool sendFunction(int throttle, int address, int functionNumber, FunctionState pressed);
+    // bool sendFunction(int throttle, int functionNumber, FunctionState pressed);
+    // bool sendFunction(int throttle, int address, int functionNumber, FunctionState pressed);
+    bool sendFunction(int throttle, int functionNumber, bool pressed);
+    bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
     bool isFunctionOn(int throttle, int functionNumber);
     bool sendLocoUpdateRequest(int address);
 
@@ -189,8 +183,8 @@ class DCCEXProtocol {
 
     Consist getThrottleConsist(int throttleNo);
 
-	bool sendTrackPower(TrackPower state);
-	bool sendTrackPower(TrackPower state, char track);
+	  bool sendTrackPower(TrackPower state);
+	  bool sendTrackPower(TrackPower state, char track);
 
     Turnout* getTurnoutById(int turnoutId);
     bool sendTurnoutAction(int turnoutId, TurnoutStates action);
@@ -280,7 +274,7 @@ class DCCEXProtocol {
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
     // bool splitValues(char *cmd);
-    bool splitFunctions(char *functionNames);
+    // bool splitFunctions(char *functionNames);
     // bool splitFunctions(char *cmd);
     // bool stripLeadAndTrailQuotes(char* rslt, char* text);
     // char* substituteCharBetweenQuotes(char* text, char searchChar, char substituteChar);
