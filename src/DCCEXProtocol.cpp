@@ -295,38 +295,41 @@ void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microproces
         console->print(DCCEXInbound::getParameterCount());
         console->println(F(" params"));
         
-        char *_serverVersion;
-        // _serverVersion = (char *) malloc(strlen(argz.get(1)->arg)+1);
-        // // strcpy(_serverVersion, argz.get(1)->arg);
-        // sprintf(_serverVersion,"%s",argz.get(1)->arg);
-        _serverVersion = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
-        sprintf(_serverVersion,"%s",DCCEXInbound::getText(0));
-        serverVersion = _serverVersion;
+        char *_serverDescription;
+        _serverDescription = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
+        sprintf(_serverDescription,"%s",DCCEXInbound::getText(0));
+        serverDescription = _serverDescription;
+        console->println(serverDescription);
+
+        int startAt = 6 ;
+        serverVersion = nextServerDescriptionParam(startAt, false);
         console->println(serverVersion);
+        startAt = startAt + strlen(serverVersion)+2; // get past the " / "
 
-        // char *_serverMicroprocessorType;
-        // _serverMicroprocessorType = (char *) malloc(strlen(argz.get(3)->arg)+1);
-        // // strcpy(_serverMicroprocessorType, argz.get(3)->arg);
-        // sprintf(_serverMicroprocessorType,"%s",argz.get(3)->arg);
-        // serverMicroprocessorType = _serverMicroprocessorType;
 
-        // char *_serverMotorcontrollerType;
-        // _serverMotorcontrollerType = (char *) malloc(strlen(argz.get(5)->arg)+1);
-        // // strcpy(_serverMotorcontrollerType, argz.get(5)->arg);
-        // sprintf(_serverMotorcontrollerType,"%s",argz.get(5)->arg);
-        // serverMotorcontrollerType = _serverMotorcontrollerType;
+        int versionStartAt = 7; // e.g. "DCC-EX V-"
+        serverVersionMajor = nextServerDescriptionParam(versionStartAt, true);
+        versionStartAt = versionStartAt + strlen(serverVersionMajor)+1;
+        serverVersionMinor = nextServerDescriptionParam(versionStartAt, true);
+        versionStartAt = versionStartAt + strlen(serverVersionMinor)+1;
+        serverVersionPatch = nextServerDescriptionParam(versionStartAt, true);
 
-        // char *_serverBuildNumber;
-        // _serverBuildNumber = (char *) malloc(strlen(argz.get(6)->arg)+1);
-        // // strcpy(_serverBuildNumber, argz.get(6)->arg);
-        // sprintf(_serverBuildNumber,"%s",argz.get(6)->arg);
-        // serverBuildNumber = _serverBuildNumber;        
 
-        // strcpy(serverVersion, argz.get(1)->arg);
+        serverMicroprocessorType = nextServerDescriptionParam(startAt, false);
+        startAt = startAt + strlen(serverMicroprocessorType)+3; // get past the " / "
 
-        // strcpy(serverMicroprocessorType, argz.get(3)->arg);
-        // strcpy(serverMotorcontrollerType, argz.get(5)->arg);
-        // strcpy(serverBuildNumber, argz.get(6)->arg);
+        serverMotorcontrollerType = nextServerDescriptionParam(startAt, false);
+        startAt = startAt + strlen(serverMotorcontrollerType)+2; // get past the " / "
+
+        serverBuildNumber = nextServerDescriptionParam(startAt, false);
+
+        console->println(serverVersion);
+        console->println(serverVersionMajor);
+        console->println(serverVersionMinor);
+        console->println(serverVersionPatch);
+        console->println(serverMicroprocessorType);
+        console->println(serverMotorcontrollerType);
+        console->println(serverBuildNumber);
 
         haveReceivedServerDetails = true;
         delegate->receivedServerDescription(serverVersion);
@@ -586,19 +589,8 @@ void DCCEXProtocol::processRouteList() {
             console->println(F("processRouteList(): Routes/Automation list already received. Ignoring this!"));
             return;
         } 
-        // char val[MAX_OBJECT_NAME_LENGTH];
-        // char name[MAX_OBJECT_NAME_LENGTH];
-
-        // for (int i=1; i<argz.size(); i++) {
         for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-            // strcpy(val, argz.get(i)->arg); strcat(val, "\0");
-            // sprintf(val,"%s",argz.get(i)->arg);
-            // int id = atoi(val);
-            // strcpy(name, NAME_UNKNOWN);
             int id = DCCEXInbound::getNumber(i);
-            // sprintf(name, "%s", NAME_UNKNOWN);
-
-            // routes.add(new Route(id, name));
             routes.add(new Route(id));
             sendRouteEntryRequest(id);
         }
@@ -790,18 +782,8 @@ void DCCEXProtocol::processSensorEntry() {  // <jO id type position position_cou
 bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
     // console->println(F("processLocoAction()"));
     if (delegate) {
-        // char val[MAX_OBJECT_NAME_LENGTH];
-        // strcpy(val, argz.get(1)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(1)->arg);
-        // int address = atoi(val);
         int address = DCCEXInbound::getNumber(0);
-        // strcpy(val, argz.get(3)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(3)->arg);
-        // int speedByte = atoi(val);
         int speedByte = DCCEXInbound::getNumber(2);
-        // strcpy(val, argz.get(4)->arg); strcat(val, "\0");
-        // sprintf(val,"%s",argz.get(4)->arg);
-        // int functMap = atoi(val);
         int functMap = DCCEXInbound::getNumber(3);
 
         int throttleNo = findThrottleWithLoco(address);
@@ -1299,73 +1281,31 @@ bool DCCEXProtocol::splitFunctions(char *functionNames) {
   return true;
 }
 
-/* -- OLD SPLITFUNCTIONS
-bool DCCEXProtocol::splitFunctions(char *cmd) {
-    // console->println(F("splitFunctions(): "));
-    byte parameterCount = 0;
-    
-    int currentCharIndex = 0; // pointer to the next character to process
-    splitFunctionsState state = FIND_FUNCTION_START;
-    char currentArg[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-    currentArg[0]='\0';
-    int currentArgLength = 0;
-    
-    while (parameterCount < MAX_FUNCTIONS)
-    {
-        char currentChar = cmd[currentCharIndex];
-        // console->print("..."); console->print(currentChar); console->println("...");
-        // In this switch, 'break' will go on to next char but 'continue' will rescan the current char. 
-        switch (state) {
-        case FIND_FUNCTION_START: // looking for leading '"'
-            if (currentChar == '"') state = SKIP_FUNCTION_SPACES;
-            break;
-
-        case SKIP_FUNCTION_LEADING_SLASH_SPACES: // skipping only 1 "/" before a param
-            state = SKIP_FUNCTION_SPACES;
-            if (currentChar == '/') break; // ignore
-            continue;
-
-        case SKIP_FUNCTION_SPACES: // skipping spaces before a param
-            if (currentChar == ' ') break; // ignore
-            state = BUILD_FUNCTION_PARAM;
-            continue;
-
-        case BUILD_FUNCTION_PARAM: // building a parameter
-            if (currentChar == '"') {
-                state = CHECK_FOR_FUNCTION_END;
-                continue;
-            }
-            if (currentChar != '/') {
-                currentArg[currentArgLength] = currentChar;
-                currentArg[currentArgLength+1]='\0';
-                // console->println(currentArg);
-                currentArgLength++;
-                break;
-            }
-
-            // end of parameter detected  '/')
-            functionArgs.add( new FunctionArgument(currentArg));
-            currentArg[0]='\0';
-            currentArgLength = 0;
-            parameterCount++;
-            state = SKIP_FUNCTION_LEADING_SLASH_SPACES;
-            continue;
-        
-        case CHECK_FOR_FUNCTION_END:
-            if ( (currentChar == '\0') || (currentChar == '"') ) {
-                // trailing function
-                functionArgs.add( new FunctionArgument(currentArg));
-                return true;  
-            }
-            break;
+char* DCCEXProtocol::nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
+    char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
+    int i = 0; 
+    int j;
+    bool started = false;
+    for (j=startAt; j<strlen(serverDescription) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
+        if (started) {
+            if (serverDescription[j]==' ' || serverDescription[j]=='\0') break;
+            if (lookingAtVersionNumber && (serverDescription[j]=='-' || serverDescription[j]=='.')) break;
+            _tempString[i] = serverDescription[j];
+            i++;
+        } else {
+            if (serverDescription[j]==' ') started=true;
+            if (lookingAtVersionNumber && (serverDescription[j]=='-' || serverDescription[j]=='.')) started=true;
         }
-        currentCharIndex++;
     }
+    _tempString[i] = '\0';
     
-    console->println(F("splitFunctions(): end"));
-    return true;
+    char *_result;
+    _result = (char *) malloc(strlen(_tempString));
+    sprintf(_result, "%s", _tempString);
+    // console->println(_result);
+    return _result;
 }
--- OLD SPLITFUNCTIONS */
+
 
 // ******************************************************************************************************
 // ******************************************************************************************************

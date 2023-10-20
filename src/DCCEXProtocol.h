@@ -38,6 +38,7 @@
 
 static const int MAX_THROTTLES = 6;
 #define MAX_OUTBOUND_COMMAND_LENGTH 100
+#define MAX_SERVER_DESCRIPTION_PARAM_LENGTH 100
 
 // DCCEXInbound params
 const int MAX_COMMAND_PARAMS = 50;
@@ -129,7 +130,11 @@ class DCCEXProtocol {
 
     bool check();
 
+    char *serverDescription;
     char *serverVersion;
+    char *serverVersionMajor;
+    char *serverVersionMinor;
+    char *serverVersionPatch;
     char *serverMicroprocessorType;
     char *serverMotorcontrollerType;
     char *serverBuildNumber;
@@ -226,7 +231,7 @@ class DCCEXProtocol {
     
     char inputbuffer[512];    
     ssize_t nextChar;  // where the next character to be read goes in the buffer
-    char charToCharArrayVal[2];  // common. used to convert sinle char to char array.
+    char charToCharArrayVal[2];  // common. used to convert single char to char array.
 
     void init();
 
@@ -279,11 +284,8 @@ class DCCEXProtocol {
     int findTurnoutListPositionFromId(int id);
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
-    // bool splitValues(char *cmd);
     bool splitFunctions(char *functionNames);
-    // bool splitFunctions(char *cmd);
-    // bool stripLeadAndTrailQuotes(char* rslt, char* text);
-    // char* substituteCharBetweenQuotes(char* text, char searchChar, char substituteChar);
+    char* nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
 
 #endif // DCCEXPROTOCOL_H
