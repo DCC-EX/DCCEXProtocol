@@ -30,35 +30,10 @@ typedef char Facing;
 #define FacingForward '0'
 #define FacingReversed '1'
 
-// class Functions {
-//     public:
-//         // bool initFunction(int functionNumber, char* label, FunctionLatching latching, FunctionState state);
-//         bool initFunction(int functionNumber, char* label, bool latching, bool state);
-//         // bool setFunctionState(int functionNumber, FunctionState state);
-//         void setFunctionState(int functionNumber, bool state);
-//         bool setFunctionName(int functionNumber, char* label);
-//         char* getFunctionName(int functionNumber);
-//         // FunctionState getFunctionState(int functionNumber);
-//         // FunctionLatching getFunctionLatching(int functionNumber);
-//         bool getFunctionState(int functionNumber);
-//         bool getFunctionLatching(int functionNumber);
-//         bool clearFunctionNames();
-    
-//     private:
-//         char* functionNames[MAX_FUNCTIONS];
-//         // FunctionState functionState[MAX_FUNCTIONS];
-//         // int functionLatching[MAX_FUNCTIONS];
-//         int32_t functionMap;
-//         int32_t momentaryFlags;
-//         bool actionFunctionStateExternalChange(int functionNumber, FunctionState state);
-// };
-
 class Loco {
     public:
         Loco() {}
-        // Loco(int address, char* name, LocoSource source);
         Loco(int address, LocoSource source);
-        // Functions locoFunctions;
         bool isFunctionOn(int functionNumber);
 
         bool setLocoSpeed(int speed);
@@ -93,7 +68,6 @@ class Loco {
 class ConsistLoco : public Loco {
     public:
         ConsistLoco() {};
-        // ConsistLoco(int address, char* name, LocoSource source, Facing facing);
         ConsistLoco(int address, LocoSource source, Facing facing);
         bool setConsistLocoFacing(Facing facing);
         Facing getConsistLocoFacing();
@@ -108,7 +82,6 @@ class Consist {
         Consist(char* name);
         bool consistAddLoco(Loco loco, Facing facing);
         bool consistAddLocoFromRoster(LinkedList<Loco*> roster, int address, Facing facing);
-        // bool consistAddLocoFromAddress(int address, char* name, Facing facing);
         bool consistAddLocoFromAddress(int address, Facing facing);
         bool consistReleaseAllLocos();
         bool consistReleaseLoco(int locoAddress);
@@ -117,15 +90,12 @@ class Consist {
         int consistGetLocoPosition(int locoAddress);
         bool consistSetLocoPosition(int locoAddress, int position);
 
-        // bool actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]);
         bool actionConsistExternalChange(int speed, Direction direction, int functionStates);
 
         bool consistSetSpeed(int speed);
         int consistGetSpeed();
         bool consistSetDirection(Direction direction);
         Direction consistGetDirection();
-        // bool consistSetFunction(int functionNo, FunctionState state);
-        // bool consistSetFunction(int address, int functionNo, FunctionState state);
         bool consistSetFunction(int functionNo, bool state);
         bool consistSetFunction(int address, int functionNo, bool state);
         bool isFunctionOn(int functionNumber);

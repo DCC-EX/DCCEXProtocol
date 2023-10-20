@@ -1,77 +1,8 @@
 #include <Arduino.h>
 #include "DCCEXLoco.h"
 
-// class Functions
-
-// bool Functions::initFunction(int functionNumber, char* label, FunctionLatching latching, FunctionState state) {
-// bool Functions::initFunction(int functionNumber, char* label, bool latching, bool state) {
-//     functionLatching[functionNumber] = latching;
-//     functionState[functionNumber] = state;
-    
-//     char *dynName;
-//     dynName = (char *) malloc(strlen(label)+1);
-//     sprintf(dynName,"%s",label);
-//     functionName[functionNumber] = dynName;
-//     return true;
-// }
-
-// // bool Functions::setFunctionState(int functionNumber, FunctionState state) {
-// void Functions::setFunctionState(int functionNumber, bool state) {
-//     // functionStates[functionNumber] = state;
-//     // return true;
-//     // Send function command here
-//     // This should never update function states directly, they should be updated by <l ...> broadcast only
-// }
-
-// bool Functions::actionFunctionStateExternalChange(int functionNumber, FunctionState state) {
-//     //????????????????? TODO
-//     //  This may not be needed
-//     return true;
-// }
-
-// bool Functions::setFunctionName(int functionNumber,char* label) {
-//     if (functionName[functionNumber]!=nullptr) {
-//         free(functionName[functionNumber]);
-//         functionName[functionNumber]=nullptr; 
-//     }
-//     char *dynName;
-//     dynName = (char *) malloc(strlen(label)+1);
-//     sprintf(dynName,"%s",label);
-
-//     functionName[functionNumber] = dynName;
-//     return true;
-// }
-
-// char* Functions::getFunctionName(int functionNumber) {
-//     return functionName[functionNumber];
-// }
-
-// // FunctionState Functions::getFunctionState(int functionNumber) {
-// bool Functions::getFunctionState(int functionNumber) {
-//     // return functionState[functionNumber];
-//     return functionMap & (1<<functionNumber);
-// }
-
-// // FunctionLatching Functions::getFunctionLatching(int functionNumber) {
-// bool Functions::getFunctionLatching(int functionNumber) {
-//     // return functionLatching[functionNumber];
-//     return momentaryFlags & (1<<functionNumber);
-// }
-
-// // private
-// bool Functions::clearFunctionNames() {
-//     for (uint i=0; i<MAX_FUNCTIONS; i++) {
-//         if (functionName[i] != nullptr) {
-//             free(functionName[i]);
-//             functionName[i] = nullptr; 
-//         }
-//     }
-//     return true;
-// }
-
 // class Loco
 
-// Loco::Loco(int address, char* name, LocoSource source) {
 Loco::Loco(int address, LocoSource source) {
     locoAddress = address;
     locoSource = source;
@@ -81,21 +12,9 @@ Loco::Loco(int address, LocoSource source) {
     locoName = nullptr;
     _functionStates = 0;
     _momentaryFlags = 0;
-    // char fnName[MAX_OBJECT_NAME_LENGTH];
-
-    // char *dynName;
-    // dynName = (char *) malloc(strlen(name)+1);
-    // sprintf(dynName,"%s",name);
-    // locoName = dynName;
-
-    // for (uint i=0; i<MAX_FUNCTIONS; i++) {
-    //     *fnName = 0;  // blank
-    //     locoFunctions.initFunction(i, fnName, FunctionLatchingFalse, FunctionStateOff);
-    // }
 }
 
 bool Loco::isFunctionOn(int functionNumber) {
-    // return (locoFunctions.getFunctionState(functionNumber)==FunctionStateOn) ? true : false;
     return _functionStates & 1<<functionNumber;
 }
 
@@ -121,15 +40,6 @@ int Loco::getLocoAddress() {
 }
 
 bool Loco::setLocoName(char* name) {
-    // if (locoName != nullptr) {
-    //     free(locoName);
-    //     locoName = nullptr; 
-    // }
-    // char *dynName;
-    // dynName = (char *) malloc(strlen(name)+1);
-    // sprintf(dynName,"%s",name);
-
-    // locoName = dynName;
     locoName = name;
     return true;
 }
@@ -236,10 +146,6 @@ void Loco::setFunctionStates(int functionStates) {
 
 // class ConsistLoco : public Loco
 
-// ConsistLoco::ConsistLoco(int address, char* name, LocoSource source, Facing facing) 
-// : Loco::Loco(address, name, source) {
-//       consistLocoFacing = facing;
-// }
 ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing) 
 : Loco::Loco(address, source) {
       consistLocoFacing = facing;
@@ -257,23 +163,16 @@ Facing ConsistLoco::getConsistLocoFacing() {
 // class Consist
 
 Consist::Consist(char* name) {
-    // char *_name;
-    // _name = (char *) malloc(strlen(name)+1);
-    // sprintf(_name,"%s",name);
-    // consistName = _name;
     consistName = name;
 }
 
 bool Consist::consistAddLoco(Loco loco, Facing facing) {
     int address = loco.getLocoAddress();
-    // char name[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-    // sprintf(name,"%s",loco.getLocoName());
     LocoSource source = loco.getLocoSource();
     Facing correctedFacing = facing;
     int rslt = consistGetLocoPosition(address);
     if (rslt<0) { // not already in the list, so add it
         if (consistGetNumberOfLocos() == 0) correctedFacing = FacingForward; // first loco in consist is always forward
-        // consistLocos.add(new ConsistLoco(address, name, source, correctedFacing));
         consistLocos.add(new ConsistLoco(address, source, correctedFacing));
 
         //fix the name of the consist
@@ -304,9 +203,7 @@ bool Consist::consistAddLocoFromRoster(LinkedList<Loco*> roster, int address, Fa
 }
 
 // create from a DCC Address
-// bool Consist::consistAddLocoFromAddress(int address, char* name, Facing facing) {
 bool Consist::consistAddLocoFromAddress(int address, Facing facing) {
-    // Loco loco = Loco(address, name, LocoSourceEntry);
     Loco loco = Loco(address, LocoSourceEntry);
     consistAddLoco(loco, facing);
     return true;
@@ -319,7 +216,6 @@ bool Consist::consistReleaseAllLocos()  {
         }
         consistLocos.clear();
         char _consistName[1];
-        // strcpy(_consistName, "\0");
         *_consistName = 0;
         setConsistName(_consistName);
     }
@@ -366,7 +262,6 @@ bool Consist::consistSetLocoPosition(int locoAddress, int position) {
         ConsistLoco* loco = consistGetLocoAtPosition(currentPosition);
         consistLocos.remove(currentPosition);
         int address = loco->getLocoAddress();
-        // char* name = loco->getLocoName();
         LocoSource source = loco->getLocoSource();
         Facing correctedFacing = loco->getConsistLocoFacing();
         // if (consistGetNumberOfLocos() == 0 || position == 0) {
@@ -417,7 +312,6 @@ bool Consist::consistSetDirection(Direction direction) {
     return true;
 }
 
-// bool Consist::actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]) {
 bool Consist::actionConsistExternalChange(int speed, Direction direction, int functionStates) {
     if (consistLocos.size()>0) {
         if ( (consistDirection != direction) || (consistSpeed != speed) ) {
@@ -454,7 +348,6 @@ Direction Consist::consistGetDirection() {
 }
 
 // by default only set the function on the lead loco
-// bool Consist::consistSetFunction(int functionNo, FunctionState state) {
 bool Consist::consistSetFunction(int functionNo, bool state) {
     if (consistLocos.size()>0) {
         // ConsistLoco* loco = consistGetLocoAtPosition(0);
@@ -465,7 +358,6 @@ bool Consist::consistSetFunction(int functionNo, bool state) {
 }
 
 // set a function on a specific loco on a throttle
-// bool Consist::consistSetFunction(int address, int functionNo, FunctionState state) {
 bool Consist::consistSetFunction(int address, int functionNo, bool state) {
     //????????????????? TODO
     // individual loco
@@ -481,14 +373,6 @@ bool Consist::isFunctionOn(int functionNumber) {
 }
 
 bool Consist::setConsistName(char* name) {
-    // if (consistName != nullptr) {
-    //     free(consistName);
-    //     consistName = nullptr; 
-    // }
-    // char *_name;
-    // _name = (char *) malloc(strlen(name)+1);
-    // sprintf(_name,"%s",name);
-    // consistName = _name;
     consistName = name;
     return true;
 }
