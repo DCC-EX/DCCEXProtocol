@@ -295,38 +295,41 @@ void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microproces
         console->print(DCCEXInbound::getParameterCount());
         console->println(F(" params"));
         
-        char *_serverVersion;
-        // _serverVersion = (char *) malloc(strlen(argz.get(1)->arg)+1);
-        // // strcpy(_serverVersion, argz.get(1)->arg);
-        // sprintf(_serverVersion,"%s",argz.get(1)->arg);
-        _serverVersion = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
-        sprintf(_serverVersion,"%s",DCCEXInbound::getText(0));
-        serverVersion = _serverVersion;
+        char *_serverDescription;
+        _serverDescription = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
+        sprintf(_serverDescription,"%s",DCCEXInbound::getText(0));
+        serverDescription = _serverDescription;
+        console->println(serverDescription);
+
+        int startAt = 6 ;
+        serverVersion = nextServerDescriptionParam(startAt, false);
         console->println(serverVersion);
+        startAt = startAt + strlen(serverVersion)+2; // get past the " / "
 
-        // char *_serverMicroprocessorType;
-        // _serverMicroprocessorType = (char *) malloc(strlen(argz.get(3)->arg)+1);
-        // // strcpy(_serverMicroprocessorType, argz.get(3)->arg);
-        // sprintf(_serverMicroprocessorType,"%s",argz.get(3)->arg);
-        // serverMicroprocessorType = _serverMicroprocessorType;
 
-        // char *_serverMotorcontrollerType;
-        // _serverMotorcontrollerType = (char *) malloc(strlen(argz.get(5)->arg)+1);
-        // // strcpy(_serverMotorcontrollerType, argz.get(5)->arg);
-        // sprintf(_serverMotorcontrollerType,"%s",argz.get(5)->arg);
-        // serverMotorcontrollerType = _serverMotorcontrollerType;
+        int versionStartAt = 7; // e.g. "DCC-EX V-"
+        serverVersionMajor = nextServerDescriptionParam(versionStartAt, true);
+        versionStartAt = versionStartAt + strlen(serverVersionMajor)+1;
+        serverVersionMinor = nextServerDescriptionParam(versionStartAt, true);
+        versionStartAt = versionStartAt + strlen(serverVersionMinor)+1;
+        serverVersionPatch = nextServerDescriptionParam(versionStartAt, true);
 
-        // char *_serverBuildNumber;
-        // _serverBuildNumber = (char *) malloc(strlen(argz.get(6)->arg)+1);
-        // // strcpy(_serverBuildNumber, argz.get(6)->arg);
-        // sprintf(_serverBuildNumber,"%s",argz.get(6)->arg);
-        // serverBuildNumber = _serverBuildNumber;        
 
-        // strcpy(serverVersion, argz.get(1)->arg);
+        serverMicroprocessorType = nextServerDescriptionParam(startAt, false);
+        startAt = startAt + strlen(serverMicroprocessorType)+3; // get past the " / "
 
-        // strcpy(serverMicroprocessorType, argz.get(3)->arg);
-        // strcpy(serverMotorcontrollerType, argz.get(5)->arg);
-        // strcpy(serverBuildNumber, argz.get(6)->arg);
+        serverMotorcontrollerType = nextServerDescriptionParam(startAt, false);
+        startAt = startAt + strlen(serverMotorcontrollerType)+2; // get past the " / "
+
+        serverBuildNumber = nextServerDescriptionParam(startAt, false);
+
+        console->println(serverVersion);
+        console->println(serverVersionMajor);
+        console->println(serverVersionMinor);
+        console->println(serverVersionPatch);
+        console->println(serverMicroprocessorType);
+        console->println(serverMotorcontrollerType);
+        console->println(serverBuildNumber);
 
         haveReceivedServerDetails = true;
         delegate->receivedServerDescription(serverVersion);
@@ -548,7 +551,6 @@ void DCCEXProtocol::processRouteList() {
             return;
         } 
 
-        // for (int i=1; i<argz.size(); i++) {
         for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
             int id = DCCEXInbound::getNumber(i);
             routes.add(new Route(id));
@@ -1188,4 +1190,29 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
         }
     }
     return -1;
+}
+
+char* DCCEXProtocol::nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
+    char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
+    int i = 0; 
+    int j;
+    bool started = false;
+    for (j=startAt; j<strlen(serverDescription) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
+        if (started) {
+            if (serverDescription[j]==' ' || serverDescription[j]=='\0') break;
+            if (lookingAtVersionNumber && (serverDescription[j]=='-' || serverDescription[j]=='.')) break;
+            _tempString[i] = serverDescription[j];
+            i++;
+        } else {
+            if (serverDescription[j]==' ') started=true;
+            if (lookingAtVersionNumber && (serverDescription[j]=='-' || serverDescription[j]=='.')) started=true;
+        }
+    }
+    _tempString[i] = '\0';
+    
+    char *_result;
+    _result = (char *) malloc(strlen(_tempString));
+    sprintf(_result, "%s", _tempString);
+    // console->println(_result);
+    return _result;
 }

@@ -38,6 +38,7 @@
 
 static const int MAX_THROTTLES = 6;
 #define MAX_OUTBOUND_COMMAND_LENGTH 100
+#define MAX_SERVER_DESCRIPTION_PARAM_LENGTH 100
 
 // DCCEXInbound params
 const int MAX_COMMAND_PARAMS = 50;
@@ -107,7 +108,11 @@ class DCCEXProtocol {
 
     bool check();
 
+    char *serverDescription;
     char *serverVersion;
+    char *serverVersionMajor;
+    char *serverVersionMinor;
+    char *serverVersionPatch;
     char *serverMicroprocessorType;
     char *serverMotorcontrollerType;
     char *serverBuildNumber;
@@ -253,6 +258,7 @@ class DCCEXProtocol {
     int findTurnoutListPositionFromId(int id);
     int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
+    char* nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
 
 #endif // DCCEXPROTOCOL_H
