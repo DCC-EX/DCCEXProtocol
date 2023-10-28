@@ -1,37 +1,52 @@
 #include <Arduino.h>
 #include "DCCEXRoutes.h"
 
+Route* Route::_first=nullptr;
+
 Route::Route(int id) {
-    routeId = id;
-    hasReceivedDetail = false;
-    routeName = nullptr;
+  _id=id;
+  _name=nullptr;
+  _next=nullptr;
+  if (!_first) {
+    _first=this;
+  } else {
+    Route* current=_first;
+    while (current->_next!=nullptr) {
+      current=current->_next;
+    }
+    current->_next=this;
+  }
+  _count++;
 }
 
-int Route::getRouteId() {
-    return routeId;
+int Route::getId() {
+  return _id;
 }
 
-void Route::setRouteName(char* name) {
-    routeName = name;
+void Route::setName(char* name) {
+  _name=name;
 }
 
-char* Route::getRouteName() {
-    return routeName;
+char* Route::getName() {
+  return _name;
 }
 
-bool Route::setRouteType(RouteType type) {
-    routeType = type;
-    return true;
+void Route::setType(RouteType type) {
+  _type = type;
 }
 
-RouteType Route::getRouteType() {
-    return (RouteType)routeType;
+RouteType Route::getType() {
+  return (RouteType)_type;
 }
 
-void Route::setHasReceivedDetails() {
-    hasReceivedDetail = true;
+int Route::getCount() {
+  return _count;
 }
 
-bool Route::getHasReceivedDetails() {
-    return hasReceivedDetail;
+Route* Route::getFirst() {
+  return _first;
+}
+
+Route* Route::getNext() {
+  return _next;
 }

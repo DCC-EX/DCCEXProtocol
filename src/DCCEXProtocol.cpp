@@ -432,7 +432,6 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
 void DCCEXProtocol::processTurnoutList() {
     // <jT id1 id2 id3 ...>
     // console->println(F("processTurnoutList()"));
-    // if (turnouts.size()>0) { // already have a turnouts list so this is an update
     if (turnouts!=nullptr) {
         // turnouts.clear();
         console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
@@ -441,7 +440,6 @@ void DCCEXProtocol::processTurnoutList() {
 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
-        // turnouts.add(new Turnout(id, TurnoutClosed));
         new Turnout(id, false);
         sendTurnoutEntryRequest(id);
     }
@@ -465,23 +463,15 @@ void DCCEXProtocol::processTurnoutEntry() {
     // console->println(F("processTurnoutEntry()"));
     //find the turnout entry to update
     int id=DCCEXInbound::getNumber(1);
-    // TurnoutStates state=DCCEXInbound::getNumber(2)==1 ? TurnoutThrown : TurnoutClosed;
     bool thrown = DCCEXInbound::getNumber(2);
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
 
-    // for (int i=0; i<turnouts.size(); i++) {
-        // auto t=turnouts.get(i);
     for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
         if (t->getId()==id) {
-            // t->setTurnoutId(id);
-            // t->setTurnoutState(state);
-            // t->setTurnoutName(name);
-            // t->setHasReceivedDetails();
             t->setName(name);
             t->setThrown(thrown);
         } else {
-            // if (!t->getHasReceivedDetails()) {
             if (t->getName()==nullptr) {
                 // console->print(F("processTurnoutsEntry(): not received yet: ~"));
                 // console->print(t->getTurnoutName());
@@ -494,7 +484,6 @@ void DCCEXProtocol::processTurnoutEntry() {
     if (!missingTurnouts) {
         turnoutListFullyReceived=true;
         console->println(F("processTurnoutsEntry(): received all"));
-        // delegate->receivedTurnoutList(turnouts.size());
         delegate->receivedTurnoutList(turnouts->getCount());
     }
     // console->println(F("processTurnoutEntry() end"));
@@ -502,8 +491,6 @@ void DCCEXProtocol::processTurnoutEntry() {
 
 // find the turnout/point in the turnout list by id. return a pointer or null is not found
 Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
-    // for (int i = 0; i < turnouts.size(); i++) {
-    //     Turnout* turnout = turnouts.get(i);
     for (Turnout* turnout=turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
         if (turnout->getId() == turnoutId) {
             return turnout;
@@ -512,13 +499,6 @@ Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
     return nullptr;  // not found
 }
 
-// bool DCCEXProtocol::sendTurnoutAction(int turnoutId, bool thrown) {
-//     if (delegate) {
-//         sprintf(outboundCommand, "<T %d %d>", turnoutId, thrown);
-//         sendCommand();
-//     }
-//     return true;
-// }
 void DCCEXProtocol::closeTurnout(int turnoutId) {
     if (delegate) {
         sprintf(outboundCommand, "<T %d 0>", turnoutId);
@@ -559,7 +539,6 @@ void DCCEXProtocol::processTurnoutAction() { //<H id state>
     if (DCCEXInbound::getParameterCount()!=2) return;
     //find the Turnout entry to update
     int id = DCCEXInbound::getNumber(0);
-    // TurnoutStates state = DCCEXInbound::getNumber(1)==1 ? TurnoutThrown : TurnoutClosed;
     bool thrown = DCCEXInbound::getNumber(1);
     for (auto t=Turnout::getFirst(); t ; t=t->getNext()) {
         if (t->getId()==id) {
@@ -567,13 +546,6 @@ void DCCEXProtocol::processTurnoutAction() { //<H id state>
             delegate->receivedTurnoutAction(id, thrown);
         }
     }
-    // for (int i=0; i<turnouts.size(); i++) {
-    //     auto t=turnouts.get(i);
-    //     if (t->getTurnoutId()==id) {
-    //         t->setTurnoutState(state);
-    //         delegate->receivedTurnoutAction(id, state);
-    //     }
-    // }
     // console->println(F("processTurnoutAction(): end"));
 }
 
@@ -584,7 +556,8 @@ void DCCEXProtocol::processTurnoutAction() { //<H id state>
 void DCCEXProtocol::processRouteList() {
     // console->println(F("processRouteList()"));
     if (delegate) {
-        if (routes.size()>0) { // already have a routes list so this is an update
+        // if (routes.size()>0) { // already have a routes list so this is an update
+        if (routes->getCount()>0) {
             // routes.clear();
             console->println(F("processRouteList(): Routes/Automation list already received. Ignoring this!"));
             return;
@@ -592,7 +565,8 @@ void DCCEXProtocol::processRouteList() {
 
         for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
             int id = DCCEXInbound::getNumber(i);
-            routes.add(new Route(id));
+            // routes.add(new Route(id));
+            new Route(id);
             sendRouteEntryRequest(id);
         }
     }
@@ -613,37 +587,33 @@ void DCCEXProtocol::sendRouteEntryRequest(int id) {
 //private
 void DCCEXProtocol::processRouteEntry() {
     // console->println(F("processRouteEntry()"));
-    if (delegate) {
-        //find the Route entry to update
-        if (routes.size()>0) { 
-            for (int i=0; i<routes.size(); i++) {
-                int id = DCCEXInbound::getNumber(1);
-                auto r = routes.get(i);
-                if (r->getRouteId()==id) {
-                    r->setRouteType((RouteType)DCCEXInbound::getNumber(2));
-                    r->setRouteName(DCCEXInbound::getSafeText(3));
-                    r->setHasReceivedDetails();
-                }
-            }
+    //find the Route entry to update
+    // if (routes.size()>0) { 
+    // for (int i=0; i<routes.size(); i++) {
+    int id=DCCEXInbound::getNumber(1);
+    RouteType type=(RouteType)DCCEXInbound::getNumber(2);
+    char* name=DCCEXInbound::getSafeText(3);
+    bool missingRoutes = false;
 
-            bool rslt = true;
-            for (int i=0; i<routes.size(); i++) {
-                auto r = routes.get(i);
-                if (!r->getHasReceivedDetails()) {
-                    console->print(F("processRoutesEntry(): not received yet: ~"));
-                    console->print(r->getRouteName());
-                    console->print(F("~ "));
-                    console->println(r->getRouteId());
-                    rslt = false;
-                    break;
-                }
+    for (Route* r=routes->getFirst(); r; r=r->getNext()) {
+        // auto r = routes.get(i);
+        if (r->getId()==id) {
+            // r->setRouteType((RouteType)DCCEXInbound::getNumber(2));
+            // r->setRouteName(DCCEXInbound::getSafeText(3));
+            // r->setHasReceivedDetails();
+            r->setType(type);
+            r->setName(name);
+        } else {
+            if (r->getName()==nullptr) {
+                missingRoutes=true;
             }
-            if (rslt) {
-                routeListFullyReceived = true;
-                console->println(F("processRoutesEntry(): received all"));
-                delegate->receivedRouteList(routes.size());
-            }            
-        } 
+        }
+    }
+
+    if (!missingRoutes) {
+        routeListFullyReceived=true;
+        console->println(F("processRoutesEntry(): received all"));
+        delegate->receivedRouteList(routes->getCount());
     }
     // console->println(F("processRouteEntry() end"));
 }

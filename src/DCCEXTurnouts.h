@@ -3,17 +3,6 @@
 
 #include <Arduino.h>
 
-// enum TurnoutStates {
-//   TurnoutClosed = 0,
-//   TurnoutThrown = 1,
-//   TurnoutResponseClosed = 'C',
-//   TurnoutResponseThrown = 'T',
-//   TurnoutClose = 0,
-//   TurnoutThrow = 1,
-//   TurnoutToggle = 2,
-//   TurnoutExamine = 9,
-// };
-
 class Turnout {
 public:
   /// @brief Constructor
