@@ -442,7 +442,7 @@ void DCCEXProtocol::processTurnoutList() {
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
         // turnouts.add(new Turnout(id, TurnoutClosed));
-        new Turnout(id, 0);
+        new Turnout(id, false);
         sendTurnoutEntryRequest(id);
     }
     // console->println(F("processTurnoutList(): end"));
@@ -536,8 +536,8 @@ void DCCEXProtocol::throwTurnout(int turnoutId) {
 void DCCEXProtocol::toggleTurnout(int turnoutId) {
     for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
         if (t->getId()==turnoutId) {
-            bool thrown=!t->getThrown();
-            sprintf(outboundCommand, "<T %d %d", turnoutId, thrown);
+            bool thrown=t->getThrown() ? 0 : 1;
+            sprintf(outboundCommand, "<T %d %d>", turnoutId, thrown);
             sendCommand();
         }
     }

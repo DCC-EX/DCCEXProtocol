@@ -17,8 +17,8 @@
 class Turnout {
 public:
   /// @brief Constructor
-  /// @param id 
-  /// @param _Thrown 
+  /// @param id Turnout ID
+  /// @param thrown Bool for turnout thrown (0 closed, 1 thrown)
   Turnout(int id, bool thrown);
   
   /// @brief Set thrown state (1 thrown, 0 closed)
