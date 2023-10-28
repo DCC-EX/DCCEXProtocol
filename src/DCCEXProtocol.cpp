@@ -432,7 +432,8 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
 void DCCEXProtocol::processTurnoutList() {
     // <jT id1 id2 id3 ...>
     // console->println(F("processTurnoutList()"));
-    if (turnouts.size()>0) { // already have a turnouts list so this is an update
+    // if (turnouts.size()>0) { // already have a turnouts list so this is an update
+    if (turnouts!=nullptr) {
         // turnouts.clear();
         console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
         return;
@@ -440,7 +441,8 @@ void DCCEXProtocol::processTurnoutList() {
 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
-        turnouts.add(new Turnout(id, TurnoutClosed));
+        // turnouts.add(new Turnout(id, TurnoutClosed));
+        new Turnout(id, 0);
         sendTurnoutEntryRequest(id);
     }
     // console->println(F("processTurnoutList(): end"));
@@ -463,19 +465,24 @@ void DCCEXProtocol::processTurnoutEntry() {
     // console->println(F("processTurnoutEntry()"));
     //find the turnout entry to update
     int id=DCCEXInbound::getNumber(1);
-    TurnoutStates state=DCCEXInbound::getNumber(2)==1 ? TurnoutThrown : TurnoutClosed;
+    // TurnoutStates state=DCCEXInbound::getNumber(2)==1 ? TurnoutThrown : TurnoutClosed;
+    bool thrown = DCCEXInbound::getNumber(2);
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
 
-    for (int i=0; i<turnouts.size(); i++) {
-        auto t=turnouts.get(i);
-        if (t->getTurnoutId()==id) {
-            t->setTurnoutId(id);
-            t->setTurnoutState(state);
-            t->setTurnoutName(name);
-            t->setHasReceivedDetails();
+    // for (int i=0; i<turnouts.size(); i++) {
+        // auto t=turnouts.get(i);
+    for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
+        if (t->getId()==id) {
+            // t->setTurnoutId(id);
+            // t->setTurnoutState(state);
+            // t->setTurnoutName(name);
+            // t->setHasReceivedDetails();
+            t->setName(name);
+            t->setThrown(thrown);
         } else {
-            if (!t->getHasReceivedDetails()) {
+            // if (!t->getHasReceivedDetails()) {
+            if (t->getName()==nullptr) {
                 // console->print(F("processTurnoutsEntry(): not received yet: ~"));
                 // console->print(t->getTurnoutName());
                 // console->print(F("~ "));
@@ -487,28 +494,53 @@ void DCCEXProtocol::processTurnoutEntry() {
     if (!missingTurnouts) {
         turnoutListFullyReceived=true;
         console->println(F("processTurnoutsEntry(): received all"));
-        delegate->receivedTurnoutList(turnouts.size());
+        // delegate->receivedTurnoutList(turnouts.size());
+        delegate->receivedTurnoutList(turnouts->getCount());
     }
     // console->println(F("processTurnoutEntry() end"));
 }
 
 // find the turnout/point in the turnout list by id. return a pointer or null is not found
 Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
-    for (int i = 0; i < turnouts.size(); i++) {
-        Turnout* turnout = turnouts.get(i);
-        if (turnout->getTurnoutId() == turnoutId) {
+    // for (int i = 0; i < turnouts.size(); i++) {
+    //     Turnout* turnout = turnouts.get(i);
+    for (Turnout* turnout=turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
+        if (turnout->getId() == turnoutId) {
             return turnout;
         }
     }
     return nullptr;  // not found
 }
 
-bool DCCEXProtocol::sendTurnoutAction(int turnoutId, TurnoutStates action) {
+// bool DCCEXProtocol::sendTurnoutAction(int turnoutId, bool thrown) {
+//     if (delegate) {
+//         sprintf(outboundCommand, "<T %d %d>", turnoutId, thrown);
+//         sendCommand();
+//     }
+//     return true;
+// }
+void DCCEXProtocol::closeTurnout(int turnoutId) {
     if (delegate) {
-        sprintf(outboundCommand, "<T %d %d>", turnoutId, action);
+        sprintf(outboundCommand, "<T %d 0>", turnoutId);
         sendCommand();
     }
-    return true;
+}
+
+void DCCEXProtocol::throwTurnout(int turnoutId) {
+    if (delegate) {
+        sprintf(outboundCommand, "<T %d 1>", turnoutId);
+        sendCommand();
+    }
+}
+
+void DCCEXProtocol::toggleTurnout(int turnoutId) {
+    for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
+        if (t->getId()==turnoutId) {
+            bool thrown=!t->getThrown();
+            sprintf(outboundCommand, "<T %d %d", turnoutId, thrown);
+            sendCommand();
+        }
+    }
 }
 
 Turntable* DCCEXProtocol::getTurntableById(int turntableId) {
@@ -527,14 +559,21 @@ void DCCEXProtocol::processTurnoutAction() { //<H id state>
     if (DCCEXInbound::getParameterCount()!=2) return;
     //find the Turnout entry to update
     int id = DCCEXInbound::getNumber(0);
-    TurnoutStates state = DCCEXInbound::getNumber(1)==1 ? TurnoutThrown : TurnoutClosed;
-    for (int i=0; i<turnouts.size(); i++) {
-        auto t=turnouts.get(i);
-        if (t->getTurnoutId()==id) {
-            t->setTurnoutState(state);
-            delegate->receivedTurnoutAction(id, state);
+    // TurnoutStates state = DCCEXInbound::getNumber(1)==1 ? TurnoutThrown : TurnoutClosed;
+    bool thrown = DCCEXInbound::getNumber(1);
+    for (auto t=Turnout::getFirst(); t ; t=t->getNext()) {
+        if (t->getId()==id) {
+            t->setThrown(thrown);
+            delegate->receivedTurnoutAction(id, thrown);
         }
     }
+    // for (int i=0; i<turnouts.size(); i++) {
+    //     auto t=turnouts.get(i);
+    //     if (t->getTurnoutId()==id) {
+    //         t->setTurnoutState(state);
+    //         delegate->receivedTurnoutAction(id, state);
+    //     }
+    // }
     // console->println(F("processTurnoutAction(): end"));
 }
 
@@ -1159,27 +1198,27 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
     return -1;  //not found
 }
 
-int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
-    if (turnouts.size()>0) {
-        for (int i=0; i<turnouts.size(); i++) {
-            if (turnouts.get(i)->getTurnoutId()==id) {
-                return i;
-            }
-        }
-    }
-    return -1;
-}
+// int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
+//     if (turnouts.size()>0) {
+//         for (int i=0; i<turnouts.size(); i++) {
+//             if (turnouts.get(i)->getTurnoutId()==id) {
+//                 return i;
+//             }
+//         }
+//     }
+//     return -1;
+// }
 
-int DCCEXProtocol::findRouteListPositionFromId(int id) {
-    if (routes.size()>0) {
-        for (int i=0; i<routes.size(); i++) {
-            if (routes.get(i)->getRouteId()==id) {
-                return i;
-            }
-        }
-    }
-    return -1;
-}
+// int DCCEXProtocol::findRouteListPositionFromId(int id) {
+//     if (routes.size()>0) {
+//         for (int i=0; i<routes.size(); i++) {
+//             if (routes.get(i)->getRouteId()==id) {
+//                 return i;
+//             }
+//         }
+//     }
+//     return -1;
+// }
 
 int DCCEXProtocol::findTurntableListPositionFromId(int id) {
     if (turntables.size()>0) {
@@ -1195,7 +1234,7 @@ int DCCEXProtocol::findTurntableListPositionFromId(int id) {
 char* DCCEXProtocol::nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
     char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
     int i = 0; 
-    int j;
+    size_t j;
     bool started = false;
     for (j=startAt; j<strlen(serverDescription) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
         if (started) {

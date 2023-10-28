@@ -88,7 +88,8 @@ class DCCEXProtocolDelegate {
 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    virtual void receivedTurnoutAction(int turnoutId, TurnoutStates state) { }
+    virtual void receivedTurnoutAction(int turnoutId, bool thrown) { }
+    // virtual void receivedTurnoutAction(int turnoutId, TurnoutStates state) { }
     virtual void receivedRouteAction(int routeId, RouteState state) { }
     virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
 };
@@ -122,7 +123,8 @@ class DCCEXProtocol {
 
     Consist throttleConsists[MAX_THROTTLES];
     LinkedList<Loco*> roster = LinkedList<Loco*>();
-    LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
+    // LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
+    Turnout* turnouts=nullptr;
     LinkedList<Route*> routes = LinkedList<Route*>();
     LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
 
@@ -173,7 +175,11 @@ class DCCEXProtocol {
 	  bool sendTrackPower(TrackPower state, char track);
 
     Turnout* getTurnoutById(int turnoutId);
-    bool sendTurnoutAction(int turnoutId, TurnoutStates action);
+    // bool sendTurnoutAction(int turnoutId, TurnoutStates action);
+    // bool sendTurnoutAction(int turnoutId, bool thrown);
+    void closeTurnout(int turnoutId);
+    void throwTurnout(int turnoutId);
+    void toggleTurnout(int turnoutId);
 
     Turntable* getTurntableById(int turntableId);
 
@@ -255,8 +261,8 @@ class DCCEXProtocol {
 
     //helper functions
     int findThrottleWithLoco(int address);
-    int findTurnoutListPositionFromId(int id);
-    int findRouteListPositionFromId(int id);
+    // int findTurnoutListPositionFromId(int id);
+    // int findRouteListPositionFromId(int id);
     int findTurntableListPositionFromId(int id);
     char* nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
