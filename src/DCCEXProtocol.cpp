@@ -557,7 +557,7 @@ void DCCEXProtocol::processRouteList() {
     // console->println(F("processRouteList()"));
     if (delegate) {
         // if (routes.size()>0) { // already have a routes list so this is an update
-        if (routes->getCount()>0) {
+        if (routes!=nullptr) {
             // routes.clear();
             console->println(F("processRouteList(): Routes/Automation list already received. Ignoring this!"));
             return;
