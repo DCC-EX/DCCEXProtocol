@@ -624,15 +624,13 @@ void DCCEXProtocol::processRouteEntry() {
 
 void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
     // console->println(F("processTurntableList(): "));
-    // if (turntables.size()>0) { // already have a turntables list so this is an update
-    if (turntables!=nullptr) {
+    if (turntables!=nullptr) {  // already have a turntables list so this is an update
         // turntables.clear();
         console->println(F("processTurntableList(): Turntable list already received. Ignoring this!"));
         return;
     } 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int id = DCCEXInbound::getNumber(i);
-        // turntables.add(new Turntable(id, TurntableTypeUnknown, 0, 0));
         new Turntable(id);
         sendTurntableEntryRequest(id);
         sendTurntableIndexEntryRequest(id);
@@ -672,18 +670,12 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
     int indexCount=DCCEXInbound::getNumber(4);
     char *name=DCCEXInbound::getSafeText(5);
 
-    // for (int i=0; i<turntables.size(); i++) {
-    //     auto tt = turntables.get(i);
     for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
         if (tt->getId()==id) {
             tt->setType(ttType);
             tt->setIndex(index);
             tt->setNumberOfIndexes(indexCount);
             tt->setName(name);
-            // tt->setIndex(pos);
-            // tt->setIndexCount(posCount);
-            // tt->setTurntableName(name);
-            // tt->setHasReceivedDetails();
         }
     }
     // console->println(F("processTurntableEntry(): end"));
@@ -700,30 +692,21 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         char *name=DCCEXInbound::getSafeText(4);
 
         Turntable* tt=getTurntableById(ttId);
+        if (!tt) return;
         
-        // if (tt && !tt->getHasReceivedIndexes()) {
-        if (tt) {
-            console->println(F("getIndexList"));
+        int numIndexes=tt->getNumberOfIndexes();
+        int idxCount=tt->getIndexCount();
+        
+        if (numIndexes!=idxCount) {
             TurntableIndex* newIndex=new TurntableIndex(index, angle, name);
             tt->addIndex(newIndex);
-            console->println(newIndex->getCount());
-            // tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
-            // if (tt->getTurntableIndexCount()==tt->getTurntableNumberOfIndexes()) {
-            //     tt->setHasReceivedIndexes();
-            // }
         }
 
         bool receivedAll=true;
 
-        // for (int i=0; i<turntables.size(); i++) {
-        //     auto tt=turntables.get(i);
-        //     if (!tt->getHasReceivedDetails() || !tt->getHasReceivedIndexes()) receivedAll=false;
-        // }
-
         for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
-            TurntableIndex* index=tt->getIndexList();
             int numIndexes=tt->getNumberOfIndexes();
-            int indexCount=index->getCount();
+            int indexCount=tt->getIndexCount();
             console->print(F("Check number|count: "));
             console->print(numIndexes);
             console->print(F("|"));
@@ -743,21 +726,15 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
 //private
 void DCCEXProtocol::processTurntableAction() { // <I id position moving>
     // console->println(F("processTurntableAction(): "));
-    if (delegate) {
-        int id=DCCEXInbound::getNumber(0);
-        int newIndex=DCCEXInbound::getNumber(1);
-        bool moving=DCCEXInbound::getNumber(2);
-        Turntable* tt=getTurntableById(id);
-        if (tt && tt->getIndex()!=newIndex) {
-            tt->setIndex(newIndex);
-            tt->setMoving(moving);
-        }
-        // int pos = findTurntableListPositionFromId(id);
-        // if (pos!=newPos) {
-        //     turntables.get(pos)->actionTurntableExternalChange(newPos, state);
-        // }
-        delegate->receivedTurntableAction(id, newIndex, moving);
+    int id=DCCEXInbound::getNumber(0);
+    int newIndex=DCCEXInbound::getNumber(1);
+    bool moving=DCCEXInbound::getNumber(2);
+    Turntable* tt=getTurntableById(id);
+    if (tt && tt->getIndex()!=newIndex) {
+        tt->setIndex(newIndex);
+        tt->setMoving(moving);
     }
+    delegate->receivedTurntableAction(id, newIndex, moving);
     // console->println(F("processTurntableAction(): end"));
 }
 

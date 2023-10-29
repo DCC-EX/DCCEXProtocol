@@ -27,10 +27,6 @@ public:
   /// @brief Get index name
   char* getName();
 
-  /// @brief Get count of indexes in list
-  /// @return 
-  int getCount();
-
   /// @brief Get first TurntableIndex object
   /// @return 
   static TurntableIndex* getFirst();
@@ -43,7 +39,6 @@ private:
   int _id;
   int _angle;
   char* _name;
-  int _count=0;
   static TurntableIndex* _first;
   TurntableIndex* _next;
 
@@ -105,6 +100,10 @@ public:
   /// @return 
   int getCount();
 
+  /// @brief Get the count of indexes added to the index list
+  /// @return 
+  int getIndexCount();
+
   /// @brief Get the first turntable object
   /// @return 
   static Turntable* getFirst();
@@ -130,9 +129,10 @@ private:
   char* _name;
   bool _isMoving;
   int _count=0;
+  int _indexCount;
   static Turntable* _first;
   Turntable* _next;
-  TurntableIndex* _indexList=nullptr;
+  TurntableIndex* _indexList;
 
 };
 
