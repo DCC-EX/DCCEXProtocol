@@ -702,9 +702,11 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         Turntable* tt=getTurntableById(ttId);
         
         // if (tt && !tt->getHasReceivedIndexes()) {
-        if (tt && tt->getIndexList()!=nullptr) {
+        if (tt) {
+            console->println(F("getIndexList"));
             TurntableIndex* newIndex=new TurntableIndex(index, angle, name);
             tt->addIndex(newIndex);
+            console->println(newIndex->getCount());
             // tt->turntableIndexes.add(new TurntableIndex(index,name,angle));
             // if (tt->getTurntableIndexCount()==tt->getTurntableNumberOfIndexes()) {
             //     tt->setHasReceivedIndexes();
@@ -720,7 +722,13 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
 
         for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
             TurntableIndex* index=tt->getIndexList();
-            if (tt->getName()==nullptr || (tt->getNumberOfIndexes()!=index->getCount())) receivedAll=false;
+            int numIndexes=tt->getNumberOfIndexes();
+            int indexCount=index->getCount();
+            console->print(F("Check number|count: "));
+            console->print(numIndexes);
+            console->print(F("|"));
+            console->println(indexCount);
+            if (tt->getName()==nullptr || (numIndexes!=indexCount)) receivedAll=false;
         }
 
         if (receivedAll) {
