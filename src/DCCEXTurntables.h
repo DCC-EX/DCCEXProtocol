@@ -4,70 +4,136 @@
 #include <Arduino.h>
 #include <LinkedList.h>
 
-enum TurntableState {
-    TurntableStationary = 0,
-    TurntableMoving = 1,
-};
-
 enum TurntableType {
-    TurntableTypeDCC = 0,
-    TurntableTypeEXTT = 1,
-    TurntableTypeUnknown = 9,
+  TurntableTypeDCC = 0,
+  TurntableTypeEXTT = 1,
+  TurntableTypeUnknown = 9,
 };
 
 class TurntableIndex {
-    public:
-        int turntableIndexId;
-        int turntableIndexIndex;
-        char* turntableIndexName;
-        int turntableIndexAngle;
-        bool hasReceivedDetail;
+public:
+  /// @brief Constructor
+  /// @param id Index ID
+  TurntableIndex(int id, int angle, char* name);
 
-        TurntableIndex() {}
-        TurntableIndex(int index, char* name, int angle);
-        char* getTurntableIndexName();
-        int getTurntableIndexId();
-        int getTurntableIndexIndex();
-        int getTurntableIndexAngle();
+  /// @brief Get index ID (0 is always home)
+  /// @return 
+  int getId();
+
+  /// @brief Get angle of the index from home
+  /// @return 
+  int getAngle();
+
+  /// @brief Get index name
+  char* getName();
+
+  /// @brief Get count of indexes in list
+  /// @return 
+  int getCount();
+
+  /// @brief Get first TurntableIndex object
+  /// @return 
+  static TurntableIndex* getFirst();
+
+  /// @brief Get next TurntableIndex object
+  /// @return 
+  TurntableIndex* getNext();
+
+private:
+  int _id;
+  int _angle;
+  char* _name;
+  int _count=0;
+  static TurntableIndex* _first;
+  TurntableIndex* _next;
+
+  friend class Turntable;
+
 };
 
 class Turntable {
-    public:
-        Turntable() {}
-        // Turntable(int id, char* name, TurntableType type, int position, int indexCount);
-        Turntable(int id, TurntableType type, int position, int indexCount);
-        bool addTurntableIndex(int index, char* indexName, int indexAngle);
-        LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
-        bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
-        int getTurntableIndexCount(); // what was listed in the original definition
- 
-        int getTurntableId();
-        // bool setTurntableName(char* name);
-        void setTurntableName(char* name);
-        char* getTurntableName();
-        bool setTurntableCurrentPosition(int index);
-        bool setTurntableType(TurntableType type);
-        TurntableType getTurntableType();
-        int getTurntableCurrentPosition();
-        int getTurntableNumberOfIndexes();
-        TurntableIndex* getTurntableIndexAt(int positionInLinkedList);
-        TurntableIndex* getTurntableIndex(int indexId);
-        TurntableState getTurntableState();
-        bool actionTurntableExternalChange(int index, TurntableState state);
-        void setHasReceivedDetails();
-        bool getHasReceivedDetails();
-        void setHasReceivedIndexes();
-        bool getHasReceivedIndexes();
+public:
+  /// @brief Constructor
+  /// @param id Turntable ID
+  Turntable(int id);
 
-    private:
-        int turntableId;
-        TurntableType turntableType;
-        char* turntableName;
-        int turntableCurrentPosition;
-        bool turntableIsMoving;
-        bool hasReceivedDetail;
-        bool hasReceivedIndexes;
-        int turnTableIndexCount; // what was listed in the original definition
+  /// @brief Get turntable ID
+  /// @return 
+  int getId();
+
+  /// @brief Set turntable type
+  /// @param type TurntableTypeDCC, TurntableTypeEXTT
+  void setType(TurntableType type);
+
+  /// @brief Get turntable type
+  /// @return 
+  TurntableType getType();
+
+  /// @brief Set the current index for the turntable
+  /// @param index 
+  void setIndex(int index);
+
+  /// @brief Get the current index for the turntable
+  /// @return 
+  int getIndex();
+
+  /// @brief Set the number of indexes the turntable has defined
+  /// @param indexCount 
+  void setNumberOfIndexes(int numberOfIndexes);
+
+  /// @brief Get the number of indexes defined for the turntable
+  /// @return 
+  int getNumberOfIndexes();
+
+  /// @brief Set the turntable name
+  /// @param name 
+  void setName(char* name);
+
+  /// @brief  Get the turntable name
+  /// @return 
+  char* getName();
+
+  /// @brief Set the movement state (0 stationary, 1 moving)
+  /// @param moving 
+  void setMoving(bool moving);
+
+  /// @brief Get movement state (0 stationary, 1 moving)
+  /// @return 
+  bool isMoving();
+
+  /// @brief Get the number of turntables
+  /// @return 
+  int getCount();
+
+  /// @brief Get the first turntable object
+  /// @return 
+  static Turntable* getFirst();
+
+  /// @brief Get the next turntable object
+  /// @return 
+  Turntable* getNext();
+
+  /// @brief Add a turntable index object to the index list for this turntable
+  /// @param index - a TurntableIndex object
+  /// @return 
+  void addIndex(TurntableIndex* index);
+
+  /// @brief Get associated turntable index list
+  /// @return 
+  TurntableIndex* getIndexList();
+
+private:
+  int _id;
+  TurntableType _type;
+  int _index;
+  int _numberOfIndexes;
+  char* _name;
+  bool _isMoving;
+  int _count=0;
+  static Turntable* _first;
+  Turntable* _next;
+  TurntableIndex* _indexList=nullptr;
+
 };
 
 #endif
