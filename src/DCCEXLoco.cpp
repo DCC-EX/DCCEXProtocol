@@ -3,149 +3,278 @@
 
 // class Loco
 
+Loco* Loco::_first=nullptr;
+
 Loco::Loco(int address, LocoSource source) {
-    locoAddress = address;
-    locoSource = source;
-    locoDirection = Forward;
-    locoSpeed = 0;
-    rosterReceivedDetails = false;
-    locoName = nullptr;
-    _functionStates = 0;
-    _momentaryFlags = 0;
-}
-
-bool Loco::isFunctionOn(int functionNumber) {
-    return _functionStates & 1<<functionNumber;
-}
-
-bool Loco::setLocoSpeed(int speed) {
-    if (locoSpeed!=speed) {
-        locoSpeed = speed;
-        // sendLocoAction(locoAddress, speed, locoDirection);
+  _address=address;
+  _source=source;
+  _direction=Forward;
+  _speed=0;
+  _name=nullptr;
+  _functionStates=0;
+  _momentaryFlags=0;
+  _next=nullptr;
+  if (!_first) {
+    _first=this;
+  } else {
+    Loco* current=_first;
+    while (current->_next!=nullptr) {
+      current=current->_next;
     }
-    locoSpeed = speed;
-    return true;
+    current->_next=this;
+  }
+  _count++;
 }
 
-bool Loco::setLocoDirection(Direction direction) {
-    if (locoDirection!=direction) {
-        locoDirection = direction;
-    }
-    locoDirection = direction;
-    return true;
+int Loco::getAddress() {
+  return _address;
 }
 
-int Loco::getLocoAddress() {
-    return locoAddress;
+void Loco::setName(char* name) {
+  _name=name;
 }
 
-bool Loco::setLocoName(char* name) {
-    locoName = name;
-    return true;
+char* Loco::getName() {
+  return _name;
 }
 
-char* Loco::getLocoName() {
-    return locoName;
+void Loco::setSpeed(int speed) {
+  _speed=speed;
 }
 
-bool Loco::setLocoSource(LocoSource source) {
-    locoSource = source;
-    return true;
+int Loco::getSpeed() {
+  return _speed;
 }
 
-LocoSource Loco::getLocoSource() {
-    return locoSource;
+void Loco::setDirection(Direction direction) {
+  _direction=direction;
 }
 
-int  Loco::getLocoSpeed() {
-    return locoSpeed;
+Direction Loco::getDirection() {
+  return (Direction)_direction;
 }
 
-Direction Loco::getLocoDirection() {
-    return locoDirection;
-}
-
-void Loco::setIsFromRosterAndReceivedDetails() {
-    rosterReceivedDetails = true;
-}
-
-bool Loco::getIsFromRosterAndReceivedDetails() {
-    if (locoSource==LocoSourceRoster && rosterReceivedDetails) {
-        return true;
-    }
-    return false;
-}
-
-bool Loco::clearLocoNameAndFunctions() {
-    if (locoName != nullptr) {
-        free(locoName);
-        locoName=nullptr; 
-    }
-    // locoFunctions.clearFunctionNames();
-    for (uint i=0; i<MAX_FUNCTIONS; i++) {
-        if (_functionNames[i] != nullptr) {
-            free(_functionNames[i]);
-            _functionNames[i] = nullptr;
-        }
-    }
-    return true;
+LocoSource Loco::getSource() {
+  return (LocoSource)_source;
 }
 
 void Loco::setupFunctions(char *functionNames) {
-    // Importtant note: 
-    // The functionNames string is modified in place. 
-    //   console->print(F("Splitting \""));
-    //   console->print(functionNames);
-    //   console->println(F("\""));
-    char * t=functionNames;
-    int fkey=0;
-    
-    while(*t) {
-        bool momentary=false;
-        if(*t=='*')  {
-            momentary=true;
-            t++;
-        }
-        char * fName=t;  // function name starts here
-        while(*t) { // loop completes at end of name ('/' or 0)
-            if (*t=='/') {
-            // found end of name
-            *t='\0'; // mark name ends here 
-            t++;
-            break;
-            }
-            t++;
-        }
+  // Importtant note: 
+  // The functionNames string is modified in place. 
+  //   console->print(F("Splitting \""));
+  //   console->print(functionNames);
+  //   console->println(F("\""));
+  char * t=functionNames;
+  int fkey=0;
 
-        // At this point we have a function key
-        // int fkey = function number 0....
-        // bool momentary = is it a momentary
-        // fName = pointer to the function name 
-        _functionNames[fkey] = fName;
-        if (momentary) {
-            _momentaryFlags |= 1<<fkey;
-        } else {
-            _momentaryFlags &= ~1<<fkey;
-        }
-        //    console->print("Function ");
-        //    console->print(fkey);
-        //    console->print(momentary ? F("  Momentary ") : F(""));
-        //    console->print(" ");
-        //    console->println(fName);
-        fkey++;
+  while(*t) {
+    bool momentary=false;
+    if(*t=='*')  {
+      momentary=true;
+      t++;
     }
+    char * fName=t;  // function name starts here
+    while(*t) { // loop completes at end of name ('/' or 0)
+      if (*t=='/') {
+      // found end of name
+      *t='\0'; // mark name ends here 
+      t++;
+      break;
+      }
+      t++;
+    }
+
+    // At this point we have a function key
+    // int fkey = function number 0....
+    // bool momentary = is it a momentary
+    // fName = pointer to the function name 
+    _functionNames[fkey] = fName;
+    if (momentary) {
+      _momentaryFlags |= 1<<fkey;
+    } else {
+      _momentaryFlags &= ~1<<fkey;
+    }
+    //    console->print("Function ");
+    //    console->print(fkey);
+    //    console->print(momentary ? F("  Momentary ") : F(""));
+    //    console->print(" ");
+    //    console->println(fName);
+    fkey++;
+  }
 }
 
-int Loco::getFunctionStates() {
-    return _functionStates;
+bool Loco::isFunctionOn(int function) {
+  return _functionStates & 1<<function;
 }
 
 void Loco::setFunctionStates(int functionStates) {
-    _functionStates=functionStates;
+  _functionStates=functionStates;
 }
+
+int Loco::getfunctionStates() {
+  return _functionStates;
+}
+
+
+/* OLD LOCO
+// Loco::Loco(int address, LocoSource source) {
+//     locoAddress = address;
+//     locoSource = source;
+//     locoDirection = Forward;
+//     locoSpeed = 0;
+//     rosterReceivedDetails = false;
+//     locoName = nullptr;
+//     _functionStates = 0;
+//     _momentaryFlags = 0;
+// }
+
+// bool Loco::isFunctionOn(int functionNumber) {
+//     return _functionStates & 1<<functionNumber;
+// }
+
+// bool Loco::setLocoSpeed(int speed) {
+//     if (locoSpeed!=speed) {
+//         locoSpeed = speed;
+//         // sendLocoAction(locoAddress, speed, locoDirection);
+//     }
+//     locoSpeed = speed;
+//     return true;
+// }
+
+// bool Loco::setLocoDirection(Direction direction) {
+//     if (locoDirection!=direction) {
+//         locoDirection = direction;
+//     }
+//     locoDirection = direction;
+//     return true;
+// }
+
+// int Loco::getLocoAddress() {
+//     return locoAddress;
+// }
+
+// bool Loco::setLocoName(char* name) {
+//     locoName = name;
+//     return true;
+// }
+
+// char* Loco::getLocoName() {
+//     return locoName;
+// }
+
+// bool Loco::setLocoSource(LocoSource source) {
+//     locoSource = source;
+//     return true;
+// }
+
+// LocoSource Loco::getLocoSource() {
+//     return locoSource;
+// }
+
+// int  Loco::getLocoSpeed() {
+//     return locoSpeed;
+// }
+
+// Direction Loco::getLocoDirection() {
+//     return locoDirection;
+// }
+
+// void Loco::setIsFromRosterAndReceivedDetails() {
+//     rosterReceivedDetails = true;
+// }
+
+// bool Loco::getIsFromRosterAndReceivedDetails() {
+//     if (locoSource==LocoSourceRoster && rosterReceivedDetails) {
+//         return true;
+//     }
+//     return false;
+// }
+
+// bool Loco::clearLocoNameAndFunctions() {
+//     if (locoName != nullptr) {
+//         free(locoName);
+//         locoName=nullptr; 
+//     }
+//     // locoFunctions.clearFunctionNames();
+//     for (uint i=0; i<MAX_FUNCTIONS; i++) {
+//         if (_functionNames[i] != nullptr) {
+//             free(_functionNames[i]);
+//             _functionNames[i] = nullptr;
+//         }
+//     }
+//     return true;
+// }
+
+// void Loco::setupFunctions(char *functionNames) {
+//     // Importtant note: 
+//     // The functionNames string is modified in place. 
+//     //   console->print(F("Splitting \""));
+//     //   console->print(functionNames);
+//     //   console->println(F("\""));
+//     char * t=functionNames;
+//     int fkey=0;
+    
+//     while(*t) {
+//         bool momentary=false;
+//         if(*t=='*')  {
+//             momentary=true;
+//             t++;
+//         }
+//         char * fName=t;  // function name starts here
+//         while(*t) { // loop completes at end of name ('/' or 0)
+//             if (*t=='/') {
+//             // found end of name
+//             *t='\0'; // mark name ends here 
+//             t++;
+//             break;
+//             }
+//             t++;
+//         }
+
+//         // At this point we have a function key
+//         // int fkey = function number 0....
+//         // bool momentary = is it a momentary
+//         // fName = pointer to the function name 
+//         _functionNames[fkey] = fName;
+//         if (momentary) {
+//             _momentaryFlags |= 1<<fkey;
+//         } else {
+//             _momentaryFlags &= ~1<<fkey;
+//         }
+//         //    console->print("Function ");
+//         //    console->print(fkey);
+//         //    console->print(momentary ? F("  Momentary ") : F(""));
+//         //    console->print(" ");
+//         //    console->println(fName);
+//         fkey++;
+//     }
+// }
+
+// int Loco::getFunctionStates() {
+//     return _functionStates;
+// }
+
+// void Loco::setFunctionStates(int functionStates) {
+//     _functionStates=functionStates;
+// }
+OLD LOCO END */
 
 // class ConsistLoco : public Loco
 
+ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing)
+: Loco::Loco(address, source) {
+  _facing=facing;
+}
+
+void ConsistLoco::setFacing(Facing facing) {
+  _facing=facing;
+}
+
+Facing ConsistLoco::getFacing() {
+  return (Facing)_facing;
+}
+
+/* OLD CONSISTLOCO
 ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing) 
 : Loco::Loco(address, source) {
       consistLocoFacing = facing;
@@ -159,9 +288,79 @@ bool ConsistLoco::setConsistLocoFacing(Facing facing) {
 Facing ConsistLoco::getConsistLocoFacing() {
     return consistLocoFacing;
 }
+END OLD CONSISTLOCO */
 
 // class Consist
 
+Consist::Consist(char* name) {
+  _name=name;
+  _count=0;
+  _speed=0;
+  _direction=Forward;
+  _consistLocos=nullptr;
+}
+
+char* Consist::getName() {
+  return _name;
+}
+
+void Consist::addFromRoster(Loco* loco, Facing facing) {
+  _addLoco(loco, facing);
+}
+
+void Consist::addFromEntry(int address, Facing facing) {
+  Loco* loco = new Loco(address, LocoSourceEntry);
+  _addLoco(loco, facing);
+}
+
+void Consist::releaseAll() {
+
+}
+
+void Consist::releaseLoco(int address) {
+
+}
+
+int Consist::getLocoCount() {
+  return _count;
+}
+
+ConsistLoco* Consist::getLocoAtPosition(int position) {
+
+}
+
+int Consist::getLocoPosition(int address) {
+
+}
+
+void Consist::setLocoPosition(int address, int position) {
+
+}
+
+void Consist::setSpeed(int speed) {
+  _speed=speed;
+}
+
+int Consist::getSpeed() {
+  return _speed;
+}
+
+void Consist::setDirection(Direction direction) {
+  _direction=direction;
+}
+
+Direction Consist::getDirection() {
+  return(Direction)_direction;
+}
+
+// private functions
+
+void Consist::_addLoco(Loco* loco, Facing facing) {
+  int address=loco->getAddress();
+  LocoSource source=loco->getSource();
+}
+
+/* OLD CONSIST
 Consist::Consist(char* name) {
     consistName = name;
 }
@@ -380,3 +579,4 @@ bool Consist::setConsistName(char* name) {
 char* Consist::getConsistName() {
     return consistName;
 }
+END OLD CONSIST */

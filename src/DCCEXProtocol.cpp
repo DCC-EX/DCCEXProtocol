@@ -363,17 +363,17 @@ void DCCEXProtocol::processTrackPower() {
 //private
 void DCCEXProtocol::processRosterList() {
     // console->println(F("processRosterList()"));
-    if (delegate) {
-        if (roster.size()>0) { // already have a roster so this is an update
-            // roster.clear();
-            console->println(F("processRosterList(): roster list already received. Ignoring this!"));
-            return;
-        } 
-        for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-            int address = DCCEXInbound::getNumber(i);
-            roster.add(new Loco(address, LocoSourceRoster));
-            sendRosterEntryRequest(address);
-        }
+    // if (roster.size()>0) { // already have a roster so this is an update
+    if (roster!=nullptr) {
+        // roster.clear();
+        console->println(F("processRosterList(): roster list already received. Ignoring this!"));
+        return;
+    } 
+    for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
+        int address = DCCEXInbound::getNumber(i);
+        // roster.add(new Loco(address, LocoSourceRoster));
+        new Loco(address, LocoSourceRoster);
+        sendRosterEntryRequest(address);
     }
     // console->println(F("processRosterList(): end"));
 }

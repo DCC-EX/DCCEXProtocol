@@ -168,7 +168,8 @@ class DCCEXProtocol {
     // *******************
 
     Consist throttleConsists[MAX_THROTTLES];
-    LinkedList<Loco*> roster = LinkedList<Loco*>();
+    // LinkedList<Loco*> roster = LinkedList<Loco*>();
+    Loco* roster=nullptr;
     Turnout* turnouts=nullptr;
     Route* routes=nullptr;
     Turntable* turntables=nullptr;
