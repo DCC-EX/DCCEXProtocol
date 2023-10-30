@@ -326,7 +326,9 @@ void Consist::addFromEntry(int address, Facing facing) {
 }
 
 void Consist::releaseAll() {
-  
+  if (_count>0) {
+    
+  }
 }
 
 void Consist::releaseLoco(int address) {
@@ -373,6 +375,7 @@ void Consist::_addLoco(Loco* loco, Facing facing) {
   if (getLocoPosition(address)>=0) return;  // Already in the consist
   if (_count==0) facing=FacingForward;  // Force forward facing for the first loco added
   ConsistLoco* conLoco=new ConsistLoco(address, source, facing);
+  
 }
 
 /* OLD CONSIST

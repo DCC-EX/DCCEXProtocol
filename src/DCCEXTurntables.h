@@ -27,10 +27,6 @@ public:
   /// @brief Get index name
   char* getName();
 
-  /// @brief Get first TurntableIndex object
-  /// @return 
-  static TurntableIndex* getFirst();
-
   /// @brief Get next TurntableIndex object
   /// @return 
   TurntableIndex* getNext();

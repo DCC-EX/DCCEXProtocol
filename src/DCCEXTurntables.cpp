@@ -24,10 +24,6 @@ char* TurntableIndex::getName() {
   return _name;
 }
 
-TurntableIndex* TurntableIndex::getFirst() {
-  return _first;
-}
-
 TurntableIndex* TurntableIndex::getNext() {
   return _next;
 }
