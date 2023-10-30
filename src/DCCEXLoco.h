@@ -79,6 +79,10 @@ public:
   /// @return 
   int getfunctionStates();
 
+  /// @brief Get count of locos
+  /// @return 
+  int getCount();
+
   /// @brief Get first Loco object
   /// @return 
   static Loco* getFirst();

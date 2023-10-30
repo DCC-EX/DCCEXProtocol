@@ -185,7 +185,7 @@ class DCCEXProtocol {
     /// @brief Send the command in the outbound command buffer to DCC-EX
     void sendCommand();
 
-    Loco findLocoInRoster(int address);
+    Loco* findLocoInRoster(int address);
     
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);

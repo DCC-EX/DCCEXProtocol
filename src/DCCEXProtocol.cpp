@@ -397,22 +397,23 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
     char *funcs=DCCEXInbound::getSafeText(3);
     bool missingRosters=false;
     
-    for (int i=0; i<roster.size(); i++) {
-        auto r=roster.get(i);
-        if (r->getLocoAddress() == address) {
+    // for (int i=0; i<roster.size(); i++) {
+    //     auto r=roster.get(i);
+    for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
+        if (r->getAddress() == address) {
             // console->print("processRosterEntry(): found: "); console->println(address);
 
-            r->setLocoName(name);
-            r->setLocoSource(LocoSourceRoster);
-            r->setIsFromRosterAndReceivedDetails();
+            r->setName(name);
+            // r->setSource(LocoSourceRoster);
+            // r->setIsFromRosterAndReceivedDetails();
             r->setupFunctions(funcs);
 
         } else {
-            if (!r->getIsFromRosterAndReceivedDetails()) {
+            if (r->getName()==nullptr) {
                 console->print(F("processRosterEntry(): not received yet: ~"));
-                console->print(r->getLocoName());
+                console->print(r->getName());
                 console->print("~ ");
-                console->println(r->getLocoAddress());
+                console->println(r->getAddress());
                 missingRosters=true;
             }
         }
@@ -420,7 +421,7 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
     if (!missingRosters) {
         rosterFullyReceived = true;
         console->println(F("processRosterEntry(): received all"));
-        delegate->receivedRosterList(roster.size());
+        delegate->receivedRosterList(roster->getCount());
     }
     // console->println(F("processRosterEntry(): end"));
 }
@@ -759,11 +760,11 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
     int functMap = getValidFunctionMap(DCCEXInbound::getNumber(3));
     int throttleNo = findThrottleWithLoco(address);
     if (throttleNo>=0) {
-        int rslt = throttleConsists[throttleNo].consistGetLocoPosition(address);
+        int rslt = throttleConsists[throttleNo].getLocoPosition(address);
         if (rslt==0) {  // ignore everything that is not the lead loco
             int speed = getSpeedFromSpeedByte(speedByte);
             Direction dir = getDirectionFromSpeedByte(speedByte);
-            int currentFunc = throttleConsists[throttleNo].consistGetLocoAtPosition(0)->getFunctionStates();
+            int currentFunc = throttleConsists[throttleNo].getLocoAtPosition(0)->getFunctionStates();
             if (functMap != currentFunc) {
                 int funcChanges=currentFunc^functMap;
                 for (int f=0; f<MAX_FUNCTIONS; f++) {
@@ -772,9 +773,12 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
                         delegate->receivedFunction(throttleNo, f, newState);
                     }
                 }
-                throttleConsists[throttleNo].consistGetLocoAtPosition(0)->setFunctionStates(functMap);
+                throttleConsists[throttleNo].getLocoAtPosition(0)->setFunctionStates(functMap);
             }
-            throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, functMap);
+            // throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, functMap);
+            throttleConsists[throttleNo].setSpeed(speed);
+            throttleConsists[throttleNo].setDirection(dir);
+            // throttleConsists[throttleNo]
 
             delegate->receivedSpeed(throttleNo, speed);
             delegate->receivedDirection(throttleNo, dir);
@@ -858,8 +862,8 @@ Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
 bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, bool pressed) {
     // console->println(F("sendFunction(): "));
     if (delegate) {
-        ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(0);
-        int address = conLoco->getLocoAddress();
+        ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(0);
+        int address = conLoco->getAddress();
         if (address>=0) {
             sendFunction(throttle, address, functionNumber, pressed);
         }
@@ -882,8 +886,8 @@ bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, 
 // by default only check the lead loco on the throttle
 bool DCCEXProtocol::isFunctionOn(int throttle, int functionNumber) {
     if (delegate) {
-        ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(0);
-        int address = conLoco->getLocoAddress();
+        ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(0);
+        int address = conLoco->getAddress();
         if (address>=0) {
             console->print(" '");
             console->print(conLoco->isFunctionOn(functionNumber));
@@ -901,14 +905,14 @@ bool DCCEXProtocol::isFunctionOn(int throttle, int functionNumber) {
 bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direction) {
     // console->println(F("sendThrottleAction(): "));
     if (delegate) {
-        if (throttleConsists[throttle].consistGetNumberOfLocos()>0) {
-            throttleConsists[throttle].consistSetSpeed(speed);
-            throttleConsists[throttle].consistSetDirection(direction);
-            for (int i=0; i<throttleConsists[throttle].consistGetNumberOfLocos(); i++) {
-                ConsistLoco* conLoco = throttleConsists[throttle].consistGetLocoAtPosition(i);
-                int address = conLoco->getLocoAddress();
+        if (throttleConsists[throttle].getLocoCount()>0) {
+            throttleConsists[throttle].setSpeed(speed);
+            throttleConsists[throttle].setDirection(direction);
+            for (int i=0; i<throttleConsists[throttle].getLocoCount(); i++) {
+                ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(i);
+                int address = conLoco->getAddress();
                 Direction dir = direction;
-                if (conLoco->getConsistLocoFacing()==Reverse) {
+                if (conLoco->getFacing()==Reverse) {
                     if (direction==Forward) {
                         dir = Reverse;
                     } else {
@@ -1134,15 +1138,21 @@ bool DCCEXProtocol::isTurntableListFullyReceived() {
 // helper functions
 
 //private
-Loco DCCEXProtocol::findLocoInRoster(int address) {
-    if (roster.size()>0) { 
-        for (int i=0; i<roster.size(); i++) {
-            if (roster.get(i)->getLocoAddress() == address) {
-                return *roster.get(i);
-            }
+Loco* DCCEXProtocol::findLocoInRoster(int address) {
+    // if (roster.size()>0) {
+    //     for (int i=0; i<roster.size(); i++) {
+    //         if (roster.get(i)->getLocoAddress() == address) {
+    //             return *roster.get(i);
+    //         }
+    //     }
+    // }
+    // return {};
+    if (roster==nullptr) return nullptr;
+    for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
+        if (r->getAddress()==address) {
+            return r;
         }
     }
-    return {};
 }
 
 // private
@@ -1150,20 +1160,24 @@ Loco DCCEXProtocol::findLocoInRoster(int address) {
 int DCCEXProtocol::findThrottleWithLoco(int address) {
     // console->println(F("findThrottleWithLoco()"));
     for (uint i=0; i<MAX_THROTTLES; i++) {
-        if (throttleConsists[i].consistGetNumberOfLocos()>0) {
-            int pos = throttleConsists[i].consistGetLocoPosition(address);
+        // if (throttleConsists[i].consistGetNumberOfLocos()>0) {
+        //     int pos = throttleConsists[i].consistGetLocoPosition(address);
 
-            // console->print(F("checking consist: ")); console->print(i); console->print(" found: "); console->println(pos);
-            // console->print(F("in consist: ")); console->println(throttleConsists[i].consistGetNumberOfLocos()); 
+        //     // console->print(F("checking consist: ")); console->print(i); console->print(" found: "); console->println(pos);
+        //     // console->print(F("in consist: ")); console->println(throttleConsists[i].consistGetNumberOfLocos()); 
 
-            // for (int j=0; j<throttleConsists[i].consistGetNumberOfLocos(); j++ ) {
-            //      console->print(F("checking consist X: ")); console->print(j); console->print(" is: "); console->println(throttleConsists[i].consistLocos.get(i)->getLocoAddress());
-            // }    
+        //     // for (int j=0; j<throttleConsists[i].consistGetNumberOfLocos(); j++ ) {
+        //     //      console->print(F("checking consist X: ")); console->print(j); console->print(" is: "); console->println(throttleConsists[i].consistLocos.get(i)->getLocoAddress());
+        //     // }    
 
-            if (pos>=0) {
-                // console->println(F("findThrottleWithLoco(): end. found"));
-                return i;
-            }
+        //     if (pos>=0) {
+        //         // console->println(F("findThrottleWithLoco(): end. found"));
+        //         return i;
+        //     }
+        // }
+        if (throttleConsists[i].getLocoCount()>0) {
+            int pos=throttleConsists[i].getLocoPosition(address);
+            return pos;
         }
     }
     // console->println(F("findThrottleWithLoco(): end. not found"));

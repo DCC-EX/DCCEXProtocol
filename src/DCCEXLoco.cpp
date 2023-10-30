@@ -115,6 +115,18 @@ int Loco::getfunctionStates() {
   return _functionStates;
 }
 
+int Loco::getCount() {
+  return _count;
+}
+
+Loco* Loco::getFirst() {
+  return _first;
+}
+
+Loco* Loco::getNext() {
+  return _next;
+}
+
 
 /* OLD LOCO
 // Loco::Loco(int address, LocoSource source) {
