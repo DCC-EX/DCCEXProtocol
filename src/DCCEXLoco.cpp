@@ -111,7 +111,7 @@ void Loco::setFunctionStates(int functionStates) {
   _functionStates=functionStates;
 }
 
-int Loco::getfunctionStates() {
+int Loco::getFunctionStates() {
   return _functionStates;
 }
 
@@ -326,7 +326,7 @@ void Consist::addFromEntry(int address, Facing facing) {
 }
 
 void Consist::releaseAll() {
-
+  
 }
 
 void Consist::releaseLoco(int address) {
@@ -342,7 +342,7 @@ ConsistLoco* Consist::getLocoAtPosition(int position) {
 }
 
 int Consist::getLocoPosition(int address) {
-
+  return -1;
 }
 
 void Consist::setLocoPosition(int address, int position) {
@@ -370,6 +370,9 @@ Direction Consist::getDirection() {
 void Consist::_addLoco(Loco* loco, Facing facing) {
   int address=loco->getAddress();
   LocoSource source=loco->getSource();
+  if (getLocoPosition(address)>=0) return;  // Already in the consist
+  if (_count==0) facing=FacingForward;  // Force forward facing for the first loco added
+  ConsistLoco* conLoco=new ConsistLoco(address, source, facing);
 }
 
 /* OLD CONSIST

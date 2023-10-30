@@ -77,7 +77,7 @@ public:
 
   /// @brief Get function states
   /// @return 
-  int getfunctionStates();
+  int getFunctionStates();
 
   /// @brief Get count of locos
   /// @return 
@@ -102,7 +102,7 @@ private:
   int32_t _momentaryFlags;
   static Loco* _first;
   Loco* _next;
-  int _count=0;
+  int _count;
 
 /* OLD LOCO
   // Loco() {}
@@ -171,6 +171,8 @@ END OLD CONSISTLOCO */
 
 class Consist {
 public:
+  Consist() {};
+  
   /// @brief Constructor
   /// @param name 
   Consist(char* name);

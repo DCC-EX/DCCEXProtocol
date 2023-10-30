@@ -708,10 +708,6 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
             int numIndexes=tt->getNumberOfIndexes();
             int indexCount=tt->getIndexCount();
-            console->print(F("Check number|count: "));
-            console->print(numIndexes);
-            console->print(F("|"));
-            console->println(indexCount);
             if (tt->getName()==nullptr || (numIndexes!=indexCount)) receivedAll=false;
         }
 
@@ -912,7 +908,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direct
                 ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(i);
                 int address = conLoco->getAddress();
                 Direction dir = direction;
-                if (conLoco->getFacing()==Reverse) {
+                if (conLoco->getFacing()==FacingReversed) {
                     if (direction==Forward) {
                         dir = Reverse;
                     } else {
@@ -1147,12 +1143,12 @@ Loco* DCCEXProtocol::findLocoInRoster(int address) {
     //     }
     // }
     // return {};
-    if (roster==nullptr) return nullptr;
     for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
         if (r->getAddress()==address) {
             return r;
         }
     }
+    return nullptr;
 }
 
 // private
