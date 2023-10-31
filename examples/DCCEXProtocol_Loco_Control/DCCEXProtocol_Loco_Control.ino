@@ -118,25 +118,25 @@ void loop() {
 
     // add a loco to throttle 0 from DCC address 11
     char dummyLocoName[] = "dummy loco";
-    dccexProtocol.throttleConsists[0].consistAddLocoFromAddress(11, dummyLocoName, FacingForward);
+    dccexProtocol.throttle[0].consistAddLocoFromAddress(11, dummyLocoName, FacingForward);
 
     // alternate method using the loco object
     // Loco loco(11, "dummy loco", LocoSourceEntry);
-    // dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
+    // dccexProtocol.throttle[0].consistAddLoco(loco, FacingForward);
 
-    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     if (dccexProtocol.roster.size()>=2) {
       // add a loco to throttle 1 from the second entry in the roster
 
       int addr = dccexProtocol.roster.get(1)->getLocoAddress();
-      dccexProtocol.throttleConsists[1].consistAddLocoFromRoster(dccexProtocol.roster, addr, FacingForward);
+      dccexProtocol.throttle[1].consistAddLocoFromRoster(dccexProtocol.roster, addr, FacingForward);
 
       // alternate method using the loco object
       // Loco loco2 = Loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());
-      // dccexProtocol.throttleConsists[1].consistAddLoco(loco2, FacingForward);
+      // dccexProtocol.throttle[1].consistAddLoco(loco2, FacingForward);
 
-      Serial.print("\n\nLocos in Consist 1: "); Serial.println(dccexProtocol.throttleConsists[1].consistGetNumberOfLocos());
+      Serial.print("\n\nLocos in Consist 1: "); Serial.println(dccexProtocol.throttle[1].consistGetNumberOfLocos());
     }
   }
 

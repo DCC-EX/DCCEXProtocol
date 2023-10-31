@@ -36,13 +36,12 @@
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
 
-static const int MAX_THROTTLES = 6;
-#define MAX_OUTBOUND_COMMAND_LENGTH 100
-#define MAX_SERVER_DESCRIPTION_PARAM_LENGTH 100
+const int MAX_OUTBOUND_COMMAND_LENGTH=100;
+const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH=100;
 
 // DCCEXInbound params
-const int MAX_COMMAND_PARAMS = 50;
-const int MAX_COMMAND_BUFFER = 500;
+const int MAX_COMMAND_PARAMS=50;
+const int MAX_COMMAND_BUFFER=500;
 
 // *****************************************************************
 
@@ -134,7 +133,7 @@ class DCCEXProtocol {
     
     /// @brief Constructor
     /// @param server 
-    DCCEXProtocol(bool server = false);
+    DCCEXProtocol(int maxThrottles=6, bool server=false);
 
     /// @brief Set the delegate object for callbacks
     /// @param delegate 
@@ -167,8 +166,8 @@ class DCCEXProtocol {
 
     // *******************
 
-    Consist throttleConsists[MAX_THROTTLES];
-    // LinkedList<Loco*> roster = LinkedList<Loco*>();
+    // Consist throttle[maxThrottles];
+    Consist *throttle;
     Loco* roster=nullptr;
     Turnout* turnouts=nullptr;
     Route* routes=nullptr;
@@ -241,6 +240,7 @@ class DCCEXProtocol {
 
   private:
   
+    int _maxThrottles;
     bool server;
     Stream *stream;
     Stream *console;

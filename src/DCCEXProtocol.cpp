@@ -47,9 +47,11 @@ static const int MAX_SPEED = 126;
 // ******************************************************************************************************
 // ******************************************************************************************************
 
-DCCEXProtocol::DCCEXProtocol(bool server) {
+DCCEXProtocol::DCCEXProtocol(int maxThrottles, bool server) {
 	// store server/client
     this->server = server;
+    _maxThrottles=maxThrottles;
+    throttle=new Consist[_maxThrottles];
 		
 	// init streams
     stream = &nullStream;
@@ -756,11 +758,14 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
     int functMap = getValidFunctionMap(DCCEXInbound::getNumber(3));
     int throttleNo = findThrottleWithLoco(address);
     if (throttleNo>=0) {
-        int rslt = throttleConsists[throttleNo].getLocoPosition(address);
-        if (rslt==0) {  // ignore everything that is not the lead loco
+        // int rslt = throttle[throttleNo].getLocoPosition(address);
+        ConsistLoco* loco=throttle[throttleNo].getConsistLocos();
+        if (loco->getAddress()==address) {    // ignore everything that is not the lead loco
+        // if (rslt==0) {  // ignore everything that is not the lead loco
             int speed = getSpeedFromSpeedByte(speedByte);
             Direction dir = getDirectionFromSpeedByte(speedByte);
-            int currentFunc = throttleConsists[throttleNo].getLocoAtPosition(0)->getFunctionStates();
+            // int currentFunc = throttle[throttleNo].getLocoAtPosition(0)->getFunctionStates();
+            int currentFunc = loco->getFunctionStates();
             if (functMap != currentFunc) {
                 int funcChanges=currentFunc^functMap;
                 for (int f=0; f<MAX_FUNCTIONS; f++) {
@@ -769,12 +774,13 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
                         delegate->receivedFunction(throttleNo, f, newState);
                     }
                 }
-                throttleConsists[throttleNo].getLocoAtPosition(0)->setFunctionStates(functMap);
+                // throttle[throttleNo].getLocoAtPosition(0)->setFunctionStates(functMap);
+                loco->setFunctionStates(functMap);
             }
-            // throttleConsists[throttleNo].actionConsistExternalChange(speed, dir, functMap);
-            throttleConsists[throttleNo].setSpeed(speed);
-            throttleConsists[throttleNo].setDirection(dir);
-            // throttleConsists[throttleNo]
+            // throttle[throttleNo].actionConsistExternalChange(speed, dir, functMap);
+            throttle[throttleNo].setSpeed(speed);
+            throttle[throttleNo].setDirection(dir);
+            // throttle[throttleNo]
 
             delegate->receivedSpeed(throttleNo, speed);
             delegate->receivedDirection(throttleNo, dir);
@@ -845,7 +851,7 @@ Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
         //????????????????? TODO
         // what if the throttle does not have a consist
         //
-        return throttleConsists[throttleNo];
+        return throttle[throttleNo];
     }
     // console->println(F("getThrottleConsist(): end"));
     return {};
@@ -855,13 +861,14 @@ Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
 // ******************************************************************************************************
 
 // by default only send to the lead loco
-bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, bool pressed) {
+bool DCCEXProtocol::sendFunction(int throttleNo, int functionNumber, bool pressed) {
     // console->println(F("sendFunction(): "));
     if (delegate) {
-        ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(0);
+        // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
+        ConsistLoco* conLoco = throttle[throttleNo].getConsistLocos();
         int address = conLoco->getAddress();
         if (address>=0) {
-            sendFunction(throttle, address, functionNumber, pressed);
+            sendFunction(throttleNo, address, functionNumber, pressed);
         }
     }
     // console->println(F("sendFunction(): end")); 
@@ -869,7 +876,7 @@ bool DCCEXProtocol::sendFunction(int throttle, int functionNumber, bool pressed)
 }
 
 // send to a specific address on the throttle
-bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, bool pressed) { // throttle is ignored
+bool DCCEXProtocol::sendFunction(int throttleNo, int address, int functionNumber, bool pressed) { // throttle is ignored
     // console->println(F("sendFunction(): "));
     if (delegate) {
         sprintf(outboundCommand, "<F %d %d %d>", address, functionNumber, pressed);
@@ -880,9 +887,10 @@ bool DCCEXProtocol::sendFunction(int throttle, int address, int functionNumber, 
 }
 
 // by default only check the lead loco on the throttle
-bool DCCEXProtocol::isFunctionOn(int throttle, int functionNumber) {
+bool DCCEXProtocol::isFunctionOn(int throttleNo, int functionNumber) {
     if (delegate) {
-        ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(0);
+        // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
+        ConsistLoco* conLoco = throttle[throttleNo].getConsistLocos();
         int address = conLoco->getAddress();
         if (address>=0) {
             console->print(" '");
@@ -898,14 +906,15 @@ bool DCCEXProtocol::isFunctionOn(int throttle, int functionNumber) {
 // ******************************************************************************************************
 // throttle
 
-bool DCCEXProtocol::sendThrottleAction(int throttle, int speed, Direction direction) {
+bool DCCEXProtocol::sendThrottleAction(int throttleNo, int speed, Direction direction) {
     // console->println(F("sendThrottleAction(): "));
     if (delegate) {
-        if (throttleConsists[throttle].getLocoCount()>0) {
-            throttleConsists[throttle].setSpeed(speed);
-            throttleConsists[throttle].setDirection(direction);
-            for (int i=0; i<throttleConsists[throttle].getLocoCount(); i++) {
-                ConsistLoco* conLoco = throttleConsists[throttle].getLocoAtPosition(i);
+        if (throttle[throttleNo].getLocoCount()>0) {
+            throttle[throttleNo].setSpeed(speed);
+            throttle[throttleNo].setDirection(direction);
+            // for (int i=0; i<throttle[throttleNo].getLocoCount(); i++) {
+            //     ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(i);
+            for (ConsistLoco* conLoco=throttle[throttleNo].getConsistLocos(); conLoco; conLoco=conLoco->getNextLoco()) {
                 int address = conLoco->getAddress();
                 Direction dir = direction;
                 if (conLoco->getFacing()==FacingReversed) {
@@ -1155,15 +1164,15 @@ Loco* DCCEXProtocol::findLocoInRoster(int address) {
 // find which, if any, throttle has this loco selected
 int DCCEXProtocol::findThrottleWithLoco(int address) {
     // console->println(F("findThrottleWithLoco()"));
-    for (uint i=0; i<MAX_THROTTLES; i++) {
-        // if (throttleConsists[i].consistGetNumberOfLocos()>0) {
-        //     int pos = throttleConsists[i].consistGetLocoPosition(address);
+    for (uint i=0; i<_maxThrottles; i++) {
+        // if (throttle[i].consistGetNumberOfLocos()>0) {
+        //     int pos = throttle[i].consistGetLocoPosition(address);
 
         //     // console->print(F("checking consist: ")); console->print(i); console->print(" found: "); console->println(pos);
-        //     // console->print(F("in consist: ")); console->println(throttleConsists[i].consistGetNumberOfLocos()); 
+        //     // console->print(F("in consist: ")); console->println(throttle[i].consistGetNumberOfLocos()); 
 
-        //     // for (int j=0; j<throttleConsists[i].consistGetNumberOfLocos(); j++ ) {
-        //     //      console->print(F("checking consist X: ")); console->print(j); console->print(" is: "); console->println(throttleConsists[i].consistLocos.get(i)->getLocoAddress());
+        //     // for (int j=0; j<throttle[i].consistGetNumberOfLocos(); j++ ) {
+        //     //      console->print(F("checking consist X: ")); console->print(j); console->print(" is: "); console->println(throttle[i].consistLocos.get(i)->getLocoAddress());
         //     // }    
 
         //     if (pos>=0) {
@@ -1171,9 +1180,11 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
         //         return i;
         //     }
         // }
-        if (throttleConsists[i].getLocoCount()>0) {
-            int pos=throttleConsists[i].getLocoPosition(address);
-            return pos;
+        if (throttle[i].getLocoCount()>0) {
+            // int pos=throttle[i].getLocoPosition(address);
+            for (ConsistLoco* cl=throttle[i].getConsistLocos(); cl; cl=cl->getNextLoco()) {
+                if (cl->getAddress()==address) return i;
+            }
         }
     }
     // console->println(F("findThrottleWithLoco(): end. not found"));

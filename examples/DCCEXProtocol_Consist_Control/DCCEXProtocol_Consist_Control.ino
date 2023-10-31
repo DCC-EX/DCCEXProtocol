@@ -142,20 +142,20 @@ void loop() {
     // add a loco to throttle 0 from DCC address 11
     char loco1name[] = "dummy loco 1";
     Loco loco(11, loco1name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco, FacingForward);
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 12
     char loco2name[] = "dummy loco 2";
     Loco loco2 = Loco(12, loco2name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco2, FacingForward);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco2, FacingForward);
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 13
     char loco3name[] = "dummy loco 3";
     Loco loco3 = Loco(13, loco3name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco3, FacingReversed);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco3, FacingReversed);
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
   }
 

@@ -70,7 +70,7 @@ This library can be retrieved via the Arduino IDE Library Manager.  Search for "
 
 To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.
 
-The protocol provides ```Consist throttleConsists[MAX_THROTTLES]```
+The protocol provides ```Consist throttle[MAX_THROTTLES]```
 
 To acquire a loco on throttle 0 (zero) (the first throttle), you must first create a ```Loco``` object.  Details for the Loco can either be a direct dcc address or an entry from the Roster.  e.g. 
 
@@ -82,7 +82,7 @@ from Roster Entry:
 
 ```loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());``` will create a loco from the second entry (1) in the Roster
 
-To then add the loco to the throttle use ```dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);``` to add the loco to Throttle 0. 
+To then add the loco to the throttle use ```dccexProtocol.throttle[0].consistAddLoco(loco, FacingForward);``` to add the loco to Throttle 0. 
 
 Control the speed and direction of all the locos on Throttle 0 with ```dccexProtocol.sendThrottleAction(0, speed, Forward);```
 
@@ -391,7 +391,7 @@ Used by ```Turntable```
 ## public Attributes
 
 ```
-Consist throttleConsists[MAX_THROTTLES];
+Consist throttle[MAX_THROTTLES];
 ```
 
 Linked List of type ```Consist```

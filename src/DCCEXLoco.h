@@ -102,7 +102,9 @@ private:
   int32_t _momentaryFlags;
   static Loco* _first;
   Loco* _next;
-  int _count;
+  int _count=0;
+
+  friend class Consist;
 
 /* OLD LOCO
   // Loco() {}
@@ -155,8 +157,15 @@ public:
   /// @return 
   Facing getFacing();
 
+  /// @brief Get the next consist loco object
+  /// @return 
+  ConsistLoco* getNextLoco();
+
 private:
   Facing _facing;
+  ConsistLoco* _nextConsistLoco;
+
+  friend class Consist;
 
 /*OLD CONSISTLOCO
   ConsistLoco() {};
@@ -171,11 +180,15 @@ END OLD CONSISTLOCO */
 
 class Consist {
 public:
-  Consist() {};
+  Consist();
   
   /// @brief Constructor
   /// @param name 
-  Consist(char* name);
+  // Consist(char* name);
+
+  /// @brief Set consist name
+  /// @param name 
+  void setName(char* name);
 
   /// @brief Get consist name
   /// @return 
@@ -202,20 +215,10 @@ public:
   /// @return 
   int getLocoCount();
 
-  /// @brief Get the loco object at the specified consist position
-  /// @param position 
-  /// @return 
-  ConsistLoco* getLocoAtPosition(int position);
-
-  /// @brief Get the position the specified loco address is at
+  /// @brief Check if the provided loco address is in the consist
   /// @param address 
   /// @return 
-  int getLocoPosition(int address);
-
-  /// @brief Set the position of the specified loco
-  /// @param address 
-  /// @param position 
-  void setLocoPosition(int address, int position);
+  bool inConsist(int address);
 
   /// @brief Set speed for the consist
   /// @param speed 
@@ -233,14 +236,16 @@ public:
   /// @return 
   Direction getDirection();
 
+  /// @brief Get the list of locos in the consist
+  /// @return 
+  ConsistLoco* getConsistLocos();
+
 private:
   int _speed;
   Direction _direction;
   char* _name;
-  int _count;
+  int _locoCount;
   ConsistLoco* _consistLocos;
-  static ConsistLoco* _first;
-  ConsistLoco* _next;
 
   /// @brief Add a loco object to the consist
   /// @param loco 
