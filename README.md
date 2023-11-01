@@ -59,13 +59,6 @@ Compile and run, you should see in the Serial monitor, after 20 second delays, t
 
 # Usage
 
-## Required Library
-
-```<LinkedList.h>```  // https://github.com/ivanseidel/LinkedList
-
-This library can be retrieved via the Arduino IDE Library Manager.  Search for "LinkedList" by Ivan Seidal.  The library has been tested with version ```1.3.3```
-
-
 ## Throttles
 
 To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.

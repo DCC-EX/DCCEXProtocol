@@ -29,7 +29,6 @@
 #define DCCEXPROTOCOL_H
 
 #include <Arduino.h>
-#include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
 #include "DCCEXInbound.h"
 #include "DCCEXLoco.h"
 #include "DCCEXRoutes.h"

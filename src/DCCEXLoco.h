@@ -2,7 +2,6 @@
 #define DCCEXLOCO_H
 
 #include <Arduino.h>
-#include <LinkedList.h>
 
 static const int MAX_FUNCTIONS = 28;
 const int MAX_OBJECT_NAME_LENGTH = 30;  // including Loco name, Turnout/Point names, Route names, etc. names
