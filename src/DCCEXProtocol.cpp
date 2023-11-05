@@ -443,7 +443,7 @@ void DCCEXProtocol::processTurnoutList() {
 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
-        new Turnout(id, false);
+        new Turnout(id, 0);
         sendTurnoutEntryRequest(id);
     }
     // console->println(F("processTurnoutList(): end"));
@@ -466,7 +466,9 @@ void DCCEXProtocol::processTurnoutEntry() {
     // console->println(F("processTurnoutEntry()"));
     //find the turnout entry to update
     int id=DCCEXInbound::getNumber(1);
-    bool thrown = DCCEXInbound::getNumber(2);
+    // bool thrown = DCCEXInbound::getNumber(2);
+    char* thrownName=DCCEXInbound::getSafeText(2);
+    bool thrown=(*thrownName=='T') ? 1 : 0;
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
 
@@ -519,6 +521,12 @@ void DCCEXProtocol::throwTurnout(int turnoutId) {
 void DCCEXProtocol::toggleTurnout(int turnoutId) {
     for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
         if (t->getId()==turnoutId) {
+            console->println(t->getThrown());
+            if (t->getThrown()) {
+                console->println(F("Thrown"));
+            } else {
+                console->println(F("Closed"));
+            }
             bool thrown=t->getThrown() ? 0 : 1;
             sprintf(outboundCommand, "<T %d %d>", turnoutId, thrown);
             sendCommand();
