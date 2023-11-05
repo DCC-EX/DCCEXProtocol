@@ -693,6 +693,9 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         int index=DCCEXInbound::getNumber(2);
         int angle=DCCEXInbound::getNumber(3);
         char *name=DCCEXInbound::getSafeText(4);
+        if (index==0) { // Index 0 is always home, and never has a label, so set one
+            sprintf(name, "Home");
+        }
 
         Turntable* tt=getTurntableById(ttId);
         if (!tt) return;
@@ -701,7 +704,7 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
         int idxCount=tt->getIndexCount();
         
         if (numIndexes!=idxCount) {
-            TurntableIndex* newIndex=new TurntableIndex(index, angle, name);
+            TurntableIndex* newIndex=new TurntableIndex(ttId, index, angle, name);
             tt->addIndex(newIndex);
         }
 

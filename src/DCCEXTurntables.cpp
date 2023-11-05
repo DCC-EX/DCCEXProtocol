@@ -5,11 +5,16 @@
 
 TurntableIndex* TurntableIndex::_first=nullptr;
 
-TurntableIndex::TurntableIndex(int id, int angle, char* name) {
+TurntableIndex::TurntableIndex(int ttId, int id, int angle, char* name) {
+  _ttId=ttId;
   _id=id;
   _angle=angle;
   _name=name;
   _next=nullptr;
+}
+
+int TurntableIndex::getTTId() {
+  return _ttId;
 }
 
 int TurntableIndex::getId() {

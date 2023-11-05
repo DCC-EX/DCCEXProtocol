@@ -13,8 +13,12 @@ class TurntableIndex {
 public:
   /// @brief Constructor
   /// @param id Index ID
-  TurntableIndex(int id, int angle, char* name);
+  TurntableIndex(int ttId, int id, int angle, char* name);
 
+  /// @brief Get the turntable ID
+  /// @return 
+  int getTTId();
+  
   /// @brief Get index ID (0 is always home)
   /// @return 
   int getId();
@@ -31,6 +35,7 @@ public:
   TurntableIndex* getNext();
 
 private:
+  int _ttId;
   int _id;
   int _angle;
   char* _name;
