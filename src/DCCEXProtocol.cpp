@@ -444,7 +444,7 @@ void DCCEXProtocol::processTurnoutList() {
 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
-        new Turnout(id, 0);
+        new Turnout(id, false);
         sendTurnoutEntryRequest(id);
     }
     _turnoutsCount = DCCEXInbound::getParameterCount()-1;
@@ -468,9 +468,7 @@ void DCCEXProtocol::processTurnoutEntry() {
     console->println(F("processTurnoutEntry()"));
     //find the turnout entry to update
     int id=DCCEXInbound::getNumber(1);
-    // bool thrown = DCCEXInbound::getNumber(2);
-    char* thrownName=DCCEXInbound::getSafeText(2);
-    bool thrown=(*thrownName=='T') ? 1 : 0;
+    bool thrown=(DCCEXInbound::getNumber(2)=='T') ? true : false;
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
 
