@@ -198,15 +198,19 @@ class DCCEXProtocol {
 
     bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
     bool getRoster();
+    int getRosterCount();
     bool isRosterRequested();
     bool isRosterFullyReceived();
     bool getTurnouts();
+    int getTurnoutsCount();
     bool isTurnoutListRequested();
     bool isTurnoutListFullyReceived();
     bool getRoutes();
+    int getRoutesCount();
     bool isRouteListRequested();
     bool isRouteListFullyReceived();
     bool getTurntables();
+    int getTurntablesCount();
     bool isTurntableListRequested();
     bool isTurntableListFullyReceived();
 
@@ -239,6 +243,11 @@ class DCCEXProtocol {
 
   private:
   
+    int _rosterCount = 0;
+    int _turnoutsCount = 0;
+    int _routesCount = 0;
+    int _turntablesCount = 0;
+
     int _maxThrottles;
     bool server;
     Stream *stream;
