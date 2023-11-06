@@ -32,6 +32,9 @@ class MyDelegate : public DCCEXProtocolDelegate {
 
     void receivedRosterList(int rosterSize) {
       Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
+      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
+      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
+      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
       printRoster();
     }
     void receivedTurnoutList(int turnoutListSize) {
@@ -77,54 +80,70 @@ void printServer() {
   Serial.println("\n\n");  
 }
 
+// void printRoster() {
+//   for (int i=0; i<dccexProtocol.roster.size(); i++) {
+//     Loco* loco = dccexProtocol.roster.get(i);
+//     int address = loco->getLocoAddress();
+//     char* name = loco->getLocoName();
+//     Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+//     Functions fns = loco->locoFunctions;
+//     for (int j=0; j<MAX_FUNCTIONS; j++) {
+//       char* functionName = fns.getFunctionName(j);
+//       Serial.print("  fn"); Serial.print(j); Serial.print(" ~"); Serial.print(functionName); Serial.print("~");  
+//     }
+//     Serial.println("\n");  
+//   }
+//   Serial.println("\n");  
+// }
+
 void printRoster() {
-  for (int i=0; i<dccexProtocol.roster.size(); i++) {
-    Loco* loco = dccexProtocol.roster.get(i);
-    int address = loco->getLocoAddress();
-    char* name = loco->getLocoName();
-    Serial.print(address); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
-    Functions fns = loco->locoFunctions;
-    for (int j=0; j<MAX_FUNCTIONS; j++) {
-      char* functionName = fns.getFunctionName(j);
-      Serial.print("  fn"); Serial.print(j); Serial.print(" ~"); Serial.print(functionName); Serial.print("~");  
-    }
-    Serial.println("\n");  
+  for (Loco* loco=dccexProtocol.roster->getFirst(); loco; loco=loco->getNext()) {
+    int id=loco->getAddress();
+    char* name=loco->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
   Serial.println("\n");  
 }
 
 void printTurnouts() {
-  for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
-    Turnout* turnout = dccexProtocol.turnouts.get(i);
-    int id = turnout->getTurnoutId();
-    char* name = turnout->getTurnoutName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  for (Turnout* turnout=dccexProtocol.turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
+    int id=turnout->getId();
+    char* name=turnout->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
   Serial.println("\n");  
 }
 
 void printRoutes() {
-  for (int i=0; i<dccexProtocol.routes.size(); i++) {
-    Route* route = dccexProtocol.routes.get(i);
-    int id = route->getRouteId();
-    char* name = route->getRouteName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  for (Route* route=dccexProtocol.routes->getFirst(); route; route=route->getNext()) {
+    int id=route->getId();
+    char* name=route->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
   Serial.println("\n");  
 }
 
 void printTurntables() {
-  for (int i=0; i<dccexProtocol.turntables.size(); i++) {
-    Turntable* turntable = dccexProtocol.turntables.get(i);
-    int id = turntable->getTurntableId();
-    char* name = turntable->getTurntableName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~"); 
-    for (int j=0; j<turntable->getTurntableNumberOfIndexes(); j++) {
-      TurntableIndex* turntableIndex = turntable->turntableIndexes.get(j);
-      char* indexName = turntableIndex->getTurntableIndexName();
-      Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
-    }
-  }
+  // for (int i=0; i<dccexProtocol.turntables.size(); i++) {
+  //   Turntable* turntable = dccexProtocol.turntables.get(i);
+  //   int id = turntable->getTurntableId();
+  //   char* name = turntable->getTurntableName();
+  //   Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~"); 
+  //   for (int j=0; j<turntable->getTurntableNumberOfIndexes(); j++) {
+  //     TurntableIndex* turntableIndex = turntable->turntableIndexes.get(j);
+  //     char* indexName = turntableIndex->getTurntableIndexName();
+  //     Serial.print("  index"); Serial.print(j); Serial.print(" ~"); Serial.print(indexName); Serial.println("~");  
+  //   }
+  // }
   Serial.println("\n");  
 }
 
