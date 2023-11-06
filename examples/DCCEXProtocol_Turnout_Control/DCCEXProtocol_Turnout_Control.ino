@@ -46,14 +46,9 @@ class MyDelegate : public DCCEXProtocolDelegate {
       Serial.println("\n\n");  
     }    
 
-    void receivedTurnoutAction(int turnoutId, TurnoutStates state) { 
-      Serial.print("Received Turnout Action: Id: "); Serial.print(turnoutId); Serial.print(" state: ");Serial.println(state);  
+    void receivedTurnoutAction(int turnoutId, bool thrown) { 
+      Serial.print("Received Turnout Action: Id: "); Serial.print(turnoutId); Serial.print(" thrown: ");Serial.println(thrown);  
       // Serial.println("\n");  
-    }
-
-    void receivedRouteAction(int routeId, RouteState state) { 
-      Serial.print("Received Route Action: Id: "); Serial.print(routeId); Serial.print(" state: ");Serial.println(state);  
-      // Serial.println("\n");
     }
 
 };
@@ -89,22 +84,38 @@ void printServer() {
 }
 
 void printTurnouts() {
-  for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
-    Turnout* turnout = dccexProtocol.turnouts.get(i);
-    int id = turnout->getTurnoutId();
-    char* name = turnout->getTurnoutName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  for (Turnout* turnout=dccexProtocol.turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
+    int id=turnout->getId();
+    char* name=turnout->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
+  // for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
+  //   Turnout* turnout = dccexProtocol.turnouts.get(i);
+  //   int id = turnout->getTurnoutId();
+  //   char* name = turnout->getTurnoutName();
+  //   Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  // }
   Serial.println("\n");  
 }
 
 void printRoutes() {
-  for (int i=0; i<dccexProtocol.routes.size(); i++) {
-    Route* route = dccexProtocol.routes.get(i);
-    int id = route->getRouteId();
-    char* name = route->getRouteName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  for (Route* route=dccexProtocol.routes->getFirst(); route; route=route->getNext()) {
+    int id=route->getId();
+    char* name=route->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
+  // for (int i=0; i<dccexProtocol.routes.size(); i++) {
+  //   Route* route = dccexProtocol.routes.get(i);
+  //   int id = route->getRouteId();
+  //   char* name = route->getRouteName();
+  //   Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  // }
   Serial.println("\n");  
 }
 
@@ -154,7 +165,8 @@ void loop() {
 
 
   if (dccexProtocol.isTurnoutListFullyReceived() && !doneTurnouts) {
-    if (dccexProtocol.turnouts.size()>=2) {
+    // if (dccexProtocol.turnouts.size()>=2) {
+    if (dccexProtocol.turnouts->getCount()>=2) {
       turnout1 = dccexProtocol.turnouts.get(0)->getTurnoutId();
       turnout2 = dccexProtocol.turnouts.get(1)->getTurnoutId();
 
