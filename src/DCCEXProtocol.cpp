@@ -468,7 +468,7 @@ void DCCEXProtocol::processTurnoutEntry() {
     console->println(F("processTurnoutEntry()"));
     //find the turnout entry to update
     int id=DCCEXInbound::getNumber(1);
-    bool thrown=(DCCEXInbound::getNumber(2)=='T') ? true : false;
+    bool thrown=(DCCEXInbound::getNumber(2)=='T');
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
 
