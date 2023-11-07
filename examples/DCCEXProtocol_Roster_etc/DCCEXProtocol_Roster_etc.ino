@@ -3,7 +3,7 @@
 // Shows how to retrieve the Roster, Turnouts/Points, Routes, Turntables
 // Tested with ESP32-WROOM board
 //
-// Peter Akers, 2023
+// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke), 2023
 // Luca Dentella, 2020
 
 
