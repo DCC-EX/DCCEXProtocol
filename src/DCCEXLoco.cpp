@@ -276,7 +276,7 @@ OLD LOCO END */
 ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing)
 : Loco::Loco(address, source) {
   _facing=facing;
-  _nextConsistLoco=nullptr;
+  _next=nullptr;
 }
 
 void ConsistLoco::setFacing(Facing facing) {
@@ -287,25 +287,9 @@ Facing ConsistLoco::getFacing() {
   return (Facing)_facing;
 }
 
-ConsistLoco* ConsistLoco::getNextLoco() {
-  return _nextConsistLoco;
+ConsistLoco* ConsistLoco::getNext() {
+  return _next;
 }
-
-/* OLD CONSISTLOCO
-ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing) 
-: Loco::Loco(address, source) {
-      consistLocoFacing = facing;
-}
-
-bool ConsistLoco::setConsistLocoFacing(Facing facing) {
-    consistLocoFacing = facing;
-    return true;
-}
-
-Facing ConsistLoco::getConsistLocoFacing() {
-    return consistLocoFacing;
-}
-END OLD CONSISTLOCO */
 
 // class Consist
 
@@ -314,7 +298,7 @@ Consist::Consist() {
   _locoCount=0;
   _speed=0;
   _direction=Forward;
-  _firstLoco=nullptr;
+  _first=nullptr;
 }
 
 void Consist::setName(char* name) {
@@ -335,27 +319,27 @@ void Consist::addFromEntry(int address, Facing facing) {
 }
 
 void Consist::releaseAll() {
-  ConsistLoco* current=_firstLoco;
+  ConsistLoco* current=_first;
   while (current!=nullptr) {
     ConsistLoco* temp=current;
-    current=current->_nextConsistLoco;
+    current=current->_next;
     delete temp;  // Delete the ConsistLoco object
   }
-  _firstLoco=nullptr; // Reset the linked list
+  _first=nullptr; // Reset the linked list
   _locoCount=0; // Reset the loco count
 }
 
 void Consist::releaseLoco(int address) {
-  ConsistLoco* current=_firstLoco;
+  ConsistLoco* current=_first;
   ConsistLoco* next=nullptr;
 
   while (current!=nullptr) {
     if (current->getAddress()==address) {
       if (next==nullptr) {
         // The matching ConsistLoco is the first one in the list
-        _firstLoco=current->_nextConsistLoco;
+        _first=current->_next;
       } else {
-        next->_nextConsistLoco=current->_nextConsistLoco;
+        next->_next=current->_next;
       }
 
       delete current; // Delete the specific ConsistLoco object
@@ -364,7 +348,7 @@ void Consist::releaseLoco(int address) {
     }
 
     next=current;
-    current=current->_nextConsistLoco;
+    current=current->_next;
   }
 }
 
@@ -373,7 +357,7 @@ int Consist::getLocoCount() {
 }
 
 bool Consist::inConsist(int address) {
-  for (ConsistLoco* cl=_firstLoco; cl; cl=cl->_nextConsistLoco) {
+  for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
     if (cl->getAddress()==address) {
       return true;
     }
@@ -397,8 +381,8 @@ Direction Consist::getDirection() {
   return(Direction)_direction;
 }
 
-ConsistLoco* Consist::getFirstLoco() {
-  return _firstLoco;
+ConsistLoco* Consist::getFirst() {
+  return _first;
 }
 
 // private functions
@@ -412,235 +396,14 @@ void Consist::_addLoco(Loco* loco, Facing facing) {
     _name=loco->getName();  // Set consist name to the first loco name
   }
   ConsistLoco* conLoco=new ConsistLoco(address, source, facing);
-  if (this->_firstLoco==nullptr) {
-    this->_firstLoco=conLoco;
+  if (this->_first==nullptr) {
+    this->_first=conLoco;
   } else {
-    ConsistLoco* current=this->_firstLoco;
-    while (current->_nextConsistLoco!=nullptr) {
-      current=current->_nextConsistLoco;
+    ConsistLoco* current=this->_first;
+    while (current->_next!=nullptr) {
+      current=current->_next;
     }
-    current->_nextConsistLoco=conLoco;
+    current->_next=conLoco;
   }
   _locoCount++;
 }
-
-/* OLD CONSIST
-Consist::Consist(char* name) {
-    consistName = name;
-}
-
-bool Consist::consistAddLoco(Loco loco, Facing facing) {
-    int address = loco.getLocoAddress();
-    LocoSource source = loco.getLocoSource();
-    Facing correctedFacing = facing;
-    int rslt = consistGetLocoPosition(address);
-    if (rslt<0) { // not already in the list, so add it
-        if (consistGetNumberOfLocos() == 0) correctedFacing = FacingForward; // first loco in consist is always forward
-        consistLocos.add(new ConsistLoco(address, source, correctedFacing));
-
-        //fix the name of the consist
-        char _consistName[MAX_SINGLE_COMMAND_PARAM_LENGTH];
-          sprintf(_consistName,"%s",consistLocos.get(0)->getLocoName());
-        if (rslt>1) { // must be more than one now
-            for (int i=1; i<consistLocos.size(); i++) {
-                sprintf(_consistName,", %s",consistLocos.get(i)->getLocoName());
-            }
-            setConsistName(_consistName);
-        }
-        return true;
-    }
-    return false;
-}
-
-// create from a DCC Address
-bool Consist::consistAddLocoFromRoster(LinkedList<Loco*> roster, int address, Facing facing) {
-    if (roster.size()>0) { 
-        for (int i=0; i<roster.size(); i++) {
-            if (roster.get(i)->getLocoAddress() == address) {
-                consistAddLoco(*roster.get(i), facing);
-                return  true;
-            }
-        }
-    }
-    return false;
-}
-
-// create from a DCC Address
-bool Consist::consistAddLocoFromAddress(int address, Facing facing) {
-    Loco loco = Loco(address, LocoSourceEntry);
-    consistAddLoco(loco, facing);
-    return true;
-}
-
-bool Consist::consistReleaseAllLocos()  {
-    if (consistLocos.size()>0) {
-        for (int i=1; i<consistLocos.size(); i++) {
-            consistLocos.get(i)->clearLocoNameAndFunctions();
-        }
-        consistLocos.clear();
-        char _consistName[1];
-        *_consistName = 0;
-        setConsistName(_consistName);
-    }
-    return true;
-}
-
-bool Consist::consistReleaseLoco(int locoAddress)  {
-    int rslt = consistGetLocoPosition(locoAddress);
-    if (rslt>=0) {
-        consistLocos.get(rslt)->clearLocoNameAndFunctions();
-        consistLocos.remove(rslt);
-        return true;
-    }
-    return false;
-}
-
-int Consist::consistGetNumberOfLocos() {
-    return consistLocos.size();
-}
-
-ConsistLoco* Consist::consistGetLocoAtPosition(int position) {
-    if (position<consistLocos.size()) {
-        return consistLocos.get(position);
-    }
-    return {};
-}
-
-int Consist::consistGetLocoPosition(int locoAddress) {
-    for (int i=0; i<consistLocos.size(); i++) {
-        if (consistLocos.get(i)->getLocoAddress() == locoAddress) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-// set the position of the loco in the consist
-// Assumes the loco is already in the consist
-bool Consist::consistSetLocoPosition(int locoAddress, int position) {
-    int currentPosition = consistGetLocoPosition(locoAddress);
-    if (currentPosition < 0  || currentPosition == position)  {
-        return false;
-    } else {
-        ConsistLoco* loco = consistGetLocoAtPosition(currentPosition);
-        consistLocos.remove(currentPosition);
-        int address = loco->getLocoAddress();
-        LocoSource source = loco->getLocoSource();
-        Facing correctedFacing = loco->getConsistLocoFacing();
-        // if (consistGetNumberOfLocos() == 0 || position == 0) {
-        //     correctedFacing = FacingForward; // first loco in consist is always forward
-        // }
-        // consistLocos.add(position, new ConsistLoco(address, name, source, correctedFacing));
-        consistLocos.add(position, new ConsistLoco(address, source, correctedFacing));
-
-        consistGetLocoAtPosition(0)->setConsistLocoFacing(FacingForward); // first loco in consist is always forward
-    }
-    return true;
-}
-
-bool Consist::consistSetSpeed(int speed) {
-    if (consistLocos.size()>0) {
-        if (consistSpeed!=speed) {
-            for (int i=0; i<consistLocos.size(); i++) {
-                consistLocos.get(i)->setLocoSpeed(speed);
-            }
-        }
-    }
-    consistSpeed = speed;
-    return true;
-}
-
-int Consist::consistGetSpeed() {
-    return consistSpeed;
-}
-
-bool Consist::consistSetDirection(Direction direction) {
-    if (consistLocos.size()>0) {
-        if (consistDirection!=direction) {
-            for (int i=0; i<consistLocos.size(); i++) {
-                Direction locoDir = direction;
-                if (consistLocos.get(i)->getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
-                    if (direction == Forward) {
-                        locoDir = Reverse;
-                    } else {
-                        locoDir = Forward;
-                    }
-                }
-                consistLocos.get(i)->setLocoSpeed(consistSpeed);
-                consistLocos.get(i)->setLocoDirection(locoDir);
-            }
-        }
-    }
-    consistDirection = direction;
-    return true;
-}
-
-bool Consist::actionConsistExternalChange(int speed, Direction direction, int functionStates) {
-    if (consistLocos.size()>0) {
-        if ( (consistDirection != direction) || (consistSpeed != speed) ) {
-            for (int i=0; i<consistLocos.size(); i++) {
-                Direction locoDir = direction;
-                if (consistLocos.get(i)->getConsistLocoFacing()!=FacingForward) { // lead loco 'facing' is always assumed to be forward
-                    if (direction == Forward) {
-                        locoDir = Reverse;
-                    } else {
-                        locoDir = Forward;
-                    }
-                }
-                consistLocos.get(i)->setLocoSpeed(consistSpeed);
-                consistLocos.get(i)->setLocoDirection(locoDir);
-
-                //????????????????? TODO
-
-                // if (i==0) {
-                //     FunctionState fnStates[MAX_FUNCTIONS];
-                //     for (uint i=0; i<MAX_FUNCTIONS; i++) {
-                //         fnStates[i] = bitExtracted(fnStates,1,i+1);
-                //         // if (fStates)
-                //         //????????????????? TODO
-                //     }
-                // }
-            }
-        }
-    }
-    return true;
-}
-
-Direction Consist::consistGetDirection() {
-    return consistDirection;
-}
-
-// by default only set the function on the lead loco
-bool Consist::consistSetFunction(int functionNo, bool state) {
-    if (consistLocos.size()>0) {
-        // ConsistLoco* loco = consistGetLocoAtPosition(0);
-        //????????????????? TODO
-        return true;
-    }
-    return false;
-}
-
-// set a function on a specific loco on a throttle
-bool Consist::consistSetFunction(int address, int functionNo, bool state) {
-    //????????????????? TODO
-    // individual loco
-    return true;
-}
-
-bool Consist::isFunctionOn(int functionNumber) {
-    if (consistLocos.size()>0) {
-        ConsistLoco* loco = consistGetLocoAtPosition(0);
-        return loco->isFunctionOn(functionNumber);
-    }
-    return false;
-}
-
-bool Consist::setConsistName(char* name) {
-    consistName = name;
-    return true;
-}
-
-char* Consist::getConsistName() {
-    return consistName;
-}
-END OLD CONSIST */

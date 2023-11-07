@@ -773,7 +773,7 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
     int throttleNo = findThrottleWithLoco(address);
     if (throttleNo>=0) {
         // int rslt = throttle[throttleNo].getLocoPosition(address);
-        ConsistLoco* loco=throttle[throttleNo].getFirstLoco();
+        ConsistLoco* loco=throttle[throttleNo].getFirst();
         if (loco->getAddress()==address) {    // ignore everything that is not the lead loco
         // if (rslt==0) {  // ignore everything that is not the lead loco
             int speed = getSpeedFromSpeedByte(speedByte);
@@ -879,7 +879,7 @@ bool DCCEXProtocol::sendFunction(int throttleNo, int functionNumber, bool presse
     // console->println(F("sendFunction(): "));
     if (delegate) {
         // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
-        ConsistLoco* conLoco = throttle[throttleNo].getFirstLoco();
+        ConsistLoco* conLoco = throttle[throttleNo].getFirst();
         int address = conLoco->getAddress();
         if (address>=0) {
             sendFunction(throttleNo, address, functionNumber, pressed);
@@ -904,7 +904,7 @@ bool DCCEXProtocol::sendFunction(int throttleNo, int address, int functionNumber
 bool DCCEXProtocol::isFunctionOn(int throttleNo, int functionNumber) {
     if (delegate) {
         // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
-        ConsistLoco* conLoco = throttle[throttleNo].getFirstLoco();
+        ConsistLoco* conLoco = throttle[throttleNo].getFirst();
         int address = conLoco->getAddress();
         if (address>=0) {
             console->print(" '");
@@ -928,7 +928,7 @@ bool DCCEXProtocol::sendThrottleAction(int throttleNo, int speed, Direction dire
             throttle[throttleNo].setDirection(direction);
             // for (int i=0; i<throttle[throttleNo].getLocoCount(); i++) {
             //     ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(i);
-            for (ConsistLoco* conLoco=throttle[throttleNo].getFirstLoco(); conLoco; conLoco=conLoco->getNextLoco()) {
+            for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
                 int address = conLoco->getAddress();
                 Direction dir = direction;
                 if (conLoco->getFacing()==FacingReversed) {
@@ -1241,7 +1241,7 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
         // }
         if (throttle[i].getLocoCount()>0) {
             // int pos=throttle[i].getLocoPosition(address);
-            for (ConsistLoco* cl=throttle[i].getFirstLoco(); cl; cl=cl->getNextLoco()) {
+            for (ConsistLoco* cl=throttle[i].getFirst(); cl; cl=cl->getNext()) {
                 if (cl->getAddress()==address) return i;
             }
         }

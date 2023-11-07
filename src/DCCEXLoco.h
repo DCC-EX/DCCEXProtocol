@@ -104,40 +104,6 @@ private:
   int _count=0;
 
   friend class Consist;
-
-/* OLD LOCO
-  // Loco() {}
-  // Loco(int address, LocoSource source);
-  // bool isFunctionOn(int functionNumber);
-
-  // bool setLocoSpeed(int speed);
-  // bool setLocoDirection(Direction direction);
-  
-  // int getLocoAddress();
-  // bool setLocoName(char* name);
-  // char* getLocoName();
-  // bool setLocoSource(LocoSource source);
-  // LocoSource getLocoSource();
-  // int  getLocoSpeed();
-  // Direction getLocoDirection();
-  // void setIsFromRosterAndReceivedDetails();
-  // bool getIsFromRosterAndReceivedDetails();
-  // bool clearLocoNameAndFunctions();
-  // void setupFunctions(char* functionNames);
-  // int getFunctionStates();
-  // void setFunctionStates(int functionStates);
-
-// private:
-//   int locoAddress;
-//   char* locoName;
-//   int locoSpeed;
-//   Direction locoDirection;
-//   LocoSource locoSource;
-//   bool rosterReceivedDetails;
-//   char* _functionNames[MAX_FUNCTIONS];
-//   int32_t _functionStates;
-//   int32_t _momentaryFlags;
-OLD LOCO END */
 };
 
 class ConsistLoco : public Loco {
@@ -158,23 +124,14 @@ public:
 
   /// @brief Get the next consist loco object
   /// @return 
-  ConsistLoco* getNextLoco();
+  ConsistLoco* getNext();
 
 private:
   Facing _facing;
-  ConsistLoco* _nextConsistLoco;
+  ConsistLoco* _next;
 
   friend class Consist;
 
-/*OLD CONSISTLOCO
-  ConsistLoco() {};
-  ConsistLoco(int address, LocoSource source, Facing facing);
-  bool setConsistLocoFacing(Facing facing);
-  Facing getConsistLocoFacing();
-
-private:
-  Facing consistLocoFacing;
-END OLD CONSISTLOCO */
 };
 
 class Consist {
@@ -237,52 +194,20 @@ public:
 
   /// @brief Get the list of locos in the consist
   /// @return 
-  ConsistLoco* getFirstLoco();
+  ConsistLoco* getFirst();
 
 private:
   int _speed;
   Direction _direction;
   char* _name;
   int _locoCount;
-  ConsistLoco* _firstLoco;
+  ConsistLoco* _first;
 
   /// @brief Add a loco object to the consist
   /// @param loco 
   /// @param facing 
   void _addLoco(Loco* loco, Facing facing);
 
-
-/* OLD CONSIST
-  Consist() {}
-  Consist(char* name);
-  bool consistAddLoco(Loco loco, Facing facing);
-  bool consistAddLocoFromRoster(LinkedList<Loco*> roster, int address, Facing facing);
-  bool consistAddLocoFromAddress(int address, Facing facing);
-  bool consistReleaseAllLocos();
-  bool consistReleaseLoco(int locoAddress);
-  int consistGetNumberOfLocos();
-  ConsistLoco* consistGetLocoAtPosition(int position);
-  int consistGetLocoPosition(int locoAddress);
-  bool consistSetLocoPosition(int locoAddress, int position);
-
-  bool actionConsistExternalChange(int speed, Direction direction, int functionStates);
-
-  bool consistSetSpeed(int speed);
-  int consistGetSpeed();
-  bool consistSetDirection(Direction direction);
-  Direction consistGetDirection();
-  bool consistSetFunction(int functionNo, bool state);
-  bool consistSetFunction(int address, int functionNo, bool state);
-  bool isFunctionOn(int functionNumber);
-  bool setConsistName(char* name);
-  char* getConsistName();
-  LinkedList<ConsistLoco*> consistLocos = LinkedList<ConsistLoco*>();
-
-private:
-  int consistSpeed;
-  Direction consistDirection;
-  char* consistName;
-END OLD CONSIST */
 };
 
 #endif
