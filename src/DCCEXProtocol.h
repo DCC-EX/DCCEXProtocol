@@ -204,10 +204,12 @@ class DCCEXProtocol {
     bool isRosterFullyReceived();
     bool getTurnouts();
     int getTurnoutsCount();
+    Turnout* getTurnoutsEntryNo(int entryNo);
     bool isTurnoutListRequested();
     bool isTurnoutListFullyReceived();
     bool getRoutes();
     int getRoutesCount();
+    Route* getRoutesEntryNo(int entryNo);
     bool isRouteListRequested();
     bool isRouteListFullyReceived();
     bool getTurntables();

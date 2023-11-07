@@ -599,7 +599,7 @@ void DCCEXProtocol::sendRouteEntryRequest(int id) {
 
 //private
 void DCCEXProtocol::processRouteEntry() {
-    console->println(F("processRouteEntry()"));
+    // console->println(F("processRouteEntry()"));
     //find the Route entry to update
     // if (routes.size()>0) { 
     // for (int i=0; i<routes.size(); i++) {
@@ -629,7 +629,7 @@ void DCCEXProtocol::processRouteEntry() {
         console->println(F("processRoutesEntry(): received all"));
         delegate->receivedRouteList(getRoutesCount());
     }
-    console->println(F("processRouteEntry() end"));
+    // console->println(F("processRouteEntry() end"));
 }
 
 // ****************
@@ -1041,7 +1041,8 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 
 // sequentially request and get the required lists. To avoid overloading the buffer
 bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
-
+//    console->println(F("getLists()"));
+ 
     if (!allRequiredListsReceived) {
         if (rosterRequired && !rosterRequested) {
             getRoster();
@@ -1074,7 +1075,8 @@ bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
             }
         }
     }
-  return true;
+    // console->println(F("getLists(): end"));
+    return true;
 }
 
 bool DCCEXProtocol::getRoster() {
@@ -1088,6 +1090,10 @@ bool DCCEXProtocol::getRoster() {
     return true;
 }
 
+int DCCEXProtocol::getRosterCount() {
+    return _rosterCount;
+}
+
 Loco* DCCEXProtocol::getRosterEntryNo(int entryNo) {
     int i=0;
     for (Loco* loco=roster->getFirst(); loco; loco=loco->getNext()) {
@@ -1095,10 +1101,6 @@ Loco* DCCEXProtocol::getRosterEntryNo(int entryNo) {
         i++;
     }
     return {};
-}
-
-int DCCEXProtocol::getRosterCount() {
-    return _rosterCount;
 }
 
 bool DCCEXProtocol::isRosterRequested() {
@@ -1125,6 +1127,15 @@ int DCCEXProtocol::getTurnoutsCount() {
     return _turnoutsCount;
 }
 
+Turnout* DCCEXProtocol::getTurnoutsEntryNo(int entryNo) {
+    int i=0;
+    for (Turnout* turnout=turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
+        if (i==entryNo) return turnout;
+        i++;
+    }
+    return {};
+}
+
 bool DCCEXProtocol::isTurnoutListRequested() {
     return turnoutListRequested;
 }
@@ -1145,6 +1156,15 @@ bool DCCEXProtocol::getRoutes() {
 
 int DCCEXProtocol::getRoutesCount() {
     return _routesCount;
+}
+
+Route* DCCEXProtocol::getRoutesEntryNo(int entryNo) {
+    int i=0;
+    for (Route* route=routes->getFirst(); route; route=route->getNext()) {
+        if (i==entryNo) return route;
+        i++;
+    }
+    return {};
 }
 
 bool DCCEXProtocol::isRouteListRequested() {

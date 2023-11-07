@@ -151,25 +151,21 @@ void loop() {
   //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
   dccexProtocol.getLists(false, true, true, false);
 
-
   if (dccexProtocol.isTurnoutListFullyReceived() && !doneTurnouts) {
-    if (dccexProtocol.turnouts->getCount()>=2) {
-      turnout1=dccexProtocol.turnouts->getFirst();
-      turnout2=turnout1->getNext();
-
-
+    if (dccexProtocol.getTurnoutsCount()>=2) {
+      turnout1=dccexProtocol.getTurnoutsEntryNo(0);
       Serial.print("\nTurnout 1: id: "); Serial.println(turnout1->getId());
+      turnout2=dccexProtocol.getTurnoutsEntryNo(1);
       Serial.print("Turnout 2: id: "); Serial.println(turnout2->getId());
     }
     doneTurnouts = true;
   }
 
   if (dccexProtocol.isRouteListFullyReceived() && !doneRoutes) {
-    if (dccexProtocol.routes->getCount()>=2) {
-      route1=dccexProtocol.routes->getFirst();
-      route2=route1->getNext();
-
+    if (dccexProtocol.getRoutesCount()>=2) {
+      route1=dccexProtocol.getRoutesEntryNo(0);
       Serial.print("\nRoute 1: id: "); Serial.println(route1->getId());
+      route2=dccexProtocol.getRoutesEntryNo(1);
       Serial.print("Route 2: id: "); Serial.println(route2->getId());
     }
     doneRoutes = true;
