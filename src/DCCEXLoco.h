@@ -237,14 +237,14 @@ public:
 
   /// @brief Get the list of locos in the consist
   /// @return 
-  ConsistLoco* getConsistLocos();
+  ConsistLoco* getFirstLoco();
 
 private:
   int _speed;
   Direction _direction;
   char* _name;
   int _locoCount;
-  ConsistLoco* _consistLocos;
+  ConsistLoco* _firstLoco;
 
   /// @brief Add a loco object to the consist
   /// @param loco 

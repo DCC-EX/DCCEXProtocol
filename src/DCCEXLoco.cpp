@@ -314,7 +314,7 @@ Consist::Consist() {
   _locoCount=0;
   _speed=0;
   _direction=Forward;
-  _consistLocos=nullptr;
+  _firstLoco=nullptr;
 }
 
 void Consist::setName(char* name) {
@@ -335,25 +335,25 @@ void Consist::addFromEntry(int address, Facing facing) {
 }
 
 void Consist::releaseAll() {
-  ConsistLoco* current=_consistLocos;
+  ConsistLoco* current=_firstLoco;
   while (current!=nullptr) {
     ConsistLoco* temp=current;
     current=current->_nextConsistLoco;
     delete temp;  // Delete the ConsistLoco object
   }
-  _consistLocos=nullptr; // Reset the linked list
+  _firstLoco=nullptr; // Reset the linked list
   _locoCount=0; // Reset the loco count
 }
 
 void Consist::releaseLoco(int address) {
-  ConsistLoco* current=_consistLocos;
+  ConsistLoco* current=_firstLoco;
   ConsistLoco* next=nullptr;
 
   while (current!=nullptr) {
     if (current->getAddress()==address) {
       if (next==nullptr) {
         // The matching ConsistLoco is the first one in the list
-        _consistLocos=current->_nextConsistLoco;
+        _firstLoco=current->_nextConsistLoco;
       } else {
         next->_nextConsistLoco=current->_nextConsistLoco;
       }
@@ -373,7 +373,7 @@ int Consist::getLocoCount() {
 }
 
 bool Consist::inConsist(int address) {
-  for (ConsistLoco* cl=_consistLocos; cl; cl=cl->_nextConsistLoco) {
+  for (ConsistLoco* cl=_firstLoco; cl; cl=cl->_nextConsistLoco) {
     if (cl->getAddress()==address) {
       return true;
     }
@@ -397,8 +397,8 @@ Direction Consist::getDirection() {
   return(Direction)_direction;
 }
 
-ConsistLoco* Consist::getConsistLocos() {
-  return _consistLocos;
+ConsistLoco* Consist::getFirstLoco() {
+  return _firstLoco;
 }
 
 // private functions
@@ -412,10 +412,10 @@ void Consist::_addLoco(Loco* loco, Facing facing) {
     _name=loco->getName();  // Set consist name to the first loco name
   }
   ConsistLoco* conLoco=new ConsistLoco(address, source, facing);
-  if (this->_consistLocos==nullptr) {
-    this->_consistLocos=conLoco;
+  if (this->_firstLoco==nullptr) {
+    this->_firstLoco=conLoco;
   } else {
-    ConsistLoco* current=this->_consistLocos;
+    ConsistLoco* current=this->_firstLoco;
     while (current->_nextConsistLoco!=nullptr) {
       current=current->_nextConsistLoco;
     }

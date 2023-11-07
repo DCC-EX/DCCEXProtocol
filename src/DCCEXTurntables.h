@@ -119,7 +119,7 @@ public:
 
   /// @brief Get associated turntable index list
   /// @return 
-  TurntableIndex* getIndexList();
+  TurntableIndex* getFirstIndex();
 
 private:
   int _id;
@@ -132,7 +132,7 @@ private:
   int _indexCount;
   static Turntable* _first;
   Turntable* _next;
-  TurntableIndex* _indexList;
+  TurntableIndex* _firstIndex;
 
 };
 

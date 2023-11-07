@@ -43,7 +43,7 @@ Turntable::Turntable(int id) {
   _index=0;
   _numberOfIndexes=0;
   _name=nullptr;
-  _indexList=nullptr;
+  _firstIndex=nullptr;
   _indexCount=0;
   _next=nullptr;
   if (!_first) {
@@ -119,10 +119,10 @@ Turntable* Turntable::getNext() {
 }
 
 void Turntable::addIndex(TurntableIndex* index) {
-  if (this->_indexList==nullptr) {
-    this->_indexList=index;
+  if (this->_firstIndex==nullptr) {
+    this->_firstIndex=index;
   } else {
-    TurntableIndex* current=this->_indexList;
+    TurntableIndex* current=this->_firstIndex;
     while (current->_next!=nullptr) {
       current=current->_next;
     }
@@ -131,6 +131,6 @@ void Turntable::addIndex(TurntableIndex* index) {
   _indexCount++;
 }
 
-TurntableIndex* Turntable::getIndexList() {
-  return _indexList;
+TurntableIndex* Turntable::getFirstIndex() {
+  return _firstIndex;
 }
