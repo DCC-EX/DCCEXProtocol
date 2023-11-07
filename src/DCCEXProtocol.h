@@ -199,6 +199,7 @@ class DCCEXProtocol {
     bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
     bool getRoster();
     int getRosterCount();
+    Loco* getRosterEntryNo(int entryNo);
     bool isRosterRequested();
     bool isRosterFullyReceived();
     bool getTurnouts();

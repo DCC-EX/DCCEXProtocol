@@ -1088,6 +1088,15 @@ bool DCCEXProtocol::getRoster() {
     return true;
 }
 
+Loco* DCCEXProtocol::getRosterEntryNo(int entryNo) {
+    int i=0;
+    for (Loco* loco=roster->getFirst(); loco; loco=loco->getNext()) {
+        if (i==entryNo) return loco;
+        i++;
+    }
+    return {};
+}
+
 int DCCEXProtocol::getRosterCount() {
     return _rosterCount;
 }
