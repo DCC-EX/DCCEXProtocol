@@ -32,7 +32,7 @@ public:
 
   /// @brief Get next TurntableIndex object
   /// @return 
-  TurntableIndex* getNext();
+  TurntableIndex* getNextIndex();
 
 private:
   int _ttId;
@@ -40,7 +40,7 @@ private:
   int _angle;
   char* _name;
   static TurntableIndex* _first;
-  TurntableIndex* _next;
+  TurntableIndex* _nextIndex;
 
   friend class Turntable;
 
