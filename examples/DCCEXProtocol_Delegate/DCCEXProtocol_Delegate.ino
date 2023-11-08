@@ -3,7 +3,7 @@
 // Shows how to create a delegate class to handle callbacks
 // Tested with ESP32-WROOM board
 //
-// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke), 2023
+// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
 // Luca Dentella, 2020
 
 

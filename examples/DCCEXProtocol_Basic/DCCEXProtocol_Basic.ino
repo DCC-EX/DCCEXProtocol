@@ -4,7 +4,7 @@
 // and how to connect to a DCC-EX Native protocol server using static IP
 // Tested with ESP32-WROOM board
 //
-// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke), 2023
+// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
 // Luca Dentella, 2020
 
 #include <WiFi.h>

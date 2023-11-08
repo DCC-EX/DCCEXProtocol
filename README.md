@@ -2,7 +2,7 @@
 # Credits
 
 The delegate and connection code in this library is taken directly from the WiThrottle library by **Copyright © 2018-2019 Blue Knobby Systems Inc.**
-The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke)
+The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke)
 
 ----
 ----

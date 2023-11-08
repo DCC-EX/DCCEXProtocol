@@ -3,7 +3,7 @@
 // Shows how to retrieve the Roster, Turnouts/Points, Routes, Turntables
 // Tested with ESP32-WROOM board
 //
-// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke), 2023
+// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
 // Luca Dentella, 2020
 
 
@@ -126,7 +126,7 @@ void printTurntables() {
     Serial.println("~");
 
     int j = 0;
-    for (TurntableIndex* turntableIndex=turntable->getIndexList(); turntableIndex; turntableIndex=turntableIndex->getNext()) {
+    for (TurntableIndex* turntableIndex=turntable->getFirstIndex(); turntableIndex; turntableIndex=turntableIndex->getNext()) {
       char* indexName = turntableIndex->getName();
       Serial.print("  index"); 
       Serial.print(j); 
