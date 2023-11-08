@@ -14,7 +14,6 @@ This library implements the DCC-EX Native protocol (as used in EX-CommandStation
 
 The implementation of this library is tested on ESP32 based devices running the Arduino framework.   There's nothing in here that's specific to the ESP32, and little of Arduino that couldn't be replaced as needed.
 
-This library has been tested with version 1.3.3 of the LinkedList library by Ivan Siedel.  This library is required.
 
 ## Basic Design Principles
 
@@ -64,19 +63,17 @@ Compile and run, you should see in the Serial monitor, after 20 second delays, t
 
 To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to a 'throttles'.
 
-The protocol provides ```Consist throttle[MAX_THROTTLES]```
+The protocol provides for the throttle app to specify the number of throttles required```DCCEXProtocol(int maxThrottles=6, bool server=false);```
 
-To acquire a loco on throttle 0 (zero) (the first throttle), you must first create a ```Loco``` object.  Details for the Loco can either be a direct dcc address or an entry from the Roster.  e.g. 
+To acquire a loco on throttle 0 (zero) (the first throttle), must specify a DDC address or a loco from the roster.
 
 from DCC Address:
 
-```Loco loco(11, "dummy loco", LocoSourceEntry);``` will create a loco with a DCC address of 11  and name of "dummy loco"
+```dccexProtocol.throttle[0].addFromEntry(11, FacingForward);``` will add a loco with a DCC address of 11 on throttle 0, facing forward.
 
 from Roster Entry:
 
-```loco(dccexProtocol.roster.get(1)->getLocoAddress(), dccexProtocol.roster.get(1)->getLocoName(), dccexProtocol.roster.get(1)->getLocoSource());``` will create a loco from the second entry (1) in the Roster
-
-To then add the loco to the throttle use ```dccexProtocol.throttle[0].consistAddLoco(loco, FacingForward);``` to add the loco to Throttle 0. 
+To add the loco to the throttle use ```dccexProtocol.throttle[1].addFromRoster(dccexProtocol.getRosterEntryNo(1), FacingForward);``` to add a loco to Throttle 0, facing forward. 
 
 Control the speed and direction of all the locos on Throttle 0 with ```dccexProtocol.sendThrottleAction(0, speed, Forward);```
 
@@ -88,9 +85,11 @@ Retrieve the list with ```dccexProtocol.getRoster();```
 
 Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
 
-Retrieve the size of the list (number of locos) with ```dccexProtocol.roster.size()```
+The roster has been fully received when ```isRosterFullyReceived()``` is true.
 
-Retrieve a ```ConsistLoco``` object from the list with ```dccexProtocol.roster.get(listEntryNumber)``` 
+Retrieve the size of the list (number of locos) with ```dccexProtocol.getRosterCount()```
+
+Retrieve a ```Loco*``` object from the list with ```dccexProtocol.getRosterEntryNo(listEntryNumber)``` 
 
 
 ## Turnouts/Points
@@ -101,9 +100,11 @@ Retrieve the list with ```dccexProtocol.getTurnouts();```
 
 Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
 
-Retrieve the size of the list with ```dccexProtocol.turnouts.size()```
+The list has been fully received when ```isTurnoutListFullyReceived()``` is true.
 
-Retrieve a ```Turnout``` object from the list with ```dccexProtocol.turnouts.get(listEntryNumber)``` 
+Retrieve the size of the list with ```dccexProtocol.getTurnoutsCount()```
+
+Retrieve a ```Turnout*``` object from the list with ```dccexProtocol.getTurnoutsEntryNo(listEntryNumber)``` 
 
 ## Routes/Automations
 
@@ -113,9 +114,11 @@ Retrieve the list with ```dccexProtocol.getRoutes();```
 
 Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
 
-Retrieve the size of the list with ```dccexProtocol.routes.size()```
+The list has been fully received when ```isRouteListFullyReceived()``` is true.
 
-Retrieve a ```Route``` object from the list with ```dccexProtocol.routes.get(listEntryNumber)``` 
+Retrieve the size of the list with ```dccexProtocol.getRoutesCount()```
+
+Retrieve a ```Route*``` object from the list with ```dccexProtocol.getRoutesEntryNo(listEntryNumber)``` 
 
 ## Turntables 
 
@@ -125,9 +128,11 @@ Retrieve the list with ```dccexProtocol.getTurntables();```
 
 Or with ```dccexProtocol.getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);```
 
-Retrieve the size of the list with ```dccexProtocol.turntables.size()```
+The list has been fully received when ```isTurntableListFullyReceived()``` is true.
 
-Retrieve a ```Turntable``` object from the list with ```dccexProtocol.turntables.get(listEntryNumber)``` 
+Retrieve the size of the list with ```dccexProtocol.getTurntablesCount()```
+
+Retrieve a ```Turntable*``` object from the list with ```dccexProtocol.getTurntablesEntryNo(listEntryNumber)``` 
 
 ----
 ----
