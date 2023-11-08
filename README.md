@@ -10,7 +10,7 @@ The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (
 
 # DCC-EX Native network protocol library
 
-This library implements the DCC-EX Native protocol (as used in EX-CommandStation), allowing an device to connect to the server and act as a client (such as a hardware based throttle).
+This library implements the DCC-EX Native protocol (as used in EX-CommandStation ONLY), allowing an device to connect to the server and act as a client (such as a hardware based throttle).
 
 The implementation of this library is tested on ESP32 based devices running the Arduino framework.   There's nothing in here that's specific to the ESP32, and little of Arduino that couldn't be replaced as needed.
 
@@ -62,7 +62,7 @@ Compile and run, you should see in the Serial monitor, after 20 second delays, t
 
 ## Throttles
 
-To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to one of up to six 'throttles'.
+To simplify the handling of Consists/Multiple Unit Trains the library is implement to behave in a similar manor to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to a 'throttles'.
 
 The protocol provides ```Consist throttle[MAX_THROTTLES]```
 
