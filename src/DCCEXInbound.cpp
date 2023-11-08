@@ -158,7 +158,6 @@ bool DCCEXInbound::parse(char* command) {
 }
 
 void DCCEXInbound::dump(Print * out) {
-   
   out->print(F("\nDCCEXInbound Opcode='"));
   if (opcode) out->write(opcode); 
   else out->print(F("\\0"));  

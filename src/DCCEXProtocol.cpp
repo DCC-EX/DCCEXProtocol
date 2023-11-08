@@ -293,9 +293,9 @@ void DCCEXProtocol::processCommand() {
 void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
     // console->println(F("processServerDescription()"));
     if (delegate) {
-        console->print(F("Process server description with "));
-        console->print(DCCEXInbound::getParameterCount());
-        console->println(F(" params"));
+        // console->print(F("Process server description with "));
+        // console->print(DCCEXInbound::getParameterCount());
+        // console->println(F(" params"));
         
         char *_serverDescription;
         _serverDescription = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
@@ -413,8 +413,8 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
 
         } else {
             if (r->getName()==nullptr) {
-                console->print(F("processRosterEntry(): not received yet: ~"));
-                console->println(r->getAddress());
+                // console->print(F("processRosterEntry(): not received yet: ~"));
+                // console->println(r->getAddress());
                 missingRosters=true;
                 break;
             }
@@ -422,8 +422,8 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
     }
     if (!missingRosters) {
         rosterFullyReceived = true;
-        console->print(F("processRosterEntry(): received all: "));
-        console->println(getRosterCount());
+        // console->print(F("processRosterEntry(): received all: "));
+        // console->println(getRosterCount());
         delegate->receivedRosterList(getRosterCount());
     }
     console->println(F("processRosterEntry(): end"));
@@ -478,8 +478,8 @@ void DCCEXProtocol::processTurnoutEntry() {
             t->setThrown(thrown);
         } else {
             if (t->getName()==nullptr) {
-                console->print(F("processTurnoutsEntry(): not received yet: ~"));
-                console->println(t->getId());
+                // console->print(F("processTurnoutsEntry(): not received yet: ~"));
+                // console->println(t->getId());
                 missingTurnouts = true;
                 break;
             }
