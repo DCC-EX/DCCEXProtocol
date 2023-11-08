@@ -29,20 +29,18 @@
 #define DCCEXPROTOCOL_H
 
 #include <Arduino.h>
-#include <LinkedList.h>  // https://github.com/ivanseidel/LinkedList
 #include "DCCEXInbound.h"
 #include "DCCEXLoco.h"
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
 
-static const int MAX_THROTTLES = 6;
-#define MAX_OUTBOUND_COMMAND_LENGTH 100
-#define MAX_SERVER_DESCRIPTION_PARAM_LENGTH 100
+const int MAX_OUTBOUND_COMMAND_LENGTH=100;
+const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH=100;
 
 // DCCEXInbound params
-const int MAX_COMMAND_PARAMS = 50;
-const int MAX_COMMAND_BUFFER = 500;
+const int MAX_COMMAND_PARAMS=50;
+const int MAX_COMMAND_BUFFER=500;
 
 // *****************************************************************
 
@@ -75,22 +73,56 @@ class NullStream : public Stream {
 
 class DCCEXProtocolDelegate {
   public:
+    /// @brief Callback when server description is received
+    /// @param version 
     virtual void receivedServerDescription(char* version) {}
   
+    /// @brief Callback when roster list received
+    /// @param rosterSize 
     virtual void receivedRosterList(int rosterSize) {}
+    
+    /// @brief Callback when received turnout list
+    /// @param turnoutListSize 
     virtual void receivedTurnoutList(int turnoutListSize) {}    
+    
+    /// @brief Callback when received route list
+    /// @param routeListSize 
     virtual void receivedRouteList(int routeListSize) {}
+    
+    /// @brief  Callback when received turntable list
+    /// @param turntablesListSize 
     virtual void receivedTurntableList(int turntablesListSize) {}    
 
+    /// @brief Callback when received speed for a throttle
+    /// @param throttleNo 
+    /// @param speed 
     virtual void receivedSpeed(int throttleNo, int speed) { }
+    
+    /// @brief Callback when received direction for a throttle
+    /// @param throttleNo 
+    /// @param dir 
     virtual void receivedDirection(int throttleNo, Direction dir) { }
+    
+    /// @brief Callback when received function state change for a throttle
+    /// @param throttleNo 
+    /// @param func 
+    /// @param state 
     virtual void receivedFunction(int throttleNo, int func, bool state) { }
 
+    /// @brief Callback when received a track power state change
+    /// @param state 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    virtual void receivedTurnoutAction(int turnoutId, TurnoutStates state) { }
-    virtual void receivedRouteAction(int routeId, RouteState state) { }
-    virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
+    /// @brief Callback when received a turnout state change
+    /// @param turnoutId 
+    /// @param thrown 
+    virtual void receivedTurnoutAction(int turnoutId, bool thrown) { }
+
+    /// @brief Callback when received a turntable index change
+    /// @param turntableId 
+    /// @param position 
+    /// @param turntableState 
+    virtual void receivedTurntableAction(int turntableId, int position, bool moving) { }
 };
 
 // *******************
@@ -98,14 +130,27 @@ class DCCEXProtocolDelegate {
 class DCCEXProtocol {
   public:
     
-    DCCEXProtocol(bool server = false);
+    /// @brief Constructor
+    /// @param server 
+    DCCEXProtocol(int maxThrottles=6, bool server=false);
 
+    /// @brief Set the delegate object for callbacks
+    /// @param delegate 
     void setDelegate(DCCEXProtocolDelegate *delegate);
+    
+    /// @brief Set the stream object for console output
+    /// @param console 
     void setLogStream(Stream *console);
 
+    /// @brief Connect the stream object to interact with DCC-EX
+    /// @param stream 
     void connect(Stream *stream);
+    
+    /// @brief Disconnect from DCC-EX
     void disconnect();
 
+    /// @brief Check for incoming DCC-EX broadcasts/responses
+    /// @return 
     bool check();
 
     char *serverDescription;
@@ -120,11 +165,12 @@ class DCCEXProtocol {
 
     // *******************
 
-    Consist throttleConsists[MAX_THROTTLES];
-    LinkedList<Loco*> roster = LinkedList<Loco*>();
-    LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
-    LinkedList<Route*> routes = LinkedList<Route*>();
-    LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
+    // Consist throttle[maxThrottles];
+    Consist *throttle;
+    Loco* roster=nullptr;
+    Turnout* turnouts=nullptr;
+    Route* routes=nullptr;
+    Turntable* turntables=nullptr;
 
     //helper functions
     Direction getDirectionFromSpeedByte(int speedByte);
@@ -134,9 +180,10 @@ class DCCEXProtocol {
 
     // *******************
 
+    /// @brief Send the command in the outbound command buffer to DCC-EX
     void sendCommand();
 
-    Loco findLocoInRoster(int address);
+    Loco* findLocoInRoster(int address);
     
     bool sendThrottleAction(int throttle, int speed, Direction direction);
     bool sendLocoAction(int address, int speed, Direction direction);
@@ -151,15 +198,22 @@ class DCCEXProtocol {
 
     bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
     bool getRoster();
+    int getRosterCount();
+    Loco* getRosterEntryNo(int entryNo);
     bool isRosterRequested();
     bool isRosterFullyReceived();
     bool getTurnouts();
+    int getTurnoutsCount();
+    Turnout* getTurnoutsEntryNo(int entryNo);
     bool isTurnoutListRequested();
     bool isTurnoutListFullyReceived();
     bool getRoutes();
+    int getRoutesCount();
+    Route* getRoutesEntryNo(int entryNo);
     bool isRouteListRequested();
     bool isRouteListFullyReceived();
     bool getTurntables();
+    int getTurntablesCount();
     bool isTurntableListRequested();
     bool isTurntableListFullyReceived();
 
@@ -173,7 +227,9 @@ class DCCEXProtocol {
 	  bool sendTrackPower(TrackPower state, char track);
 
     Turnout* getTurnoutById(int turnoutId);
-    bool sendTurnoutAction(int turnoutId, TurnoutStates action);
+    void closeTurnout(int turnoutId);
+    void throwTurnout(int turnoutId);
+    void toggleTurnout(int turnoutId);
 
     Turntable* getTurntableById(int turntableId);
 
@@ -190,6 +246,12 @@ class DCCEXProtocol {
 
   private:
   
+    int _rosterCount = 0;
+    int _turnoutsCount = 0;
+    int _routesCount = 0;
+    int _turntablesCount = 0;
+
+    int _maxThrottles;
     bool server;
     Stream *stream;
     Stream *console;
@@ -255,9 +317,9 @@ class DCCEXProtocol {
 
     //helper functions
     int findThrottleWithLoco(int address);
-    int findTurnoutListPositionFromId(int id);
-    int findRouteListPositionFromId(int id);
-    int findTurntableListPositionFromId(int id);
+    // int findTurnoutListPositionFromId(int id);
+    // int findRouteListPositionFromId(int id);
+    // int findTurntableListPositionFromId(int id);
     char* nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
 

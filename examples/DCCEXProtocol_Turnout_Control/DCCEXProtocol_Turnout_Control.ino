@@ -3,7 +3,7 @@
 // Shows how to retrieve the Turnouts/Points list and control them
 // Tested with ESP32-WROOM board
 //
-// Peter Akers, 2023
+// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke), 2023
 // Luca Dentella, 2020
 
 
@@ -46,14 +46,9 @@ class MyDelegate : public DCCEXProtocolDelegate {
       Serial.println("\n\n");  
     }    
 
-    void receivedTurnoutAction(int turnoutId, TurnoutStates state) { 
-      Serial.print("Received Turnout Action: Id: "); Serial.print(turnoutId); Serial.print(" state: ");Serial.println(state);  
+    void receivedTurnoutAction(int turnoutId, bool thrown) { 
+      Serial.print("Received Turnout Action: Id: "); Serial.print(turnoutId); Serial.print(" thrown: ");Serial.println(thrown);  
       // Serial.println("\n");  
-    }
-
-    void receivedRouteAction(int routeId, RouteState state) { 
-      Serial.print("Received Route Action: Id: "); Serial.print(routeId); Serial.print(" state: ");Serial.println(state);  
-      // Serial.println("\n");
     }
 
 };
@@ -70,10 +65,10 @@ unsigned long lastTime = 0;
 
 bool doneTurnouts = false;
 bool doneRoutes = false;
-int turnout1 = 0;
-int turnout2 = 0;
-int route1 = 0;
-int route2 = 0;
+Turnout* turnout1=nullptr;
+Turnout* turnout2=nullptr;
+Route* route1=nullptr;
+Route* route2=nullptr;
 
 // Global objects
 WiFiClient client;
@@ -89,21 +84,25 @@ void printServer() {
 }
 
 void printTurnouts() {
-  for (int i=0; i<dccexProtocol.turnouts.size(); i++) {
-    Turnout* turnout = dccexProtocol.turnouts.get(i);
-    int id = turnout->getTurnoutId();
-    char* name = turnout->getTurnoutName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  for (Turnout* turnout=dccexProtocol.turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
+    int id=turnout->getId();
+    char* name=turnout->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
   Serial.println("\n");  
 }
 
 void printRoutes() {
-  for (int i=0; i<dccexProtocol.routes.size(); i++) {
-    Route* route = dccexProtocol.routes.get(i);
-    int id = route->getRouteId();
-    char* name = route->getRouteName();
-    Serial.print(id); Serial.print(" ~"); Serial.print(name); Serial.println("~");  
+  for (Route* route=dccexProtocol.routes->getFirst(); route; route=route->getNext()) {
+    int id=route->getId();
+    char* name=route->getName();
+    Serial.print(id);
+    Serial.print(" ~");
+    Serial.print(name);
+    Serial.println("~");
   }
   Serial.println("\n");  
 }
@@ -152,26 +151,22 @@ void loop() {
   //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
   dccexProtocol.getLists(false, true, true, false);
 
-
   if (dccexProtocol.isTurnoutListFullyReceived() && !doneTurnouts) {
-    if (dccexProtocol.turnouts.size()>=2) {
-      turnout1 = dccexProtocol.turnouts.get(0)->getTurnoutId();
-      turnout2 = dccexProtocol.turnouts.get(1)->getTurnoutId();
-
-
-      Serial.print("\nTurnout 1: id: "); Serial.println(turnout1);
-      Serial.print("Turnout 2: id: "); Serial.println(turnout2);
+    if (dccexProtocol.getTurnoutsCount()>=2) {
+      turnout1=dccexProtocol.getTurnoutsEntryNo(0);
+      Serial.print("\nTurnout 1: id: "); Serial.println(turnout1->getId());
+      turnout2=dccexProtocol.getTurnoutsEntryNo(1);
+      Serial.print("Turnout 2: id: "); Serial.println(turnout2->getId());
     }
     doneTurnouts = true;
   }
 
   if (dccexProtocol.isRouteListFullyReceived() && !doneRoutes) {
-    if (dccexProtocol.routes.size()>=2) {
-      route1 = dccexProtocol.routes.get(0)->getRouteId();
-      route2 = dccexProtocol.routes.get(1)->getRouteId();
-
-      Serial.print("\nRoute 1: id: "); Serial.println(route1);
-      Serial.print("Route 2: id: "); Serial.println(route2);
+    if (dccexProtocol.getRoutesCount()>=2) {
+      route1=dccexProtocol.getRoutesEntryNo(0);
+      Serial.print("\nRoute 1: id: "); Serial.println(route1->getId());
+      route2=dccexProtocol.getRoutesEntryNo(1);
+      Serial.print("Route 2: id: "); Serial.println(route2->getId());
     }
     doneRoutes = true;
   }
@@ -180,19 +175,27 @@ void loop() {
   if ((millis() - lastTime) >= 10000) {
     if (doneTurnouts) {
       int action = random(0, 100);
-      TurnoutStates tAction = (action>50) ? TurnoutThrow : TurnoutClose;
-      dccexProtocol.sendTurnoutAction(turnout1, tAction);
+      bool throwTurnout = (action>50) ? 1 : 0;
+      if (throwTurnout) {
+        dccexProtocol.throwTurnout(turnout1->getId());
+      } else {
+        dccexProtocol.closeTurnout(turnout1->getId());
+      }
       action = random(0, 100);
-      tAction = (action>50) ? TurnoutThrow : TurnoutClose;
-      dccexProtocol.sendTurnoutAction(turnout2, tAction);
+      throwTurnout = (action>50) ? 1 : 0;
+      if (throwTurnout) {
+        dccexProtocol.throwTurnout(turnout2->getId());
+      } else {
+        dccexProtocol.closeTurnout(turnout2->getId());
+      }
     }
 
     if (doneRoutes) {
       int action = random(0, 100);
       if (action>50) {
-        dccexProtocol.sendRouteAction(route1);
+        dccexProtocol.sendRouteAction(route1->getId());
       } else {
-        dccexProtocol.sendRouteAction(route2);
+        dccexProtocol.sendRouteAction(route2->getId());
       }
     }
 

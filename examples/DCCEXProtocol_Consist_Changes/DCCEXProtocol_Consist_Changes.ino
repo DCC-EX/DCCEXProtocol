@@ -3,7 +3,7 @@
 // Shows how to create a delegate class to handle a consist with multiple locos
 // Tested with ESP32-WROOM board
 //
-// Peter Akers, 2023
+// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris (UKBloke), 2023
 // Luca Dentella, 2020
 
 
@@ -76,11 +76,11 @@ void printServer() {
 }
 
 void listConsist(int throttle) {
-  for (int i=0;i<dccexProtocol.throttleConsists[throttle].consistGetNumberOfLocos(); i++) {
+  for (int i=0;i<dccexProtocol.throttle[throttle].consistGetNumberOfLocos(); i++) {
     Serial.print("loco: ");
     Serial.print(i);
     Serial.print(" addr: ");
-    ConsistLoco* loco = dccexProtocol.throttleConsists[throttle].consistGetLocoAtPosition(i);
+    ConsistLoco* loco = dccexProtocol.throttle[throttle].consistGetLocoAtPosition(i);
     Serial.print(loco->getLocoAddress());
     Serial.print(" facing: ");
     Serial.print(loco->getConsistLocoFacing());
@@ -135,26 +135,26 @@ void loop() {
     // add a loco to throttle 0 from DCC address 11
     char loco1name[] = "dummy loco 1";
     Loco loco(11, loco1name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco, FacingForward);
-    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco, FacingForward);
+    Serial.print("\n\nLocos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 12
     char loco2name[] = "dummy loco 2";
     Loco loco2 = Loco(12, loco2name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco2, FacingReversed);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco2, FacingReversed);
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 13
     char loco3name[] = "dummy loco 3";
     Loco loco3 = Loco(13, loco3name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco3, FacingReversed);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco3, FacingReversed);
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     // add a loco to throttle 0 from DCC address 14
     char loco4name[] = "dummy loco 43";
     Loco loco4 = Loco(14, loco4name, LocoSourceEntry);
-    dccexProtocol.throttleConsists[0].consistAddLoco(loco4, FacingReversed);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttleConsists[0].consistGetNumberOfLocos());
+    dccexProtocol.throttle[0].consistAddLoco(loco4, FacingReversed);
+    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].consistGetNumberOfLocos());
 
     listConsist(0);
 
@@ -166,7 +166,7 @@ void loop() {
     int pos = random(0, 3);
     Serial.print("\nmoving: "); Serial.print(addr); Serial.print(" to: ");Serial.println(pos);
     // randomly chnage the position of the a random loco in the consist
-    dccexProtocol.throttleConsists[0].consistSetLocoPosition(addr, pos);
+    dccexProtocol.throttle[0].consistSetLocoPosition(addr, pos);
 
     listConsist(0);
 

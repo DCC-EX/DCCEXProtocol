@@ -1,71 +1,53 @@
 #include <Arduino.h>
 #include "DCCEXTurnouts.h"
 
-Turnout::Turnout(int id, TurnoutStates state) {
-    turnoutId = id;
-    turnoutState = state;
-    hasReceivedDetail = false;
-    turnoutName = nullptr;
-}
+Turnout* Turnout::_first=nullptr;
 
-bool Turnout::throwTurnout() {
-    setTurnoutState(TurnoutThrow);
-    return true;
-}
-
-bool Turnout::closeTurnout() {
-    setTurnoutState(TurnoutClose);
-    return true;
-}
-
-bool Turnout::toggleTurnout() {
-    setTurnoutState(TurnoutToggle);
-    return true;
-}
-
-bool Turnout::setTurnoutState(TurnoutStates action) {
-    TurnoutStates newState = action;
-    if (action == TurnoutToggle) {
-        if (turnoutState == TurnoutClosed ) {
-            newState = TurnoutThrown;
-        } else { // Thrown or Inconsistant
-            newState = TurnoutClosed;
-        }
+Turnout::Turnout(int id, bool thrown) {
+  _id=id;
+  _thrown=thrown;
+  _name=nullptr;
+  _next=nullptr;
+  if (!_first) {
+    _first=this;
+  } else {
+    Turnout* current=_first;
+    while (current->_next!=nullptr) {
+        current=current->_next;
     }
-    if (newState<=TurnoutThrow) { // ignore TurnoutExamine
-        turnoutState = newState;
-        // sendTurnoutAction(turnoutId, newState)
-        return true;
-    }
-    return false;
+    current->_next=this;
+  }
+  _count++;
 }
 
-bool Turnout::setTurnoutId(int id) {
-    turnoutId = id;
-    return true;
+void Turnout::setThrown(bool thrown) {
+  _thrown=thrown;
 }
 
-int Turnout::getTurnoutId() {
-    return turnoutId;
+void Turnout::setName(char *name) {
+  _name=name;
 }
 
-bool Turnout::setTurnoutName(char* name) {
-    turnoutName = name;
-    return true;
+int Turnout::getId() {
+  return _id;
 }
 
-char* Turnout::getTurnoutName() {
-    return turnoutName;
+char* Turnout::getName() {
+  return _name;
 }
 
-TurnoutStates Turnout::getTurnoutState() {
-    return turnoutState;
+bool Turnout::getThrown() {
+  return _thrown;
 }
 
-void Turnout::setHasReceivedDetails() {
-    hasReceivedDetail = true;
+Turnout* Turnout::getFirst() {
+  return _first;
 }
 
-bool Turnout::getHasReceivedDetails() {
-    return hasReceivedDetail;
+Turnout* Turnout::getNext() {
+  return _next;
+}
+
+int Turnout::getCount() {
+  return _count;
 }
