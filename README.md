@@ -159,9 +159,126 @@ Retrieve a ```Turntable*``` object from the list with ```dccexProtocol.getTurnta
 
     virtual void receivedTrackPower(TrackPower state) { }
 
-    virtual void receivedTurnoutAction(int turnoutId, TurnoutStates state) { }
-    virtual void receivedRouteAction(int routeId, RouteState state) { }
-    virtual void receivedTurntableAction(int turntableId, int position, TurntableState turntableState) { }
+    virtual void receivedTurnoutAction(int turnoutId, bool thrown) { }
+    virtual void receivedTurntableAction(int turntableId, int position, bool moving) { }
+
+---
+
+### DCCEXProtocol
+
+#### Public methods
+
+    **Protocol and Comms Related**
+    DCCEXProtocol(int maxThrottles=6, bool server=false);
+    void setDelegate(DCCEXProtocolDelegate *delegate);
+    void setLogStream(Stream *console);
+    void connect(Stream *stream);
+    void disconnect();
+    bool check();
+
+    **Server Related**
+    bool sendServerDetailsRequest();
+    long getLastServerResponseTime();  // seconds since Arduino start
+
+    **Power Related**
+	bool sendTrackPower(TrackPower state);
+	bool sendTrackPower(TrackPower state, char track);
+
+    **Lists Related**
+    bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+
+    **Roster Related**
+    bool getRoster();
+    int getRosterCount();
+    Loco* getRosterEntryNo(int entryNo);
+    Loco* findLocoInRoster(int address);
+    bool isRosterRequested();
+    bool isRosterFullyReceived();
+
+    **Turnout Related**
+    bool getTurnouts();
+    int getTurnoutsCount();
+    Turnout* getTurnoutsEntryNo(int entryNo);
+    Turnout* getTurnoutById(int turnoutId);
+    bool isTurnoutListRequested();
+    bool isTurnoutListFullyReceived();
+    void closeTurnout(int turnoutId);
+    void throwTurnout(int turnoutId);
+    void toggleTurnout(int turnoutId);
+
+    **Route Related**
+    bool getRoutes();
+    int getRoutesCount();
+    Route* getRoutesEntryNo(int entryNo);
+    bool isRouteListRequested();
+    bool isRouteListFullyReceived();
+    bool sendRouteAction(int routeId);
+    bool sendPauseRoutes();
+    bool sendResumeRoutes();
+
+    **Turntable Related**
+    bool getTurntables();
+    int getTurntablesCount();
+    bool isTurntableListRequested();
+    bool isTurntableListFullyReceived();
+    Turntable* getTurntableById(int turntableId);
+    bool sendTurntableAction(int turntableId, int position, int activity);
+
+    **Throttle Related**
+    Consist getThrottleConsist(int throttleNo);
+    bool sendThrottleAction(int throttle, int speed, Direction direction);
+    bool sendFunction(int throttle, int functionNumber, bool pressed);
+    bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
+    bool isFunctionOn(int throttle, int functionNumber);
+    void sendEmergencyStop();
+
+    bool sendLocoAction(int address, int speed, Direction direction);
+    bool sendLocoUpdateRequest(int address);
+
+    **Accessory Related**
+    bool sendAccessoryAction(int accessoryAddress, int activate);
+    bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
+
+
+#### Public Attributes
+
+    Consist *throttle;
+    Loco* roster;
+    Turnout* turnouts;
+    Route* routes;
+    Turntable* turntables;
+
+
+
+---
+
+### class Loco
+
+???
+Used by ```Roster``` directly.  Used by ```Throttle``` indirectly.
+
+#### Public Attributes
+
+    Functions locoFunctions;
+
+#### Public methods
+
+    Loco(int address, LocoSource source);
+    int getAddress();
+    void setName(char* name);
+    char* getName();
+    void setSpeed(int speed);
+    int getSpeed();
+    void setDirection(Direction direction);
+    Direction getDirection();
+    LocoSource getSource();
+    void setupFunctions(char* functionNames);
+    bool isFunctionOn(int function);
+    void setFunctionStates(int functionStates);
+    int getFunctionStates();
+    int getCount();
+    static Loco* getFirst();
+    Loco* getNext();
 
 ---
 
@@ -177,117 +294,43 @@ Used by ```Consist```
 
 #### Public methods
 
-    ConsistLoco() {};
-    ConsistLoco(int address, String name, LocoSource source, Facing facing);
-    bool setConsistLocoFacing(Facing facing);
-    Facing getConsistLocoFacing();
-
----
-
-### class Loco
-
-Used by ```Roster``` directly.  Used by ```ConsistLoco``` indirectly.
-
-#### Public Attributes
-
-    Functions locoFunctions;
-
-#### Public methods
-
-    Loco() {}
-    Loco(int address, String name, LocoSource source);
-
-    bool setLocoSpeed(int speed);
-    bool setLocoDirection(Direction direction);
-    
-    int getLocoAddress();
-    bool setLocoName(String name);
-    String getLocoName();
-    bool setLocoSource(LocoSource source);
-    LocoSource getLocoSource();
-    int  getLocoSpeed();
-    Direction getLocoDirection();
-    void setIsFromRosterAndReceivedDetails();
-    bool getIsFromRosterAndReceivedDetails();
-
----
-
-#### class Functions
-
-Used by ```Loco```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    Loco(int address, char* name, LocoSource source);
-    Functions locoFunctions;
-    bool isFunctionOn(int functionNumber);
-    bool setLocoSpeed(int speed);
-    bool setLocoDirection(Direction direction);
-    int getLocoAddress();
-    bool setLocoName(char* name);
-    char* getLocoName();
-    bool setLocoSource(LocoSource source);
-    LocoSource getLocoSource();
-    int  getLocoSpeed();
-    Direction getLocoDirection();
-    void setIsFromRosterAndReceivedDetails();
-    bool getIsFromRosterAndReceivedDetails();
-    bool clearLocoNameAndFunctions();
-
----
-
-### class ConsistLoco : public Loco
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    ConsistLoco(int address, char* name, LocoSource source, Facing facing);
-    bool setConsistLocoFacing(Facing facing);
-    Facing getConsistLocoFacing();
+    ConsistLoco(int address, LocoSource source, Facing facing);
+    void setFacing(Facing facing);
+    Facing getFacing();
+    ConsistLoco* getNext();
 
 ---
 
 ### class Consist
 
-Used by ```ConsistThrottle[]```
+Used by ```throttle```
 
 #### Public Attributes
 
-    LinkedList<ConsistLoco*> consistLocos = LinkedList<ConsistLoco*>();
+    none
 
 #### Public methods
 
-    Consist(char* name);
-    bool consistAddLoco(Loco loco, Facing facing);
-    bool consistReleaseAllLocos();
-    bool consistReleaseLoco(int locoAddress);
-    int consistGetNumberOfLocos();
-    ConsistLoco* consistGetLocoAtPosition(int position);
-    int consistGetLocoPosition(int locoAddress);
-    bool consistSetLocoPosition(int locoAddress, int position);
-    bool actionConsistExternalChange(int speed, Direction direction, FunctionState fnStates[]);
-    bool consistSetSpeed(int speed);
-    int consistGetSpeed();
-    bool consistSetDirection(Direction direction);
-    Direction consistGetDirection();
-    bool consistSetFunction(int functionNo, FunctionState state);
-    bool consistSetFunction(int address, int functionNo, FunctionState state);
-    bool isFunctionOn(int functionNumber);
-    bool setConsistName(char* name);
-    char* getConsistName();
+    Consist();
+    void setName(char* name);
+    char* getName();
+    void addFromRoster(Loco* loco, Facing facing);
+    void addFromEntry(int address, Facing facing);
+    void releaseAll();
+    void releaseLoco(int address);
+    int getLocoCount();
+    bool inConsist(int address);
+    void setSpeed(int speed);
+    int getSpeed();
+    void setDirection(Direction direction);
+    Direction getDirection();
+    ConsistLoco* getFirst();
 
 ---
 
 ### class Turnout
 
-Used by ```Turnouts[]```
+Used by ```turnouts```
 
 #### Public Attributes
 
@@ -295,24 +338,21 @@ Used by ```Turnouts[]```
 
 #### Public methods
 
-    Turnout(int id, char* name, TurnoutStates state);
-    bool setTurnoutState(TurnoutStates action);
-    TurnoutStates getTurnoutState();
-    bool throwTurnout();
-    bool closeTurnout();
-    bool toggleTurnout();
-    bool setTurnoutId(int id);
-    int getTurnoutId();
-    bool setTurnoutName(char* name);
-    char* getTurnoutName();
-    void setHasReceivedDetails();
-    bool getHasReceivedDetails();
+    Turnout(int id, bool thrown);
+    void setThrown(bool thrown);
+    void setName(char* _name);
+    int getId();
+    char* getName();
+    bool getThrown();
+    static Turnout* getFirst();
+    Turnout* getNext();
+    int getCount();
 
 ---
 
 ### class Route
 
-Used by ```Routes[]```
+Used by ```routes```
 
 #### Public Attributes
 
@@ -320,46 +360,46 @@ Used by ```Routes[]```
 
 #### Public methods
 
-    Route(int id, char* name);
-    int getRouteId();
-    bool setRouteName(char* name);
-    char* getRouteName();
-    bool setRouteType(RouteType type);
-    RouteType getRouteType();
-    void setHasReceivedDetails();
-    bool getHasReceivedDetails();
+    Route(int id);
+    int getId();
+    void setName(char* name);
+    char* getName();
+    void setType(RouteType type);
+    RouteType getType();
+    int getCount();
+    static Route* getFirst();
+    Route* getNext();
 
 ---
 
 ### class Turntable
 
-Used by ```Turntables[]```
+Used by ```turntables```
 
 #### Public Attributes
 
-    LinkedList<TurntableIndex*> turntableIndexes = LinkedList<TurntableIndex*>();
+    none
 
 #### Public methods
 
-    Turntable(int id, char* name, TurntableType type, int position, int indexCount);
-    bool addTurntableIndex(int index, char* indexName, int indexAngle);
-    bool setTurntableIndexCount(int indexCount); // what was listed in the original definition
-    int getTurntableIndexCount(); // what was listed in the original definition
-
-    int getTurntableId();
-    bool setTurntableName(char* name);
-    char* getTurntableName();
-    bool setTurntableCurrentPosition(int index);
-    bool setTurntableType(TurntableType type);
-    TurntableType getTurntableType();
-    int getTurntableCurrentPosition();
-    int getTurntableNumberOfIndexes();
-    TurntableIndex* getTurntableIndexAt(int positionInLinkedList);
-    TurntableIndex* getTurntableIndex(int indexId);
-    TurntableState getTurntableState();
-    bool actionTurntableExternalChange(int index, TurntableState state);
-    void setHasReceivedDetails();
-    bool getHasReceivedDetails();
+    Turntable(int id);
+    int getId();
+    void setType(TurntableType type);
+    TurntableType getType();
+    void setIndex(int index);
+    int getIndex();
+    void setNumberOfIndexes(int numberOfIndexes);
+    int getNumberOfIndexes();
+    void setName(char* name);
+    char* getName();
+    void setMoving(bool moving);
+    bool isMoving();
+    int getCount();
+    int getIndexCount();
+    static Turntable* getFirst();
+    Turntable* getNext();
+    void addIndex(TurntableIndex* index);
+    TurntableIndex* getFirstIndex();
 
 ---
 
@@ -369,306 +409,20 @@ Used by ```Turntable```
 
 #### Public Attributes
 
-    int turntableIndexId;
-    int turntableIndexIndex;
-    String turntableIndexName;
-    int turntableIndexAngle;
-    bool hasReceivedDetail;
+    none
 
 #### Public methods
 
-    TurntableIndex(int index, char* name, int angle);
-    void setHasReceivedDetails(); //????????????????? Probably not needed
-    bool getHasReceivedDetails(); //????????????????? Probably not needed
-    char* getTurntableIndexName();
-    int getTurntableIndexId();
-    int getTurntableIndexIndex();
+    TurntableIndex(int ttId, int id, int angle, char* name);
+    int getTTId();
+    int getId();
+    int getAngle();
+    char* getName();
+    TurntableIndex* getNext();
 
 ----
 ----
 
-## public Attributes
-
-```
-Consist throttle[MAX_THROTTLES];
-```
-
-Linked List of type ```Consist```
-
-```
-LinkedList<Loco*> roster = LinkedList<Loco*>();
-```
-
-Linked List of type ```Loco```
-
-```
-LinkedList<Turnout*> turnouts = LinkedList<Turnout*>();
-```
-
-Linked List of type ```Turnout```
-
-```
-LinkedList<Route*> routes = LinkedList<Route*>();
-```
-
-Linked List of type ```Route```
-
-```
-LinkedList<Turntable*> turntables = LinkedList<Turntable*>();
-```
-
-Linked List of type ```Turntable```
-
-
-## Public Methods
-
-### Connection related
-
-```
-DCCEXProtocol(bool server = false);
-```
-
-TBA
-
-```
-void setDelegate(DCCEXProtocolDelegate *delegate);
-```
-
-TBA
-
-```
-void setLogStream(Stream *console);
-```
-
-TBA
-
-```
-void connect(Stream *stream);
-```
-
-TBA
-
-```
-void disconnect();
-```
-
-TBA
-
-```
-bool check();
-```
-
-TBA
-
-### Control Related
-
-#### general
-
-```
-void sendCommand(String cmd);
-```
-
-***This should not be used and will likely be made private***
-
-#### Throttle Control
-
-```
-bool sendThrottleAction(int throttle, int speed, Direction direction);
-```
-
-Send a speed and direction to all locos on a Throttle.
-
-```
-bool sendFunction(int throttle, int funcNum, bool pressed);
-```
-
-Send a function to a Throttle.  Generally only the lead loco will get the command.
-
-```
-bool sendFunction(int throttle, String address, int funcNum, bool pressed);
-```
-
-Send a function a specific loco on a Throttle.
-
-```
-bool isFunctionOn(int throttle, int functionNumber);
-```
-
-TBA
-
-```
-Consist getThrottleConsist(int throttleNo);
-```
-
-TBA
-
-```
-bool sendLocoAction(int address, int speed, Direction direction);
-``` 
-
-***This should not be used and will likely be made private***
-
-```
-bool sendLocoUpdateRequest(int address);
-```
-
-***This should not be used and will likely be made private***
-
-#### Server Info 
-
-```
-bool sendServerDetailsRequest();
-```
-
-TBA
-
-```
-bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
-```
-
-TBA
-
-```
-bool getRoster();
-```
-
-TBA
-
-```
-bool isRosterRequested();
-```
-
-TBA
-
-```
-bool isRosterFullyReceived();
-```
-
-TBA
-
-```
-bool getTurnouts();
-```
-
-TBA
-
-```
-bool isTurnoutListRequested();
-```
-
-TBA
-
-```
-bool isTurnoutListFullyReceived();
-```
-
-TBA
-
-```
-bool getRoutes();
-```
-
-TBA
-
-```
-bool isRouteListRequested();
-```
-
-TBA
-
-```
-bool isRouteListFullyReceived();
-```
-
-TBA
-
-```
-bool getTurntables();
-```
-
-TBA
-
-```
-bool isTurntableListRequested();
-```
-
-TBA
-
-```
-bool isTurntableListFullyReceived();
-```
-
-TBA
-
-```
-long getLastServerResponseTime();
-```
-
-TBA
-
-```
-void sendEmergencyStop();
-```
-
-TBA
-
-```
-bool sendTrackPower(TrackPower state);
-```
-
-TBA
-
-```
-bool sendTrackPower(TrackPower state, char track);
-```
-
-#### Turnout/Point commands
-
-```
-bool sendTurnoutAction(int turnoutId, TurnoutStates action);
-```
-
-TBA
-
-#### Route/Automation commands
-
-```
-bool sendRouteAction(int routeId);
-```
-
-TBA
-
-```
-bool sendPauseRoutes();
-```
-
-TBA
-
-```
-bool sendResumeRoutes();
-```
-
-TBA
-
-#### Turntable commands
-
-```
-bool sendTurntableAction(int turntableId, int position, int activity);
-```
-
-TBA
-
-```
-bool sendAccessoryAction(int accessoryAddress, int activate);
-```
-
-TBA
-
-```
-bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
-```
-
-TBA
 
 ----
 ----
