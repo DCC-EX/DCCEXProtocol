@@ -175,11 +175,6 @@ int DCCEXProtocol::getValidFunctionMap(int functionMap) {
     // This needs to set the current loco function map now
 }
 
-int DCCEXProtocol::bitExtracted(int number, int k, int p)
-{
-    return (((1 << k) - 1) & (number >> (p - 1)));
-}
-
 // ******************************************************************************************************
 // sending and receiving commands from the CS
 
@@ -365,18 +360,17 @@ void DCCEXProtocol::processTrackPower() {
 //private
 void DCCEXProtocol::processRosterList() {
     // console->println(F("processRosterList()"));
-    // if (roster.size()>0) { // already have a roster so this is an update
-    if (roster!=nullptr) {
+    if (roster!=nullptr) {  // already have a roster so this is an update
         // roster.clear();
         console->println(F("processRosterList(): roster list already received. Ignoring this!"));
         return;
     } 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int address = DCCEXInbound::getNumber(i);
-        // roster.add(new Loco(address, LocoSourceRoster));
         new Loco(address, LocoSourceRoster);
-        sendRosterEntryRequest(address);
+        // sendRosterEntryRequest(address);
     }
+    sendRosterEntryRequest(Loco::getFirst()->getAddress());
     _rosterCount = DCCEXInbound::getParameterCount()-1;
     // console->println(F("processRosterList(): end"));
 }
@@ -400,26 +394,34 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
     char *funcs=DCCEXInbound::getSafeText(3);
     bool missingRosters=false;
     
-    // for (int i=0; i<roster.size(); i++) {
-    //     auto r=roster.get(i);
-    for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
-        if (r->getAddress() == address) {
-            // console->print("processRosterEntry(): found: "); console->println(address);
+    // for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
+    //     if (r->getAddress() == address) {
+    //         // console->print("processRosterEntry(): found: "); console->println(address);
+    //         r->setName(name);
+    //         r->setupFunctions(funcs);
+    //         // If r->getNext()==nullptr at end of list, we're done
+    //         // If r->getNext()->getName()==nullptr means we're not done
+    //     } else {
+    //         if (r->getName()==nullptr) {
+    //             // console->print(F("processRosterEntry(): not received yet: ~"));
+    //             // console->println(r->getAddress());
+    //             missingRosters=true;
+    //             break;
+    //         }
+    //     }
+    // }
 
-            r->setName(name);
-            // r->setSource(LocoSourceRoster);
-            // r->setIsFromRosterAndReceivedDetails();
-            r->setupFunctions(funcs);
-
-        } else {
-            if (r->getName()==nullptr) {
-                // console->print(F("processRosterEntry(): not received yet: ~"));
-                // console->println(r->getAddress());
-                missingRosters=true;
-                break;
-            }
+    Loco* loco=roster->getByAddress(address);
+    if (loco) {
+        loco->setName(name);
+        loco->setupFunctions(funcs);
+        if (loco->getNext() && loco->getNext()->getName()==nullptr) {
+            missingRosters=true;
+            sendRosterEntryRequest(loco->getNext()->getAddress());
         }
     }
+
+    
     if (!missingRosters) {
         rosterFullyReceived = true;
         // console->print(F("processRosterEntry(): received all: "));
@@ -811,14 +813,13 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
 // ******************************************************************************************************
 // server commands
 
-bool DCCEXProtocol::sendServerDetailsRequest() {
+void DCCEXProtocol::sendServerDetailsRequest() {
     // console->println(F("sendServerDetailsRequest(): "));
     if (delegate) {
         sprintf(outboundCommand, "<s>");
         sendCommand();        
     }
     // console->println(F("sendServerDetailsRequest(): end"));
-    return true; 
 }
 
 // ******************************************************************************************************
@@ -1040,7 +1041,7 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 // ******************************************************************************************************
 
 // sequentially request and get the required lists. To avoid overloading the buffer
-bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
+void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
 //    console->println(F("getLists()"));
  
     if (!allRequiredListsReceived) {
@@ -1076,7 +1077,6 @@ bool DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
         }
     }
     // console->println(F("getLists(): end"));
-    return true;
 }
 
 bool DCCEXProtocol::getRoster() {
