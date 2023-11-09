@@ -41,6 +41,11 @@ public:
   /// @brief Get the number of turnouts
   /// @return 
   int getCount();
+
+  /// @brief Get turnout object by turnout ID
+  /// @param id 
+  /// @return 
+  Turnout* getById(int id);
   
 private:
   static Turnout* _first;

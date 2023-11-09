@@ -447,8 +447,9 @@ void DCCEXProtocol::processTurnoutList() {
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
         new Turnout(id, false);
-        sendTurnoutEntryRequest(id);
+        // sendTurnoutEntryRequest(id);
     }
+    sendTurnoutEntryRequest(Turnout::getFirst()->getId());
     _turnoutsCount = DCCEXInbound::getParameterCount()-1;
     // console->println(F("processTurnoutList(): end"));
 }
@@ -474,19 +475,30 @@ void DCCEXProtocol::processTurnoutEntry() {
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
 
-    for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
-        if (t->getId()==id) {
-            t->setName(name);
-            t->setThrown(thrown);
-        } else {
-            if (t->getName()==nullptr) {
-                // console->print(F("processTurnoutsEntry(): not received yet: ~"));
-                // console->println(t->getId());
-                missingTurnouts = true;
-                break;
-            }
+    // for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
+    //     if (t->getId()==id) {
+    //         t->setName(name);
+    //         t->setThrown(thrown);
+    //     } else {
+    //         if (t->getName()==nullptr) {
+    //             // console->print(F("processTurnoutsEntry(): not received yet: ~"));
+    //             // console->println(t->getId());
+    //             missingTurnouts = true;
+    //             break;
+    //         }
+    //     }
+    // }
+
+    Turnout* t=turnouts->getById(id);
+    if (t) {
+        t->setName(name);
+        t->setThrown(thrown);
+        if (t->getNext() && t->getNext()->getName()==nullptr) {
+            missingTurnouts=true;
+            sendTurnoutEntryRequest(t->getNext()->getId());
         }
     }
+
     if (!missingTurnouts) {
         turnoutListFullyReceived=true;
         console->println(F("processTurnoutsEntry(): received all"));

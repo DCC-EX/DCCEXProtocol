@@ -128,7 +128,7 @@ Loco* Loco::getNext() {
 }
 
 Loco* Loco::getByAddress(int address) {
-  for (Loco* l=_first; l; l=l->_next) {
+  for (Loco* l=getFirst(); l; l=l->getNext()) {
     if (l->getAddress() == address) {
       return l;
     }
