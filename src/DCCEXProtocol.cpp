@@ -47,10 +47,11 @@ static const int MAX_SPEED = 126;
 // ******************************************************************************************************
 // ******************************************************************************************************
 
-DCCEXProtocol::DCCEXProtocol(int maxThrottles, bool server) {
+DCCEXProtocol::DCCEXProtocol(int maxThrottles, unsigned long retrievalDelay, bool server) {
 	// store server/client
     this->server = server;
     _maxThrottles=maxThrottles;
+    _retrievalDelay=retrievalDelay;
     throttle=new Consist[_maxThrottles];
 		
 	// init streams
@@ -93,6 +94,7 @@ void DCCEXProtocol::setLogStream(Stream *console) {
 void DCCEXProtocol::connect(Stream *stream) {
     init();
     this->stream = stream;
+    _delayUntil=millis()+_retrievalDelay;
 }
 
 void DCCEXProtocol::disconnect() {
@@ -1055,7 +1057,7 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 // sequentially request and get the required lists. To avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
 //    console->println(F("getLists()"));
- 
+    if (millis()<_delayUntil) return;
     if (!allRequiredListsReceived) {
         if (rosterRequired && !rosterRequested) {
             getRoster();
