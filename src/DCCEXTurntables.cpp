@@ -134,3 +134,21 @@ void Turntable::addIndex(TurntableIndex* index) {
 TurntableIndex* Turntable::getFirstIndex() {
   return _firstIndex;
 }
+
+Turntable* Turntable::getById(int id) {
+  for (Turntable* tt=getFirst(); tt; tt=tt->getNext()) {
+    if (tt->getId()==id) {
+      return tt;
+    }
+  }
+  return nullptr;
+}
+
+TurntableIndex* Turntable::getIndexById(int id) {
+  for (TurntableIndex* tti=getFirstIndex(); tti; tti=tti->getNextIndex()) {
+    if (tti->getId()==id) {
+      return tti;
+    }
+  }
+  return nullptr;
+}

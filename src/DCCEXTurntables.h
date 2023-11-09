@@ -121,6 +121,16 @@ public:
   /// @return 
   TurntableIndex* getFirstIndex();
 
+  /// @brief Get a turntable object by its ID
+  /// @param id 
+  /// @return 
+  Turntable* getById(int id);
+
+  /// @brief Get TurntableIndex object by its ID
+  /// @param id 
+  /// @return 
+  TurntableIndex* getIndexById(int id);
+
 private:
   int _id;
   TurntableType _type;

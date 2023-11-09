@@ -46,6 +46,10 @@ public:
   /// @brief Get next Route object
   /// @return 
   Route* getNext();
+
+  /// @brief Get route object by its ID
+  /// @return 
+  Route* getById(int id);
   
 private:
   int _id;

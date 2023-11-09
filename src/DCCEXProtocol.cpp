@@ -361,14 +361,12 @@ void DCCEXProtocol::processTrackPower() {
 void DCCEXProtocol::processRosterList() {
     // console->println(F("processRosterList()"));
     if (roster!=nullptr) {  // already have a roster so this is an update
-        // roster.clear();
         console->println(F("processRosterList(): roster list already received. Ignoring this!"));
         return;
     } 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int address = DCCEXInbound::getNumber(i);
         new Loco(address, LocoSourceRoster);
-        // sendRosterEntryRequest(address);
     }
     sendRosterEntryRequest(Loco::getFirst()->getAddress());
     _rosterCount = DCCEXInbound::getParameterCount()-1;
@@ -394,23 +392,6 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
     char *funcs=DCCEXInbound::getSafeText(3);
     bool missingRosters=false;
     
-    // for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
-    //     if (r->getAddress() == address) {
-    //         // console->print("processRosterEntry(): found: "); console->println(address);
-    //         r->setName(name);
-    //         r->setupFunctions(funcs);
-    //         // If r->getNext()==nullptr at end of list, we're done
-    //         // If r->getNext()->getName()==nullptr means we're not done
-    //     } else {
-    //         if (r->getName()==nullptr) {
-    //             // console->print(F("processRosterEntry(): not received yet: ~"));
-    //             // console->println(r->getAddress());
-    //             missingRosters=true;
-    //             break;
-    //         }
-    //     }
-    // }
-
     Loco* loco=roster->getByAddress(address);
     if (loco) {
         loco->setName(name);
@@ -447,7 +428,6 @@ void DCCEXProtocol::processTurnoutList() {
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
         new Turnout(id, false);
-        // sendTurnoutEntryRequest(id);
     }
     sendTurnoutEntryRequest(Turnout::getFirst()->getId());
     _turnoutsCount = DCCEXInbound::getParameterCount()-1;
@@ -474,20 +454,6 @@ void DCCEXProtocol::processTurnoutEntry() {
     bool thrown=(DCCEXInbound::getNumber(2)=='T');
     char* name=DCCEXInbound::getSafeText(3);
     bool missingTurnouts=false;
-
-    // for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
-    //     if (t->getId()==id) {
-    //         t->setName(name);
-    //         t->setThrown(thrown);
-    //     } else {
-    //         if (t->getName()==nullptr) {
-    //             // console->print(F("processTurnoutsEntry(): not received yet: ~"));
-    //             // console->println(t->getId());
-    //             missingTurnouts = true;
-    //             break;
-    //         }
-    //     }
-    // }
 
     Turnout* t=turnouts->getById(id);
     if (t) {
@@ -580,23 +546,18 @@ void DCCEXProtocol::processTurnoutAction() { //<H id state>
 //private
 void DCCEXProtocol::processRouteList() {
     // console->println(F("processRouteList()"));
-    if (delegate) {
-        // if (routes.size()>0) { // already have a routes list so this is an update
-        if (routes!=nullptr) {
-            // routes.clear();
-            console->println(F("processRouteList(): Routes/Automation list already received. Ignoring this!"));
-            return;
-        } 
+    if (routes!=nullptr) {
+        console->println(F("processRouteList(): Routes/Automation list already received. Ignoring this!"));
+        return;
+    } 
 
-        for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-            int id = DCCEXInbound::getNumber(i);
-            // routes.add(new Route(id));
-            new Route(id);
-            sendRouteEntryRequest(id);
-        }
-        _routesCount = DCCEXInbound::getParameterCount()-1;
-
+    for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
+        int id = DCCEXInbound::getNumber(i);
+        new Route(id);
+        // sendRouteEntryRequest(id);
     }
+    sendRouteEntryRequest(Route::getFirst()->getId());
+    _routesCount = DCCEXInbound::getParameterCount()-1;
     // console->println(F("processRouteList(): end"));
 }
 
@@ -622,19 +583,25 @@ void DCCEXProtocol::processRouteEntry() {
     char* name=DCCEXInbound::getSafeText(3);
     bool missingRoutes = false;
 
-    for (Route* r=routes->getFirst(); r; r=r->getNext()) {
-        // auto r = routes.get(i);
-        if (r->getId()==id) {
-            // r->setRouteType((RouteType)DCCEXInbound::getNumber(2));
-            // r->setRouteName(DCCEXInbound::getSafeText(3));
-            // r->setHasReceivedDetails();
-            r->setType(type);
-            r->setName(name);
-        } else {
-            if (r->getName()==nullptr) {
-                missingRoutes=true;
-                break;
-            }
+    // for (Route* r=routes->getFirst(); r; r=r->getNext()) {
+    //     if (r->getId()==id) {
+    //         r->setType(type);
+    //         r->setName(name);
+    //     } else {
+    //         if (r->getName()==nullptr) {
+    //             missingRoutes=true;
+    //             break;
+    //         }
+    //     }
+    // }
+
+    Route* r=routes->getById(id);
+    if (r) {
+        r->setType(type);
+        r->setName(name);
+        if (r->getNext() && r->getNext()->getName()==nullptr) {
+            missingRoutes=true;
+            sendRouteEntryRequest(r->getNext()->getId());
         }
     }
 
@@ -652,16 +619,16 @@ void DCCEXProtocol::processRouteEntry() {
 void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
     // console->println(F("processTurntableList(): "));
     if (turntables!=nullptr) {  // already have a turntables list so this is an update
-        // turntables.clear();
         console->println(F("processTurntableList(): Turntable list already received. Ignoring this!"));
         return;
     } 
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int id = DCCEXInbound::getNumber(i);
         new Turntable(id);
-        sendTurntableEntryRequest(id);
-        sendTurntableIndexEntryRequest(id);
+        // sendTurntableEntryRequest(id);
+        // sendTurntableIndexEntryRequest(id);
     }
+    sendTurntableEntryRequest(Turntable::getFirst()->getId());
     _turntablesCount = DCCEXInbound::getParameterCount()-1;
     // console->print("processTurntableList(): end: size:"); console->println(turntables.size());
 }
@@ -682,7 +649,6 @@ void DCCEXProtocol::sendTurntableIndexEntryRequest(int id) {
     // console->println(F("sendTurntableIndexEntryRequest()"));
     if (delegate) {
         sprintf(outboundCommand, "<JP %d>", id);
-
         sendCommand();
     }
     // console->println(F("sendTurntableIndexEntryRequest() end"));
@@ -698,12 +664,25 @@ void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_
     int indexCount=DCCEXInbound::getNumber(4);
     char *name=DCCEXInbound::getSafeText(5);
 
-    for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
-        if (tt->getId()==id) {
-            tt->setType(ttType);
-            tt->setIndex(index);
-            tt->setNumberOfIndexes(indexCount);
-            tt->setName(name);
+    // for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
+    //     if (tt->getId()==id) {
+    //         tt->setType(ttType);
+    //         tt->setIndex(index);
+    //         tt->setNumberOfIndexes(indexCount);
+    //         tt->setName(name);
+    //     }
+    // }
+
+    Turntable* tt=turntables->getById(id);
+    if (tt) {
+        tt->setType(ttType);
+        tt->setIndex(index);
+        tt->setNumberOfIndexes(indexCount);
+        tt->setName(name);
+        if (tt->getNext() && tt->getNext()->getName()==nullptr) {
+            sendTurntableEntryRequest(tt->getNext()->getId());
+        } else {
+            sendTurntableIndexEntryRequest(id);
         }
     }
     // console->println(F("processTurntableEntry(): end"));
