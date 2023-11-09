@@ -132,7 +132,7 @@ class DCCEXProtocol {
     
     /// @brief Constructor
     /// @param server 
-    DCCEXProtocol(int maxThrottles=6, unsigned long retrievalDelay=0, bool server=false);
+    DCCEXProtocol(int maxThrottles=6, bool server=false);
 
     /// @brief Set the delegate object for callbacks
     /// @param delegate 
@@ -272,8 +272,6 @@ class DCCEXProtocol {
     int _turntablesCount = 0;
 
     int _maxThrottles;
-    unsigned long _retrievalDelay;
-    unsigned long _delayUntil;
     bool server;
     Stream *stream;
     Stream *console;
