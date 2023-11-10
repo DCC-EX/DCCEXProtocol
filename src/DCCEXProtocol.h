@@ -236,6 +236,7 @@ class DCCEXProtocol {
     int getTurntablesCount();
     bool isTurntableListRequested();
     bool isTurntableListFullyReceived();
+    bool isAllListsReceived();
 
     long getLastServerResponseTime();  // seconds since Arduino start
 

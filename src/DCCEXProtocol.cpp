@@ -1069,6 +1069,10 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     // console->println(F("getLists(): end"));
 }
 
+bool DCCEXProtocol::isAllListsReceived() {
+    return allRequiredListsReceived;
+}
+
 bool DCCEXProtocol::getRoster() {
     // console->println(F("getRoster()"));
     if (delegate) {
@@ -1239,39 +1243,6 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
     // console->println(F("findThrottleWithLoco(): end. not found"));
     return -1;  //not found
 }
-
-// int DCCEXProtocol::findTurnoutListPositionFromId(int id) {
-//     if (turnouts.size()>0) {
-//         for (int i=0; i<turnouts.size(); i++) {
-//             if (turnouts.get(i)->getTurnoutId()==id) {
-//                 return i;
-//             }
-//         }
-//     }
-//     return -1;
-// }
-
-// int DCCEXProtocol::findRouteListPositionFromId(int id) {
-//     if (routes.size()>0) {
-//         for (int i=0; i<routes.size(); i++) {
-//             if (routes.get(i)->getRouteId()==id) {
-//                 return i;
-//             }
-//         }
-//     }
-//     return -1;
-// }
-
-// int DCCEXProtocol::findTurntableListPositionFromId(int id) {
-//     if (turntables.size()>0) {
-//         for (int i=0; i<turntables.size(); i++) {
-//             if (turntables.get(i)->getTurntableId()==id) {
-//                 return i;
-//             }
-//         }
-//     }
-//     return -1;
-// }
 
 char* DCCEXProtocol::nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
     char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
