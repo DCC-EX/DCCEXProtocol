@@ -363,7 +363,11 @@ void DCCEXProtocol::processRosterList() {
     if (roster!=nullptr) {  // already have a roster so this is an update
         // console->println(F("processRosterList(): roster list already received. Ignoring this!"));
         return;
-    } 
+    }
+    if (DCCEXInbound::getParameterCount()==1) { // roster empty
+        rosterFullyReceived=true;
+        return;
+    }
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int address = DCCEXInbound::getNumber(i);
         new Loco(address, LocoSourceRoster);
@@ -420,11 +424,13 @@ void DCCEXProtocol::processTurnoutList() {
     // <jT id1 id2 id3 ...>
     // console->println(F("processTurnoutList()"));
     if (turnouts!=nullptr) {
-        // turnouts.clear();
         // console->println(F("processTurnoutList(): Turnout/Points list already received. Ignoring this!"));
         return;
     } 
-
+    if (DCCEXInbound::getParameterCount()==1) { // turnout list is empty
+        turnoutListFullyReceived=true;
+        return;
+    }
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         auto id = DCCEXInbound::getNumber(i);
         new Turnout(id, false);
@@ -550,7 +556,10 @@ void DCCEXProtocol::processRouteList() {
         // console->println(F("processRouteList(): Routes/Automation list already received. Ignoring this!"));
         return;
     } 
-
+    if (DCCEXInbound::getParameterCount()==1) { // route list is empty
+        routeListFullyReceived=true;
+        return;
+    }
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int id = DCCEXInbound::getNumber(i);
         new Route(id);
@@ -606,7 +615,11 @@ void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
     if (turntables!=nullptr) {  // already have a turntables list so this is an update
         // console->println(F("processTurntableList(): Turntable list already received. Ignoring this!"));
         return;
-    } 
+    }
+    if (DCCEXInbound::getParameterCount()==1) { // list is empty so we have received it
+        turntableListFullyReceived=true;
+        return;
+    }
     for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
         int id = DCCEXInbound::getNumber(i);
         new Turntable(id);
