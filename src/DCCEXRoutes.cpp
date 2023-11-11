@@ -50,3 +50,12 @@ Route* Route::getFirst() {
 Route* Route::getNext() {
   return _next;
 }
+
+Route* Route::getById(int id) {
+  for (Route* r=getFirst(); r; r=r->getNext()) {
+    if (r->getId()==id) {
+      return r;
+    }
+  }
+  return nullptr;
+}

@@ -51,3 +51,12 @@ Turnout* Turnout::getNext() {
 int Turnout::getCount() {
   return _count;
 }
+
+Turnout* Turnout::getById(int id) {
+  for (Turnout* t=getFirst(); t; t=t->getNext()) {
+    if (t->getId()==id) {
+      return t;
+    }
+  }
+  return nullptr;
+}

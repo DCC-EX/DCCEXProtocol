@@ -10,7 +10,7 @@ TurntableIndex::TurntableIndex(int ttId, int id, int angle, char* name) {
   _id=id;
   _angle=angle;
   _name=name;
-  _next=nullptr;
+  _nextIndex=nullptr;
 }
 
 int TurntableIndex::getTTId() {
@@ -29,8 +29,8 @@ char* TurntableIndex::getName() {
   return _name;
 }
 
-TurntableIndex* TurntableIndex::getNext() {
-  return _next;
+TurntableIndex* TurntableIndex::getNextIndex() {
+  return _nextIndex;
 }
 
 // class Turntable
@@ -123,14 +123,32 @@ void Turntable::addIndex(TurntableIndex* index) {
     this->_firstIndex=index;
   } else {
     TurntableIndex* current=this->_firstIndex;
-    while (current->_next!=nullptr) {
-      current=current->_next;
+    while (current->_nextIndex!=nullptr) {
+      current=current->_nextIndex;
     }
-    current->_next=index;
+    current->_nextIndex=index;
   }
   _indexCount++;
 }
 
 TurntableIndex* Turntable::getFirstIndex() {
   return _firstIndex;
+}
+
+Turntable* Turntable::getById(int id) {
+  for (Turntable* tt=getFirst(); tt; tt=tt->getNext()) {
+    if (tt->getId()==id) {
+      return tt;
+    }
+  }
+  return nullptr;
+}
+
+TurntableIndex* Turntable::getIndexById(int id) {
+  for (TurntableIndex* tti=getFirstIndex(); tti; tti=tti->getNextIndex()) {
+    if (tti->getId()==id) {
+      return tti;
+    }
+  }
+  return nullptr;
 }

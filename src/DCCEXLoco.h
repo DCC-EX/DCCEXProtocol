@@ -90,6 +90,11 @@ public:
   /// @return 
   Loco* getNext();
 
+  /// @brief Get Loco object by its DCC address
+  /// @param address 
+  /// @return 
+  Loco* getByAddress(int address);
+
 private:
   int _address;
   char* _name;

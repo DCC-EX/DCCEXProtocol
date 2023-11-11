@@ -32,7 +32,7 @@ public:
 
   /// @brief Get next TurntableIndex object
   /// @return 
-  TurntableIndex* getNext();
+  TurntableIndex* getNextIndex();
 
 private:
   int _ttId;
@@ -40,7 +40,7 @@ private:
   int _angle;
   char* _name;
   static TurntableIndex* _first;
-  TurntableIndex* _next;
+  TurntableIndex* _nextIndex;
 
   friend class Turntable;
 
@@ -120,6 +120,16 @@ public:
   /// @brief Get associated turntable index list
   /// @return 
   TurntableIndex* getFirstIndex();
+
+  /// @brief Get a turntable object by its ID
+  /// @param id 
+  /// @return 
+  Turntable* getById(int id);
+
+  /// @brief Get TurntableIndex object by its ID
+  /// @param id 
+  /// @return 
+  TurntableIndex* getIndexById(int id);
 
 private:
   int _id;

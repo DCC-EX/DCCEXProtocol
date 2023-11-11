@@ -173,16 +173,30 @@ class DCCEXProtocol {
     Turntable* turntables=nullptr;
 
     //helper functions
+    
+    /// @brief Get direct enum name from the speed byte
+    /// @param speedByte 
+    /// @return 
     Direction getDirectionFromSpeedByte(int speedByte);
+    
+    /// @brief Get the speed from the speed byte
+    /// @param speedByte 
+    /// @return 
     int getSpeedFromSpeedByte(int speedByte);
+    
+    /// @brief Masks off any functions above the first 28
+    /// @param functionMap 
+    /// @return 
     int getValidFunctionMap(int functionMap);
-    int bitExtracted(int number, int k, int p);
-
+    
     // *******************
 
     /// @brief Send the command in the outbound command buffer to DCC-EX
     void sendCommand();
 
+    /// @brief Returns the Loco object for the specified address if found
+    /// @param address 
+    /// @return 
     Loco* findLocoInRoster(int address);
     
     bool sendThrottleAction(int throttle, int speed, Direction direction);
@@ -194,9 +208,15 @@ class DCCEXProtocol {
 
     // *******************
 
-    bool sendServerDetailsRequest();
+    /// @brief Request server details
+    void sendServerDetailsRequest();
 
-    bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+    /// @brief Request object lists (Roster, Turnouts, Routes, Turntables)
+    /// @param rosterRequired 
+    /// @param turnoutListRequired 
+    /// @param routeListRequired 
+    /// @param turntableListRequired 
+    void getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
     bool getRoster();
     int getRosterCount();
     Loco* getRosterEntryNo(int entryNo);
@@ -216,6 +236,7 @@ class DCCEXProtocol {
     int getTurntablesCount();
     bool isTurntableListRequested();
     bool isTurntableListFullyReceived();
+    bool isAllListsReceived();
 
     long getLastServerResponseTime();  // seconds since Arduino start
 
@@ -317,9 +338,6 @@ class DCCEXProtocol {
 
     //helper functions
     int findThrottleWithLoco(int address);
-    // int findTurnoutListPositionFromId(int id);
-    // int findRouteListPositionFromId(int id);
-    // int findTurntableListPositionFromId(int id);
     char* nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
 
