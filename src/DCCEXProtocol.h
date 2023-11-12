@@ -123,6 +123,10 @@ class DCCEXProtocolDelegate {
     /// @param position 
     /// @param turntableState 
     virtual void receivedTurntableAction(int turntableId, int position, bool moving) { }
+
+    /// @brief Callback when a loco address is read from the programming track
+    /// @param address 
+    virtual void receivedReadLoco(int address) {}
 };
 
 // *******************
@@ -205,6 +209,7 @@ class DCCEXProtocol {
     bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
     bool isFunctionOn(int throttle, int functionNumber);
     bool sendLocoUpdateRequest(int address);
+    void sendReadLoco();
 
     // *******************
 
@@ -308,6 +313,7 @@ class DCCEXProtocol {
     void processRosterEntry();
     void processRosterList();
     void sendRosterEntryRequest(int address);
+    void processReadLoco();
 
     bool turnoutListRequested = false;
     bool turnoutListFullyReceived = false;

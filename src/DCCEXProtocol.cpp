@@ -273,6 +273,11 @@ void DCCEXProtocol::processCommand() {
                 processSensorEntry();
                 break;
 
+            case 'r':   // Read loco response
+                if (DCCEXInbound::isTextParameter(0)) break;
+                processReadLoco();
+                break;
+
             default:
                 break;
         }
@@ -414,6 +419,11 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
         delegate->receivedRosterList(getRosterCount());
     }
     // console->println(F("processRosterEntry(): end"));
+}
+
+void DCCEXProtocol::processReadLoco() { // <r id> - -1 = error
+    int address=DCCEXInbound::getNumber(0);
+    delegate->receivedReadLoco(address);
 }
 
 // ****************
@@ -948,6 +958,13 @@ bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) 
     }
     // console->println(F("sendLocoAction(): end"));
     return true;
+}
+
+void DCCEXProtocol::sendReadLoco() {
+    if (delegate) {
+        sprintf(outboundCommand, "<R>");
+        sendCommand();
+    }
 }
 
 // ******************************************************************************************************
