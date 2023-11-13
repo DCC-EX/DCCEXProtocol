@@ -1007,11 +1007,15 @@ bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activ
     if (delegate) {
         Turntable* tt=turntables->getById(turntableId);
         if (tt) {
-            if (tt->getType()==TurntableTypeEXTT && position==0) {
-                activity=2;
+            if (tt->getType()==TurntableTypeEXTT) {
+                if (position==0) {
+                    activity=2;
+                }
+                sprintf(outboundCommand, "<I %d %d %d>", turntableId, position, activity);
+            } else {
+                sprintf(outboundCommand, "<I %d %d>", turntableId, position);
             }
         }
-        sprintf(outboundCommand, "<I %d %d %d>", turntableId, position, activity);
         sendCommand();
     }
     // console->println(F("sendTurntable() end"));
