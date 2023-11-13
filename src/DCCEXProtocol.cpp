@@ -273,6 +273,11 @@ void DCCEXProtocol::processCommand() {
                 processSensorEntry();
                 break;
 
+            case 'r':   // Read loco response
+                if (DCCEXInbound::isTextParameter(0)) break;
+                processReadLoco();
+                break;
+
             default:
                 break;
         }
@@ -414,6 +419,11 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
         delegate->receivedRosterList(getRosterCount());
     }
     // console->println(F("processRosterEntry(): end"));
+}
+
+void DCCEXProtocol::processReadLoco() { // <r id> - -1 = error
+    int address=DCCEXInbound::getNumber(0);
+    delegate->receivedReadLoco(address);
 }
 
 // ****************
@@ -950,6 +960,13 @@ bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) 
     return true;
 }
 
+void DCCEXProtocol::sendReadLoco() {
+    if (delegate) {
+        sprintf(outboundCommand, "<R>");
+        sendCommand();
+    }
+}
+
 // ******************************************************************************************************
 
 bool DCCEXProtocol::sendRouteAction(int routeId) {
@@ -990,11 +1007,15 @@ bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activ
     if (delegate) {
         Turntable* tt=turntables->getById(turntableId);
         if (tt) {
-            if (tt->getType()==TurntableTypeEXTT && position==0) {
-                activity=2;
+            if (tt->getType()==TurntableTypeEXTT) {
+                if (position==0) {
+                    activity=2;
+                }
+                sprintf(outboundCommand, "<I %d %d %d>", turntableId, position, activity);
+            } else {
+                sprintf(outboundCommand, "<I %d %d>", turntableId, position);
             }
         }
-        sprintf(outboundCommand, "<I %d %d %d>", turntableId, position, activity);
         sendCommand();
     }
     // console->println(F("sendTurntable() end"));
