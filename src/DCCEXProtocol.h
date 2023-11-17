@@ -6,6 +6,7 @@
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
  * Copyright © 2023 Peter Akers
+ * Copyright © 2023 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * 4.0 International License. To view a copy of this license, visit

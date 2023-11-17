@@ -10,10 +10,9 @@ The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (
 
 # DCC-EX Native network protocol library
 
-This library implements the DCC-EX Native protocol (as used in EX-CommandStation ONLY), allowing an device to connect to the server and act as a client (such as a hardware based throttle).
+This library implements the DCC-EX Native protocol (as used in EX-CommandStation ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
 
 The implementation of this library is tested on ESP32 based devices running the Arduino framework.   There's nothing in here that's specific to the ESP32, and little of Arduino that couldn't be replaced as needed.
-
 
 ## Basic Design Principles
 
@@ -28,11 +27,13 @@ These patterns (Dependency Injection and Delegation) allow you to keep the diffe
 Basic example to implement a DCCEXProtocol client and connect to a server (with static IP).
 
 Change the WiFi settings and enter the IP address of the Arduino running EX-CommandStation:
-```
+
+``` cpp
 const char* ssid = "MySSID";
 const char* password =  "MyPWD";
 IPAddress serverAddress(192,168,1,1);
 ```
+
 Compile and run, you should see the client connect in the Serial monitor.
 
 ### DCCEX_Delegate
