@@ -1,9 +1,5 @@
 /* -*- c++ -*-
  *
- * DCCEXProtocol
- *
- * This package implements a DCCEX native protocol connection,
- * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
@@ -24,6 +20,12 @@
  *
  * All other rights reserved.
  *
+ * This library is aimed at making thinges easier for throttle developers writing software for
+ * Arduino based hardware throttles that wish to use DCC-EX EX-CommandStation native API
+ * commands.
+ * 
+ * For more information, refer to the included README file, and the DCC-EX website.
+ * https://www.dcc-ex.com
  */
 
 #ifndef DCCEXPROTOCOL_H
@@ -36,33 +38,30 @@
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
 
-const int MAX_OUTBOUND_COMMAND_LENGTH=100;
-const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH=100;
+const int MAX_OUTBOUND_COMMAND_LENGTH=100;          // Max number of bytes for outbound commands
+const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH=100;  // Max number of bytes for <s> server details response
+const int MAX_COMMAND_PARAMS=50;                    // Max number of params to parse via DCCEXInbound parser
+const int MAX_COMMAND_BUFFER=500;                   // Max number of bytes for the inbound command buffer
 
-// DCCEXInbound params
-const int MAX_COMMAND_PARAMS=50;
-const int MAX_COMMAND_BUFFER=500;
-
-// *****************************************************************
-
+// Valid track power state values
 enum TrackPower {
     PowerOff = 0,
     PowerOn = 1,
     PowerUnknown = 2,
 };
 
-typedef int TrackMode;
-#define TrackModeMain "MAIN"
-#define TrackModeProg "PROG"
-#define TrackModeDC "DC"
-#define TrackModeDCX "DCX"
-#define TrackModeOff "OFF"
+// Valid TrackManager types
+enum TrackManagerMode {
+  MAIN,   // Normal DCC track mode
+  PROG,   // Programming DCC track mode
+  DC,     // DC mode
+  DCX,    // Reverse polarity DC mode
+  OFF,    // Track is off
+};
 
-// *****************************************************************
-
+/// @brief Nullstream class for initial DCCEXProtocol instantiation
 class NullStream : public Stream {
-  
-  public:
+public:
 	NullStream() {}
 	int available() { return 0; }
 	void flush() {}
@@ -70,68 +69,69 @@ class NullStream : public Stream {
 	int read() { return -1; }
 	size_t write(uint8_t c) { return 1; }
 	size_t write(const uint8_t *buffer, size_t size) { return size; }
+
 };
 
+/// @brief Delegate responses and broadcast events to the client software to enable custom event handlers
 class DCCEXProtocolDelegate {
-  public:
-    /// @brief Callback when server description is received
-    /// @param version 
-    virtual void receivedServerDescription(char* version) {}
+public:
+  /// @brief Callback when server description is received
+  /// @param version 
+  virtual void receivedServerDescription(char* version) {}
+
+  /// @brief Callback when roster list received
+  /// @param rosterSize 
+  virtual void receivedRosterList(int rosterSize) {}
   
-    /// @brief Callback when roster list received
-    /// @param rosterSize 
-    virtual void receivedRosterList(int rosterSize) {}
-    
-    /// @brief Callback when received turnout list
-    /// @param turnoutListSize 
-    virtual void receivedTurnoutList(int turnoutListSize) {}    
-    
-    /// @brief Callback when received route list
-    /// @param routeListSize 
-    virtual void receivedRouteList(int routeListSize) {}
-    
-    /// @brief  Callback when received turntable list
-    /// @param turntablesListSize 
-    virtual void receivedTurntableList(int turntablesListSize) {}    
+  /// @brief Callback when turnout list received
+  /// @param turnoutListSize 
+  virtual void receivedTurnoutList(int turnoutListSize) {}    
+  
+  /// @brief Callback when route list received
+  /// @param routeListSize 
+  virtual void receivedRouteList(int routeListSize) {}
+  
+  /// @brief  Callback when turntable list received
+  /// @param turntablesListSize 
+  virtual void receivedTurntableList(int turntablesListSize) {}    
 
-    /// @brief Callback when received speed for a throttle
-    /// @param throttleNo 
-    /// @param speed 
-    virtual void receivedSpeed(int throttleNo, int speed) { }
-    
-    /// @brief Callback when received direction for a throttle
-    /// @param throttleNo 
-    /// @param dir 
-    virtual void receivedDirection(int throttleNo, Direction dir) { }
-    
-    /// @brief Callback when received function state change for a throttle
-    /// @param throttleNo 
-    /// @param func 
-    /// @param state 
-    virtual void receivedFunction(int throttleNo, int func, bool state) { }
+  /// @brief Callback when speed for a throttle received
+  /// @param throttleNo 
+  /// @param speed 
+  virtual void receivedSpeed(int throttleNo, int speed) {}
+  
+  /// @brief Callback when direction for a throttle received
+  /// @param throttleNo 
+  /// @param dir 
+  virtual void receivedDirection(int throttleNo, Direction dir) {}
+  
+  /// @brief Callback when function state change for a throttle received
+  /// @param throttleNo 
+  /// @param func 
+  /// @param state 
+  virtual void receivedFunction(int throttleNo, int func, bool state) {}
 
-    /// @brief Callback when received a track power state change
-    /// @param state 
-    virtual void receivedTrackPower(TrackPower state) { }
+  /// @brief Callback when track power state change received
+  /// @param state 
+  virtual void receivedTrackPower(TrackPower state) {}
 
-    /// @brief Callback when received a turnout state change
-    /// @param turnoutId 
-    /// @param thrown 
-    virtual void receivedTurnoutAction(int turnoutId, bool thrown) { }
+  /// @brief Callback when a turnout state change is received
+  /// @param turnoutId 
+  /// @param thrown 
+  virtual void receivedTurnoutAction(int turnoutId, bool thrown) {}
 
-    /// @brief Callback when received a turntable index change
-    /// @param turntableId 
-    /// @param position 
-    /// @param turntableState 
-    virtual void receivedTurntableAction(int turntableId, int position, bool moving) { }
+  /// @brief Callback when a turntable index change is received
+  /// @param turntableId 
+  /// @param position 
+  /// @param moving
+  virtual void receivedTurntableAction(int turntableId, int position, bool moving) {}
 
-    /// @brief Callback when a loco address is read from the programming track
-    /// @param address 
-    virtual void receivedReadLoco(int address) {}
+  /// @brief Callback when a loco address is read from the programming track
+  /// @param address 
+  virtual void receivedReadLoco(int address) {}
 };
 
-// *******************
-
+/// @brief Main class for the DCCEXProtocol library
 class DCCEXProtocol {
   public:
     
