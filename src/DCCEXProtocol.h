@@ -136,6 +136,7 @@ public:
 class DCCEXProtocol {
   public:
     // Connection and setup methods
+
     /// @brief Constructor for the DCCEXProtocol object
     /// @param maxThrottles The number of throttles to create, default is 6
     // DCCEXProtocol(int maxThrottles=6, bool server=false);
@@ -156,8 +157,33 @@ class DCCEXProtocol {
     /// @brief Disconnect from DCC-EX
     void disconnect();
 
-
-
+    // Object control methods
+    
+    /// @brief Set the specified throttle to the provided speed and direction
+    /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
+    /// @param speed The speed (0 - 126)
+    /// @param direction The direction (Forward|Reverse)
+    void setThrottle(int throttle, int speed, Direction direction);
+    
+    /// @brief Set the specified loco address to the provided speed and direction
+    /// @param address DCC address of the loco
+    /// @param speed The speed (0 - 126)
+    /// @param direction The direction (Forward|Reverse)
+    void setLoco(int address, int speed, Direction direction);
+    
+    /// @brief Set provided function on or off for the specified throttle
+    /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
+    /// @param functionNumber The number of the function (0 - 27)
+    /// @param pressed True|False to turn the function on or off
+    void setThrottleFunction(int throttle, int functionNumber, bool pressed);
+    
+    bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
+    
+    bool isFunctionOn(int throttle, int functionNumber);
+    
+    bool sendLocoUpdateRequest(int address);
+    
+    void sendReadLoco();
 
 
     /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
@@ -197,13 +223,7 @@ class DCCEXProtocol {
     /// @return 
     Loco* findLocoInRoster(int address);
     
-    bool sendThrottleAction(int throttle, int speed, Direction direction);
-    bool sendLocoAction(int address, int speed, Direction direction);
-    bool sendFunction(int throttle, int functionNumber, bool pressed);
-    bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
-    bool isFunctionOn(int throttle, int functionNumber);
-    bool sendLocoUpdateRequest(int address);
-    void sendReadLoco();
+    
 
     // *******************
 

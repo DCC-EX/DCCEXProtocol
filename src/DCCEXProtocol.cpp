@@ -831,18 +831,17 @@ Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
 // ******************************************************************************************************
 
 // by default only send to the lead loco
-bool DCCEXProtocol::sendFunction(int throttleNo, int functionNumber, bool pressed) {
-    // console->println(F("sendFunction(): "));
-    if (delegate) {
-        // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
-        ConsistLoco* conLoco = throttle[throttleNo].getFirst();
-        int address = conLoco->getAddress();
-        if (address>=0) {
-            sendFunction(throttleNo, address, functionNumber, pressed);
-        }
+void DCCEXProtocol::setThrottleFunction(int throttleNo, int functionNumber, bool pressed) {
+  // console->println(F("sendFunction(): "));
+  if (delegate) {
+    // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
+    ConsistLoco* conLoco = throttle[throttleNo].getFirst();
+    int address = conLoco->getAddress();
+    if (address>=0) {
+      sendFunction(throttleNo, address, functionNumber, pressed);
     }
-    // console->println(F("sendFunction(): end")); 
-    return true;
+  }
+  // console->println(F("sendFunction(): end")); 
 }
 
 // send to a specific address on the throttle
@@ -876,30 +875,27 @@ bool DCCEXProtocol::isFunctionOn(int throttleNo, int functionNumber) {
 // ******************************************************************************************************
 // throttle
 
-bool DCCEXProtocol::sendThrottleAction(int throttleNo, int speed, Direction direction) {
-    // console->println(F("sendThrottleAction(): "));
-    if (delegate) {
-        if (throttle[throttleNo].getLocoCount()>0) {
-            throttle[throttleNo].setSpeed(speed);
-            throttle[throttleNo].setDirection(direction);
-            // for (int i=0; i<throttle[throttleNo].getLocoCount(); i++) {
-            //     ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(i);
-            for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
-                int address = conLoco->getAddress();
-                Direction dir = direction;
-                if (conLoco->getFacing()==FacingReversed) {
-                    if (direction==Forward) {
-                        dir = Reverse;
-                    } else {
-                        dir = Forward;
-                    }                    
-                }
-                sendLocoAction(address, speed, dir);
-            }
+void DCCEXProtocol::setThrottle(int throttleNo, int speed, Direction direction) {
+  // console->println(F("sendThrottleAction(): "));
+  if (delegate) {
+    if (throttle[throttleNo].getLocoCount()>0) {
+      throttle[throttleNo].setSpeed(speed);
+      throttle[throttleNo].setDirection(direction);
+      for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
+        int address = conLoco->getAddress();
+        Direction dir = direction;
+        if (conLoco->getFacing()==FacingReversed) {
+          if (direction==Forward) {
+            dir = Reverse;
+          } else {
+            dir = Forward;
+          }                    
         }
+        setLoco(address, speed, dir);
+      }
     }
-    // console->println(F("sendThrottleAction(): end"));
-    return true;
+  }
+  // console->println(F("sendThrottleAction(): end"));
 }
 
 
@@ -918,14 +914,13 @@ bool DCCEXProtocol::sendLocoUpdateRequest(int address) {
     return true;
 }
 
-bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) {
-    // console->print(F("sendLocoAction(): ")); console->println(address);
-    if (delegate) {
-        sprintf(outboundCommand, "<t %d %d %d>", address, speed, direction);
-        _sendCommand();
-    }
-    // console->println(F("sendLocoAction(): end"));
-    return true;
+void DCCEXProtocol::setLoco(int address, int speed, Direction direction) {
+  // console->print(F("sendLocoAction(): ")); console->println(address);
+  if (delegate) {
+    sprintf(outboundCommand, "<t %d %d %d>", address, speed, direction);
+    _sendCommand();
+  }
+  // console->println(F("sendLocoAction(): end"));
 }
 
 void DCCEXProtocol::sendReadLoco() {
