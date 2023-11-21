@@ -43,28 +43,49 @@ Function/method prefixes
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
 
-
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-
-DCCEXProtocol::DCCEXProtocol(int maxThrottles, bool server) {
+// DCCEXProtocol class
+// Public methods
+// DCCEXProtocol::DCCEXProtocol(int maxThrottles, bool server) {
+DCCEXProtocol::DCCEXProtocol(int maxThrottles) {
 	// store server/client
-    this->server = server;
-    _maxThrottles=maxThrottles;
-    throttle=new Consist[_maxThrottles];
+  // this->server = server;
+  _maxThrottles=maxThrottles;
+  throttle=new Consist[_maxThrottles];
 		
 	// init streams
-    stream = &nullStream;
+  stream = &nullStream;
 	console = &nullStream;
 
-    DCCEXInbound::setup(MAX_COMMAND_PARAMS);
-    cmdBuffer[0] = 0;
-    bufflen = 0;
+  DCCEXInbound::setup(MAX_COMMAND_PARAMS);
+  cmdBuffer[0] = 0;
+  bufflen = 0;
 }
 
-// ******************************************************************************************************
-// Connection related
+// Set the delegate instance for callbasks
+void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) {
+  this->delegate = delegate;
+}
+
+// Set the Stream used for logging
+void DCCEXProtocol::setLogStream(Stream *console) {
+  this->console = console;
+}
+
+void DCCEXProtocol::connect(Stream *stream) {
+  init();
+  this->stream = stream;
+}
+
+void DCCEXProtocol::disconnect() {
+  sprintf(outboundCommand,"%s","<U DISCONNECT>");
+  _sendCommand();
+  this->stream = NULL;
+}
+
+
+
+
+
 
 //private
 // init the DCCEXProtocol instance after connection to the server
@@ -81,31 +102,9 @@ void DCCEXProtocol::init() {
     // console->println(F("init(): end"));
 }
 
-// Set the delegate instance for callbasks
-void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) {
-    this->delegate = delegate;
-}
 
-// Set the Stream used for logging
-void DCCEXProtocol::setLogStream(Stream *console) {
-    this->console = console;
-}
 
-void DCCEXProtocol::connect(Stream *stream) {
-    init();
-    this->stream = stream;
-}
-
-void DCCEXProtocol::disconnect() {
-    sprintf(outboundCommand,"%s","<U DISCONNECT>");
-    sendCommand();
-    this->stream = NULL;
-}
-
-bool DCCEXProtocol::check() {
-    // console->println(F("check()"));
-    bool changed = false;
-
+void DCCEXProtocol::check() {
     if (stream) {
         while(stream->available()) {
             // Read from our stream
@@ -120,22 +119,12 @@ bool DCCEXProtocol::check() {
                 if (DCCEXInbound::parse(cmdBuffer)) {
                     // Process stuff here
                     processCommand();
-                } else {
-                    // Parsing failed here
                 }
-                
                 // Clear buffer after use
                 cmdBuffer[0]=0;
                 bufflen=0;
             }
-            // console->println(F("check(): end-loop"));
         }
-        // console->println(F("check(): end-stream"));
-        return changed;
-    }
-    else {
-        // console->println(F("check(): end"));
-        return false;
     }
 }
 
@@ -180,13 +169,13 @@ int DCCEXProtocol::getValidFunctionMap(int functionMap) {
 // sending and receiving commands from the CS
 
 //private
-void DCCEXProtocol::sendCommand() {
+void DCCEXProtocol::_sendCommand() {
     if (stream) {
         // TODO: what happens when the write fails?
         stream->println(outboundCommand);
-        if (server) {
-            stream->println("");
-        }
+        // if (server) {
+        //     stream->println("");
+        // }
         console->print("==> "); console->println(outboundCommand);
 
         *outboundCommand = 0; // clear it once it has been sent
@@ -292,56 +281,34 @@ void DCCEXProtocol::processCommand() {
 
 //private
 void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
-    // console->println(F("processServerDescription()"));
-    if (delegate) {
-        // console->print(F("Process server description with "));
-        // console->print(DCCEXInbound::getParameterCount());
-        // console->println(F(" params"));
-        
-        char *_serverDescription;
-        _serverDescription = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
-        sprintf(_serverDescription,"%s",DCCEXInbound::getText(0));
-        serverDescription = _serverDescription;
-        // console->println(serverDescription);
+  // console->println(F("processServerDescription()"));
+  if (delegate) {
+    // console->print(F("Process server description with "));
+    // console->print(DCCEXInbound::getParameterCount());
+    // console->println(F(" params"));
+    
+    char *_serverDescription;
+    _serverDescription = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
+    sprintf(_serverDescription,"%s",DCCEXInbound::getText(0));
 
-        int startAt = 6 ;
-        serverVersion = nextServerDescriptionParam(startAt, false);
-        // console->println(serverVersion);
-        startAt = startAt + strlen(serverVersion)+2; // get past the " / "
+    int versionStartAt = 7; // e.g. "DCC-EX V-"
+    char* temp=_nextServerDescriptionParam(versionStartAt, true);
+    _majorVersion=atoi(temp);
+    versionStartAt=versionStartAt + strlen(temp)+1;
+    temp=_nextServerDescriptionParam(versionStartAt, true);
+    _minorVersion=atoi(temp);
+    versionStartAt=versionStartAt + strlen(temp)+1;
+    temp=_nextServerDescriptionParam(versionStartAt, true);
+    _patchVersion=atoi(temp);
 
-
-        int versionStartAt = 7; // e.g. "DCC-EX V-"
-        serverVersionMajor = nextServerDescriptionParam(versionStartAt, true);
-        versionStartAt = versionStartAt + strlen(serverVersionMajor)+1;
-        serverVersionMinor = nextServerDescriptionParam(versionStartAt, true);
-        versionStartAt = versionStartAt + strlen(serverVersionMinor)+1;
-        serverVersionPatch = nextServerDescriptionParam(versionStartAt, true);
-
-
-        serverMicroprocessorType = nextServerDescriptionParam(startAt, false);
-        startAt = startAt + strlen(serverMicroprocessorType)+3; // get past the " / "
-
-        serverMotorcontrollerType = nextServerDescriptionParam(startAt, false);
-        startAt = startAt + strlen(serverMotorcontrollerType)+2; // get past the " / "
-
-        serverBuildNumber = nextServerDescriptionParam(startAt, false);
-
-        // console->println(serverVersion);
-        // console->println(serverVersionMajor);
-        // console->println(serverVersionMinor);
-        // console->println(serverVersionPatch);
-        // console->println(serverMicroprocessorType);
-        // console->println(serverMotorcontrollerType);
-        // console->println(serverBuildNumber);
-
-        haveReceivedServerDetails = true;
-        delegate->receivedServerDescription(serverVersion);
-    }
-    // console->println(F("processServerDescription(): end"));
+    _receivedVersion = true;
+    delegate->receivedServerVersion(_majorVersion, _minorVersion, _patchVersion);
+  }
+  // console->println(F("processServerDescription(): end"));
 }
 
-bool DCCEXProtocol::isServerDetailsReceived() {
-    return haveReceivedServerDetails;
+bool DCCEXProtocol::receivedVersion() {
+    return _receivedVersion;
 }
 
 //private
@@ -388,7 +355,7 @@ void DCCEXProtocol::sendRosterEntryRequest(int address) {
     // console->println(F("sendRosterEntryRequest()"));
     if (delegate) {
         sprintf(outboundCommand, "<JR %d>", address);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendRosterEntryRequest(): end"));
 }
@@ -457,7 +424,7 @@ void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
     if (delegate) {
         sprintf(outboundCommand, "<JT %d>", id);
 
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendTurnoutEntryRequest() end"));
 }
@@ -503,14 +470,14 @@ Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
 void DCCEXProtocol::closeTurnout(int turnoutId) {
     if (delegate) {
         sprintf(outboundCommand, "<T %d 0>", turnoutId);
-        sendCommand();
+        _sendCommand();
     }
 }
 
 void DCCEXProtocol::throwTurnout(int turnoutId) {
     if (delegate) {
         sprintf(outboundCommand, "<T %d 1>", turnoutId);
-        sendCommand();
+        _sendCommand();
     }
 }
 
@@ -525,7 +492,7 @@ void DCCEXProtocol::toggleTurnout(int turnoutId) {
             }
             bool thrown=t->getThrown() ? 0 : 1;
             sprintf(outboundCommand, "<T %d %d>", turnoutId, thrown);
-            sendCommand();
+            _sendCommand();
         }
     }
 }
@@ -586,7 +553,7 @@ void DCCEXProtocol::sendRouteEntryRequest(int id) {
     if (delegate) {
         sprintf(outboundCommand, "<JA %d>", id);
 
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendRouteEntryRequest() end"));
 }
@@ -646,7 +613,7 @@ void DCCEXProtocol::sendTurntableEntryRequest(int id) {
     if (delegate) {
         sprintf(outboundCommand, "<JO %d>", id);
 
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendTurntableEntryRequest(): end"));
 }
@@ -656,7 +623,7 @@ void DCCEXProtocol::sendTurntableIndexEntryRequest(int id) {
     // console->println(F("sendTurntableIndexEntryRequest()"));
     if (delegate) {
         sprintf(outboundCommand, "<JP %d>", id);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendTurntableIndexEntryRequest() end"));
 }
@@ -805,7 +772,7 @@ void DCCEXProtocol::sendServerDetailsRequest() {
     // console->println(F("sendServerDetailsRequest(): "));
     if (delegate) {
         sprintf(outboundCommand, "<s>");
-        sendCommand();        
+        _sendCommand();        
     }
     // console->println(F("sendServerDetailsRequest(): end"));
 }
@@ -818,7 +785,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state) {
     if (delegate) {
         sprintf(outboundCommand, "<%d>", state);
 
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendTrackPower(): end"));
     return true;
@@ -829,7 +796,7 @@ bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
     if (delegate) {
         sprintf(outboundCommand, "<%d %c>", state, track);
 
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendTrackPower(): end"));
     return true;
@@ -841,7 +808,7 @@ void DCCEXProtocol::sendEmergencyStop() {
     // console->println(F("emergencyStop(): "));
     if (delegate) {
         sprintf(outboundCommand, "<!>");
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("emergencyStop(): end"));
 }
@@ -883,7 +850,7 @@ bool DCCEXProtocol::sendFunction(int throttleNo, int address, int functionNumber
     // console->println(F("sendFunction(): "));
     if (delegate) {
         sprintf(outboundCommand, "<F %d %d %d>", address, functionNumber, pressed);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendFunction(): end")); 
     return true;
@@ -945,7 +912,7 @@ bool DCCEXProtocol::sendLocoUpdateRequest(int address) {
     // console->println(F("sendLocoUpdateRequest()"));
     if (delegate) {
         sprintf(outboundCommand, "<t %d>", address);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendLocoUpdateRequest() end"));
     return true;
@@ -955,7 +922,7 @@ bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) 
     // console->print(F("sendLocoAction(): ")); console->println(address);
     if (delegate) {
         sprintf(outboundCommand, "<t %d %d %d>", address, speed, direction);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendLocoAction(): end"));
     return true;
@@ -964,7 +931,7 @@ bool DCCEXProtocol::sendLocoAction(int address, int speed, Direction direction) 
 void DCCEXProtocol::sendReadLoco() {
     if (delegate) {
         sprintf(outboundCommand, "<R>");
-        sendCommand();
+        _sendCommand();
     }
 }
 
@@ -974,7 +941,7 @@ bool DCCEXProtocol::sendRouteAction(int routeId) {
     // console->println(F("sendRouteAction()"));
     if (delegate) {
         sprintf(outboundCommand, "</START  %d >", routeId);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendRouteAction() end"));
     return true;
@@ -984,7 +951,7 @@ bool DCCEXProtocol::sendPauseRoutes() {
     // console->println(F("sendPauseRoutes()"));
     if (delegate) {
         sprintf(outboundCommand, "</PAUSE>");
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendPauseRoutes() end"));
     return true;
@@ -994,7 +961,7 @@ bool DCCEXProtocol::sendResumeRoutes() {
     // console->println(F("sendResumeRoutes()"));
     if (delegate) {
         sprintf(outboundCommand, "</RESUME>");
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendResumeRoutes() end"));
     return true;
@@ -1017,7 +984,7 @@ bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activ
                 sprintf(outboundCommand, "<I %d %d>", turntableId, position);
             }
         }
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendTurntable() end"));
     return true;
@@ -1027,7 +994,7 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
     // console->println(F("sendAccessory()"));
     if (delegate) {
         sprintf(outboundCommand, "<a %d %d>", accessoryAddress, activate);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendAccessory() end"));
     return true;
@@ -1037,7 +1004,7 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
     // console->println(F("sendAccessory()"));
     if (delegate) {
         sprintf(outboundCommand, "<a %d %d %d>", accessoryAddress, accessorySubAddr, activate);
-        sendCommand();
+        _sendCommand();
     }
     // console->println(F("sendAccessory() end"));
     return true;
@@ -1091,7 +1058,7 @@ bool DCCEXProtocol::getRoster() {
     // console->println(F("getRoster()"));
     if (delegate) {
         sprintf(outboundCommand, "<JR>");
-        sendCommand();
+        _sendCommand();
         rosterRequested = true;
     }
     // console->println(F("getRoster() end"));
@@ -1124,7 +1091,7 @@ bool DCCEXProtocol::getTurnouts() {
     // console->println(F("getTurnouts()"));
     if (delegate) {
         sprintf(outboundCommand, "<JT>");
-        sendCommand();
+        _sendCommand();
         turnoutListRequested = true;
     }
     // console->println(F("getTurnouts() end"));
@@ -1155,7 +1122,7 @@ bool DCCEXProtocol::getRoutes() {
     // console->println(F("getRoutes()"));
     if (delegate) {
         sprintf(outboundCommand, "<JA>");
-        sendCommand();
+        _sendCommand();
         routeListRequested = true;
     }
     // console->println(F("getRoutes() end"));
@@ -1186,7 +1153,7 @@ bool DCCEXProtocol::getTurntables() {
     // console->println(F("getTurntables()"));
     if (delegate) {
         sprintf(outboundCommand, "<JO>");
-        sendCommand();
+        _sendCommand();
         turntableListRequested = true;
     }
     // console->println(F("getTurntables() end"));
@@ -1258,27 +1225,27 @@ int DCCEXProtocol::findThrottleWithLoco(int address) {
     return -1;  //not found
 }
 
-char* DCCEXProtocol::nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
-    char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
-    int i = 0; 
-    size_t j;
-    bool started = false;
-    for (j=startAt; j<strlen(serverDescription) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
-        if (started) {
-            if (serverDescription[j]==' ' || serverDescription[j]=='\0') break;
-            if (lookingAtVersionNumber && (serverDescription[j]=='-' || serverDescription[j]=='.')) break;
-            _tempString[i] = serverDescription[j];
-            i++;
-        } else {
-            if (serverDescription[j]==' ') started=true;
-            if (lookingAtVersionNumber && (serverDescription[j]=='-' || serverDescription[j]=='.')) started=true;
-        }
+char* DCCEXProtocol::_nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
+  char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
+  int i = 0; 
+  size_t j;
+  bool started = false;
+  for (j=startAt; j<strlen(_serverDescription) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
+    if (started) {
+      if (_serverDescription[j]==' ' || _serverDescription[j]=='\0') break;
+      if (lookingAtVersionNumber && (_serverDescription[j]=='-' || _serverDescription[j]=='.')) break;
+      _tempString[i] = _serverDescription[j];
+      i++;
+    } else {
+      if (_serverDescription[j]==' ') started=true;
+      if (lookingAtVersionNumber && (_serverDescription[j]=='-' || _serverDescription[j]=='.')) started=true;
     }
-    _tempString[i] = '\0';
-    
-    char *_result;
-    _result = (char *) malloc(strlen(_tempString));
-    sprintf(_result, "%s", _tempString);
-    // console->println(_result);
-    return _result;
+  }
+  _tempString[i] = '\0';
+  
+  char *_result;
+  _result = (char *) malloc(strlen(_tempString));
+  sprintf(_result, "%s", _tempString);
+  // console->println(_result);
+  return _result;
 }

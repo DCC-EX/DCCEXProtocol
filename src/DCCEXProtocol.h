@@ -77,7 +77,8 @@ class DCCEXProtocolDelegate {
 public:
   /// @brief Callback when server description is received
   /// @param version 
-  virtual void receivedServerDescription(char* version) {}
+  // virtual void receivedServerDescription(char* version) {}
+  virtual void receivedServerVersion(int major, int minor, int patch) {}
 
   /// @brief Callback when roster list received
   /// @param rosterSize 
@@ -134,44 +135,39 @@ public:
 /// @brief Main class for the DCCEXProtocol library
 class DCCEXProtocol {
   public:
-    
-    /// @brief Constructor
-    /// @param server 
-    DCCEXProtocol(int maxThrottles=6, bool server=false);
+    // Connection and setup methods
+    /// @brief Constructor for the DCCEXProtocol object
+    /// @param maxThrottles The number of throttles to create, default is 6
+    // DCCEXProtocol(int maxThrottles=6, bool server=false);
+    DCCEXProtocol(int maxThrottles=6);
 
     /// @brief Set the delegate object for callbacks
     /// @param delegate 
-    void setDelegate(DCCEXProtocolDelegate *delegate);
+    void setDelegate(DCCEXProtocolDelegate* delegate);
     
     /// @brief Set the stream object for console output
     /// @param console 
-    void setLogStream(Stream *console);
+    void setLogStream(Stream* console);
 
     /// @brief Connect the stream object to interact with DCC-EX
     /// @param stream 
-    void connect(Stream *stream);
+    void connect(Stream* stream);
     
     /// @brief Disconnect from DCC-EX
     void disconnect();
 
-    /// @brief Check for incoming DCC-EX broadcasts/responses
+
+
+
+
+    /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
+    void check();
+
+    /// @brief Check if server version has been received
     /// @return 
-    bool check();
+    bool receivedVersion();
 
-    char *serverDescription;
-    char *serverVersion;
-    char *serverVersionMajor;
-    char *serverVersionMinor;
-    char *serverVersionPatch;
-    char *serverMicroprocessorType;
-    char *serverMotorcontrollerType;
-    char *serverBuildNumber;
-    bool isServerDetailsReceived();
-
-    // *******************
-
-    // Consist throttle[maxThrottles];
-    Consist *throttle;
+    Consist* throttle;
     Loco* roster=nullptr;
     Turnout* turnouts=nullptr;
     Route* routes=nullptr;
@@ -195,9 +191,6 @@ class DCCEXProtocol {
     int getValidFunctionMap(int functionMap);
     
     // *******************
-
-    /// @brief Send the command in the outbound command buffer to DCC-EX
-    void sendCommand();
 
     /// @brief Returns the Loco object for the specified address if found
     /// @param address 
@@ -272,14 +265,26 @@ class DCCEXProtocol {
     // *******************
 
   private:
-  
+    // Methods
+    void _sendCommand();
+
+    // Attributes
     int _rosterCount = 0;
     int _turnoutsCount = 0;
     int _routesCount = 0;
     int _turntablesCount = 0;
 
+    char* _serverDescription;
+    // char *serverVersion;
+    int _majorVersion;
+    int _minorVersion;
+    int _patchVersion;
+    // char *serverMicroprocessorType;
+    // char *serverMotorcontrollerType;
+    // char *serverBuildNumber;
+
     int _maxThrottles;
-    bool server;
+    // bool server;
     Stream *stream;
     Stream *console;
     NullStream nullStream;
@@ -301,7 +306,7 @@ class DCCEXProtocol {
     void processCommand();
 
     void processServerDescription();	
-    bool haveReceivedServerDetails = false;
+    bool _receivedVersion = false;
 
     void processTrackPower();
 
@@ -345,7 +350,7 @@ class DCCEXProtocol {
 
     //helper functions
     int findThrottleWithLoco(int address);
-    char* nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
+    char* _nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
 
 #endif // DCCEXPROTOCOL_H
