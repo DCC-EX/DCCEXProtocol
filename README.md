@@ -16,11 +16,11 @@ There has also been limited testing on STM32F103C8 Bluepill.
 
 ## Basic Design Principles
 
-First of all, this library implements the DCC-EX Native protocol in a non-blocking fashion. After creating a DCCEXProtocol object, you set up various necessities (like the network connection and a debug console) (see [Dependency Injection][depinj]).
+First of all, this library implements the DCC-EX Native protocol in a non-blocking fashion. After creating a DCCEXProtocol object, you set up various necessities such as the network connection and a debug console (see [Dependency Injection][depinj]).
 
-Then, call the ```check()``` method as often as you can (ideally, once per invocation of the ```loop()``` method) and the library will manage the I/O stream, reading in/parsing commands and calling methods on the [delegate] as information is available.
+Then, you call the ```check()``` method as often as you can (ideally, once per invocation of the ```loop()``` method) and the library will manage the I/O stream, reading in/parsing commands and calling methods on the [delegate] as information is available.
 
-These patterns (Dependency Injection and Delegation) allow you to keep the different parts of your sketch from becoming too intertwined with each other. Nothing in the code that manages the pushbuttons or speed knobs needs to have any detailed knowledge of the WiThrottle network protocol.
+These patterns (Dependency Injection and Delegation) allow you to keep the different parts of your sketch from becoming too intertwined with each other. Nothing in the code that manages the pushbuttons or speed knobs needs to have any detailed knowledge of the DCC-EX native protocol.
 
 ### DCCEXProtocol Class
 
@@ -86,6 +86,8 @@ Compile and run, you should see in the Serial monitor, after 20 second delays, t
 To simplify the handling of Consists/Multiple Unit Trains the library is implemented to behave in a similar manner to the WiThrottle(TM) protocol, in that it *requires* that locos are attached to a 'throttle'.
 
 The protocol provides for the throttle app to specify the number of throttles required ```DCCEXProtocol(int maxThrottles=6, bool server=false);```
+
+For simple applications controlling a single loco, this adds a small amount of overhead, but the cons of this small overhead are far outweighed by the benefits of being able to manage multiple locos as consists without needing to program CVs every time you wish to assemble a consist (although speed matching is still obviously required).
 
 To acquire a loco on throttle 0 (zero) (the first throttle), you must specify a DDC address or a loco from the roster.
 

@@ -75,67 +75,64 @@ public:
 /// @brief Delegate responses and broadcast events to the client software to enable custom event handlers
 class DCCEXProtocolDelegate {
 public:
-  /// @brief Callback when server description is received
-  /// @param version 
-  // virtual void receivedServerDescription(char* version) {}
+  /// @brief Notify when the server version has been received
+  /// @param major Major version of EX-CommandStation (eg. 5.0.7 returns 5)
+  /// @param minor Minor version of EX-CommandStation (eg. 5.0.7 returns 0)
+  /// @param patch Patch version of EX-CommandStation (eg. 5.0.7 returns 7)
   virtual void receivedServerVersion(int major, int minor, int patch) {}
 
-  /// @brief Callback when roster list received
-  /// @param rosterSize 
-  virtual void receivedRosterList(int rosterSize) {}
+  /// @brief Notify when the roster list is received
+  virtual void receivedRosterList() {}
   
-  /// @brief Callback when turnout list received
-  /// @param turnoutListSize 
-  virtual void receivedTurnoutList(int turnoutListSize) {}    
+  /// @brief Notify when the turnout list is received
+  virtual void receivedTurnoutList() {}    
   
-  /// @brief Callback when route list received
-  /// @param routeListSize 
-  virtual void receivedRouteList(int routeListSize) {}
+  /// @brief Notify when the route list is received
+  virtual void receivedRouteList() {}
   
-  /// @brief  Callback when turntable list received
-  /// @param turntablesListSize 
-  virtual void receivedTurntableList(int turntablesListSize) {}    
+  /// @brief Notify when the turntable list is received
+  virtual void receivedTurntableList() {}    
 
-  /// @brief Callback when speed for a throttle received
-  /// @param throttleNo 
-  /// @param speed 
+  /// @brief Notify when speed for a throttle is received
+  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
+  /// @param speed Speed value (0 - 126)
   virtual void receivedSpeed(int throttleNo, int speed) {}
   
-  /// @brief Callback when direction for a throttle received
-  /// @param throttleNo 
-  /// @param dir 
+  /// @brief Notify when direction for a throttle is received
+  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
+  /// @param dir Direction received (Forward|Reverse)
   virtual void receivedDirection(int throttleNo, Direction dir) {}
   
-  /// @brief Callback when function state change for a throttle received
-  /// @param throttleNo 
-  /// @param func 
-  /// @param state 
+  /// @brief Notify when a function state change for a throttle is received
+  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
+  /// @param func Function number (0 - 27)
+  /// @param state On or off (true|false)
   virtual void receivedFunction(int throttleNo, int func, bool state) {}
 
-  /// @brief Callback when track power state change received
-  /// @param state 
+  /// @brief Notify when a track power state change is received
+  /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
 
-  /// @brief Callback when a turnout state change is received
-  /// @param turnoutId 
-  /// @param thrown 
+  /// @brief Notify when a turnout state change is received
+  /// @param turnoutId ID of the turnout
+  /// @param thrown Wether it is thrown or not (true|false)
   virtual void receivedTurnoutAction(int turnoutId, bool thrown) {}
 
-  /// @brief Callback when a turntable index change is received
-  /// @param turntableId 
-  /// @param position 
-  /// @param moving
+  /// @brief Notify when a turntable index change is received
+  /// @param turntableId ID of the turntable
+  /// @param position Index of the position it is moving (or has moved) to
+  /// @param moving Whether it is moving or not (true|false)
   virtual void receivedTurntableAction(int turntableId, int position, bool moving) {}
 
-  /// @brief Callback when a loco address is read from the programming track
-  /// @param address 
+  /// @brief Notify when a loco address is read from the programming track
+  /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
 };
 
 /// @brief Main class for the DCCEXProtocol library
 class DCCEXProtocol {
   public:
-    // Connection and setup methods
+    // Protocol and server methods
 
     /// @brief Constructor for the DCCEXProtocol object
     /// @param maxThrottles The number of throttles to create, default is 6
@@ -157,7 +154,14 @@ class DCCEXProtocol {
     /// @brief Disconnect from DCC-EX
     void disconnect();
 
-    // Object control methods
+    /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
+    void check();
+
+    /// @brief Check if server version has been received
+    /// @return 
+    bool receivedVersion();
+
+    // Consist/Loco methods
     
     /// @brief Set the specified throttle to the provided speed and direction
     /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
@@ -165,33 +169,29 @@ class DCCEXProtocol {
     /// @param direction The direction (Forward|Reverse)
     void setThrottle(int throttle, int speed, Direction direction);
     
-    /// @brief Set the specified loco address to the provided speed and direction
-    /// @param address DCC address of the loco
-    /// @param speed The speed (0 - 126)
-    /// @param direction The direction (Forward|Reverse)
-    void setLoco(int address, int speed, Direction direction);
-    
     /// @brief Set provided function on or off for the specified throttle
     /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
     /// @param functionNumber The number of the function (0 - 27)
     /// @param pressed True|False to turn the function on or off
-    void setThrottleFunction(int throttle, int functionNumber, bool pressed);
+    void setFunction(int throttle, int functionNumber, bool pressed);
     
-    bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
+    /// @brief Query if a specific function is on for the specified throttle
+    /// @param throttle Throttle to query (0 to numThrottles - 1)
+    /// @param functionNumber Function number (0 - 27)
+    /// @return On or off (true|false)
+    bool functionOn(int throttle, int functionNumber);
     
-    bool isFunctionOn(int throttle, int functionNumber);
+    /// @brief Explicitly request an update for the specified loco
+    /// @param address DCC address of the loco
+    void requestLocoUpdate(int address);
     
-    bool sendLocoUpdateRequest(int address);
-    
-    void sendReadLoco();
+    /// @brief Initiate reading a loco address from the programming track, response will be a delegate notification
+    void readLoco();
 
 
-    /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
-    void check();
+    
 
-    /// @brief Check if server version has been received
-    /// @return 
-    bool receivedVersion();
+    
 
     Consist* throttle;
     Loco* roster=nullptr;
@@ -201,20 +201,7 @@ class DCCEXProtocol {
 
     //helper functions
     
-    /// @brief Get direct enum name from the speed byte
-    /// @param speedByte 
-    /// @return 
-    Direction getDirectionFromSpeedByte(int speedByte);
     
-    /// @brief Get the speed from the speed byte
-    /// @param speedByte 
-    /// @return 
-    int getSpeedFromSpeedByte(int speedByte);
-    
-    /// @brief Masks off any functions above the first 28
-    /// @param functionMap 
-    /// @return 
-    int getValidFunctionMap(int functionMap);
     
     // *******************
 
@@ -287,6 +274,10 @@ class DCCEXProtocol {
   private:
     // Methods
     void _sendCommand();
+    void _setLoco(int address, int speed, Direction direction);
+    Direction _getDirectionFromSpeedByte(int speedByte);
+    int _getSpeedFromSpeedByte(int speedByte);
+    int _getValidFunctionMap(int functionMap);
 
     // Attributes
     int _rosterCount = 0;
@@ -295,16 +286,11 @@ class DCCEXProtocol {
     int _turntablesCount = 0;
 
     char* _serverDescription;
-    // char *serverVersion;
     int _majorVersion;
     int _minorVersion;
     int _patchVersion;
-    // char *serverMicroprocessorType;
-    // char *serverMotorcontrollerType;
-    // char *serverBuildNumber;
 
     int _maxThrottles;
-    // bool server;
     Stream *stream;
     Stream *console;
     NullStream nullStream;

@@ -96,7 +96,7 @@ public:
   /// @brief Test if function is on
   /// @param function 
   /// @return 
-  bool isFunctionOn(int function);
+  bool functionOn(int function);
 
   /// @brief Set function states
   /// @param functionStates 

@@ -131,7 +131,7 @@ void Loco::setupFunctions(char *functionNames) {
   }
 }
 
-bool Loco::isFunctionOn(int function) {
+bool Loco::functionOn(int function) {
   return _functionStates & 1<<function;
 }
 
