@@ -161,6 +161,13 @@ class DCCEXProtocol {
     /// @return 
     bool receivedVersion();
 
+    /// @brief Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)
+    /// @param rosterRequired Request the roster list (true|false)
+    /// @param turnoutListRequired Request the turnout list (true|false)
+    /// @param routeListRequired Request the route list (true|false)
+    /// @param turntableListRequired Request the turntable list (true|false)
+    void getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+
     // Consist/Loco methods
     
     /// @brief Set the specified throttle to the provided speed and direction
@@ -188,16 +195,40 @@ class DCCEXProtocol {
     /// @brief Initiate reading a loco address from the programming track, response will be a delegate notification
     void readLoco();
 
+    // Roster methods
 
+    /// @brief Get the number of roster entries
+    /// @return Number of roster entries
+    int getRosterCount();
+    
+    /// @brief 
+    /// @param entryNo 
+    /// @return 
+    Loco* getRosterEntryNo(int entryNo);
+    
+    /// @brief Check if roster has been received
+    /// @return true|false
+    bool rosterReceived();
+
+    // Turnout methods
+
+    /// @brief Get the number of turnouts
+    /// @return Number of turnouts defined
+    int getTurnoutCount();
+    
+    /// @brief 
+    /// @param entryNo 
+    /// @return 
+    Turnout* getTurnoutEntryNo(int entryNo);
+    
+    /// @brief Check if turnout list has been received
+    /// @return true|false
+    bool turnoutListReceived();
     
 
     
 
-    Consist* throttle;
-    Loco* roster=nullptr;
-    Turnout* turnouts=nullptr;
-    Route* routes=nullptr;
-    Turntable* turntables=nullptr;
+    
 
     //helper functions
     
@@ -217,30 +248,19 @@ class DCCEXProtocol {
     /// @brief Request server details
     void sendServerDetailsRequest();
 
-    /// @brief Request object lists (Roster, Turnouts, Routes, Turntables)
-    /// @param rosterRequired 
-    /// @param turnoutListRequired 
-    /// @param routeListRequired 
-    /// @param turntableListRequired 
-    void getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
-    bool getRoster();
-    int getRosterCount();
-    Loco* getRosterEntryNo(int entryNo);
-    bool isRosterRequested();
-    bool isRosterFullyReceived();
-    bool getTurnouts();
-    int getTurnoutsCount();
-    Turnout* getTurnoutsEntryNo(int entryNo);
-    bool isTurnoutListRequested();
-    bool isTurnoutListFullyReceived();
-    bool getRoutes();
+    
+    
+    
+    
+    
+    
     int getRoutesCount();
     Route* getRoutesEntryNo(int entryNo);
-    bool isRouteListRequested();
+    
     bool isRouteListFullyReceived();
-    bool getTurntables();
+    
     int getTurntablesCount();
-    bool isTurntableListRequested();
+    
     bool isTurntableListFullyReceived();
     bool isAllListsReceived();
 
@@ -269,7 +289,13 @@ class DCCEXProtocol {
     bool sendAccessoryAction(int accessoryAddress, int activate);
     bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
 
-    // *******************
+    // Attributes
+
+    Consist* throttle;              // Consist object for the throttle
+    Loco* roster=nullptr;           // Linked list of locos for the roster
+    Turnout* turnouts=nullptr;      // Linked list of turnouts
+    Route* routes=nullptr;          // Linked list of routes
+    Turntable* turntables=nullptr;  // Linked list of turntables
 
   private:
     // Methods
@@ -278,71 +304,78 @@ class DCCEXProtocol {
     Direction _getDirectionFromSpeedByte(int speedByte);
     int _getSpeedFromSpeedByte(int speedByte);
     int _getValidFunctionMap(int functionMap);
-
-    // Attributes
-    int _rosterCount = 0;
-    int _turnoutsCount = 0;
-    int _routesCount = 0;
-    int _turntablesCount = 0;
-
-    char* _serverDescription;
-    int _majorVersion;
-    int _minorVersion;
-    int _patchVersion;
-
-    int _maxThrottles;
-    Stream *stream;
-    Stream *console;
-    NullStream nullStream;
-
-    int bufflen;
-    char cmdBuffer[MAX_COMMAND_BUFFER];
-	
-    char outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH];
-
-    DCCEXProtocolDelegate *delegate = NULL;
-
-    long lastServerResponseTime;
+    void _getRoster();
+    void _getTurnouts();
+    void _getRoutes();
+    void _getTurntables();
+    bool isRosterRequested();
+    bool isTurnoutListRequested();
+    bool isRouteListRequested();
+    bool isTurntableListRequested();
     
-    char inputbuffer[512];    
-    ssize_t nextChar;  // where the next character to be read goes in the buffer
+    // Attributes
+    int _rosterCount = 0;     // Count of roster items received
+    int _turnoutsCount = 0;   // Count of turnout objects received
+    int _routesCount = 0;     // Count of route objects received
+    int _turntablesCount = 0; // Count of turntable objects received
+    char* _serverDescription; // Char array for EX-CommandStation server description <s>
+    int _majorVersion;        // EX-CommandStation major version X.y.z
+    int _minorVersion;        // EX-CommandStation minor version x.Y.z
+    int _patchVersion;        // EX-CommandStation patch version x.y.Z
+    int _maxThrottles;        // Number of throttles to support
+    Stream* _stream;          // Stream object where commands are sent/received
+    Stream* _console;         // Stream object for console output
+    NullStream _nullStream;   // Send streams to null if no object provided
+    int _bufflen;             // Used to ensure command buffer size not exceeded
+    char _cmdBuffer[MAX_COMMAND_BUFFER];  // Char array for inbound command buffer
+    char _outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH]; // Char array for outbound commands
+    DCCEXProtocolDelegate* _delegate = nullptr; // Pointer to the delegate for notifications
+    long _lastServerResponseTime; // Records the timestamp of the last server response
+    char _inputBuffer[512];   // Char array for input buffer
+    ssize_t _nextChar;        // where the next character to be read goes in the buffer
+    bool _receivedVersion = false;  // Flag that server version has been received
+    bool _receivedLists = false;  // Flag if all requested lists have been received
+    bool _rosterRequested = false;          // Flag that roster has been requested
+    bool _rosterReceived = false;           // Flag that roster has been received
+    bool _turnoutListRequested = false;     // Flag that turnout list requested
+    bool _turnoutListReceived = false;      // Flag that turnout list received
+    bool _routeListRequested = false;       // Flag that route list requested
+    bool _routeListReceived = false;        // Flag that route list received
+    bool _turntableListRequested = false;   // Flag that turntable list requested
+    bool _turntableListReceived = false;    // Flag that turntable list received
+    
+    
 
     void init();
 
     void processCommand();
 
     void processServerDescription();	
-    bool _receivedVersion = false;
+    
 
     void processTrackPower();
 
     // *******************
 
-    bool allRequiredListsReceived = false;
     
-    bool rosterRequested = false;
-    bool rosterFullyReceived = false;
     void processRosterEntry();
     void processRosterList();
     void sendRosterEntryRequest(int address);
     void processReadLoco();
 
-    bool turnoutListRequested = false;
-    bool turnoutListFullyReceived = false;
+    
     void processTurnoutEntry();
     void processTurnoutList();
     void processTurnoutAction();
     void sendTurnoutEntryRequest(int id);
 
-    bool routeListRequested = false;
-    bool routeListFullyReceived = false;
+    
     void processRouteList();
     void processRouteEntry();
     void sendRouteEntryRequest(int id);
     // void processRouteAction();
 
-    bool turntableListRequested = false;
-    bool turntableListFullyReceived = false;
+    
     void processTurntableEntry();
     void processTurntableList();
     void processTurntableIndexEntry();
