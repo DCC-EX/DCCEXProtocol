@@ -359,38 +359,38 @@ class DCCEXProtocol {
 
     // Roster methods
     void _getRoster();
-    bool isRosterRequested();
-    void processRosterEntry();
-    void processRosterList();
-    void sendRosterEntryRequest(int address);
+    bool _requestedRoster();
+    void _processRosterList();
+    void _requestRosterEntry(int address);
+    void _processRosterEntry();
 
     // Turnout methods
     void _getTurnouts();
-    bool isTurnoutListRequested();
-    void processTurnoutEntry();
-    void processTurnoutList();
-    void processTurnoutAction();
-    void sendTurnoutEntryRequest(int id);
-
+    bool _requestedTurnouts();
+    void _processTurnoutList();
+    void _requestTurnoutEntry(int id);
+    void _processTurnoutEntry();
+    void _processTurnoutBroadcast();
+    
     // Route methods
     void _getRoutes();
-    bool isRouteListRequested();
-    void processRouteList();
-    void processRouteEntry();
-    void sendRouteEntryRequest(int id);
+    bool _requestedRoutes();
+    void _processRouteList();
+    void _requestRouteEntry(int id);
+    void _processRouteEntry();
 
     // Turntable methods
     void _getTurntables();
-    bool isTurntableListRequested();
-    void processTurntableEntry();
-    void processTurntableList();
-    void processTurntableIndexEntry();
-    void processTurntableAction();
-    void sendTurntableEntryRequest(int id);
-    void sendTurntableIndexEntryRequest(int id);
+    bool _requestedTurntables();
+    void _processTurntableList();
+    void _requestTurntableEntry(int id);
+    void _processTurntableEntry();
+    void _requestTurntableIndexEntry(int id);
+    void _processTurntableIndexEntry();
+    void _processTurntableBroadcast();    
 
     // Track management methods
-    void processTrackPower();
+    void _processTrackPower();
     
     // Attributes
     int _rosterCount = 0;     // Count of roster items received
