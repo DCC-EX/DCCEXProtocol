@@ -73,7 +73,7 @@ void DCCEXProtocol::setLogStream(Stream *console) {
 }
 
 void DCCEXProtocol::connect(Stream *stream) {
-  init();
+  _init();
   this->_stream = stream;
 }
 
@@ -107,10 +107,6 @@ void DCCEXProtocol::check() {
   }
 }
 
-bool DCCEXProtocol::receivedVersion() {
-    return _receivedVersion;
-}
-
 // sequentially request and get the required lists. To avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired) {
   // console->println(F("getLists()"));
@@ -118,19 +114,19 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     if (rosterRequired && !_rosterRequested) {
       _getRoster();
     } else { 
-      if (!rosterRequired || _rosterReceived) {
+      if (!rosterRequired || _receivedRoster) {
         if (turnoutListRequired && !_turnoutListRequested) {
           _getTurnouts();
         } else { 
-          if (!turnoutListRequired || _turnoutListReceived) {
+          if (!turnoutListRequired || _receivedTurnoutList) {
             if (routeListRequired && !_routeListRequested) {
               _getRoutes();
             } else { 
-              if (!routeListRequired || _routeListReceived) {
+              if (!routeListRequired || _receivedRouteList) {
                 if (turntableListRequired && !_turntableListRequested) {
                   _getTurntables();
                 } else { 
-                  if (!turntableListRequired || _turntableListReceived) {
+                  if (!turntableListRequired || _receivedTurntableList) {
                     _receivedLists = true;
                     _console->println(F("Lists Fully Received"));
                   }
@@ -143,6 +139,27 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     }
   }
   // console->println(F("getLists(): end"));
+}
+
+bool DCCEXProtocol::receivedLists() {
+  return _receivedLists;
+}
+
+void DCCEXProtocol::requestServerVersion() {
+  // console->println(F("requestServerVersion(): "));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<s>");
+    _sendCommand();        
+  }
+  // console->println(F("requestServerVersion(): end"));
+}
+
+bool DCCEXProtocol::receivedVersion() {
+    return _receivedVersion;
+}
+
+unsigned long DCCEXProtocol::getLastServerResponseTime() {
+  return _lastServerResponseTime;   
 }
 
 // Consist/loco methods
@@ -216,6 +233,26 @@ void DCCEXProtocol::readLoco() {
   }
 }
 
+void DCCEXProtocol::emergencyStop() {
+  // console->println(F("emergencyStop(): "));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<!>");
+    _sendCommand();
+  }
+  // console->println(F("emergencyStop(): end"));
+}
+
+Consist DCCEXProtocol::getConsist(int throttleNo) {
+  // console->println(F("getThrottleConsist(): "));
+  if (_delegate) {
+    return throttle[throttleNo];
+  }
+  // console->println(F("getThrottleConsist(): end"));
+  return {};
+}
+
+// Roster methods
+
 int DCCEXProtocol::getRosterCount() {
   return _rosterCount;
 }
@@ -229,13 +266,24 @@ Loco* DCCEXProtocol::getRosterEntryNo(int entryNo) {
   return {};
 }
 
-bool DCCEXProtocol::rosterReceived() {
+bool DCCEXProtocol::receivedRoster() {
   // console->println(F("isRosterFullyReceived()"));
-  return _rosterReceived;
+  return _receivedRoster;
 }
 
+Loco* DCCEXProtocol::findLocoInRoster(int address) {
+  for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
+    if (r->getAddress()==address) {
+      return r;
+    }
+  }
+  return nullptr;
+}
+
+// Turnout methods
+
 int DCCEXProtocol::getTurnoutCount() {
-  return _turnoutsCount;
+  return _turnoutCount;
 }
 
 Turnout* DCCEXProtocol::getTurnoutEntryNo(int entryNo) {
@@ -247,60 +295,180 @@ Turnout* DCCEXProtocol::getTurnoutEntryNo(int entryNo) {
   return {};
 }
 
-bool DCCEXProtocol::turnoutListReceived() {
-  return _turnoutListReceived;
+bool DCCEXProtocol::receivedTurnoutList() {
+  return _receivedTurnoutList;
+}
+
+// find the turnout/point in the turnout list by id. return a pointer or null is not found
+Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
+  for (Turnout* turnout=turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
+    if (turnout->getId() == turnoutId) {
+      return turnout;
+    }
+  }
+  return nullptr;  // not found
+}
+
+void DCCEXProtocol::closeTurnout(int turnoutId) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<T %d 0>", turnoutId);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::throwTurnout(int turnoutId) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<T %d 1>", turnoutId);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::toggleTurnout(int turnoutId) {
+  for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
+    if (t->getId()==turnoutId) {
+      // console->println(t->getThrown());
+      bool thrown=t->getThrown() ? 0 : 1;
+      sprintf(_outboundCommand, "<T %d %d>", turnoutId, thrown);
+      _sendCommand();
+    }
+  }
+}
+
+// Route methods
+
+int DCCEXProtocol::getRouteCount() {
+  return _routeCount;
+}
+
+Route* DCCEXProtocol::getRouteEntryNo(int entryNo) {
+  int i=0;
+  for (Route* route=routes->getFirst(); route; route=route->getNext()) {
+    if (i==entryNo) return route;
+    i++;
+  }
+  return {};
+}
+
+bool DCCEXProtocol::receivedRouteList() {
+  return _receivedRouteList;
+}
+
+void DCCEXProtocol::startRoute(int routeId) {
+  // console->println(F("sendRouteAction()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "</START  %d >", routeId);
+    _sendCommand();
+  }
+  // console->println(F("sendRouteAction() end"));
+}
+
+void DCCEXProtocol::pauseRoutes() {
+  // console->println(F("sendPauseRoutes()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "</PAUSE>");
+    _sendCommand();
+  }
+  // console->println(F("sendPauseRoutes() end"));
+}
+
+void DCCEXProtocol::resumeRoutes() {
+  // console->println(F("sendResumeRoutes()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "</RESUME>");
+    _sendCommand();
+  }
+  // console->println(F("sendResumeRoutes() end"));
+}
+
+// Turntable methods
+
+int DCCEXProtocol::getTurntableCount() {
+  return _turntableCount;
+}
+
+bool DCCEXProtocol::receivedTurntableList() {
+  return _receivedTurntableList;
+}
+
+Turntable* DCCEXProtocol::getTurntableById(int turntableId) {
+  for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
+    if (tt->getId() == turntableId) {
+      return tt;
+    }
+  }
+  return nullptr;
+}
+
+void DCCEXProtocol::rotateTurntable(int turntableId, int position, int activity) {
+  // console->println(F("sendTurntable()"));
+  if (_delegate) {
+    Turntable* tt=turntables->getById(turntableId);
+    if (tt) {
+      if (tt->getType()==TurntableTypeEXTT) {
+        if (position==0) {
+            activity=2;
+          }
+        sprintf(_outboundCommand, "<I %d %d %d>", turntableId, position, activity);
+      } else {
+        sprintf(_outboundCommand, "<I %d %d>", turntableId, position);
+      }
+    }
+    _sendCommand();
+  }
+  // console->println(F("sendTurntable() end"));
+}
+
+// Track management methods
+
+void DCCEXProtocol::powerOn() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<1>");
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::powerOff() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<0>");
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::powerTrackOn(char track) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<1 %c>", track);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::powerTrackOff(char track) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<0 %c>", track);
+    _sendCommand();
+  }
 }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//private methods
+// Private methods
+// Server and protocol methods
 // init the DCCEXProtocol instance after connection to the server
-void DCCEXProtocol::init() {
+void DCCEXProtocol::_init() {
   // console->println(F("init()"));
 	// allocate input buffer and init position variable
 	memset(_inputBuffer, 0, sizeof(_inputBuffer));
 	_nextChar = 0;
-    //last Response time
-    _lastServerResponseTime = millis() /1000;
-    // console->println(F("init(): end"));
+  //last Response time
+  _lastServerResponseTime = millis();
+  // console->println(F("init(): end"));
 }
 
 
 
 
 
-long DCCEXProtocol::getLastServerResponseTime() {
-  return _lastServerResponseTime;   
-}
 
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
 
 // ******************************************************************************************************
 //helper functions
@@ -373,7 +541,7 @@ void DCCEXProtocol::processCommand() {
         if (DCCEXInbound::isTextParameter(0)) break;
         if (DCCEXInbound::getNumber(0)=='A') {          // Receive route/automation info
           if (DCCEXInbound::getParameterCount()==0) { // Empty list, no routes/automations
-            _routeListReceived = true;
+            _receivedRouteList = true;
           } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(3)) {  // Receive route entry
             processRouteEntry();
           } else {    // Receive route/automation list
@@ -381,7 +549,7 @@ void DCCEXProtocol::processCommand() {
           }
         } else if (DCCEXInbound::getNumber(0)=='O') {   // Receive turntable info
           if (DCCEXInbound::getParameterCount()==0) { // Empty turntable list
-            _turntableListReceived = true;
+            _receivedTurntableList = true;
           } else if (DCCEXInbound::getParameterCount()==6 && DCCEXInbound::isTextParameter(5)) {  // Turntable entry
             processTurntableEntry();
           } else {    // Turntable list
@@ -393,7 +561,7 @@ void DCCEXProtocol::processCommand() {
           }
         } else if (DCCEXInbound::getNumber(0)=='R') {   // Receive roster info
           if (DCCEXInbound::getParameterCount()==1) { // Empty list, no roster
-            _rosterReceived = true;
+            _receivedRoster = true;
           } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(2) && DCCEXInbound::isTextParameter(3)) {  // Roster entry
             // <jR id "desc" "func1/func2/func3/...">
             processRosterEntry();
@@ -403,7 +571,7 @@ void DCCEXProtocol::processCommand() {
           }
         } else if (DCCEXInbound::getNumber(0)=='T') {   // Receive turnout info
           if (DCCEXInbound::getParameterCount()==1) { // Empty list, no turnouts defined
-            _turnoutListReceived = true;
+            _receivedTurnoutList = true;
           } else if (DCCEXInbound::getParameterCount()==4 && DCCEXInbound::isTextParameter(3)) {  // Turnout entry
             // <jT id state "desc">
             processTurnoutEntry();
@@ -472,18 +640,17 @@ void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microproces
 
 //private
 void DCCEXProtocol::processTrackPower() {
-    // console->println(F("processTrackPower()"));
-    if (_delegate) {
-        TrackPower state = PowerUnknown;
-        if (DCCEXInbound::getNumber(0)==PowerOff) {
-            state = PowerOff;
-        } else if (DCCEXInbound::getNumber(0)==PowerOn) {
-            state = PowerOn;
-        }
-
-        _delegate->receivedTrackPower(state);
+  // console->println(F("processTrackPower()"));
+  if (_delegate) {
+    TrackPower state = PowerUnknown;
+    if (DCCEXInbound::getNumber(0)==PowerOff) {
+      state = PowerOff;
+    } else if (DCCEXInbound::getNumber(0)==PowerOn) {
+      state = PowerOn;
     }
-    // console->println(F("processTrackPower(): end"));
+    _delegate->receivedTrackPower(state);
+  }
+  // console->println(F("processTrackPower(): end"));
 }
 
 // ****************
@@ -491,66 +658,66 @@ void DCCEXProtocol::processTrackPower() {
 
 //private
 void DCCEXProtocol::processRosterList() {
-    // console->println(F("processRosterList()"));
-    if (roster!=nullptr) {  // already have a roster so this is an update
-        // console->println(F("processRosterList(): roster list already received. Ignoring this!"));
-        return;
-    }
-    if (DCCEXInbound::getParameterCount()==1) { // roster empty
-        _rosterReceived=true;
-        return;
-    }
-    for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
-        int address = DCCEXInbound::getNumber(i);
-        new Loco(address, LocoSourceRoster);
-    }
-    sendRosterEntryRequest(Loco::getFirst()->getAddress());
-    _rosterCount = DCCEXInbound::getParameterCount()-1;
-    // console->println(F("processRosterList(): end"));
+  // console->println(F("processRosterList()"));
+  if (roster!=nullptr) {  // already have a roster so this is an update
+    // console->println(F("processRosterList(): roster list already received. Ignoring this!"));
+    return;
+  }
+  if (DCCEXInbound::getParameterCount()==1) { // roster empty
+    _receivedRoster=true;
+    return;
+  }
+  for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
+    int address = DCCEXInbound::getNumber(i);
+    new Loco(address, LocoSourceRoster);
+  }
+  sendRosterEntryRequest(Loco::getFirst()->getAddress());
+  _rosterCount = DCCEXInbound::getParameterCount()-1;
+  // console->println(F("processRosterList(): end"));
 }
 
 //private
 void DCCEXProtocol::sendRosterEntryRequest(int address) {
-    // console->println(F("sendRosterEntryRequest()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<JR %d>", address);
-        _sendCommand();
-    }
-    // console->println(F("sendRosterEntryRequest(): end"));
+  // console->println(F("sendRosterEntryRequest()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<JR %d>", address);
+    _sendCommand();
+  }
+  // console->println(F("sendRosterEntryRequest(): end"));
 }
 
 //private
 void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/funct3/...">
-    // console->println(F("processRosterEntry()"));
-    //find the roster entry to update
-    int address=DCCEXInbound::getNumber(1);
-    char *name=DCCEXInbound::getSafeText(2);
-    char *funcs=DCCEXInbound::getSafeText(3);
-    bool missingRosters=false;
-    
-    Loco* loco=roster->getByAddress(address);
-    if (loco) {
-        loco->setName(name);
-        loco->setupFunctions(funcs);
-        if (loco->getNext() && loco->getNext()->getName()==nullptr) {
-            missingRosters=true;
-            sendRosterEntryRequest(loco->getNext()->getAddress());
-        }
+  // console->println(F("processRosterEntry()"));
+  //find the roster entry to update
+  int address=DCCEXInbound::getNumber(1);
+  char *name=DCCEXInbound::getSafeText(2);
+  char *funcs=DCCEXInbound::getSafeText(3);
+  bool missingRosters=false;
+  
+  Loco* loco=roster->getByAddress(address);
+  if (loco) {
+    loco->setName(name);
+    loco->setupFunctions(funcs);
+    if (loco->getNext() && loco->getNext()->getName()==nullptr) {
+      missingRosters=true;
+      sendRosterEntryRequest(loco->getNext()->getAddress());
     }
+  }
 
-    
-    if (!missingRosters) {
-        _rosterReceived = true;
-        // console->print(F("processRosterEntry(): received all: "));
-        // console->println(getRosterCount());
-        _delegate->receivedRosterList();
-    }
-    // console->println(F("processRosterEntry(): end"));
+  
+  if (!missingRosters) {
+    _receivedRoster = true;
+    // console->print(F("processRosterEntry(): received all: "));
+    // console->println(getRosterCount());
+    _delegate->receivedRosterList();
+  }
+  // console->println(F("processRosterEntry(): end"));
 }
 
 void DCCEXProtocol::processReadLoco() { // <r id> - -1 = error
-    int address=DCCEXInbound::getNumber(0);
-    _delegate->receivedReadLoco(address);
+  int address=DCCEXInbound::getNumber(0);
+  _delegate->receivedReadLoco(address);
 }
 
 // ****************
@@ -565,7 +732,7 @@ void DCCEXProtocol::processTurnoutList() {
     return;
   } 
   if (DCCEXInbound::getParameterCount()==1) { // turnout list is empty
-    _turnoutListReceived=true;
+    _receivedTurnoutList=true;
     return;
   }
   for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
@@ -573,114 +740,68 @@ void DCCEXProtocol::processTurnoutList() {
     new Turnout(id, false);
   }
   sendTurnoutEntryRequest(Turnout::getFirst()->getId());
-  _turnoutsCount = DCCEXInbound::getParameterCount()-1;
+  _turnoutCount = DCCEXInbound::getParameterCount()-1;
   // console->println(F("processTurnoutList(): end"));
 }
 
 //private
 void DCCEXProtocol::sendTurnoutEntryRequest(int id) {
-    // console->println(F("sendTurnoutEntryRequest()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<JT %d>", id);
-
-        _sendCommand();
-    }
-    // console->println(F("sendTurnoutEntryRequest() end"));
+  // console->println(F("sendTurnoutEntryRequest()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<JT %d>", id);
+    _sendCommand();
+  }
+  // console->println(F("sendTurnoutEntryRequest() end"));
 }
 
 //private
 void DCCEXProtocol::processTurnoutEntry() {
-    if (DCCEXInbound::getParameterCount()!=4) return;
-    // console->println(F("processTurnoutEntry()"));
-    //find the turnout entry to update
-    int id=DCCEXInbound::getNumber(1);
-    bool thrown=(DCCEXInbound::getNumber(2)=='T');
-    char* name=DCCEXInbound::getSafeText(3);
-    bool missingTurnouts=false;
+  if (DCCEXInbound::getParameterCount()!=4) return;
+  // console->println(F("processTurnoutEntry()"));
+  //find the turnout entry to update
+  int id=DCCEXInbound::getNumber(1);
+  bool thrown=(DCCEXInbound::getNumber(2)=='T');
+  char* name=DCCEXInbound::getSafeText(3);
+  bool missingTurnouts=false;
 
-    Turnout* t=turnouts->getById(id);
-    if (t) {
-        t->setName(name);
-        t->setThrown(thrown);
-        if (t->getNext() && t->getNext()->getName()==nullptr) {
-            missingTurnouts=true;
-            sendTurnoutEntryRequest(t->getNext()->getId());
-        }
+  Turnout* t=turnouts->getById(id);
+  if (t) {
+    t->setName(name);
+    t->setThrown(thrown);
+    if (t->getNext() && t->getNext()->getName()==nullptr) {
+      missingTurnouts=true;
+      sendTurnoutEntryRequest(t->getNext()->getId());
     }
+  }
 
-    if (!missingTurnouts) {
-        _turnoutListReceived=true;
-        // console->println(F("processTurnoutsEntry(): received all"));
-        _delegate->receivedTurnoutList();
-    }
-    // console->println(F("processTurnoutEntry() end"));
+  if (!missingTurnouts) {
+    _receivedTurnoutList=true;
+    // console->println(F("processTurnoutsEntry(): received all"));
+    _delegate->receivedTurnoutList();
+  }
+  // console->println(F("processTurnoutEntry() end"));
 }
 
-// find the turnout/point in the turnout list by id. return a pointer or null is not found
-Turnout* DCCEXProtocol::getTurnoutById(int turnoutId) {
-    for (Turnout* turnout=turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
-        if (turnout->getId() == turnoutId) {
-            return turnout;
-        }
-    }
-    return nullptr;  // not found
-}
 
-void DCCEXProtocol::closeTurnout(int turnoutId) {
-    if (_delegate) {
-        sprintf(_outboundCommand, "<T %d 0>", turnoutId);
-        _sendCommand();
-    }
-}
 
-void DCCEXProtocol::throwTurnout(int turnoutId) {
-    if (_delegate) {
-        sprintf(_outboundCommand, "<T %d 1>", turnoutId);
-        _sendCommand();
-    }
-}
 
-void DCCEXProtocol::toggleTurnout(int turnoutId) {
-    for (Turnout* t=turnouts->getFirst(); t; t=t->getNext()) {
-        if (t->getId()==turnoutId) {
-            // console->println(t->getThrown());
-            if (t->getThrown()) {
-                // console->println(F("Thrown"));
-            } else {
-                // console->println(F("Closed"));
-            }
-            bool thrown=t->getThrown() ? 0 : 1;
-            sprintf(_outboundCommand, "<T %d %d>", turnoutId, thrown);
-            _sendCommand();
-        }
-    }
-}
 
-Turntable* DCCEXProtocol::getTurntableById(int turntableId) {
-    // for (int i = 0; i < turntables.size(); i++) {
-    //     Turntable* tt = turntables.get(i);
-    for (Turntable* tt=turntables->getFirst(); tt; tt=tt->getNext()) {
-        if (tt->getId() == turntableId) {
-            return tt;
-        }
-    }
-    return nullptr;
-}
+
 
 //private
 void DCCEXProtocol::processTurnoutAction() { //<H id state>
-    // console->println(F("processTurnoutAction(): "));
-    if (DCCEXInbound::getParameterCount()!=2) return;
-    //find the Turnout entry to update
-    int id = DCCEXInbound::getNumber(0);
-    bool thrown = DCCEXInbound::getNumber(1);
-    for (auto t=Turnout::getFirst(); t ; t=t->getNext()) {
-        if (t->getId()==id) {
-            t->setThrown(thrown);
-            _delegate->receivedTurnoutAction(id, thrown);
-        }
+  // console->println(F("processTurnoutAction(): "));
+  if (DCCEXInbound::getParameterCount()!=2) return;
+  //find the Turnout entry to update
+  int id = DCCEXInbound::getNumber(0);
+  bool thrown = DCCEXInbound::getNumber(1);
+  for (auto t=Turnout::getFirst(); t ; t=t->getNext()) {
+    if (t->getId()==id) {
+      t->setThrown(thrown);
+      _delegate->receivedTurnoutAction(id, thrown);
     }
-    // console->println(F("processTurnoutAction(): end"));
+  }
+  // console->println(F("processTurnoutAction(): end"));
 }
 
 // ****************
@@ -694,7 +815,7 @@ void DCCEXProtocol::processRouteList() {
     return;
   } 
   if (DCCEXInbound::getParameterCount()==1) { // route list is empty
-    _routeListReceived=true;
+    _receivedRouteList=true;
     return;
   }
   for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
@@ -702,19 +823,18 @@ void DCCEXProtocol::processRouteList() {
     new Route(id);
   }
   sendRouteEntryRequest(Route::getFirst()->getId());
-  _routesCount = DCCEXInbound::getParameterCount()-1;
+  _routeCount = DCCEXInbound::getParameterCount()-1;
   // console->println(F("processRouteList(): end"));
 }
 
 //private
 void DCCEXProtocol::sendRouteEntryRequest(int id) {
-    // console->println(F("sendRouteEntryRequest()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<JA %d>", id);
-
-        _sendCommand();
-    }
-    // console->println(F("sendRouteEntryRequest() end"));
+  // console->println(F("sendRouteEntryRequest()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<JA %d>", id);
+    _sendCommand();
+  }
+  // console->println(F("sendRouteEntryRequest() end"));
 }
 
 //private
@@ -737,7 +857,7 @@ void DCCEXProtocol::processRouteEntry() {
   }
 
   if (!missingRoutes) {
-    _routeListReceived=true;
+    _receivedRouteList=true;
     // console->println(F("processRoutesEntry(): received all"));
     _delegate->receivedRouteList();
   }
@@ -754,7 +874,7 @@ void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
     return;
   }
   if (DCCEXInbound::getParameterCount()==1) { // list is empty so we have received it
-    _turntableListReceived=true;
+    _receivedTurntableList=true;
     return;
   }
   for (int i=1; i<DCCEXInbound::getParameterCount(); i++) {
@@ -762,53 +882,52 @@ void DCCEXProtocol::processTurntableList() {  // <jO [id1 id2 id3 ...]>
     new Turntable(id);
   }
   sendTurntableEntryRequest(Turntable::getFirst()->getId());
-  _turntablesCount = DCCEXInbound::getParameterCount()-1;
+  _turntableCount = DCCEXInbound::getParameterCount()-1;
   // console->print("processTurntableList(): end: size:"); console->println(turntables.size());
 }
 
 //private
 void DCCEXProtocol::sendTurntableEntryRequest(int id) {
-    // console->println(F("sendTurntableEntryRequest()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<JO %d>", id);
-
-        _sendCommand();
-    }
-    // console->println(F("sendTurntableEntryRequest(): end"));
+  // console->println(F("sendTurntableEntryRequest()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<JO %d>", id);
+    _sendCommand();
+  }
+  // console->println(F("sendTurntableEntryRequest(): end"));
 }
 
 //private
 void DCCEXProtocol::sendTurntableIndexEntryRequest(int id) {
-    // console->println(F("sendTurntableIndexEntryRequest()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<JP %d>", id);
-        _sendCommand();
-    }
-    // console->println(F("sendTurntableIndexEntryRequest() end"));
+  // console->println(F("sendTurntableIndexEntryRequest()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<JP %d>", id);
+    _sendCommand();
+  }
+  // console->println(F("sendTurntableIndexEntryRequest() end"));
 }
 
 //private
 void DCCEXProtocol::processTurntableEntry() {  // <jO id type position position_count "[desc]">
-    // console->println(F("processTurntableEntry(): "));
-    //find the Turntable entry to update
-    int id=DCCEXInbound::getNumber(1);
-    TurntableType ttType=(TurntableType)DCCEXInbound::getNumber(2);
-    int index=DCCEXInbound::getNumber(3);
-    int indexCount=DCCEXInbound::getNumber(4);
-    char *name=DCCEXInbound::getSafeText(5);
+  // console->println(F("processTurntableEntry(): "));
+  //find the Turntable entry to update
+  int id=DCCEXInbound::getNumber(1);
+  TurntableType ttType=(TurntableType)DCCEXInbound::getNumber(2);
+  int index=DCCEXInbound::getNumber(3);
+  int indexCount=DCCEXInbound::getNumber(4);
+  char *name=DCCEXInbound::getSafeText(5);
 
-    Turntable* tt=turntables->getById(id);
-    if (tt) {
-        tt->setType(ttType);
-        tt->setIndex(index);
-        tt->setNumberOfIndexes(indexCount);
-        tt->setName(name);
-        sendTurntableIndexEntryRequest(id);
-        if (tt->getNext() && tt->getNext()->getName()==nullptr) {
-            sendTurntableEntryRequest(tt->getNext()->getId());
-        }
+  Turntable* tt=turntables->getById(id);
+  if (tt) {
+    tt->setType(ttType);
+    tt->setIndex(index);
+    tt->setNumberOfIndexes(indexCount);
+    tt->setName(name);
+    sendTurntableIndexEntryRequest(id);
+    if (tt->getNext() && tt->getNext()->getName()==nullptr) {
+        sendTurntableEntryRequest(tt->getNext()->getId());
     }
-    // console->println(F("processTurntableEntry(): end"));
+  }
+  // console->println(F("processTurntableEntry(): end"));
 }
 
 //private
@@ -844,7 +963,7 @@ void DCCEXProtocol::processTurntableIndexEntry() { // <jP id index angle "[desc]
     }
 
     if (receivedAll) {
-      _turntableListReceived = true;
+      _receivedTurntableList = true;
       // console->println(F("processTurntableIndexEntry(): received all"));
       _delegate->receivedTurntableList();
     }      
@@ -920,64 +1039,20 @@ bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
 // ******************************************************************************************************
 // server commands
 
-void DCCEXProtocol::sendServerDetailsRequest() {
-    // console->println(F("sendServerDetailsRequest(): "));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<s>");
-        _sendCommand();        
-    }
-    // console->println(F("sendServerDetailsRequest(): end"));
-}
+
 
 // ******************************************************************************************************
 // power commands
 
-bool DCCEXProtocol::sendTrackPower(TrackPower state) {
-    // console->println(F("sendTrackPower(): "));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<%d>", state);
-
-        _sendCommand();
-    }
-    // console->println(F("sendTrackPower(): end"));
-    return true;
-}
-
-bool DCCEXProtocol::sendTrackPower(TrackPower state, char track) {
-    // console->println(F("sendTrackPower(): "));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<%d %c>", state, track);
-
-        _sendCommand();
-    }
-    // console->println(F("sendTrackPower(): end"));
-    return true;
-}
 
 
 
-void DCCEXProtocol::sendEmergencyStop() {
-    // console->println(F("emergencyStop(): "));
-    if (_delegate) {
-        sprintf(_outboundCommand, "<!>");
-        _sendCommand();
-    }
-    // console->println(F("emergencyStop(): end"));
-}
 
 
 
-Consist DCCEXProtocol::getThrottleConsist(int throttleNo) {
-    // console->println(F("getThrottleConsist(): "));
-    if (_delegate) {
-        //????????????????? TODO
-        // what if the throttle does not have a consist
-        //
-        return throttle[throttleNo];
-    }
-    // console->println(F("getThrottleConsist(): end"));
-    return {};
-}
+
+
+
 
 
 
@@ -1001,58 +1076,12 @@ void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
 
 
 
-bool DCCEXProtocol::sendRouteAction(int routeId) {
-    // console->println(F("sendRouteAction()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "</START  %d >", routeId);
-        _sendCommand();
-    }
-    // console->println(F("sendRouteAction() end"));
-    return true;
-}
-
-bool DCCEXProtocol::sendPauseRoutes() {
-    // console->println(F("sendPauseRoutes()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "</PAUSE>");
-        _sendCommand();
-    }
-    // console->println(F("sendPauseRoutes() end"));
-    return true;
-}
-
-bool DCCEXProtocol::sendResumeRoutes() {
-    // console->println(F("sendResumeRoutes()"));
-    if (_delegate) {
-        sprintf(_outboundCommand, "</RESUME>");
-        _sendCommand();
-    }
-    // console->println(F("sendResumeRoutes() end"));
-    return true;
-}
 
 
 
 
-bool DCCEXProtocol::sendTurntableAction(int turntableId, int position, int activity) {
-  // console->println(F("sendTurntable()"));
-  if (_delegate) {
-    Turntable* tt=turntables->getById(turntableId);
-    if (tt) {
-      if (tt->getType()==TurntableTypeEXTT) {
-        if (position==0) {
-            activity=2;
-          }
-        sprintf(_outboundCommand, "<I %d %d %d>", turntableId, position, activity);
-      } else {
-        sprintf(_outboundCommand, "<I %d %d>", turntableId, position);
-      }
-    }
-    _sendCommand();
-  }
-  // console->println(F("sendTurntable() end"));
-  return true;
-}
+
+
 
 bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
   // console->println(F("sendAccessory()"));
@@ -1078,9 +1107,7 @@ bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAd
 
 
 
-bool DCCEXProtocol::isAllListsReceived() {
-  return _receivedLists;
-}
+
 
 void DCCEXProtocol::_getRoster() {
   // console->println(F("getRoster()"));
@@ -1130,25 +1157,12 @@ void DCCEXProtocol::_getRoutes() {
   // console->println(F("getRoutes() end"));
 }
 
-int DCCEXProtocol::getRoutesCount() {
-  return _routesCount;
-}
 
-Route* DCCEXProtocol::getRoutesEntryNo(int entryNo) {
-  int i=0;
-  for (Route* route=routes->getFirst(); route; route=route->getNext()) {
-    if (i==entryNo) return route;
-    i++;
-  }
-  return {};
-}
 
 bool DCCEXProtocol::isRouteListRequested() {
   return _routeListRequested;
 }
-bool DCCEXProtocol::isRouteListFullyReceived() {
-  return _routeListReceived;
-}
+
 
 void DCCEXProtocol::_getTurntables() {
   // console->println(F("getTurntables()"));
@@ -1160,36 +1174,17 @@ void DCCEXProtocol::_getTurntables() {
   // console->println(F("getTurntables() end"));
 }
 
-int DCCEXProtocol::getTurntablesCount() {
-  return _turntablesCount;
-}
+
 
 bool DCCEXProtocol::isTurntableListRequested() {
   return _turntableListRequested;
 }
-bool DCCEXProtocol::isTurntableListFullyReceived() {
-  return _turntableListReceived;
-}
 
 
 
-//private
-Loco* DCCEXProtocol::findLocoInRoster(int address) {
-    // if (roster.size()>0) {
-    //     for (int i=0; i<roster.size(); i++) {
-    //         if (roster.get(i)->getLocoAddress() == address) {
-    //             return *roster.get(i);
-    //         }
-    //     }
-    // }
-    // return {};
-    for (Loco* r=roster->getFirst(); r; r=r->getNext()) {
-        if (r->getAddress()==address) {
-            return r;
-        }
-    }
-    return nullptr;
-}
+
+
+
 
 // private
 // find which, if any, throttle has this loco selected

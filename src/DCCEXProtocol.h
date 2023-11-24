@@ -157,16 +157,25 @@ class DCCEXProtocol {
     /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
     void check();
 
-    /// @brief Check if server version has been received
-    /// @return 
-    bool receivedVersion();
-
     /// @brief Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)
     /// @param rosterRequired Request the roster list (true|false)
     /// @param turnoutListRequired Request the turnout list (true|false)
     /// @param routeListRequired Request the route list (true|false)
     /// @param turntableListRequired Request the turntable list (true|false)
     void getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+
+    /// @brief Check if all lists have been received (roster, routes, turnouts, turntables)
+    /// @return true|false
+    bool receivedLists();
+
+    /// @brief Request server version information
+    void requestServerVersion();
+
+    /// @brief Check if server version has been received
+    /// @return 
+    bool receivedVersion();
+
+    unsigned long getLastServerResponseTime();  // seconds since Arduino start
 
     // Consist/Loco methods
     
@@ -195,10 +204,18 @@ class DCCEXProtocol {
     /// @brief Initiate reading a loco address from the programming track, response will be a delegate notification
     void readLoco();
 
+    /// @brief Initiate an emergency stop
+    void emergencyStop();
+
+    /// @brief Retrieve the Consist object for the specified throttle
+    /// @param throttleNo The throttle containing the Consist (0 to numThrottles - 1)
+    /// @return The Consist object
+    Consist getConsist(int throttleNo);
+
     // Roster methods
 
     /// @brief Get the number of roster entries
-    /// @return Number of roster entries
+    /// @return Number of roster entries received
     int getRosterCount();
     
     /// @brief 
@@ -208,12 +225,17 @@ class DCCEXProtocol {
     
     /// @brief Check if roster has been received
     /// @return true|false
-    bool rosterReceived();
+    bool receivedRoster();
+
+    /// @brief Search for the specified DCC address in the roster
+    /// @param address DCC address to search for
+    /// @return Pointer to the Loco object
+    Loco* findLocoInRoster(int address);
 
     // Turnout methods
 
     /// @brief Get the number of turnouts
-    /// @return Number of turnouts defined
+    /// @return Number of turnouts received
     int getTurnoutCount();
     
     /// @brief 
@@ -223,70 +245,91 @@ class DCCEXProtocol {
     
     /// @brief Check if turnout list has been received
     /// @return true|false
-    bool turnoutListReceived();
-    
+    bool receivedTurnoutList();
 
-    
-
-    
-
-    //helper functions
-    
-    
-    
-    // *******************
-
-    /// @brief Returns the Loco object for the specified address if found
-    /// @param address 
-    /// @return 
-    Loco* findLocoInRoster(int address);
-    
-    
-
-    // *******************
-
-    /// @brief Request server details
-    void sendServerDetailsRequest();
-
-    
-    
-    
-    
-    
-    
-    int getRoutesCount();
-    Route* getRoutesEntryNo(int entryNo);
-    
-    bool isRouteListFullyReceived();
-    
-    int getTurntablesCount();
-    
-    bool isTurntableListFullyReceived();
-    bool isAllListsReceived();
-
-    long getLastServerResponseTime();  // seconds since Arduino start
-
-    void sendEmergencyStop();
-
-    Consist getThrottleConsist(int throttleNo);
-
-	  bool sendTrackPower(TrackPower state);
-	  bool sendTrackPower(TrackPower state, char track);
-
+    /// @brief Retrieve a turnout/point object by its ID
+    /// @param turnoutId ID of the turnout/point
+    /// @return The turnout/point object
     Turnout* getTurnoutById(int turnoutId);
+    
+    /// @brief Close the specified turnout/point
+    /// @param turnoutId ID of the turnout/point
     void closeTurnout(int turnoutId);
+    
+    /// @brief Throw the specified turnout/point
+    /// @param turnoutId ID of the turnout/point
     void throwTurnout(int turnoutId);
+    
+    /// @brief Toggle the specified turnout/point (if closed, will throw, and vice versa)
+    /// @param turnoutId ID of the turnout/point
     void toggleTurnout(int turnoutId);
+    
+    // Route methods
 
+    /// @brief Get the number of route entries
+    /// @return Number of routes received
+    int getRouteCount();
+    
+    /// @brief 
+    /// @param entryNo 
+    /// @return 
+    Route* getRouteEntryNo(int entryNo);
+    
+    /// @brief Check if route list has been received
+    /// @return true|false
+    bool receivedRouteList();
+
+    /// @brief Start a route/automation
+    /// @param routeId ID of the route/automation to start
+    void startRoute(int routeId);
+    
+    /// @brief Pause all routes/automations
+    void pauseRoutes();
+    
+    /// @brief Resume all routes/automations
+    void resumeRoutes();
+
+    // Turntable methods
+    
+    /// @brief Get the number of turntable entries
+    /// @return Number of turntables received
+    int getTurntableCount();
+    
+    /// @brief Check if turntable list has been received
+    /// @return true|false
+    bool receivedTurntableList();
+
+    /// @brief Retrieve a turntable object by its ID
+    /// @param turntableId ID of the turntable
+    /// @return The turntable object
     Turntable* getTurntableById(int turntableId);
 
-    bool sendRouteAction(int routeId);
-    bool sendPauseRoutes();
-    bool sendResumeRoutes();
+    /// @brief Rotate a turntable object
+    /// @param turntableId ID of the turntable
+    /// @param position Position index to rotate to
+    /// @param activity Optional activity for EX-Turntable objects only
+    void rotateTurntable(int turntableId, int position, int activity=0);
+    
+    // Track management methods
+	  
+    /// @brief Global track power on command
+    void powerOn();
 
-    bool sendTurntableAction(int turntableId, int position, int activity);
+    /// @brief Global track power off command
+    void powerOff();
+
+    /// @brief Turn power on for the specified track
+    /// @param track Track name (A - H)
+    void powerTrackOn(char track);
+
+    /// @brief Turn power off for the specified track
+    /// @param track Track name (A - H)
+    void powerTrackOff(char track);
+    
+    // DCC accessory methods
 
     bool sendAccessoryAction(int accessoryAddress, int activate);
+
     bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
 
     // Attributes
@@ -299,7 +342,12 @@ class DCCEXProtocol {
 
   private:
     // Methods
+    void _init();
+
+
+
     void _sendCommand();
+    
     void _setLoco(int address, int speed, Direction direction);
     Direction _getDirectionFromSpeedByte(int speedByte);
     int _getSpeedFromSpeedByte(int speedByte);
@@ -315,9 +363,9 @@ class DCCEXProtocol {
     
     // Attributes
     int _rosterCount = 0;     // Count of roster items received
-    int _turnoutsCount = 0;   // Count of turnout objects received
-    int _routesCount = 0;     // Count of route objects received
-    int _turntablesCount = 0; // Count of turntable objects received
+    int _turnoutCount = 0;    // Count of turnout objects received
+    int _routeCount = 0;      // Count of route objects received
+    int _turntableCount = 0;  // Count of turntable objects received
     char* _serverDescription; // Char array for EX-CommandStation server description <s>
     int _majorVersion;        // EX-CommandStation major version X.y.z
     int _minorVersion;        // EX-CommandStation minor version x.Y.z
@@ -330,23 +378,23 @@ class DCCEXProtocol {
     char _cmdBuffer[MAX_COMMAND_BUFFER];  // Char array for inbound command buffer
     char _outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH]; // Char array for outbound commands
     DCCEXProtocolDelegate* _delegate = nullptr; // Pointer to the delegate for notifications
-    long _lastServerResponseTime; // Records the timestamp of the last server response
+    unsigned long _lastServerResponseTime; // Records the timestamp of the last server response
     char _inputBuffer[512];   // Char array for input buffer
     ssize_t _nextChar;        // where the next character to be read goes in the buffer
     bool _receivedVersion = false;  // Flag that server version has been received
     bool _receivedLists = false;  // Flag if all requested lists have been received
     bool _rosterRequested = false;          // Flag that roster has been requested
-    bool _rosterReceived = false;           // Flag that roster has been received
+    bool _receivedRoster = false;           // Flag that roster has been received
     bool _turnoutListRequested = false;     // Flag that turnout list requested
-    bool _turnoutListReceived = false;      // Flag that turnout list received
+    bool _receivedTurnoutList = false;      // Flag that turnout list received
     bool _routeListRequested = false;       // Flag that route list requested
-    bool _routeListReceived = false;        // Flag that route list received
+    bool _receivedRouteList = false;        // Flag that route list received
     bool _turntableListRequested = false;   // Flag that turntable list requested
-    bool _turntableListReceived = false;    // Flag that turntable list received
+    bool _receivedTurntableList = false;    // Flag that turntable list received
     
     
 
-    void init();
+    
 
     void processCommand();
 
