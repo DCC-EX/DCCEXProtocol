@@ -218,11 +218,6 @@ class DCCEXProtocol {
     /// @return Number of roster entries received
     int getRosterCount();
     
-    /// @brief 
-    /// @param entryNo 
-    /// @return 
-    Loco* getRosterEntryNo(int entryNo);
-    
     /// @brief Check if roster has been received
     /// @return true|false
     bool receivedRoster();
@@ -237,11 +232,6 @@ class DCCEXProtocol {
     /// @brief Get the number of turnouts
     /// @return Number of turnouts received
     int getTurnoutCount();
-    
-    /// @brief 
-    /// @param entryNo 
-    /// @return 
-    Turnout* getTurnoutEntryNo(int entryNo);
     
     /// @brief Check if turnout list has been received
     /// @return true|false
@@ -269,11 +259,6 @@ class DCCEXProtocol {
     /// @brief Get the number of route entries
     /// @return Number of routes received
     int getRouteCount();
-    
-    /// @brief 
-    /// @param entryNo 
-    /// @return 
-    Route* getRouteEntryNo(int entryNo);
     
     /// @brief Check if route list has been received
     /// @return true|false
@@ -356,31 +341,62 @@ class DCCEXProtocol {
 
   private:
     // Methods
+    // Protocol and server methods
     void _init();
-
-
-
     void _sendCommand();
-    
-    void _setLoco(int address, int speed, Direction direction);
-    Direction _getDirectionFromSpeedByte(int speedByte);
-    int _getSpeedFromSpeedByte(int speedByte);
+    void _processCommand();
+    void _processServerDescription();
+    char* _nextServerDescriptionParam(char* description, int startAt, bool lookingAtVersionNumber);
+
+    // Consist/loco methods
+    bool _processLocoBroadcast();
     int _getValidFunctionMap(int functionMap);
+    int _findThrottleWithLoco(int address);
+    int _getSpeedFromSpeedByte(int speedByte);
+    Direction _getDirectionFromSpeedByte(int speedByte);
+    void _setLoco(int address, int speed, Direction direction);
+    void _processReadResponse();
+
+    // Roster methods
     void _getRoster();
-    void _getTurnouts();
-    void _getRoutes();
-    void _getTurntables();
     bool isRosterRequested();
+    void processRosterEntry();
+    void processRosterList();
+    void sendRosterEntryRequest(int address);
+
+    // Turnout methods
+    void _getTurnouts();
     bool isTurnoutListRequested();
+    void processTurnoutEntry();
+    void processTurnoutList();
+    void processTurnoutAction();
+    void sendTurnoutEntryRequest(int id);
+
+    // Route methods
+    void _getRoutes();
     bool isRouteListRequested();
+    void processRouteList();
+    void processRouteEntry();
+    void sendRouteEntryRequest(int id);
+
+    // Turntable methods
+    void _getTurntables();
     bool isTurntableListRequested();
+    void processTurntableEntry();
+    void processTurntableList();
+    void processTurntableIndexEntry();
+    void processTurntableAction();
+    void sendTurntableEntryRequest(int id);
+    void sendTurntableIndexEntryRequest(int id);
+
+    // Track management methods
+    void processTrackPower();
     
     // Attributes
     int _rosterCount = 0;     // Count of roster items received
     int _turnoutCount = 0;    // Count of turnout objects received
     int _routeCount = 0;      // Count of route objects received
     int _turntableCount = 0;  // Count of turntable objects received
-    char* _serverDescription; // Char array for EX-CommandStation server description <s>
     int _majorVersion;        // EX-CommandStation major version X.y.z
     int _minorVersion;        // EX-CommandStation minor version x.Y.z
     int _patchVersion;        // EX-CommandStation patch version x.y.Z
@@ -405,53 +421,7 @@ class DCCEXProtocol {
     bool _receivedRouteList = false;        // Flag that route list received
     bool _turntableListRequested = false;   // Flag that turntable list requested
     bool _receivedTurntableList = false;    // Flag that turntable list received
-    
-    
 
-    
-
-    void processCommand();
-
-    void processServerDescription();	
-    
-
-    void processTrackPower();
-
-    // *******************
-
-    
-    void processRosterEntry();
-    void processRosterList();
-    void sendRosterEntryRequest(int address);
-    void processReadLoco();
-
-    
-    void processTurnoutEntry();
-    void processTurnoutList();
-    void processTurnoutAction();
-    void sendTurnoutEntryRequest(int id);
-
-    
-    void processRouteList();
-    void processRouteEntry();
-    void sendRouteEntryRequest(int id);
-    // void processRouteAction();
-
-    
-    void processTurntableEntry();
-    void processTurntableList();
-    void processTurntableIndexEntry();
-    void processTurntableAction();
-    void sendTurntableEntryRequest(int id);
-    void sendTurntableIndexEntryRequest(int id);
-
-    void processSensorEntry();
-
-    bool processLocoAction();
-
-    //helper functions
-    int findThrottleWithLoco(int address);
-    char* _nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber);
 };
 
 #endif // DCCEXPROTOCOL_H

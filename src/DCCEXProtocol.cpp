@@ -62,7 +62,7 @@ DCCEXProtocol::DCCEXProtocol(int maxThrottles) {
   _bufflen = 0;
 }
 
-// Set the delegate instance for callbasks
+// Set the delegate instance for callbacks
 void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) {
   this->_delegate = delegate;
 }
@@ -97,7 +97,7 @@ void DCCEXProtocol::check() {
       if (r=='>') {
         if (DCCEXInbound::parse(_cmdBuffer)) {
           // Process stuff here
-          processCommand();
+          _processCommand();
         }
         // Clear buffer after use
         _cmdBuffer[0]=0;
@@ -257,15 +257,6 @@ int DCCEXProtocol::getRosterCount() {
   return _rosterCount;
 }
 
-Loco* DCCEXProtocol::getRosterEntryNo(int entryNo) {
-  int i=0;
-  for (Loco* loco=roster->getFirst(); loco; loco=loco->getNext()) {
-    if (i==entryNo) return loco;
-    i++;
-  }
-  return {};
-}
-
 bool DCCEXProtocol::receivedRoster() {
   // console->println(F("isRosterFullyReceived()"));
   return _receivedRoster;
@@ -284,15 +275,6 @@ Loco* DCCEXProtocol::findLocoInRoster(int address) {
 
 int DCCEXProtocol::getTurnoutCount() {
   return _turnoutCount;
-}
-
-Turnout* DCCEXProtocol::getTurnoutEntryNo(int entryNo) {
-  int i=0;
-  for (Turnout* turnout=turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
-    if (i==entryNo) return turnout;
-    i++;
-  }
-  return {};
 }
 
 bool DCCEXProtocol::receivedTurnoutList() {
@@ -338,15 +320,6 @@ void DCCEXProtocol::toggleTurnout(int turnoutId) {
 
 int DCCEXProtocol::getRouteCount() {
   return _routeCount;
-}
-
-Route* DCCEXProtocol::getRouteEntryNo(int entryNo) {
-  int i=0;
-  for (Route* route=routes->getFirst(); route; route=route->getNext()) {
-    if (i==entryNo) return route;
-    i++;
-  }
-  return {};
 }
 
 bool DCCEXProtocol::receivedRouteList() {
@@ -486,11 +459,9 @@ void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) {
   // console->println(F("sendAccessory() end"));
 }
 
-
-
-
 // Private methods
-// Server and protocol methods
+// Protocol and server methods
+
 // init the DCCEXProtocol instance after connection to the server
 void DCCEXProtocol::_init() {
   // console->println(F("init()"));
@@ -502,44 +473,6 @@ void DCCEXProtocol::_init() {
   // console->println(F("init(): end"));
 }
 
-
-
-
-
-
-
-// ******************************************************************************************************
-//helper functions
-
-Direction DCCEXProtocol::_getDirectionFromSpeedByte(int speedByte) {
-  return (speedByte>=128) ? Forward : Reverse; 
-}
-
-int DCCEXProtocol::_getSpeedFromSpeedByte(int speedByte) {
-  int speed = speedByte;
-  if (speed >= 128) {
-    speed = speed - 128;
-  }
-  if (speed>1) {
-    speed = speed - 1; // get around the idiotic design of the speed command
-  } else {
-    speed=0;
-  }
-  return speed;
-}
-
-int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
-  // Mask off anything above 28 bits/28 functions
-  if (functionMap > 0xFFFFFFF) {
-    functionMap &= 0xFFFFFFF;
-  }
-  return functionMap;
-  // This needs to set the current loco function map now
-}
-
-
-
-//private
 void DCCEXProtocol::_sendCommand() {
   if (_stream) {
     _stream->println(_outboundCommand);
@@ -549,13 +482,12 @@ void DCCEXProtocol::_sendCommand() {
   }
 }
 
-//private
-void DCCEXProtocol::processCommand() {
+void DCCEXProtocol::_processCommand() {
   if (_delegate) {
     switch (DCCEXInbound::getOpcode()) {
       case 'i':   // iDCC-EX server info
         if (DCCEXInbound::isTextParameter(0)) {
-          processServerDescription();
+          _processServerDescription();
         }
         break;
       
@@ -572,7 +504,7 @@ void DCCEXProtocol::processCommand() {
 
       case 'l':   // Loco/cab broadcast
         if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount()!=4) break;
-        processLocoAction();
+        _processLocoBroadcast();
         break;
 
       case 'j':   // Throttle list response jA|O|P|R|T
@@ -625,14 +557,9 @@ void DCCEXProtocol::processCommand() {
         processTurnoutAction();
         break;
 
-      case 'q':   // Sensor broadcast
-        if (DCCEXInbound::isTextParameter(0)) break;
-        processSensorEntry();
-        break;
-
       case 'r':   // Read loco response
         if (DCCEXInbound::isTextParameter(0)) break;
-        processReadLoco();
+        _processReadResponse();
         break;
 
       default:
@@ -641,38 +568,146 @@ void DCCEXProtocol::processCommand() {
   }
 }
 
-// ******************************************************************************************************
-// ******************************************************************************************************
-// ******************************************************************************************************
-// Process responses from the CS
-
-//private
-void DCCEXProtocol::processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
+void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType / buildNumber>
   // console->println(F("processServerDescription()"));
   if (_delegate) {
-    // console->print(F("Process server description with "));
-    // console->print(DCCEXInbound::getParameterCount());
-    // console->println(F(" params"));
-    
-    char *_serverDescription;
-    _serverDescription = (char *) malloc(strlen(DCCEXInbound::getText(0))+1);
-    sprintf(_serverDescription,"%s",DCCEXInbound::getText(0));
-
+    char *description;
+    description = (char *) malloc(strlen(DCCEXInbound::getSafeText(0))+1);
+    sprintf(description,"%s",DCCEXInbound::getText(0));
     int versionStartAt = 7; // e.g. "DCC-EX V-"
-    char* temp=_nextServerDescriptionParam(versionStartAt, true);
+    char* temp=_nextServerDescriptionParam(description, versionStartAt, true);
     _majorVersion=atoi(temp);
     versionStartAt=versionStartAt + strlen(temp)+1;
-    temp=_nextServerDescriptionParam(versionStartAt, true);
+    temp=_nextServerDescriptionParam(description, versionStartAt, true);
     _minorVersion=atoi(temp);
     versionStartAt=versionStartAt + strlen(temp)+1;
-    temp=_nextServerDescriptionParam(versionStartAt, true);
+    temp=_nextServerDescriptionParam(description, versionStartAt, true);
     _patchVersion=atoi(temp);
-
     _receivedVersion = true;
     _delegate->receivedServerVersion(_majorVersion, _minorVersion, _patchVersion);
   }
   // console->println(F("processServerDescription(): end"));
 }
+
+char* DCCEXProtocol::_nextServerDescriptionParam(char* description, int startAt, bool lookingAtVersionNumber) {
+  char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
+  int i = 0; 
+  size_t j;
+  bool started = false;
+  for (j=startAt; j<strlen(description) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
+    if (started) {
+      if (description[j]==' ' || description[j]=='\0') break;
+      if (lookingAtVersionNumber && (description[j]=='-' || description[j]=='.')) break;
+      _tempString[i] = description[j];
+      i++;
+    } else {
+      if (description[j]==' ') started=true;
+      if (lookingAtVersionNumber && (description[j]=='-' || description[j]=='.')) started=true;
+    }
+  }
+  _tempString[i] = '\0';
+  char *_result;
+  _result = (char *) malloc(strlen(_tempString));
+  sprintf(_result, "%s", _tempString);
+  // console->println(_result);
+  return _result;
+}
+
+// Consist/loco methods
+
+bool DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
+  // console->println(F("processLocoAction()"));
+  int address = DCCEXInbound::getNumber(0);
+  int speedByte = DCCEXInbound::getNumber(2);
+  int functMap = _getValidFunctionMap(DCCEXInbound::getNumber(3));
+  int throttleNo = _findThrottleWithLoco(address);
+  if (throttleNo>=0) {
+    ConsistLoco* loco=throttle[throttleNo].getFirst();
+    if (loco->getAddress()==address) {    // ignore everything that is not the lead loco
+      int speed = _getSpeedFromSpeedByte(speedByte);
+      Direction dir = _getDirectionFromSpeedByte(speedByte);
+      int currentFunc = loco->getFunctionStates();
+      if (functMap != currentFunc) {
+        int funcChanges=currentFunc^functMap;
+        for (int f=0; f<MAX_FUNCTIONS; f++) {
+          if (funcChanges & (1<<f)) {
+                bool newState = functMap & (1<<f);
+                _delegate->receivedFunction(throttleNo, f, newState);
+            }
+        }
+        loco->setFunctionStates(functMap);
+      }
+      throttle[throttleNo].setSpeed(speed);
+      throttle[throttleNo].setDirection(dir);
+
+      _delegate->receivedSpeed(throttleNo, speed);
+      _delegate->receivedDirection(throttleNo, dir);
+    }
+  } else {
+    // console->println(F("processLocoAction(): unknown loco"));
+    return false;
+  }
+  // console->println(F("processLocoAction() end"));
+  return true;
+}
+
+int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
+  // Mask off anything above 28 bits/28 functions
+  if (functionMap > 0xFFFFFFF) {
+    functionMap &= 0xFFFFFFF;
+  }
+  return functionMap;
+  // This needs to set the current loco function map now
+}
+
+int DCCEXProtocol::_findThrottleWithLoco(int address) {
+  // console->println(F("findThrottleWithLoco()"));
+  for (int i=0; i<_maxThrottles; i++) {
+    if (throttle[i].getLocoCount()>0) {
+      // int pos=throttle[i].getLocoPosition(address);
+      for (ConsistLoco* cl=throttle[i].getFirst(); cl; cl=cl->getNext()) {
+        if (cl->getAddress()==address) return i;
+      }
+    }
+  }
+  // console->println(F("findThrottleWithLoco(): end. not found"));
+  return -1;  //not found
+}
+
+int DCCEXProtocol::_getSpeedFromSpeedByte(int speedByte) {
+  int speed = speedByte;
+  if (speed >= 128) {
+    speed = speed - 128;
+  }
+  if (speed>1) {
+    speed = speed - 1; // get around the idiotic design of the speed command
+  } else {
+    speed=0;
+  }
+  return speed;
+}
+
+Direction DCCEXProtocol::_getDirectionFromSpeedByte(int speedByte) {
+  return (speedByte>=128) ? Forward : Reverse; 
+}
+
+void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
+  // console->print(F("sendLocoAction(): ")); console->println(address);
+  if (_delegate) {
+    sprintf(_outboundCommand, "<t %d %d %d>", address, speed, direction);
+    _sendCommand();
+  }
+  // console->println(F("sendLocoAction(): end"));
+}
+
+void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
+  int address=DCCEXInbound::getNumber(0);
+  _delegate->receivedReadLoco(address);
+}
+
+
+
+
 
 
 
@@ -753,10 +788,7 @@ void DCCEXProtocol::processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2/
   // console->println(F("processRosterEntry(): end"));
 }
 
-void DCCEXProtocol::processReadLoco() { // <r id> - -1 = error
-  int address=DCCEXInbound::getNumber(0);
-  _delegate->receivedReadLoco(address);
-}
+
 
 // ****************
 // Turnouts/Points
@@ -1024,107 +1056,8 @@ void DCCEXProtocol::processTurntableAction() { // <I id position moving>
     // console->println(F("processTurntableAction(): end"));
 }
 
-//private
-void DCCEXProtocol::processSensorEntry() {  // <jO id type position position_count "[desc]">
-    // console->println(F("processSensorEntry(): "));
-    if (_delegate) {
-        //????????????????? TODO
-        // console->println(F("processSensorEntry(): Not doing anything with these yet"));
-    }
-    // console->println(F("processSensorEntry(): end"));
-}
-
-// ****************
-// Locos
 
 //private
-bool DCCEXProtocol::processLocoAction() { //<l cab reg speedByte functMap>
-  // console->println(F("processLocoAction()"));
-  int address = DCCEXInbound::getNumber(0);
-  int speedByte = DCCEXInbound::getNumber(2);
-  int functMap = _getValidFunctionMap(DCCEXInbound::getNumber(3));
-  int throttleNo = findThrottleWithLoco(address);
-  if (throttleNo>=0) {
-    ConsistLoco* loco=throttle[throttleNo].getFirst();
-    if (loco->getAddress()==address) {    // ignore everything that is not the lead loco
-      int speed = _getSpeedFromSpeedByte(speedByte);
-      Direction dir = _getDirectionFromSpeedByte(speedByte);
-      int currentFunc = loco->getFunctionStates();
-      if (functMap != currentFunc) {
-        int funcChanges=currentFunc^functMap;
-        for (int f=0; f<MAX_FUNCTIONS; f++) {
-          if (funcChanges & (1<<f)) {
-                bool newState = functMap & (1<<f);
-                _delegate->receivedFunction(throttleNo, f, newState);
-            }
-        }
-        loco->setFunctionStates(functMap);
-      }
-      throttle[throttleNo].setSpeed(speed);
-      throttle[throttleNo].setDirection(dir);
-
-      _delegate->receivedSpeed(throttleNo, speed);
-      _delegate->receivedDirection(throttleNo, dir);
-    }
-  } else {
-    // console->println(F("processLocoAction(): unknown loco"));
-    return false;
-  }
-  // console->println(F("processLocoAction() end"));
-  return true;
-}
-
-// ******************************************************************************************************
-// server commands
-
-
-
-// ******************************************************************************************************
-// power commands
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
-  // console->print(F("sendLocoAction(): ")); console->println(address);
-  if (_delegate) {
-    sprintf(_outboundCommand, "<t %d %d %d>", address, speed, direction);
-    _sendCommand();
-  }
-  // console->println(F("sendLocoAction(): end"));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1139,14 +1072,9 @@ void DCCEXProtocol::_getRoster() {
   // console->println(F("getRoster() end"));
 }
 
-
-
-
-
 bool DCCEXProtocol::isRosterRequested() {
   return _rosterRequested;
 }
-
 
 void DCCEXProtocol::_getTurnouts() {
   // console->println(F("getTurnouts()"));
@@ -1157,10 +1085,6 @@ void DCCEXProtocol::_getTurnouts() {
   }
   // console->println(F("getTurnouts() end"));
 }
-
-
-
-
 
 bool DCCEXProtocol::isTurnoutListRequested() {
   return _turnoutListRequested;
@@ -1201,63 +1125,8 @@ bool DCCEXProtocol::isTurntableListRequested() {
 }
 
 
-
-
-
-
-
 // private
 // find which, if any, throttle has this loco selected
-int DCCEXProtocol::findThrottleWithLoco(int address) {
-    // console->println(F("findThrottleWithLoco()"));
-    for (int i=0; i<_maxThrottles; i++) {
-        // if (throttle[i].consistGetNumberOfLocos()>0) {
-        //     int pos = throttle[i].consistGetLocoPosition(address);
 
-        //     // console->print(F("checking consist: ")); console->print(i); console->print(" found: "); console->println(pos);
-        //     // console->print(F("in consist: ")); console->println(throttle[i].consistGetNumberOfLocos()); 
 
-        //     // for (int j=0; j<throttle[i].consistGetNumberOfLocos(); j++ ) {
-        //     //      console->print(F("checking consist X: ")); console->print(j); console->print(" is: "); console->println(throttle[i].consistLocos.get(i)->getLocoAddress());
-        //     // }    
 
-        //     if (pos>=0) {
-        //         // console->println(F("findThrottleWithLoco(): end. found"));
-        //         return i;
-        //     }
-        // }
-        if (throttle[i].getLocoCount()>0) {
-            // int pos=throttle[i].getLocoPosition(address);
-            for (ConsistLoco* cl=throttle[i].getFirst(); cl; cl=cl->getNext()) {
-                if (cl->getAddress()==address) return i;
-            }
-        }
-    }
-    // console->println(F("findThrottleWithLoco(): end. not found"));
-    return -1;  //not found
-}
-
-char* DCCEXProtocol::_nextServerDescriptionParam(int startAt, bool lookingAtVersionNumber) {
-  char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
-  int i = 0; 
-  size_t j;
-  bool started = false;
-  for (j=startAt; j<strlen(_serverDescription) && i<(MAX_SERVER_DESCRIPTION_PARAM_LENGTH-1); j++) {
-    if (started) {
-      if (_serverDescription[j]==' ' || _serverDescription[j]=='\0') break;
-      if (lookingAtVersionNumber && (_serverDescription[j]=='-' || _serverDescription[j]=='.')) break;
-      _tempString[i] = _serverDescription[j];
-      i++;
-    } else {
-      if (_serverDescription[j]==' ') started=true;
-      if (lookingAtVersionNumber && (_serverDescription[j]=='-' || _serverDescription[j]=='.')) started=true;
-    }
-  }
-  _tempString[i] = '\0';
-  
-  char *_result;
-  _result = (char *) malloc(strlen(_tempString));
-  sprintf(_result, "%s", _tempString);
-  // console->println(_result);
-  return _result;
-}
