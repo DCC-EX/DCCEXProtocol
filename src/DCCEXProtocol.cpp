@@ -448,6 +448,44 @@ void DCCEXProtocol::powerTrackOff(char track) {
   }
 }
 
+// DCC accessory methods
+
+void DCCEXProtocol::activateAccessory(int accessoryAddress, int accessorySubAddr) {
+  // console->println(F("sendAccessory()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<a %d %d 1>", accessoryAddress, accessorySubAddr);
+    _sendCommand();
+  }
+  // console->println(F("sendAccessory() end"));
+}
+
+void DCCEXProtocol::deactivateAccessory(int accessoryAddress, int accessorySubAddr) {
+  // console->println(F("sendAccessory()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<a %d %d 0>", accessoryAddress, accessorySubAddr);
+    _sendCommand();
+  }
+  // console->println(F("sendAccessory() end"));
+}
+
+void DCCEXProtocol::activateLinearAccessory(int linearAddress) {
+  // console->println(F("sendAccessory()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<a %d 1>", linearAddress);
+    _sendCommand();
+  }
+  // console->println(F("sendAccessory() end"));
+}
+
+void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) {
+  // console->println(F("sendAccessory()"));
+  if (_delegate) {
+    sprintf(_outboundCommand, "<a %d 0>", linearAddress);
+    _sendCommand();
+  }
+  // console->println(F("sendAccessory() end"));
+}
+
 
 
 
@@ -1083,25 +1121,7 @@ void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
 
 
 
-bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int activate) {
-  // console->println(F("sendAccessory()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<a %d %d>", accessoryAddress, activate);
-    _sendCommand();
-  }
-  // console->println(F("sendAccessory() end"));
-  return true;
-}
 
-bool DCCEXProtocol::sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate) {
-  // console->println(F("sendAccessory()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<a %d %d %d>", accessoryAddress, accessorySubAddr, activate);
-    _sendCommand();
-  }
-  // console->println(F("sendAccessory() end"));
-  return true;
-}
 
 
 

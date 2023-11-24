@@ -328,9 +328,23 @@ class DCCEXProtocol {
     
     // DCC accessory methods
 
-    bool sendAccessoryAction(int accessoryAddress, int activate);
+    /// @brief Activate DCC accessory at the specified address and subaddress
+    /// @param accessoryAddress Address of the DCC accessory
+    /// @param accessorySubAddr Subaddress of the DCC accessory
+    void activateAccessory(int accessoryAddress, int accessorySubAddr);
 
-    bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
+    /// @brief Deactivate DCC accessory at the specified address and subaddress
+    /// @param accessoryAddress Address of the DCC accessory
+    /// @param accessorySubAddr Subaddress of the DCC accessory
+    void deactivateAccessory(int accessoryAddress, int accessorySubAddr);
+    
+    /// @brief Activate DCC accessory at the specified linear address
+    /// @param linearAddress Linear address of the DCC accessory
+    void activateLinearAccessory(int linearAddress);
+
+    /// @brief Deactivate DCC accessory at the specified linear address
+    /// @param linearAddress Linear address of the DCC accessory
+    void deactivateLinearAccessory(int linearAddress);
 
     // Attributes
 
