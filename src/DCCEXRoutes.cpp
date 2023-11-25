@@ -29,6 +29,8 @@
 #include <Arduino.h>
 #include "DCCEXRoutes.h"
 
+// Public methods
+
 Route* Route::_first=nullptr;
 
 Route::Route(int id) {

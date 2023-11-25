@@ -43,40 +43,39 @@ public:
   Route(int id);
   
   /// @brief Get route ID
-  /// @return 
+  /// @return ID of the route
   int getId();
 
   /// @brief Set route name
-  /// @param name 
+  /// @param name Name to set for the route
   void setName(char* name);
 
   /// @brief Get route name
-  /// @return 
+  /// @return Current name of the route
   char* getName();
 
   /// @brief Set route type (A automation, R route)
-  /// @param type RouteType - RouteTypeAutomation or RouteTypeRoute
-  /// @return 
+  /// @param type RouteType - RouteTypeAutomation|RouteTypeRoute
   void setType(RouteType type);
 
   /// @brief Get route type (A automation, R route)
-  /// @return 
+  /// @return RouteTypeAutomation|RouteTypeRoute
   RouteType getType();
 
   /// @brief Get count of routes
-  /// @return 
+  /// @return Count of routes
   int getCount();
 
   /// @brief Get first Route object
-  /// @return 
+  /// @return Pointer to the first Route object
   static Route* getFirst();
 
   /// @brief Get next Route object
-  /// @return 
+  /// @return Pointer to the next Route object
   Route* getNext();
 
   /// @brief Get route object by its ID
-  /// @return 
+  /// @return Pointer to the Route, or nullptr if not found
   Route* getById(int id);
   
 private:

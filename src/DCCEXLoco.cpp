@@ -30,6 +30,7 @@
 #include "DCCEXLoco.h"
 
 // class Loco
+// Public methods
 
 Loco* Loco::_first=nullptr;
 
@@ -165,6 +166,7 @@ Loco* Loco::getByAddress(int address) {
 }
 
 // class ConsistLoco : public Loco
+// Public methods
 
 ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing)
 : Loco::Loco(address, source) {
@@ -185,6 +187,7 @@ ConsistLoco* ConsistLoco::getNext() {
 }
 
 // class Consist
+// Public methods
 
 Consist::Consist() {
   _name=nullptr;
@@ -278,7 +281,7 @@ ConsistLoco* Consist::getFirst() {
   return _first;
 }
 
-// private functions
+// Private methods
 
 void Consist::_addLoco(Loco* loco, Facing facing) {
   int address=loco->getAddress();

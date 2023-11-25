@@ -32,62 +32,64 @@
 
 #include <Arduino.h>
 
-/* how to use this:
-   1) setup is done once with your expected max parameter count.
-   2) Call parse with your command input buffer.
-      If it returns trua... you have results.
-      
-    3) Use the get... functions to access the parameters.
-    These parameters are ONLY VALID until you next call parse.  */
+/* How to use this:
+  1) setup is done once with your expected max parameter count.
+  2) Call parse with your command input buffer.
+    If it returns true... you have results.
+    
+  3) Use the get... functions to access the parameters.
+  These parameters are ONLY VALID until you next call parse.
+*/
 class DCCEXInbound {
 public: 
-   /// @brief setup parser once with enough space to handle the maximum number of 
-   ///  parameters expected from the command station.
-   /// @param maxParameterValues 
-   static void setup(int16_t maxParameterValues);
+  /// @brief Setup parser once with enough space to handle the maximum number of 
+  ///  parameters expected from the command station.
+  /// @param maxParameterValues Maximum parameter values to accommodate
+  static void setup(int16_t maxParameterValues);
 
-   /// @brief  pass in a command string to parse
-   /// @param command 
-   /// @return true if parsed ok, false if badly terminated command or too many parameters
-   static bool parse(char* command);
+  /// @brief Pass in a command string to parse
+  /// @param command Char array of command to parse
+  /// @return True if parsed ok, false if badly terminated command or too many parameters
+  static bool parse(char* command);
 
-   /// @brief gets the dccex opcode of parsed command (the first char after the <)
-   static byte getOpcode();
+  /// @brief Gets the DCC-EX OPCODE of the parsed command (the first char after the <)
+  static byte getOpcode();
 
-   /// @brief gets number of parameters detected after opcode  <JR 1 2 3> is 4 parameters!
-   /// @return 
-   static int16_t getParameterCount();
+  /// @brief Gets number of parameters detected after OPCODE  <JR 1 2 3> is 4 parameters!
+  /// @return Number of parameters
+  static int16_t getParameterCount();
 
-   /// @brief   gets a numeric parameter (or hashed keyword) from parsed command
-   static int32_t getNumber(int16_t parameterNumber);
+  /// @brief Gets a numeric parameter (or hashed keyword) from parsed command
+  /// @return The numeric parameter
+  static int32_t getNumber(int16_t parameterNumber);
 
-   /// @brief checks if a parameter is actually text rather than numeris 
-   /// @param parameterNumber 
-   /// @return 
-   static bool isTextParameter(int16_t parameterNumber);
+  /// @brief Checks if a parameter is actually text rather than numeric
+  /// @param parameterNumber The number of the parameter to check
+  /// @return true|false
+  static bool isTextParameter(int16_t parameterNumber);
 
-   /// @brief gets address of text type parameter.
-   ///         does not create permenant copy 
-   /// @param parameterNumber 
-   /// @return 
-   static char * getText(int16_t parameterNumber);
-   
-   /// @brief gets address of a heap copy of text type parameter.
-   /// @param parameterNumber 
-   /// @return 
-   static char * getSafeText(int16_t parameterNumber);
+  /// @brief Gets address of text type parameter.
+  ///         does not create permanent copy 
+  /// @param parameterNumber The number of the parameter to retrieve
+  /// @return Char array of text (use once and discard)
+  static char* getText(int16_t parameterNumber);
+  
+  /// @brief gets address of a heap copy of text type parameter.
+  /// @param parameterNumber 
+  /// @return 
+  static char* getSafeText(int16_t parameterNumber);
 
-   /// @brief dump list of parameters obtained
-   /// @param  Address of output e.g. &Serial
-   static void dump(Print *);
+  /// @brief dump list of parameters obtained
+  /// @param Address of output e.g. &Serial
+  static void dump(Print *);
 
 private:
-    static int16_t maxParams;
-    static int16_t parameterCount;
-    static byte opcode;
-    static int32_t * parameterValues;
-    static char* cmdBuffer;  
-    static bool isTextInternal(int16_t n);
+  static int16_t _maxParams;
+  static int16_t _parameterCount;
+  static byte _opcode;
+  static int32_t* _parameterValues;
+  static char* _cmdBuffer;  
+  static bool _isTextInternal(int16_t n);
 };
 
 #endif

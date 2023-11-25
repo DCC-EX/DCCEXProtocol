@@ -42,169 +42,171 @@ const int32_t QUOTE_FLAG_AREA=0xFFFFF000;
 enum splitState:byte {FIND_START,SET_OPCODE,SKIP_SPACES,CHECK_SIGN,
                       BUILD_PARAM,SKIPOVER_TEXT, COMPLETE_i_COMMAND};
 
+int16_t DCCEXInbound::_maxParams;
+int16_t DCCEXInbound::_parameterCount;
+byte DCCEXInbound::_opcode;
+int32_t* DCCEXInbound::_parameterValues;
+char* DCCEXInbound::_cmdBuffer;
 
-    int16_t DCCEXInbound::maxParams;
-    int16_t DCCEXInbound::parameterCount;
-    byte DCCEXInbound::opcode;
-    int32_t * DCCEXInbound::parameterValues;
-    char * DCCEXInbound::cmdBuffer;
+// Public methods
 
-    void DCCEXInbound::setup(int16_t maxParameterValues) {
-         parameterValues=(int32_t*)malloc(maxParameterValues * sizeof(int32_t));
-         maxParams=maxParameterValues;
-         parameterCount=0;
-         opcode=0;
-    }
+void DCCEXInbound::setup(int16_t maxParameterValues) {
+  _parameterValues=(int32_t*)malloc(maxParameterValues * sizeof(int32_t));
+  _maxParams=maxParameterValues;
+  _parameterCount=0;
+  _opcode=0;
+}
 
+byte DCCEXInbound::getOpcode() {
+  return _opcode; 
+}
 
-    byte DCCEXInbound::getOpcode() {
-        return opcode; 
-    }
+int16_t DCCEXInbound::getParameterCount() {
+  return _parameterCount;
+}
 
-    int16_t DCCEXInbound::getParameterCount() {
-        return parameterCount;
-    }
+int32_t DCCEXInbound::getNumber(int16_t parameterNumber) {
+  if (parameterNumber<0 || parameterNumber>=_parameterCount) return 0;
+  if (_isTextInternal(parameterNumber)) return 0;
+  return _parameterValues[parameterNumber];
+}
 
-    int32_t DCCEXInbound::getNumber(int16_t parameterNumber) {
-        if (parameterNumber<0 || parameterNumber>=parameterCount) return 0;
-        if (isTextInternal(parameterNumber)) return 0;
-        return parameterValues[parameterNumber];
-    }
+bool DCCEXInbound::isTextParameter(int16_t parameterNumber) {
+  if (parameterNumber<0 || parameterNumber>=_parameterCount) return false;
+  return _isTextInternal(parameterNumber);
+}
 
-    bool DCCEXInbound::isTextParameter(int16_t parameterNumber) {
-        if (parameterNumber<0 || parameterNumber>=parameterCount) return false;
-        return  isTextInternal(parameterNumber);
-    }
-    char * DCCEXInbound::getText(int16_t parameterNumber) {
-     if (parameterNumber<0 || parameterNumber>=parameterCount) return 0;
-        if (!isTextInternal(parameterNumber)) return 0;
-        return cmdBuffer + (parameterValues[parameterNumber] & ~QUOTE_FLAG_AREA);;
-    }
-    
-    char * DCCEXInbound::getSafeText(int16_t parameterNumber) {
-      char * unsafe=getText(parameterNumber);
-      if (!unsafe) return unsafe; // bad parameter number probabaly
-      char * safe=(char *) malloc(strlen(unsafe)+1);
-      strcpy(safe,unsafe);
-      return safe; 
-    }
-    
-    bool DCCEXInbound::isTextInternal(int16_t n) {
-        return  ((parameterValues[n] & QUOTE_FLAG_AREA)==QUOTE_FLAG);
-    }
+char* DCCEXInbound::getText(int16_t parameterNumber) {
+  if (parameterNumber<0 || parameterNumber>=_parameterCount) return 0;
+    if (!_isTextInternal(parameterNumber)) return 0;
+return _cmdBuffer + (_parameterValues[parameterNumber] & ~QUOTE_FLAG_AREA);;
+}
+
+char* DCCEXInbound::getSafeText(int16_t parameterNumber) {
+  char* unsafe=getText(parameterNumber);
+  if (!unsafe) return unsafe; // bad parameter number probabaly
+  char* safe=(char*) malloc(strlen(unsafe)+1);
+  strcpy(safe,unsafe);
+  return safe;
+}
 
 bool DCCEXInbound::parse(char* command) {
+  _parameterCount = 0;
+  _opcode=0;
+  _cmdBuffer=command; 
+  
+  int32_t runningValue = 0;
+  char *remainingCmd = command; 
+  bool signNegative = false;
+  splitState state = FIND_START;
+  
+  while (_parameterCount < _maxParams)
+  {
+      byte hot = *remainingCmd;
+      if (hot==0) return false;  // no > on end of command.
 
-    parameterCount = 0;
-    opcode=0;
-    cmdBuffer=command; 
-    
-    int32_t runningValue = 0;
-    char *remainingCmd = command; 
-    bool signNegative = false;
-    splitState state = FIND_START;
-    
-    
-    while (parameterCount < maxParams)
-    {
-        byte hot = *remainingCmd;
-        if (hot==0) return false;  // no > on end of command.
-
-        // In this switch, break will go on to next char but continue will
-        // rescan the current char. 
-        switch (state)
-        {
-        case FIND_START: // looking for <
-            if (hot=='<') state=SET_OPCODE;
-            break;
-        case SET_OPCODE:
-             opcode=hot;
-             if (opcode=='i') {
-                // special case <iDCCEX stuff > breaks all normal rules
-                parameterValues[parameterCount] = QUOTE_FLAG | (remainingCmd-cmdBuffer+1);
-                parameterCount++;
-                state=COMPLETE_i_COMMAND;
-                break;
-             }
-             state=SKIP_SPACES;
-             break;     
-        case SKIP_SPACES: // skipping spaces before a param
-            if (hot == ' ') break; // ignore
-            if (hot == '>') return true;
-            state = CHECK_SIGN;
-            continue;
-
-        case CHECK_SIGN: // checking sign or quotes start param.
-            if (hot=='"') {
-              // for a string parameter, the value is the offset of the first char in the cmd.
-              parameterValues[parameterCount] = QUOTE_FLAG | (remainingCmd-cmdBuffer+1);
-              parameterCount++;
-              state=SKIPOVER_TEXT;
-              break;
-            }
-            runningValue = 0;
-            state = BUILD_PARAM;
-            signNegative = hot=='-';
-            if (signNegative) break;
-            continue; 
-        
-        case BUILD_PARAM: // building a parameter
-            if (hot >= '0' && hot <= '9')
-            {
-                runningValue = 10 * runningValue + (hot - '0');
-                break;
-            }
-            if (hot >= 'a' && hot <= 'z') hot=hot-'a'+'A'; // uppercase a..z
-            
-            if (hot=='_' || (hot >= 'A' && hot <= 'Z'))
-            {
-                // Super Kluge to turn keywords into a hash value that can be recognised later
-                runningValue = ((runningValue << 5) + runningValue) ^ hot;
-                break;
-            }
-            // did not detect 0-9 or keyword so end of parameter detected 
-            parameterValues[parameterCount] = runningValue * (signNegative ? -1 : 1);
-            parameterCount++;
-            state = SKIP_SPACES;
-            continue;
-        
-        case SKIPOVER_TEXT:
-            if (hot=='"') {
-              *remainingCmd='\0';         // overwrite " in command buffer with the end-of-string
-              state=SKIP_SPACES;   
-            }
-            break;
-        case COMPLETE_i_COMMAND:
-            if (hot=='>') {
-              *remainingCmd='\0';         // overwrite > in command buffer with the end-of-string
-              return true;
-            }
-            break;  
+      // In this switch, break will go on to next char but continue will
+      // rescan the current char. 
+      switch (state)
+      {
+      case FIND_START: // looking for <
+        if (hot=='<') state=SET_OPCODE;
+        break;
+      case SET_OPCODE:
+        _opcode=hot;
+        if (_opcode=='i') {
+          // special case <iDCCEX stuff > breaks all normal rules
+          _parameterValues[_parameterCount] = QUOTE_FLAG | (remainingCmd-_cmdBuffer+1);
+          _parameterCount++;
+          state=COMPLETE_i_COMMAND;
+          break;
         }
-        remainingCmd++;
-    }
-    return false; // we ran out of max parameters
+        state=SKIP_SPACES;
+        break;
+
+      case SKIP_SPACES: // skipping spaces before a param
+        if (hot == ' ') break; // ignore
+        if (hot == '>') return true;
+        state = CHECK_SIGN;
+        continue;
+
+      case CHECK_SIGN: // checking sign or quotes start param.
+        if (hot=='"') {
+          // for a string parameter, the value is the offset of the first char in the cmd.
+          _parameterValues[_parameterCount] = QUOTE_FLAG | (remainingCmd-_cmdBuffer+1);
+          _parameterCount++;
+          state=SKIPOVER_TEXT;
+          break;
+        }
+        runningValue = 0;
+        state = BUILD_PARAM;
+        signNegative = hot=='-';
+        if (signNegative) break;
+        continue; 
+      
+      case BUILD_PARAM: // building a parameter
+        if (hot >= '0' && hot <= '9')
+        {
+          runningValue = 10 * runningValue + (hot - '0');
+          break;
+        }
+        if (hot >= 'a' && hot <= 'z') hot=hot-'a'+'A'; // uppercase a..z
+        
+        if (hot=='_' || (hot >= 'A' && hot <= 'Z'))
+        {
+          // Super Kluge to turn keywords into a hash value that can be recognised later
+          runningValue = ((runningValue << 5) + runningValue) ^ hot;
+          break;
+        }
+        // did not detect 0-9 or keyword so end of parameter detected 
+        _parameterValues[_parameterCount] = runningValue * (signNegative ? -1 : 1);
+        _parameterCount++;
+        state = SKIP_SPACES;
+        continue;
+      
+      case SKIPOVER_TEXT:
+        if (hot=='"') {
+          *remainingCmd='\0';         // overwrite " in command buffer with the end-of-string
+          state=SKIP_SPACES;   
+        }
+        break;
+      case COMPLETE_i_COMMAND:
+        if (hot=='>') {
+          *remainingCmd='\0';         // overwrite > in command buffer with the end-of-string
+          return true;
+        }
+        break;  
+      }
+      remainingCmd++;
+  }
+  return false; // we ran out of max parameters
 }
 
 void DCCEXInbound::dump(Print * out) {
   out->print(F("\nDCCEXInbound Opcode='"));
-  if (opcode) out->write(opcode); 
+  if (_opcode) out->write(_opcode); 
   else out->print(F("\\0"));  
   out->println('\'');
   
   for (int i=0; i<getParameterCount();i++) {
     if (isTextParameter(i)) {
-        out->print(F("getText("));
-        out->print(i);
-        out->print(F(")=\""));     
-        out->print(getText(i)); 
-        out->println('"');
+      out->print(F("getText("));
+      out->print(i);
+      out->print(F(")=\""));     
+      out->print(getText(i)); 
+      out->println('"');
     }
     else {
-        out->print(F("getNumber("));
-        out->print(i);
-        out->print(F(")="));     
-        out->println(getNumber(i)); 
+      out->print(F("getNumber("));
+      out->print(i);
+      out->print(F(")="));     
+      out->println(getNumber(i)); 
     }
   }
+}
+
+// Private methods
+
+bool DCCEXInbound::_isTextInternal(int16_t n) {
+  return ((_parameterValues[n] & QUOTE_FLAG_AREA)==QUOTE_FLAG);
 }

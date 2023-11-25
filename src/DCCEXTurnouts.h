@@ -35,44 +35,44 @@ class Turnout {
 public:
   /// @brief Constructor
   /// @param id Turnout ID
-  /// @param thrown Bool for turnout thrown (0 closed, 1 thrown)
+  /// @param thrown true (thrown)|false (closed)
   Turnout(int id, bool thrown);
   
-  /// @brief Set thrown state (1 thrown, 0 closed)
-  /// @param isThrown 
+  /// @brief Set thrown state (true thrown, false closed)
+  /// @param isThrown true|false
   void setThrown(bool thrown);
   
   /// @brief Set turnout name
-  /// @param _name 
+  /// @param _name Name to set the turnout
   void setName(char* _name);
 
   /// @brief Get turnout Id
-  /// @return 
+  /// @return ID of the turnout
   int getId();
 
   /// @brief Get turnout name
-  /// @return 
+  /// @return Current name of the turnout
   char* getName();
 
-  /// @brief Get thrown state (1 thrown, 0 closed)
-  /// @return 
+  /// @brief Get thrown state (true thrown, false closed)
+  /// @return true|false
   bool getThrown();
 
   /// @brief Get first turnout object
-  /// @return 
+  /// @return Pointer to the first Turnout object
   static Turnout* getFirst();
 
   /// @brief Get next turnout object
-  /// @return 
+  /// @return Pointer to the next Turnout object
   Turnout* getNext();
 
   /// @brief Get the number of turnouts
-  /// @return 
+  /// @return Count of turnouts
   int getCount();
 
   /// @brief Get turnout object by turnout ID
-  /// @param id 
-  /// @return 
+  /// @param id ID of the turnout to retrieve
+  /// @return Pointer to the turnout object or nullptr if not found
   Turnout* getById(int id);
   
 private:
