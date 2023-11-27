@@ -183,6 +183,8 @@ class DCCEXProtocol {
 
     // Consist/Loco methods
     
+    void setThrottle(Loco* loco, int speed, Direction direction);
+
     /* MOVING TO CONSIST CLASS
     /// @brief Set the specified throttle to the provided speed and direction
     /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
@@ -361,6 +363,7 @@ class DCCEXProtocol {
     int _getSpeedFromSpeedByte(int speedByte);
     Direction _getDirectionFromSpeedByte(int speedByte);
     // void _setLoco(int address, int speed, Direction direction);
+    void _setLoco(Loco* loco);
     void _processReadResponse();
 
     // Roster methods

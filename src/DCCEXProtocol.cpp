@@ -177,6 +177,15 @@ unsigned long DCCEXProtocol::getLastServerResponseTime() {
 
 // Consist/loco methods
 
+void DCCEXProtocol::setThrottle(Loco* loco, int speed, Direction direction) {
+  if (_delegate) {
+    int address=loco->getAddress();
+    loco->setSpeed(speed);
+    loco->setDirection(direction);
+    _setLoco(loco);
+  }
+}
+
 /* MOVING TO CONSIST CLASS
 void DCCEXProtocol::setThrottle(int throttleNo, int speed, Direction direction) {
   // console->println(F("sendThrottleAction(): "));
@@ -707,13 +716,17 @@ Direction DCCEXProtocol::_getDirectionFromSpeedByte(int speedByte) {
 }
 
 // void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
-//   // console->print(F("sendLocoAction(): ")); console->println(address);
-//   if (_delegate) {
-//     sprintf(_outboundCommand, "<t %d %d %d>", address, speed, direction);
-//     _sendCommand();
-//   }
-//   // console->println(F("sendLocoAction(): end"));
-// }
+void DCCEXProtocol::_setLoco(Loco* loco) {
+  // console->print(F("sendLocoAction(): ")); console->println(address);
+  if (_delegate) {
+    int address=loco->getAddress();
+    int speed=loco->getSpeed();
+    Direction direction=loco->getDirection();
+    sprintf(_outboundCommand, "<t %d %d %d>", address, speed, direction);
+    _sendCommand();
+  }
+  // console->println(F("sendLocoAction(): end"));
+}
 
 void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
   int address=DCCEXInbound::getNumber(0);
