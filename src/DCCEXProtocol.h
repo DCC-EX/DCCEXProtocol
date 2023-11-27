@@ -134,10 +134,14 @@ class DCCEXProtocol {
   public:
     // Protocol and server methods
 
+    /* ONE INSTANCE ONLY
     /// @brief Constructor for the DCCEXProtocol object
     /// @param maxThrottles The number of throttles to create, default is 6
-    // DCCEXProtocol(int maxThrottles=6, bool server=false);
     DCCEXProtocol(int maxThrottles=6);
+    */
+
+    /// @brief Constructor for the DCCEXProtocol object
+    DCCEXProtocol();
 
     /// @brief Set the delegate object for callbacks
     /// @param delegate 
@@ -179,6 +183,7 @@ class DCCEXProtocol {
 
     // Consist/Loco methods
     
+    /* MOVING TO CONSIST CLASS
     /// @brief Set the specified throttle to the provided speed and direction
     /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
     /// @param speed The speed (0 - 126)
@@ -196,6 +201,12 @@ class DCCEXProtocol {
     /// @param functionNumber Function number (0 - 27)
     /// @return On or off (true|false)
     bool functionOn(int throttle, int functionNumber);
+
+    /// @brief Retrieve the Consist object for the specified throttle
+    /// @param throttleNo The throttle containing the Consist (0 to numThrottles - 1)
+    /// @return The Consist object
+    Consist getConsist(int throttleNo);
+    */
     
     /// @brief Explicitly request an update for the specified loco
     /// @param address DCC address of the loco
@@ -206,11 +217,6 @@ class DCCEXProtocol {
 
     /// @brief Initiate an emergency stop
     void emergencyStop();
-
-    /// @brief Retrieve the Consist object for the specified throttle
-    /// @param throttleNo The throttle containing the Consist (0 to numThrottles - 1)
-    /// @return The Consist object
-    Consist getConsist(int throttleNo);
 
     // Roster methods
 
@@ -333,7 +339,7 @@ class DCCEXProtocol {
 
     // Attributes
 
-    Consist* throttle;              // Consist object for the throttle
+    // Consist* throttle;              // Consist object for the throttle
     Loco* roster=nullptr;           // Linked list of locos for the roster
     Turnout* turnouts=nullptr;      // Linked list of turnouts
     Route* routes=nullptr;          // Linked list of routes
@@ -351,10 +357,10 @@ class DCCEXProtocol {
     // Consist/loco methods
     bool _processLocoBroadcast();
     int _getValidFunctionMap(int functionMap);
-    int _findThrottleWithLoco(int address);
+    // int _findThrottleWithLoco(int address);
     int _getSpeedFromSpeedByte(int speedByte);
     Direction _getDirectionFromSpeedByte(int speedByte);
-    void _setLoco(int address, int speed, Direction direction);
+    // void _setLoco(int address, int speed, Direction direction);
     void _processReadResponse();
 
     // Roster methods
