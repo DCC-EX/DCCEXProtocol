@@ -96,7 +96,7 @@ public:
   /// @brief Test if function is on
   /// @param function Number of the function to test
   /// @return true|false
-  bool functionOn(int function);
+  bool isFunctionOn(int function);
 
   /// @brief Set function states
   /// @param functionStates Integer representing all function states
@@ -121,7 +121,7 @@ public:
   /// @brief Get Loco object by its DCC address
   /// @param address DCC address of the loco to get
   /// @return Loco object or nullptr if it doesn't exist
-  Loco* getByAddress(int address);
+  static Loco* getByAddress(int address);
 
 private:
   int _address;

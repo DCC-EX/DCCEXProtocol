@@ -93,22 +93,10 @@ public:
   /// @brief Notify when the turntable list is received
   virtual void receivedTurntableList() {}    
 
-  /// @brief Notify when speed for a throttle is received
-  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
-  /// @param speed Speed value (0 - 126)
-  virtual void receivedSpeed(int throttleNo, int speed) {}
+  /// @brief Notify when an update to a Loco object is received
+  /// @param loco Pointer to the loco object
+  virtual void receivedLocoUpdate(Loco* loco) {}
   
-  /// @brief Notify when direction for a throttle is received
-  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
-  /// @param dir Direction received (Forward|Reverse)
-  virtual void receivedDirection(int throttleNo, Direction dir) {}
-  
-  /// @brief Notify when a function state change for a throttle is received
-  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
-  /// @param func Function number (0 - 27)
-  /// @param state On or off (true|false)
-  virtual void receivedFunction(int throttleNo, int func, bool state) {}
-
   /// @brief Notify when a track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
@@ -133,12 +121,6 @@ public:
 class DCCEXProtocol {
   public:
     // Protocol and server methods
-
-    /* ONE INSTANCE ONLY
-    /// @brief Constructor for the DCCEXProtocol object
-    /// @param maxThrottles The number of throttles to create, default is 6
-    DCCEXProtocol(int maxThrottles=6);
-    */
 
     /// @brief Constructor for the DCCEXProtocol object
     DCCEXProtocol();
@@ -183,27 +165,29 @@ class DCCEXProtocol {
 
     // Consist/Loco methods
     
+    /// @brief Set the provided loco to the specified speed and direction
+    /// @param loco Pointer to a Loco object
+    /// @param speed Speed (0 - 126)
+    /// @param direction Direction (Forward|Reverse)
     void setThrottle(Loco* loco, int speed, Direction direction);
 
-    /* MOVING TO CONSIST CLASS
-    /// @brief Set the specified throttle to the provided speed and direction
-    /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
-    /// @param speed The speed (0 - 126)
-    /// @param direction The direction (Forward|Reverse)
-    void setThrottle(int throttle, int speed, Direction direction);
-    
-    /// @brief Set provided function on or off for the specified throttle
-    /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
-    /// @param functionNumber The number of the function (0 - 27)
-    /// @param pressed True|False to turn the function on or off
-    void setFunction(int throttle, int functionNumber, bool pressed);
-    
-    /// @brief Query if a specific function is on for the specified throttle
-    /// @param throttle Throttle to query (0 to numThrottles - 1)
-    /// @param functionNumber Function number (0 - 27)
-    /// @return On or off (true|false)
-    bool functionOn(int throttle, int functionNumber);
+    /// @brief Turn the specified function on for the provided loco
+    /// @param loco Pointer to a loco object
+    /// @param function Function number (0 - 27)
+    void functionOn(Loco* loco, int function);
 
+    /// @brief Turn the specified function off for the provided loco
+    /// @param loco Pointer to a loco object
+    /// @param function Function number (0 - 27)
+    void functionOff(Loco* loco, int function);
+
+    /// @brief Test if the specified function for the provided loco is on
+    /// @param loco Pointer to a loco object
+    /// @param function Function number to test (0 - 27)
+    /// @return true = on, false = off
+    bool isFunctionOn(Loco* loco, int function);
+
+    /*
     /// @brief Retrieve the Consist object for the specified throttle
     /// @param throttleNo The throttle containing the Consist (0 to numThrottles - 1)
     /// @return The Consist object
@@ -357,13 +341,11 @@ class DCCEXProtocol {
     char* _nextServerDescriptionParam(char* description, int startAt, bool lookingAtVersionNumber);
 
     // Consist/loco methods
-    bool _processLocoBroadcast();
+    void _processLocoBroadcast();
     int _getValidFunctionMap(int functionMap);
-    // int _findThrottleWithLoco(int address);
     int _getSpeedFromSpeedByte(int speedByte);
     Direction _getDirectionFromSpeedByte(int speedByte);
-    // void _setLoco(int address, int speed, Direction direction);
-    void _setLoco(Loco* loco);
+    void _setLoco(int address, int speed, Direction direction);
     void _processReadResponse();
 
     // Roster methods
