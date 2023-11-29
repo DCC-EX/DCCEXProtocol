@@ -167,6 +167,22 @@ void DCCEXProtocol::setThrottle(Loco* loco, int speed, Direction direction) {
   }
 }
 
+void DCCEXProtocol::setThrottle(Consist* consist, int speed, Direction direction) {
+  if (_delegate) {
+    for (ConsistLoco* cl=consist->getFirst(); cl; cl=cl->getNext()) {
+      int address=cl->getLoco()->getAddress();
+      if (cl->getFacing()==FacingReversed) {
+        if (direction==Forward) {
+          direction=Reverse;
+        } else {
+          direction=Forward;
+        }
+      }
+      _setLoco(address, speed, direction);
+    }
+  }
+}
+
 void DCCEXProtocol::functionOn(Loco* loco, int function) {
   // console->println(F("sendFunction(): "));
   if (_delegate) {
@@ -197,70 +213,6 @@ bool DCCEXProtocol::isFunctionOn(Loco* loco, int function) {
   }
   return false;
 }
-
-/* MOVING TO CONSIST CLASS
-void DCCEXProtocol::setThrottle(int throttleNo, int speed, Direction direction) {
-  // console->println(F("sendThrottleAction(): "));
-  if (_delegate) {
-    if (throttle[throttleNo].getLocoCount()>0) {
-      throttle[throttleNo].setSpeed(speed);
-      throttle[throttleNo].setDirection(direction);
-      for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
-        int address = conLoco->getAddress();
-        Direction dir = direction;
-        if (conLoco->getFacing()==FacingReversed) {
-          if (direction==Forward) {
-            dir = Reverse;
-          } else {
-            dir = Forward;
-          }                    
-        }
-        _setLoco(address, speed, dir);
-      }
-    }
-  }
-  // console->println(F("sendThrottleAction(): end"));
-}
-
-void DCCEXProtocol::setFunction(int throttleNo, int functionNumber, bool pressed) {
-  // console->println(F("sendFunction(): "));
-  if (_delegate) {
-    for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
-      int address = conLoco->getAddress();
-      if (address>=0) {
-        sprintf(_outboundCommand, "<F %d %d %d>", address, functionNumber, pressed);
-        _sendCommand();
-      }
-    }
-  }
-  // console->println(F("sendFunction(): end"));
-}
-
-bool DCCEXProtocol::functionOn(int throttleNo, int functionNumber) {
-  if (_delegate) {
-    // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
-    ConsistLoco* conLoco = throttle[throttleNo].getFirst();
-    int address = conLoco->getAddress();
-    if (address>=0) {
-      // console->print(" '");
-      // console->print(conLoco->isFunctionOn(functionNumber));
-      // console->print("' ");
-      conLoco->functionOn(functionNumber);
-    }
-    return conLoco->functionOn(functionNumber);
-  }
-  return false;
-}
-
-Consist DCCEXProtocol::getConsist(int throttleNo) {
-  // console->println(F("getThrottleConsist(): "));
-  if (_delegate) {
-    return throttle[throttleNo];
-  }
-  // console->println(F("getThrottleConsist(): end"));
-  return {};
-}
-*/
 
 void DCCEXProtocol::requestLocoUpdate(int address) {
   // console->println(F("sendLocoUpdateRequest()"));

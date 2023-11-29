@@ -195,8 +195,6 @@ void ConsistLoco::setNext(ConsistLoco* consistLoco) {
 Consist::Consist() {
   _name=nullptr;
   _locoCount=0;
-  _speed=0;
-  _direction=Forward;
   _first=nullptr;
 }
 
@@ -299,20 +297,16 @@ bool Consist::inConsist(int address) {
   return false;
 }
 
-void Consist::setSpeed(int speed) {
-  _speed=speed;
-}
-
 int Consist::getSpeed() {
-  return _speed;
-}
-
-void Consist::setDirection(Direction direction) {
-  _direction=direction;
+  ConsistLoco* cl=_first;
+  if (!cl) return 0;
+  return cl->getLoco()->getSpeed();
 }
 
 Direction Consist::getDirection() {
-  return(Direction)_direction;
+  ConsistLoco* cl=_first;
+  if (!cl) return Forward;
+  return cl->getLoco()->getDirection();
 }
 
 ConsistLoco* Consist::getFirst() {

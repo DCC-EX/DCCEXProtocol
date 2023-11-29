@@ -171,6 +171,12 @@ class DCCEXProtocol {
     /// @param direction Direction (Forward|Reverse)
     void setThrottle(Loco* loco, int speed, Direction direction);
 
+    /// @brief Set all locos in the provided consist to the specified speed and direction
+    /// @param consist Pointer to a consist object
+    /// @param speed Speed (0 - 126)
+    /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
+    void setThrottle(Consist* consist, int speed, Direction direction);
+
     /// @brief Turn the specified function on for the provided loco
     /// @param loco Pointer to a loco object
     /// @param function Function number (0 - 27)
@@ -187,13 +193,6 @@ class DCCEXProtocol {
     /// @return true = on, false = off
     bool isFunctionOn(Loco* loco, int function);
 
-    /*
-    /// @brief Retrieve the Consist object for the specified throttle
-    /// @param throttleNo The throttle containing the Consist (0 to numThrottles - 1)
-    /// @return The Consist object
-    Consist getConsist(int throttleNo);
-    */
-    
     /// @brief Explicitly request an update for the specified loco
     /// @param address DCC address of the loco
     void requestLocoUpdate(int address);
@@ -325,7 +324,6 @@ class DCCEXProtocol {
 
     // Attributes
 
-    // Consist* throttle;              // Consist object for the throttle
     Loco* roster=nullptr;           // Linked list of locos for the roster
     Turnout* turnouts=nullptr;      // Linked list of turnouts
     Route* routes=nullptr;          // Linked list of routes

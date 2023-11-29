@@ -218,19 +218,11 @@ public:
   /// @return true|false
   bool inConsist(int address);
 
-  /// @brief Set speed for the consist
-  /// @param speed Valid speed (0 - 126)
-  void setSpeed(int speed);
-
-  /// @brief Get consist speed
+  /// @brief Get consist speed - obtained from first linked loco
   /// @return Current speed (0 - 126)
   int getSpeed();
 
-  /// @brief Set direction for the consist
-  /// @param direction Valid direction (Forward|Reverse)
-  void setDirection(Direction direction);
-
-  /// @brief Get consist direction
+  /// @brief Get consist direction - obtained from first linked loco
   /// @return Current direction (Forward|Reverse)
   Direction getDirection();
 
@@ -239,8 +231,6 @@ public:
   ConsistLoco* getFirst();
 
 private:
-  int _speed;
-  Direction _direction;
   char* _name;
   int _locoCount;
   ConsistLoco* _first;
