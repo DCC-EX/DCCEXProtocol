@@ -106,10 +106,6 @@ public:
   /// @return Integer representing current function states
   int getFunctionStates();
 
-  /// @brief Get count of locos
-  /// @return Number of locos
-  int getCount();
-
   /// @brief Get first Loco object
   /// @return Pointer to the first Loco object
   static Loco* getFirst();
@@ -134,7 +130,6 @@ private:
   int32_t _momentaryFlags;
   static Loco* _first;
   Loco* _next;
-  int _count=0;
 
   friend class Consist;
 };
@@ -160,6 +155,10 @@ public:
   /// @brief Get the next consist loco object
   /// @return Pointer to the next ConsistLoco object
   ConsistLoco* getNext();
+
+  /// @brief Set the next consist loco object
+  /// @param consistLoco Pointer to the ConsistLoco object
+  void setNext(ConsistLoco* consistLoco);
 
 private:
   Loco* _loco;
@@ -203,7 +202,7 @@ public:
   /// @brief Update the direction of a loco in the consist
   /// @param loco Pointer to the loco object to update
   /// @param facing Direction to set it to (FacingForward|FacingReversed)
-  void setLocoDirection(Loco* loco, Facing facing);
+  void setLocoFacing(Loco* loco, Facing facing);
   
   /// @brief Get the count of locos in the consist
   /// @return Count of locos
