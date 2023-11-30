@@ -47,10 +47,14 @@ static const int MAX_SPEED = 126;
 // Public methods
 // Protocol and server methods
 
-DCCEXProtocol::DCCEXProtocol() {
+DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
   // Init streams
   _stream=&_nullStream;
   _console=&_nullStream;
+
+  // Allocate memory for command buffer
+  _cmdBuffer=new char[maxCmdBuffer];
+  _maxCmdBuffer=maxCmdBuffer;
 
   // Setup command parser
   DCCEXInbound::setup(MAX_COMMAND_PARAMS);
@@ -84,7 +88,7 @@ void DCCEXProtocol::check() {
     while(_stream->available()) {
       // Read from our stream
       int r=_stream->read();
-      if (_bufflen<MAX_COMMAND_BUFFER-1) {
+      if (_bufflen<_maxCmdBuffer-1) {
         _cmdBuffer[_bufflen]=r;
         _bufflen++;
         _cmdBuffer[_bufflen]=0;

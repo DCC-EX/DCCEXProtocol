@@ -41,7 +41,6 @@
 const int MAX_OUTBOUND_COMMAND_LENGTH=100;          // Max number of bytes for outbound commands
 const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH=100;  // Max number of bytes for <s> server details response
 const int MAX_COMMAND_PARAMS=50;                    // Max number of params to parse via DCCEXInbound parser
-const int MAX_COMMAND_BUFFER=500;                   // Max number of bytes for the inbound command buffer
 
 // Valid track power state values
 enum TrackPower {
@@ -123,7 +122,8 @@ class DCCEXProtocol {
     // Protocol and server methods
 
     /// @brief Constructor for the DCCEXProtocol object
-    DCCEXProtocol();
+    /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
+    DCCEXProtocol(int maxCmdBuffer=500);
 
     /// @brief Set the delegate object for callbacks
     /// @param delegate 
@@ -405,7 +405,8 @@ class DCCEXProtocol {
     Stream* _console;                   // Stream object for console output
     NullStream _nullStream;             // Send streams to null if no object provided
     int _bufflen;                       // Used to ensure command buffer size not exceeded
-    char _cmdBuffer[MAX_COMMAND_BUFFER];  // Char array for inbound command buffer
+    int _maxCmdBuffer;                  // Max size for the command buffer
+    char* _cmdBuffer;                   // Char array for inbound command buffer
     char _outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH]; // Char array for outbound commands
     DCCEXProtocolDelegate* _delegate=nullptr; // Pointer to the delegate for notifications
     unsigned long _lastServerResponseTime; // Records the timestamp of the last server response
