@@ -161,6 +161,18 @@ class DCCEXProtocol {
     /// @return 
     bool receivedVersion();
 
+    /// @brief Retrieve the major version of EX-CommandStation
+    /// @return Major version number eg. 5.y.z
+    int getMajorVersion();
+
+    /// @brief Retrieve the minor version of EX-Commandstation
+    /// @return Minor version number eg. x.0.z
+    int getMinorVersion();
+
+    /// @brief Retreive the patch version of EX-CommandStation
+    /// @return Patch version number eg. x.y.7
+    int getPatchVersion();
+
     unsigned long getLastServerResponseTime();  // seconds since Arduino start
 
     // Consist/Loco methods
@@ -382,34 +394,33 @@ class DCCEXProtocol {
     void _processTrackPower();
     
     // Attributes
-    int _rosterCount = 0;     // Count of roster items received
-    int _turnoutCount = 0;    // Count of turnout objects received
-    int _routeCount = 0;      // Count of route objects received
-    int _turntableCount = 0;  // Count of turntable objects received
-    int _majorVersion;        // EX-CommandStation major version X.y.z
-    int _minorVersion;        // EX-CommandStation minor version x.Y.z
-    int _patchVersion;        // EX-CommandStation patch version x.y.Z
-    int _maxThrottles;        // Number of throttles to support
-    Stream* _stream;          // Stream object where commands are sent/received
-    Stream* _console;         // Stream object for console output
-    NullStream _nullStream;   // Send streams to null if no object provided
-    int _bufflen;             // Used to ensure command buffer size not exceeded
+    int _rosterCount=0;                 // Count of roster items received
+    int _turnoutCount=0;                // Count of turnout objects received
+    int _routeCount=0;                  // Count of route objects received
+    int _turntableCount=0;              // Count of turntable objects received
+    int _majorVersion=0;                // EX-CommandStation major version X.y.z
+    int _minorVersion=0;                // EX-CommandStation minor version x.Y.z
+    int _patchVersion=0;                // EX-CommandStation patch version x.y.Z
+    Stream* _stream;                    // Stream object where commands are sent/received
+    Stream* _console;                   // Stream object for console output
+    NullStream _nullStream;             // Send streams to null if no object provided
+    int _bufflen;                       // Used to ensure command buffer size not exceeded
     char _cmdBuffer[MAX_COMMAND_BUFFER];  // Char array for inbound command buffer
     char _outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH]; // Char array for outbound commands
-    DCCEXProtocolDelegate* _delegate = nullptr; // Pointer to the delegate for notifications
+    DCCEXProtocolDelegate* _delegate=nullptr; // Pointer to the delegate for notifications
     unsigned long _lastServerResponseTime; // Records the timestamp of the last server response
-    char _inputBuffer[512];   // Char array for input buffer
-    ssize_t _nextChar;        // where the next character to be read goes in the buffer
-    bool _receivedVersion = false;  // Flag that server version has been received
-    bool _receivedLists = false;  // Flag if all requested lists have been received
-    bool _rosterRequested = false;          // Flag that roster has been requested
-    bool _receivedRoster = false;           // Flag that roster has been received
-    bool _turnoutListRequested = false;     // Flag that turnout list requested
-    bool _receivedTurnoutList = false;      // Flag that turnout list received
-    bool _routeListRequested = false;       // Flag that route list requested
-    bool _receivedRouteList = false;        // Flag that route list received
-    bool _turntableListRequested = false;   // Flag that turntable list requested
-    bool _receivedTurntableList = false;    // Flag that turntable list received
+    char _inputBuffer[512];             // Char array for input buffer
+    ssize_t _nextChar;                  // where the next character to be read goes in the buffer
+    bool _receivedVersion=false;        // Flag that server version has been received
+    bool _receivedLists=false;          // Flag if all requested lists have been received
+    bool _rosterRequested=false;        // Flag that roster has been requested
+    bool _receivedRoster=false;         // Flag that roster has been received
+    bool _turnoutListRequested=false;   // Flag that turnout list requested
+    bool _receivedTurnoutList=false;    // Flag that turnout list received
+    bool _routeListRequested=false;     // Flag that route list requested
+    bool _receivedRouteList=false;      // Flag that route list received
+    bool _turntableListRequested=false; // Flag that turntable list requested
+    bool _receivedTurntableList=false;  // Flag that turntable list received
 
 };
 

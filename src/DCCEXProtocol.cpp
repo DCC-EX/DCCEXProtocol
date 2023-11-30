@@ -151,7 +151,19 @@ void DCCEXProtocol::requestServerVersion() {
 }
 
 bool DCCEXProtocol::receivedVersion() {
-    return _receivedVersion;
+  return _receivedVersion;
+}
+
+int DCCEXProtocol::getMajorVersion() {
+  return _majorVersion;
+}
+
+int DCCEXProtocol::getMinorVersion() {
+  return _minorVersion;
+}
+
+int DCCEXProtocol::getPatchVersion() {
+  return _patchVersion;
 }
 
 unsigned long DCCEXProtocol::getLastServerResponseTime() {
@@ -564,7 +576,11 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
     sprintf(description,"%s",DCCEXInbound::getText(0));
     int versionStartAt = 7; // e.g. "DCC-EX V-"
     char* temp=_nextServerDescriptionParam(description, versionStartAt, true);
+    _console->print(F("Temp char major version: "));
+    _console->println(temp);
     _majorVersion=atoi(temp);
+    _console->print(F("Major version: "));
+    _console->println(_majorVersion);
     versionStartAt=versionStartAt + strlen(temp)+1;
     temp=_nextServerDescriptionParam(description, versionStartAt, true);
     _minorVersion=atoi(temp);
