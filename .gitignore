@@ -25,3 +25,10 @@ examples/*/.gitignore
 examples/*/platform.ini
 
 examples/*/myWiFi.h
+
+# Documentation build folders
+build
+venv
+docs/html
+docs/latex
+_build
