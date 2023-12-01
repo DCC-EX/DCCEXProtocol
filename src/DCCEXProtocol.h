@@ -41,7 +41,6 @@
 const int MAX_OUTBOUND_COMMAND_LENGTH=100;          // Max number of bytes for outbound commands
 const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH=100;  // Max number of bytes for <s> server details response
 const int MAX_COMMAND_PARAMS=50;                    // Max number of params to parse via DCCEXInbound parser
-const int MAX_COMMAND_BUFFER=500;                   // Max number of bytes for the inbound command buffer
 
 // Valid track power state values
 enum TrackPower {
@@ -93,22 +92,10 @@ public:
   /// @brief Notify when the turntable list is received
   virtual void receivedTurntableList() {}    
 
-  /// @brief Notify when speed for a throttle is received
-  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
-  /// @param speed Speed value (0 - 126)
-  virtual void receivedSpeed(int throttleNo, int speed) {}
+  /// @brief Notify when an update to a Loco object is received
+  /// @param loco Pointer to the loco object
+  virtual void receivedLocoUpdate(Loco* loco) {}
   
-  /// @brief Notify when direction for a throttle is received
-  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
-  /// @param dir Direction received (Forward|Reverse)
-  virtual void receivedDirection(int throttleNo, Direction dir) {}
-  
-  /// @brief Notify when a function state change for a throttle is received
-  /// @param throttleNo Number of the throttle (0 to maxThrottles - 1)
-  /// @param func Function number (0 - 27)
-  /// @param state On or off (true|false)
-  virtual void receivedFunction(int throttleNo, int func, bool state) {}
-
   /// @brief Notify when a track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
@@ -135,9 +122,8 @@ class DCCEXProtocol {
     // Protocol and server methods
 
     /// @brief Constructor for the DCCEXProtocol object
-    /// @param maxThrottles The number of throttles to create, default is 6
-    // DCCEXProtocol(int maxThrottles=6, bool server=false);
-    DCCEXProtocol(int maxThrottles=6);
+    /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
+    DCCEXProtocol(int maxCmdBuffer=500);
 
     /// @brief Set the delegate object for callbacks
     /// @param delegate 
@@ -175,28 +161,50 @@ class DCCEXProtocol {
     /// @return 
     bool receivedVersion();
 
+    /// @brief Retrieve the major version of EX-CommandStation
+    /// @return Major version number eg. 5.y.z
+    int getMajorVersion();
+
+    /// @brief Retrieve the minor version of EX-Commandstation
+    /// @return Minor version number eg. x.0.z
+    int getMinorVersion();
+
+    /// @brief Retreive the patch version of EX-CommandStation
+    /// @return Patch version number eg. x.y.7
+    int getPatchVersion();
+
     unsigned long getLastServerResponseTime();  // seconds since Arduino start
 
     // Consist/Loco methods
     
-    /// @brief Set the specified throttle to the provided speed and direction
-    /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
-    /// @param speed The speed (0 - 126)
-    /// @param direction The direction (Forward|Reverse)
-    void setThrottle(int throttle, int speed, Direction direction);
-    
-    /// @brief Set provided function on or off for the specified throttle
-    /// @param throttle The throttle containing the loco(s) to control (0 to number of throttles - 1)
-    /// @param functionNumber The number of the function (0 - 27)
-    /// @param pressed True|False to turn the function on or off
-    void setFunction(int throttle, int functionNumber, bool pressed);
-    
-    /// @brief Query if a specific function is on for the specified throttle
-    /// @param throttle Throttle to query (0 to numThrottles - 1)
-    /// @param functionNumber Function number (0 - 27)
-    /// @return On or off (true|false)
-    bool functionOn(int throttle, int functionNumber);
-    
+    /// @brief Set the provided loco to the specified speed and direction
+    /// @param loco Pointer to a Loco object
+    /// @param speed Speed (0 - 126)
+    /// @param direction Direction (Forward|Reverse)
+    void setThrottle(Loco* loco, int speed, Direction direction);
+
+    /// @brief Set all locos in the provided consist to the specified speed and direction
+    /// @param consist Pointer to a consist object
+    /// @param speed Speed (0 - 126)
+    /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
+    void setThrottle(Consist* consist, int speed, Direction direction);
+
+    /// @brief Turn the specified function on for the provided loco
+    /// @param loco Pointer to a loco object
+    /// @param function Function number (0 - 27)
+    void functionOn(Loco* loco, int function);
+
+    /// @brief Turn the specified function off for the provided loco
+    /// @param loco Pointer to a loco object
+    /// @param function Function number (0 - 27)
+    void functionOff(Loco* loco, int function);
+
+    /// @brief Test if the specified function for the provided loco is on
+    /// @param loco Pointer to a loco object
+    /// @param function Function number to test (0 - 27)
+    /// @return true = on, false = off
+    bool isFunctionOn(Loco* loco, int function);
+
     /// @brief Explicitly request an update for the specified loco
     /// @param address DCC address of the loco
     void requestLocoUpdate(int address);
@@ -206,11 +214,6 @@ class DCCEXProtocol {
 
     /// @brief Initiate an emergency stop
     void emergencyStop();
-
-    /// @brief Retrieve the Consist object for the specified throttle
-    /// @param throttleNo The throttle containing the Consist (0 to numThrottles - 1)
-    /// @return The Consist object
-    Consist getConsist(int throttleNo);
 
     // Roster methods
 
@@ -333,7 +336,6 @@ class DCCEXProtocol {
 
     // Attributes
 
-    Consist* throttle;              // Consist object for the throttle
     Loco* roster=nullptr;           // Linked list of locos for the roster
     Turnout* turnouts=nullptr;      // Linked list of turnouts
     Route* routes=nullptr;          // Linked list of routes
@@ -349,9 +351,8 @@ class DCCEXProtocol {
     char* _nextServerDescriptionParam(char* description, int startAt, bool lookingAtVersionNumber);
 
     // Consist/loco methods
-    bool _processLocoBroadcast();
+    void _processLocoBroadcast();
     int _getValidFunctionMap(int functionMap);
-    int _findThrottleWithLoco(int address);
     int _getSpeedFromSpeedByte(int speedByte);
     Direction _getDirectionFromSpeedByte(int speedByte);
     void _setLoco(int address, int speed, Direction direction);
@@ -393,34 +394,34 @@ class DCCEXProtocol {
     void _processTrackPower();
     
     // Attributes
-    int _rosterCount = 0;     // Count of roster items received
-    int _turnoutCount = 0;    // Count of turnout objects received
-    int _routeCount = 0;      // Count of route objects received
-    int _turntableCount = 0;  // Count of turntable objects received
-    int _majorVersion;        // EX-CommandStation major version X.y.z
-    int _minorVersion;        // EX-CommandStation minor version x.Y.z
-    int _patchVersion;        // EX-CommandStation patch version x.y.Z
-    int _maxThrottles;        // Number of throttles to support
-    Stream* _stream;          // Stream object where commands are sent/received
-    Stream* _console;         // Stream object for console output
-    NullStream _nullStream;   // Send streams to null if no object provided
-    int _bufflen;             // Used to ensure command buffer size not exceeded
-    char _cmdBuffer[MAX_COMMAND_BUFFER];  // Char array for inbound command buffer
+    int _rosterCount=0;                 // Count of roster items received
+    int _turnoutCount=0;                // Count of turnout objects received
+    int _routeCount=0;                  // Count of route objects received
+    int _turntableCount=0;              // Count of turntable objects received
+    int _majorVersion=0;                // EX-CommandStation major version X.y.z
+    int _minorVersion=0;                // EX-CommandStation minor version x.Y.z
+    int _patchVersion=0;                // EX-CommandStation patch version x.y.Z
+    Stream* _stream;                    // Stream object where commands are sent/received
+    Stream* _console;                   // Stream object for console output
+    NullStream _nullStream;             // Send streams to null if no object provided
+    int _bufflen;                       // Used to ensure command buffer size not exceeded
+    int _maxCmdBuffer;                  // Max size for the command buffer
+    char* _cmdBuffer;                   // Char array for inbound command buffer
     char _outboundCommand[MAX_OUTBOUND_COMMAND_LENGTH]; // Char array for outbound commands
-    DCCEXProtocolDelegate* _delegate = nullptr; // Pointer to the delegate for notifications
+    DCCEXProtocolDelegate* _delegate=nullptr; // Pointer to the delegate for notifications
     unsigned long _lastServerResponseTime; // Records the timestamp of the last server response
-    char _inputBuffer[512];   // Char array for input buffer
-    ssize_t _nextChar;        // where the next character to be read goes in the buffer
-    bool _receivedVersion = false;  // Flag that server version has been received
-    bool _receivedLists = false;  // Flag if all requested lists have been received
-    bool _rosterRequested = false;          // Flag that roster has been requested
-    bool _receivedRoster = false;           // Flag that roster has been received
-    bool _turnoutListRequested = false;     // Flag that turnout list requested
-    bool _receivedTurnoutList = false;      // Flag that turnout list received
-    bool _routeListRequested = false;       // Flag that route list requested
-    bool _receivedRouteList = false;        // Flag that route list received
-    bool _turntableListRequested = false;   // Flag that turntable list requested
-    bool _receivedTurntableList = false;    // Flag that turntable list received
+    char _inputBuffer[512];             // Char array for input buffer
+    ssize_t _nextChar;                  // where the next character to be read goes in the buffer
+    bool _receivedVersion=false;        // Flag that server version has been received
+    bool _receivedLists=false;          // Flag if all requested lists have been received
+    bool _rosterRequested=false;        // Flag that roster has been requested
+    bool _receivedRoster=false;         // Flag that roster has been received
+    bool _turnoutListRequested=false;   // Flag that turnout list requested
+    bool _receivedTurnoutList=false;    // Flag that turnout list received
+    bool _routeListRequested=false;     // Flag that route list requested
+    bool _receivedRouteList=false;      // Flag that route list received
+    bool _turntableListRequested=false; // Flag that turntable list requested
+    bool _receivedTurntableList=false;  // Flag that turntable list received
 
 };
 

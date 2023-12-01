@@ -52,7 +52,6 @@ Loco::Loco(int address, LocoSource source) {
     }
     current->_next=this;
   }
-  _count++;
 }
 
 int Loco::getAddress() {
@@ -132,7 +131,7 @@ void Loco::setupFunctions(char *functionNames) {
   }
 }
 
-bool Loco::functionOn(int function) {
+bool Loco::isFunctionOn(int function) {
   return _functionStates & 1<<function;
 }
 
@@ -142,10 +141,6 @@ void Loco::setFunctionStates(int functionStates) {
 
 int Loco::getFunctionStates() {
   return _functionStates;
-}
-
-int Loco::getCount() {
-  return _count;
 }
 
 Loco* Loco::getFirst() {
@@ -165,13 +160,17 @@ Loco* Loco::getByAddress(int address) {
   return nullptr;
 }
 
-// class ConsistLoco : public Loco
+// class ConsistLoco
 // Public methods
 
-ConsistLoco::ConsistLoco(int address, LocoSource source, Facing facing)
-: Loco::Loco(address, source) {
+ConsistLoco::ConsistLoco(Loco* loco, Facing facing) {
+  _loco=loco;
   _facing=facing;
   _next=nullptr;
+}
+
+Loco* ConsistLoco::getLoco() {
+  return _loco;
 }
 
 void ConsistLoco::setFacing(Facing facing) {
@@ -186,14 +185,16 @@ ConsistLoco* ConsistLoco::getNext() {
   return _next;
 }
 
+void ConsistLoco::setNext(ConsistLoco* consistLoco) {
+  _next=consistLoco;
+}
+
 // class Consist
 // Public methods
 
 Consist::Consist() {
   _name=nullptr;
   _locoCount=0;
-  _speed=0;
-  _direction=Forward;
   _first=nullptr;
 }
 
@@ -205,46 +206,72 @@ char* Consist::getName() {
   return _name;
 }
 
-void Consist::addFromRoster(Loco* loco, Facing facing) {
-  _addLoco(loco, facing);
-}
-
-void Consist::addFromEntry(int address, Facing facing) {
-  Loco* loco=new Loco(address, LocoSourceEntry);
-  _addLoco(loco, facing);
-}
-
-void Consist::releaseAll() {
-  ConsistLoco* current=_first;
-  while (current!=nullptr) {
-    ConsistLoco* temp=current;
-    current=current->_next;
-    delete temp;  // Delete the ConsistLoco object
+void Consist::addLoco(Loco* loco, Facing facing) {
+  if (inConsist(loco)) return;  // Already in the consist
+  if (_locoCount==0) {
+    facing=FacingForward;  // Force forward facing for the first loco added
+    _name=loco->getName();  // Set consist name to the first loco name
   }
-  _first=nullptr; // Reset the linked list
-  _locoCount=0; // Reset the loco count
+  ConsistLoco* conLoco=new ConsistLoco(loco, facing);
+  _addLocoToConsist(conLoco);
 }
 
-void Consist::releaseLoco(int address) {
+void Consist::addLoco(int address, Facing facing) {
+  if (inConsist(address)) return;
+  if (_locoCount==0) {
+    facing=FacingForward;
+    char temp[6];
+    snprintf(temp, 6, "%d", address);
+    _name=temp;
+  }
+  Loco* loco=new Loco(address, LocoSourceEntry);
+  ConsistLoco* conLoco=new ConsistLoco(loco, facing);
+  _addLocoToConsist(conLoco);
+}
+
+void Consist::removeLoco(Loco* loco) {
+  ConsistLoco* previous=nullptr;
   ConsistLoco* current=_first;
-  ConsistLoco* next=nullptr;
-
-  while (current!=nullptr) {
-    if (current->getAddress()==address) {
-      if (next==nullptr) {
-        // The matching ConsistLoco is the first one in the list
-        _first=current->_next;
-      } else {
-        next->_next=current->_next;
+  while (current) {
+    if (current->getLoco()==loco) {
+      if (loco->getSource()==LocoSourceEntry) {
+        delete loco;
       }
-
-      delete current; // Delete the specific ConsistLoco object
-      _locoCount--; // Decrement loco count
-      return; // Exit the function once the loco is found and released
+      if (previous) {
+        previous->setNext(current->getNext());
+      } else {
+        _first=current->getNext();
+      }
+      delete current;
+      break;
     }
+    previous=current;
+    current=current->getNext();
+  }
+  if (!_first) {
+    _first=nullptr;
+  }
+}
 
-    next=current;
-    current=current->_next;
+void Consist::removeAllLocos() {
+  ConsistLoco* current=_first;
+  while (current) {
+    ConsistLoco* next=current->getNext();
+    Loco* loco=current->getLoco();
+    if (loco->getSource()==LocoSourceEntry) {
+      delete loco;
+    }
+    delete current;
+    current=next;
+  }
+  _first=nullptr;
+}
+
+void Consist::setLocoFacing(Loco* loco, Facing facing) {
+  for (ConsistLoco* cl=_first; cl; cl=cl->getNext()) {
+    if (cl->getLoco()==loco) {
+      cl->setFacing(facing);
+    }
   }
 }
 
@@ -252,29 +279,34 @@ int Consist::getLocoCount() {
   return _locoCount;
 }
 
-bool Consist::inConsist(int address) {
+bool Consist::inConsist(Loco* loco) {
   for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
-    if (cl->getAddress()==address) {
+    if (cl->getLoco()==loco) {
       return true;
     }
   }
   return false;
 }
 
-void Consist::setSpeed(int speed) {
-  _speed=speed;
+bool Consist::inConsist(int address) {
+  for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
+    if (cl->getLoco()->getAddress()==address) {
+      return true;
+    }
+  }
+  return false;
 }
 
 int Consist::getSpeed() {
-  return _speed;
-}
-
-void Consist::setDirection(Direction direction) {
-  _direction=direction;
+  ConsistLoco* cl=_first;
+  if (!cl) return 0;
+  return cl->getLoco()->getSpeed();
 }
 
 Direction Consist::getDirection() {
-  return(Direction)_direction;
+  ConsistLoco* cl=_first;
+  if (!cl) return Forward;
+  return cl->getLoco()->getDirection();
 }
 
 ConsistLoco* Consist::getFirst() {
@@ -283,15 +315,7 @@ ConsistLoco* Consist::getFirst() {
 
 // Private methods
 
-void Consist::_addLoco(Loco* loco, Facing facing) {
-  int address=loco->getAddress();
-  LocoSource source=loco->getSource();
-  if (inConsist(address)) return;  // Already in the consist
-  if (_locoCount==0) {
-    facing=FacingForward;  // Force forward facing for the first loco added
-    _name=loco->getName();  // Set consist name to the first loco name
-  }
-  ConsistLoco* conLoco=new ConsistLoco(address, source, facing);
+void Consist::_addLocoToConsist(ConsistLoco* conLoco) {
   if (this->_first==nullptr) {
     this->_first=conLoco;
   } else {

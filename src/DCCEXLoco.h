@@ -96,7 +96,7 @@ public:
   /// @brief Test if function is on
   /// @param function Number of the function to test
   /// @return true|false
-  bool functionOn(int function);
+  bool isFunctionOn(int function);
 
   /// @brief Set function states
   /// @param functionStates Integer representing all function states
@@ -105,10 +105,6 @@ public:
   /// @brief Get function states
   /// @return Integer representing current function states
   int getFunctionStates();
-
-  /// @brief Get count of locos
-  /// @return Number of locos
-  int getCount();
 
   /// @brief Get first Loco object
   /// @return Pointer to the first Loco object
@@ -121,7 +117,7 @@ public:
   /// @brief Get Loco object by its DCC address
   /// @param address DCC address of the loco to get
   /// @return Loco object or nullptr if it doesn't exist
-  Loco* getByAddress(int address);
+  static Loco* getByAddress(int address);
 
 private:
   int _address;
@@ -134,18 +130,19 @@ private:
   int32_t _momentaryFlags;
   static Loco* _first;
   Loco* _next;
-  int _count=0;
 
   friend class Consist;
 };
 
-class ConsistLoco : public Loco {
+class ConsistLoco {
 public:
   /// @brief Constructor
-  /// @param address DCC address of the loco
-  /// @param source LocoSourceRoster|LocoSourceEntry
-  /// @param facing FacingForward|FacingReversed
-  ConsistLoco(int address, LocoSource source, Facing facing);
+  /// @param facing Direction loco is facing in the consist (FacingForward|FacingReversed)
+  ConsistLoco(Loco* loco, Facing facing);
+  
+  /// @brief Get the associated Loco object for this consist entry
+  /// @return Pointer to the Loco object
+  Loco* getLoco();
   
   /// @brief Set which way the loco is facing in the consist (FacingForward, FacingReversed)
   /// @param facing FacingForward|FacingReversed
@@ -159,7 +156,12 @@ public:
   /// @return Pointer to the next ConsistLoco object
   ConsistLoco* getNext();
 
+  /// @brief Set the next consist loco object
+  /// @param consistLoco Pointer to the ConsistLoco object
+  void setNext(ConsistLoco* consistLoco);
+
 private:
+  Loco* _loco;
   Facing _facing;
   ConsistLoco* _next;
 
@@ -180,45 +182,47 @@ public:
   /// @return Current name of the consist
   char* getName();
 
-  /// @brief Add a loco to the consist from a roster entry
+  /// @brief Add a loco to the consist using a Loco object
   /// @param loco Pointer to a loco object
-  /// @param facing FacingForward|FacingReversed
-  void addFromRoster(Loco* loco, Facing facing);
+  /// @param facing Direction the loco is facing (FacingForward|FacingReversed)
+  void addLoco(Loco* loco, Facing facing);
 
-  /// @brief Add a loco to the consist from a user entering the address
+  /// @brief Add a loco to the consist using a DCC address
   /// @param address DCC address of the loco to add
-  /// @param facing FacingForward|FacingReversed
-  void addFromEntry(int address, Facing facing);
+  /// @param facing Direction the loco is facing (FacingForward|FacingReversed)
+  void addLoco(int address, Facing facing);
 
-  /// @brief Release all locos from the consist
-  void releaseAll();
+  /// @brief Remove a loco from the consist
+  /// @param loco Pointer to a loco object to remove
+  void removeLoco(Loco* loco);
 
-  /// @brief Release a specific loco from the consist
-  /// @param address DCC address of the loco to release
-  void releaseLoco(int address);
+  /// @brief Remove all locos from a consist
+  void removeAllLocos();
 
+  /// @brief Update the direction of a loco in the consist
+  /// @param loco Pointer to the loco object to update
+  /// @param facing Direction to set it to (FacingForward|FacingReversed)
+  void setLocoFacing(Loco* loco, Facing facing);
+  
   /// @brief Get the count of locos in the consist
   /// @return Count of locos
   int getLocoCount();
 
-  /// @brief Check if the provided loco address is in the consist
-  /// @param address DCC address to check
+  /// @brief Check if the provided loco is in the consist
+  /// @param address Pointer to the loco object to check
+  /// @return true|false
+  bool inConsist(Loco* loco);
+
+  /// @brief Check if the loco with the provided address is in the consist
+  /// @param address DCC address of loco to check
   /// @return true|false
   bool inConsist(int address);
 
-  /// @brief Set speed for the consist
-  /// @param speed Valid speed (0 - 126)
-  void setSpeed(int speed);
-
-  /// @brief Get consist speed
+  /// @brief Get consist speed - obtained from first linked loco
   /// @return Current speed (0 - 126)
   int getSpeed();
 
-  /// @brief Set direction for the consist
-  /// @param direction Valid direction (Forward|Reverse)
-  void setDirection(Direction direction);
-
-  /// @brief Get consist direction
+  /// @brief Get consist direction - obtained from first linked loco
   /// @return Current direction (Forward|Reverse)
   Direction getDirection();
 
@@ -227,16 +231,11 @@ public:
   ConsistLoco* getFirst();
 
 private:
-  int _speed;
-  Direction _direction;
   char* _name;
   int _locoCount;
   ConsistLoco* _first;
 
-  /// @brief Add a loco object to the consist
-  /// @param loco 
-  /// @param facing 
-  void _addLoco(Loco* loco, Facing facing);
+  void _addLocoToConsist(ConsistLoco* consistLoco);
 
 };
 

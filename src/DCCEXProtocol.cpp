@@ -47,40 +47,40 @@ static const int MAX_SPEED = 126;
 // Public methods
 // Protocol and server methods
 
-DCCEXProtocol::DCCEXProtocol(int maxThrottles) {
-  _maxThrottles=maxThrottles;
-  // create array containing all Consist/throttle objects
-  throttle=new Consist[_maxThrottles];
-		
-	// init streams
-  _stream = &_nullStream;
-	_console = &_nullStream;
+DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
+  // Init streams
+  _stream=&_nullStream;
+  _console=&_nullStream;
 
-  // setup command parser
+  // Allocate memory for command buffer
+  _cmdBuffer=new char[maxCmdBuffer];
+  _maxCmdBuffer=maxCmdBuffer;
+
+  // Setup command parser
   DCCEXInbound::setup(MAX_COMMAND_PARAMS);
-  _cmdBuffer[0] = 0;
-  _bufflen = 0;
+  _cmdBuffer[0]=0;
+  _bufflen=0;
 }
 
 // Set the delegate instance for callbacks
 void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) {
-  this->_delegate = delegate;
+  this->_delegate=delegate;
 }
 
 // Set the Stream used for logging
 void DCCEXProtocol::setLogStream(Stream *console) {
-  this->_console = console;
+  this->_console=console;
 }
 
 void DCCEXProtocol::connect(Stream *stream) {
   _init();
-  this->_stream = stream;
+  this->_stream=stream;
 }
 
 void DCCEXProtocol::disconnect() {
   sprintf(_outboundCommand,"%s","<U DISCONNECT>");
   _sendCommand();
-  this->_stream = nullptr;
+  this->_stream=nullptr;
 }
 
 void DCCEXProtocol::check() {
@@ -88,7 +88,7 @@ void DCCEXProtocol::check() {
     while(_stream->available()) {
       // Read from our stream
       int r=_stream->read();
-      if (_bufflen<MAX_COMMAND_BUFFER-1) {
+      if (_bufflen<_maxCmdBuffer-1) {
         _cmdBuffer[_bufflen]=r;
         _bufflen++;
         _cmdBuffer[_bufflen]=0;
@@ -155,64 +155,77 @@ void DCCEXProtocol::requestServerVersion() {
 }
 
 bool DCCEXProtocol::receivedVersion() {
-    return _receivedVersion;
+  return _receivedVersion;
+}
+
+int DCCEXProtocol::getMajorVersion() {
+  return _majorVersion;
+}
+
+int DCCEXProtocol::getMinorVersion() {
+  return _minorVersion;
+}
+
+int DCCEXProtocol::getPatchVersion() {
+  return _patchVersion;
 }
 
 unsigned long DCCEXProtocol::getLastServerResponseTime() {
-  return _lastServerResponseTime;   
+  return _lastServerResponseTime;
 }
 
 // Consist/loco methods
 
-void DCCEXProtocol::setThrottle(int throttleNo, int speed, Direction direction) {
-  // console->println(F("sendThrottleAction(): "));
+void DCCEXProtocol::setThrottle(Loco* loco, int speed, Direction direction) {
   if (_delegate) {
-    if (throttle[throttleNo].getLocoCount()>0) {
-      throttle[throttleNo].setSpeed(speed);
-      throttle[throttleNo].setDirection(direction);
-      for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
-        int address = conLoco->getAddress();
-        Direction dir = direction;
-        if (conLoco->getFacing()==FacingReversed) {
-          if (direction==Forward) {
-            dir = Reverse;
-          } else {
-            dir = Forward;
-          }                    
-        }
-        _setLoco(address, speed, dir);
-      }
-    }
+    int address=loco->getAddress();
+    _setLoco(address, speed, direction);
   }
-  // console->println(F("sendThrottleAction(): end"));
 }
 
-void DCCEXProtocol::setFunction(int throttleNo, int functionNumber, bool pressed) {
+void DCCEXProtocol::setThrottle(Consist* consist, int speed, Direction direction) {
+  if (_delegate) {
+    for (ConsistLoco* cl=consist->getFirst(); cl; cl=cl->getNext()) {
+      int address=cl->getLoco()->getAddress();
+      if (cl->getFacing()==FacingReversed) {
+        if (direction==Forward) {
+          direction=Reverse;
+        } else {
+          direction=Forward;
+        }
+      }
+      _setLoco(address, speed, direction);
+    }
+  }
+}
+
+void DCCEXProtocol::functionOn(Loco* loco, int function) {
   // console->println(F("sendFunction(): "));
   if (_delegate) {
-    for (ConsistLoco* conLoco=throttle[throttleNo].getFirst(); conLoco; conLoco=conLoco->getNext()) {
-      int address = conLoco->getAddress();
-      if (address>=0) {
-        sprintf(_outboundCommand, "<F %d %d %d>", address, functionNumber, pressed);
-        _sendCommand();
-      }
+    int address = loco->getAddress();
+    if (address>=0) {
+      sprintf(_outboundCommand, "<F %d %d 1>", address, function);
+      _sendCommand();
     }
   }
   // console->println(F("sendFunction(): end"));
 }
 
-bool DCCEXProtocol::functionOn(int throttleNo, int functionNumber) {
+void DCCEXProtocol::functionOff(Loco* loco, int function) {
+  // console->println(F("sendFunction(): "));
   if (_delegate) {
-    // ConsistLoco* conLoco = throttle[throttleNo].getLocoAtPosition(0);
-    ConsistLoco* conLoco = throttle[throttleNo].getFirst();
-    int address = conLoco->getAddress();
+    int address = loco->getAddress();
     if (address>=0) {
-      // console->print(" '");
-      // console->print(conLoco->isFunctionOn(functionNumber));
-      // console->print("' ");
-      conLoco->functionOn(functionNumber);
+      sprintf(_outboundCommand, "<F %d %d 0>", address, function);
+      _sendCommand();
     }
-    return conLoco->functionOn(functionNumber);
+  }
+  // console->println(F("sendFunction(): end"));
+}
+
+bool DCCEXProtocol::isFunctionOn(Loco* loco, int function) {
+  if (_delegate) {
+    return loco->isFunctionOn(function);
   }
   return false;
 }
@@ -240,15 +253,6 @@ void DCCEXProtocol::emergencyStop() {
     _sendCommand();
   }
   // console->println(F("emergencyStop(): end"));
-}
-
-Consist DCCEXProtocol::getConsist(int throttleNo) {
-  // console->println(F("getThrottleConsist(): "));
-  if (_delegate) {
-    return throttle[throttleNo];
-  }
-  // console->println(F("getThrottleConsist(): end"));
-  return {};
 }
 
 // Roster methods
@@ -615,40 +619,18 @@ char* DCCEXProtocol::_nextServerDescriptionParam(char* description, int startAt,
 
 // Consist/loco methods
 
-bool DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
-  // console->println(F("processLocoAction()"));
-  int address = DCCEXInbound::getNumber(0);
-  int speedByte = DCCEXInbound::getNumber(2);
-  int functMap = _getValidFunctionMap(DCCEXInbound::getNumber(3));
-  int throttleNo = _findThrottleWithLoco(address);
-  if (throttleNo>=0) {
-    ConsistLoco* loco=throttle[throttleNo].getFirst();
-    if (loco->getAddress()==address) {    // ignore everything that is not the lead loco
-      int speed = _getSpeedFromSpeedByte(speedByte);
-      Direction dir = _getDirectionFromSpeedByte(speedByte);
-      int currentFunc = loco->getFunctionStates();
-      if (functMap != currentFunc) {
-        int funcChanges=currentFunc^functMap;
-        for (int f=0; f<MAX_FUNCTIONS; f++) {
-          if (funcChanges & (1<<f)) {
-                bool newState = functMap & (1<<f);
-                _delegate->receivedFunction(throttleNo, f, newState);
-            }
-        }
-        loco->setFunctionStates(functMap);
-      }
-      throttle[throttleNo].setSpeed(speed);
-      throttle[throttleNo].setDirection(dir);
-
-      _delegate->receivedSpeed(throttleNo, speed);
-      _delegate->receivedDirection(throttleNo, dir);
-    }
-  } else {
-    // console->println(F("processLocoAction(): unknown loco"));
-    return false;
-  }
-  // console->println(F("processLocoAction() end"));
-  return true;
+void DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
+  int address=DCCEXInbound::getNumber(0);
+  int speedByte=DCCEXInbound::getNumber(2);
+  int functMap=_getValidFunctionMap(DCCEXInbound::getNumber(3));
+  Loco* loco=Loco::getByAddress(address);
+  if (!loco) return;
+  int speed=_getSpeedFromSpeedByte(speedByte);
+  Direction dir=_getDirectionFromSpeedByte(speedByte);
+  loco->setSpeed(speed);
+  loco->setDirection(dir);
+  loco->setFunctionStates(functMap);
+  _delegate->receivedLocoUpdate(loco);
 }
 
 int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
@@ -657,21 +639,6 @@ int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
     functionMap &= 0xFFFFFFF;
   }
   return functionMap;
-  // This needs to set the current loco function map now
-}
-
-int DCCEXProtocol::_findThrottleWithLoco(int address) {
-  // console->println(F("findThrottleWithLoco()"));
-  for (int i=0; i<_maxThrottles; i++) {
-    if (throttle[i].getLocoCount()>0) {
-      // int pos=throttle[i].getLocoPosition(address);
-      for (ConsistLoco* cl=throttle[i].getFirst(); cl; cl=cl->getNext()) {
-        if (cl->getAddress()==address) return i;
-      }
-    }
-  }
-  // console->println(F("findThrottleWithLoco(): end. not found"));
-  return -1;  //not found
 }
 
 int DCCEXProtocol::_getSpeedFromSpeedByte(int speedByte) {
