@@ -8,17 +8,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
       - name: Requirements
         run: |
           pip3 install -r requirements.txt
           apt-get install doxygen
-      - name: Checkout repo
-        uses: actions/checkout@v3
       - name: Build docs
         run: |
           cd docs
           make html
-          touch docs/_build/html/.nojekyll
+          touch _build/html/.nojekyll
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6
         with:
