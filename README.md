@@ -6,9 +6,9 @@ The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (
 
 ----
 
-# DCC-EX Native network protocol library
+# DCC-EX Native command protocol library
 
-This library implements the DCC-EX Native protocol (as used in EX-CommandStation ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
+This library implements the DCC-EX Native command protocol (as used in EX-CommandStation ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
 
 The implementation of this library is tested on ESP32 based devices running the Arduino framework. There's nothing in here that's specific to the ESP32, and little of Arduino that couldn't be replaced as needed.
 
@@ -23,6 +23,8 @@ Then, you call the ```check()``` method as often as you can (ideally, once per i
 These patterns (Dependency Injection and Delegation) allow you to keep the different parts of your sketch from becoming too intertwined with each other. Nothing in the code that manages the pushbuttons or speed knobs needs to have any detailed knowledge of the DCC-EX native protocol.
 
 ### DCCEXProtocol Class
+
+Full documentation of the classes is available via the [DCC-EX website](file:///C:/Code/DCCEXProtocol/docs/_build/html/index.html).
 
 The DCCEXProtocol class manages all relevant objects advertised by a DCC-EX EX-CommandStation and exposes simple methods to control these objects from the client software.
 
@@ -113,7 +115,7 @@ The roster has been fully received when ```isRosterFullyReceived()``` is true.
 
 Retrieve the size of the list (number of locos) with ```dccexProtocol.getRosterCount()```
 
-Retrieve a ```Loco*``` object from the list with ```dccexProtocol.getRosterEntryNo(listEntryNumber)``` 
+Retrieve a ```Loco*``` object from the list with ```dccexProtocol.getRosterEntryNo(listEntryNumber)```
 
 ## Turnouts/Points
 
@@ -159,301 +161,25 @@ Retrieve a ```Turntable*``` object from the list with ```dccexProtocol.getTurnta
 
 ----
 
-# Structure
+# Documentation
 
-## Classes/Objects
+Documentation of the DCCEXProtocol library is available via the [DCC-EX website](file:///C:/Code/DCCEXProtocol/docs/_build/html/index.html).
 
-### DCCEXProtocolDelegate
+For contributors wishing to build local copies of the documentation while updating the library, here is the very high level process of the requirements to make this work on Windows:
 
-#### Public methods
+- Install [MSYS2 C++](https://code.visualstudio.com/docs/cpp/config-mingw#_prerequisites) compilers
+- Install [CMake](https://cmake.org/download/) and ensure you select the option to add to your user path
+- Install [Doxygen](https://www.doxygen.nl/download.html) and once complete, add to your user path
+- Install the CMake Tools extension in VSCode
+- Setup a Python virtual environment with "virtualenv venv" and activate with "venv\scripts\activate"
+- Install required Python modules with "pip3 install -r requirements.txt"
+- Change to the docs directory and run "make html"
 
-    virtual void receivedServerDescription(char* version) {}
-  
-    virtual void receivedRosterList(int rosterSize) {}
-    virtual void receivedTurnoutList(int turnoutListSize) {}    
-    virtual void receivedRouteList(int routeListSize) {}
-    virtual void receivedTurntableList(int turntablesListSize) {}    
-
-    virtual void receivedSpeed(int throttleNo, int speed) { }
-    virtual void receivedDirection(int throttleNo, Direction dir) { }
-    virtual void receivedFunction(int throttleNo, int func, FunctionState state) { }
-
-    virtual void receivedTrackPower(TrackPower state) { }
-
-    virtual void receivedTurnoutAction(int turnoutId, bool thrown) { }
-    virtual void receivedTurntableAction(int turntableId, int position, bool moving) { }
-
----
-
-### DCCEXProtocol
-
-#### Public methods
-
-    **Protocol and Comms Related**
-    DCCEXProtocol(int maxThrottles=6, bool server=false);
-    void setDelegate(DCCEXProtocolDelegate *delegate);
-    void setLogStream(Stream *console);
-    void connect(Stream *stream);
-    void disconnect();
-    bool check();
-
-    **Server Related**
-    bool sendServerDetailsRequest();
-    long getLastServerResponseTime();  // seconds since Arduino start
-
-    **Power Related**
-	bool sendTrackPower(TrackPower state);
-	bool sendTrackPower(TrackPower state, char track);
-
-    **Lists Related**
-    bool getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
-
-    **Roster Related**
-    bool getRoster();
-    int getRosterCount();
-    Loco* getRosterEntryNo(int entryNo);
-    Loco* findLocoInRoster(int address);
-    bool isRosterRequested();
-    bool isRosterFullyReceived();
-
-    **Turnout Related**
-    bool getTurnouts();
-    int getTurnoutsCount();
-    Turnout* getTurnoutsEntryNo(int entryNo);
-    Turnout* getTurnoutById(int turnoutId);
-    bool isTurnoutListRequested();
-    bool isTurnoutListFullyReceived();
-    void closeTurnout(int turnoutId);
-    void throwTurnout(int turnoutId);
-    void toggleTurnout(int turnoutId);
-
-    **Route Related**
-    bool getRoutes();
-    int getRoutesCount();
-    Route* getRoutesEntryNo(int entryNo);
-    bool isRouteListRequested();
-    bool isRouteListFullyReceived();
-    bool sendRouteAction(int routeId);
-    bool sendPauseRoutes();
-    bool sendResumeRoutes();
-
-    **Turntable Related**
-    bool getTurntables();
-    int getTurntablesCount();
-    bool isTurntableListRequested();
-    bool isTurntableListFullyReceived();
-    Turntable* getTurntableById(int turntableId);
-    bool sendTurntableAction(int turntableId, int position, int activity);
-
-    **Throttle Related**
-    Consist getThrottleConsist(int throttleNo);
-    bool sendThrottleAction(int throttle, int speed, Direction direction);
-    bool sendFunction(int throttle, int functionNumber, bool pressed);
-    bool sendFunction(int throttle, int address, int functionNumber, bool pressed);
-    bool isFunctionOn(int throttle, int functionNumber);
-    void sendEmergencyStop();
-
-    bool sendLocoAction(int address, int speed, Direction direction);
-    bool sendLocoUpdateRequest(int address);
-
-    **Accessory Related**
-    bool sendAccessoryAction(int accessoryAddress, int activate);
-    bool sendAccessoryAction(int accessoryAddress, int accessorySubAddr, int activate);
-
-
-#### Public Attributes
-
-    Consist *throttle;
-    Loco* roster;
-    Turnout* turnouts;
-    Route* routes;
-    Turntable* turntables;
-
-
-
----
-
-### class Loco
-
-???
-Used by ```Roster``` directly.  Used by ```Throttle``` indirectly.
-
-#### Public Attributes
-
-    Functions locoFunctions;
-
-#### Public methods
-
-    Loco(int address, LocoSource source);
-    int getAddress();
-    void setName(char* name);
-    char* getName();
-    void setSpeed(int speed);
-    int getSpeed();
-    void setDirection(Direction direction);
-    Direction getDirection();
-    LocoSource getSource();
-    void setupFunctions(char* functionNames);
-    bool isFunctionOn(int function);
-    void setFunctionStates(int functionStates);
-    int getFunctionStates();
-    int getCount();
-    static Loco* getFirst();
-    Loco* getNext();
-
----
-
-### class ConsistLoco : public Loco 
-
-Adds ```Facing``` to the Loco class.
-
-Used by ```Consist```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    ConsistLoco(int address, LocoSource source, Facing facing);
-    void setFacing(Facing facing);
-    Facing getFacing();
-    ConsistLoco* getNext();
-
----
-
-### class Consist
-
-Used by ```throttle```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    Consist();
-    void setName(char* name);
-    char* getName();
-    void addFromRoster(Loco* loco, Facing facing);
-    void addFromEntry(int address, Facing facing);
-    void releaseAll();
-    void releaseLoco(int address);
-    int getLocoCount();
-    bool inConsist(int address);
-    void setSpeed(int speed);
-    int getSpeed();
-    void setDirection(Direction direction);
-    Direction getDirection();
-    ConsistLoco* getFirst();
-
----
-
-### class Turnout
-
-Used by ```turnouts```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    Turnout(int id, bool thrown);
-    void setThrown(bool thrown);
-    void setName(char* _name);
-    int getId();
-    char* getName();
-    bool getThrown();
-    static Turnout* getFirst();
-    Turnout* getNext();
-    int getCount();
-
----
-
-### class Route
-
-Used by ```routes```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    Route(int id);
-    int getId();
-    void setName(char* name);
-    char* getName();
-    void setType(RouteType type);
-    RouteType getType();
-    int getCount();
-    static Route* getFirst();
-    Route* getNext();
-
----
-
-### class Turntable
-
-Used by ```turntables```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    Turntable(int id);
-    int getId();
-    void setType(TurntableType type);
-    TurntableType getType();
-    void setIndex(int index);
-    int getIndex();
-    void setNumberOfIndexes(int numberOfIndexes);
-    int getNumberOfIndexes();
-    void setName(char* name);
-    char* getName();
-    void setMoving(bool moving);
-    bool isMoving();
-    int getCount();
-    int getIndexCount();
-    static Turntable* getFirst();
-    Turntable* getNext();
-    void addIndex(TurntableIndex* index);
-    TurntableIndex* getFirstIndex();
-
----
-
-#### class TurntableIndex
-
-Used by ```Turntable```
-
-#### Public Attributes
-
-    none
-
-#### Public methods
-
-    TurntableIndex(int ttId, int id, int angle, char* name);
-    int getTTId();
-    int getId();
-    int getAngle();
-    char* getName();
-    TurntableIndex* getNext();
-
-----
-----
-
-
-----
-----
 ----
 
 # License
-----
 
 Creative Commons [CC-BY-SA 4.0][CCBYSA]   ![CCBYSA](https://i.creativecommons.org/l/by-sa/4.0/88x31.png)
-
 
 **Free Software, Oh Yeah!**
 
