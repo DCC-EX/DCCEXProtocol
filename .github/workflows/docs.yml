@@ -13,7 +13,7 @@ jobs:
       - name: Requirements
         run: |
           pip3 install -r requirements.txt
-          apt-get install doxygen
+          sudo apt-get install doxygen
       - name: Build docs
         run: |
           cd docs
