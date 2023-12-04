@@ -1,4 +1,4 @@
-// WiThrottleProtocol library: Roster, etc example
+// WiThrottleProtocol library: Roster and other objects example
 //
 // Shows how to retrieve the Roster, Turnouts/Points, Routes, Turntables
 // Tested with ESP32-WROOM board
