@@ -10,22 +10,27 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
+// If we haven't got a custom config.h, use the example
+#if __has_include ("config.h")
+  #include "config.h"
+#else
+  #warning config.h not found. Using defaults from config.example.h
+  #include "config.example.h"
+#endif
+
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(char* version) {     
-      Serial.print("\n\nReceived version: "); Serial.println(version);  
+    void receivedServerVersion(int major, int minor, int patch) {     
+      Serial.print("\n\nReceived version: ");
+      Serial.print(major);
+      Serial.print(".");
+      Serial.print(minor);
+      Serial.print(".");
+      Serial.println(patch);
     }
 };
-
-// WiFi and server configuration
-// const char* ssid = "MySSID";
-// const char* password =  "MyPWD";
-const char* ssid = "DCCEX_44182a";
-const char* password =  "PASS_44182a";
-IPAddress serverAddress(192,168,4,1);
-int serverPort = 2560;
 
 // Global objects
 WiFiClient client;
@@ -52,8 +57,8 @@ void setup() {
   }
   Serial.println("Connected to the server");
 
-  // Uncomment for logging on Serial
-  // dccexProtocol.setLogStream(&Serial);
+  // Setup logging to serial console
+  dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -62,7 +67,7 @@ void setup() {
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");
 
-  dccexProtocol.sendServerDetailsRequest();
+  dccexProtocol.requestServerVersion();
 }
 
 void loop() {

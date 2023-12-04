@@ -10,6 +10,14 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
+// If we haven't got a custom config.h, use the example
+#if __has_include ("config.h")
+  #include "config.h"
+#else
+  #warning config.h not found. Using defaults from config.example.h
+  #include "config.example.h"
+#endif
+
 void printRoster();
 void printTurnouts();
 void printRoutes();
@@ -19,48 +27,47 @@ void printTurntables();
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(char* version) {     
-        Serial.print("Received version: "); Serial.println(version);  
+    void receivedServerVersion(int major, int minor, int patch) {     
+      Serial.print("\n\nReceived version: ");
+      Serial.print(major);
+      Serial.print(".");
+      Serial.print(minor);
+      Serial.print(".");
+      Serial.println(patch);
     }
 
     void receivedTrackPower(TrackPower state) { 
-      Serial.print("Received Track Power: "); Serial.println(state);  
+      Serial.print("\n\nReceived Track Power: ");
+      Serial.println(state);  
+      Serial.println("\n\n");  
     }
 
-    void receivedRosterList(int rosterSize) {
-      Serial.print("Received Roster: "); Serial.println(rosterSize);  
+    void receivedRosterList() {
+      Serial.println("\n\nReceived Roster");
+      printRoster();
     }
-    void receivedTurnoutList(int turnoutListSize) {
-      Serial.print("Received Turnout List: "); Serial.println(turnoutListSize); 
+    void receivedTurnoutList() {
+      Serial.print("\n\nReceived Turnouts/Points list");
+      printTurnouts();
+      Serial.println("\n\n");  
     }    
-    void receivedRouteList(int routeListSize) {
-        Serial.print("Received Route List: "); Serial.println(routeListSize); 
+    void receivedRouteList() {
+      Serial.print("\n\nReceived Routes List");
+      printRoutes();
+      Serial.println("\n\n");  
     }
-    void receivedTurntablesList(int turntablesListSize) {
-        Serial.print("Received Turnout List: "); Serial.println(turntablesListSize); 
-    }  
-
-
-    void receivedSpeed(int throttleNo, int speed) { 
-        Serial.print("Received Throttle Speed: Throttle: "); Serial.print(throttleNo); Serial.print(" Speed: "); Serial.println(speed); 
-    }
-    void receivedDirection(int throttleNo, Direction dir) { 
-        Serial.print("Received Throttle Direction: Throttle: "); Serial.print(throttleNo); Serial.print(" Direction: "); Serial.println(dir); 
-    }
-    void receivedFunction(int throttleNo, int func, bool state) { 
-        Serial.print("Received Throttle Function change: Throttle: "); Serial.print(throttleNo); Serial.print(" function: "); Serial.print(func); Serial.print(" state: "); Serial.println(state);
+    void receivedTurntableList() {
+      Serial.print("\n\nReceived Turntables list");
+      printTurntables();
+      Serial.println("\n\n");  
     }
 
+    void receivedLocoUpdate(Loco* loco) {
+      Serial.print("Received Loco update for DCC address: ");
+      Serial.print(loco->getAddress());
+    }
+    
 };
-
-// WiFi and server configuration
-// const char* ssid = "MySSID";
-// const char* password =  "MyPWD";
-const char* ssid = "DCCEX_44182a";
-const char* password =  "PASS_44182a";
-IPAddress serverAddress(192,168,4,1);
-int serverPort = 2560;
-unsigned long lastTime = 0;
 
 // for random speed changes 
 int speed = 0;
@@ -69,7 +76,7 @@ bool done = false;
 
 // Global objects
 WiFiClient client;
-DCCEXProtocol dccexProtocol(3); // three throttles
+DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
 
 void setup() {

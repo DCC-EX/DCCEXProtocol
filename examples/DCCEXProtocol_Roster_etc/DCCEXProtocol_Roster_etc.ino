@@ -10,7 +10,14 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
-void printServer();
+// If we haven't got a custom config.h, use the example
+#if __has_include ("config.h")
+  #include "config.h"
+#else
+  #warning config.h not found. Using defaults from config.example.h
+  #include "config.example.h"
+#endif
+
 void printRoster();
 void printTurnouts();
 void printRoutes();
@@ -20,48 +27,42 @@ void printTurntables();
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(char* version) {   
-      Serial.println("\n\nReceived Server Description: ");
-      printServer();  
+    void receivedServerVersion(int major, int minor, int patch) {     
+      Serial.print("\n\nReceived version: ");
+      Serial.print(major);
+      Serial.print(".");
+      Serial.print(minor);
+      Serial.print(".");
+      Serial.println(patch);
     }
 
     void receivedTrackPower(TrackPower state) { 
-      Serial.print("\n\nReceived Track Power: "); Serial.println(state);  
+      Serial.print("\n\nReceived Track Power: ");
+      Serial.println(state);  
       Serial.println("\n\n");  
     }
 
-    void receivedRosterList(int rosterSize) {
-      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
-      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
-      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
-      Serial.print("\n\nReceived Roster: "); Serial.println(rosterSize);  
+    void receivedRosterList() {
+      Serial.println("\n\nReceived Roster");
       printRoster();
     }
-    void receivedTurnoutList(int turnoutListSize) {
-      Serial.print("\n\nReceived Turnouts/Points list: "); Serial.println(turnoutListSize);  
+    void receivedTurnoutList() {
+      Serial.print("\n\nReceived Turnouts/Points list");
       printTurnouts();
       Serial.println("\n\n");  
     }    
-    void receivedRouteList(int routeListSize) {
-      Serial.print("\n\nReceived Routes List: "); Serial.println(routeListSize);  
+    void receivedRouteList() {
+      Serial.print("\n\nReceived Routes List");
       printRoutes();
       Serial.println("\n\n");  
     }
-    void receivedTurntableList(int turntablesListSize) {
-      Serial.print("\n\nReceived Turntables list: "); Serial.println(turntablesListSize);  
+    void receivedTurntableList() {
+      Serial.print("\n\nReceived Turntables list");
       printTurntables();
       Serial.println("\n\n");  
-    }    
+    }
 
 };
-
-// WiFi and server configuration
-// const char* ssid = "MySSID";
-// const char* password =  "MyPWD";
-const char* ssid = "DCCEX_44182a";
-const char* password =  "PASS_44182a";
-IPAddress serverAddress(192,168,4,1);
-int serverPort = 2560;
 
 unsigned long lastTime = 0;
 
@@ -71,14 +72,6 @@ bool done = false;
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-
-void printServer() {
-  Serial.print("  Server Version:  "); Serial.println(dccexProtocol.serverVersion);
-  Serial.print("  Server MP Type:  "); Serial.println(dccexProtocol.serverMicroprocessorType);
-  Serial.print("  Server MC Type:  "); Serial.println(dccexProtocol.serverMotorcontrollerType);
-  Serial.print("  Server Build No: "); Serial.println(dccexProtocol.serverBuildNumber);
-  Serial.println("\n\n");  
-}
 
 void printRoster() {
   for (Loco* loco=dccexProtocol.roster->getFirst(); loco; loco=loco->getNext()) {
@@ -126,7 +119,7 @@ void printTurntables() {
     Serial.println("~");
 
     int j = 0;
-    for (TurntableIndex* turntableIndex=turntable->getFirstIndex(); turntableIndex; turntableIndex=turntableIndex->getNext()) {
+    for (TurntableIndex* turntableIndex=turntable->getFirstIndex(); turntableIndex; turntableIndex=turntableIndex->getNextIndex()) {
       char* indexName = turntableIndex->getName();
       Serial.print("  index"); 
       Serial.print(j); 
@@ -142,7 +135,7 @@ void printTurntables() {
 void setup() {
   
   Serial.begin(115200);
-  Serial.println("DCCEXProtocol Delegate Demo");
+  Serial.println("DCCEXProtocol Roster and Objects Demo");
   Serial.println();
 
   // Connect to WiFi network
@@ -159,7 +152,7 @@ void setup() {
   }
   Serial.println("Connected to the server");
 
-  // Uncomment for logging on Serial
+  // Enable logging on Serial
   dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
@@ -169,10 +162,9 @@ void setup() {
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");
 
-  dccexProtocol.sendServerDetailsRequest();
-  dccexProtocol.sendTrackPower(PowerOn);
+  dccexProtocol.requestServerVersion();
+  dccexProtocol.powerOn();
 
-  lastTime = millis();
 }
   
 void loop() {
@@ -183,11 +175,4 @@ void loop() {
   //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
   dccexProtocol.getLists(true, true, true, true);
 
-  // if (!done && dccexProtocol.isServerDetailsReceived()) {
-  //   done = true;
-  // }
-
-//   if ((millis() - lastTime) >= 10000) {
-//     lastTime = millis();
-//   }  
 }
