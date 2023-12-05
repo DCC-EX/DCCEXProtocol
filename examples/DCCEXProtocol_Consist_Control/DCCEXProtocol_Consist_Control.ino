@@ -1,6 +1,6 @@
 // WiThrottleProtocol library: Consist control example
 //
-// Shows how to create a delegate class to handle callbacks and retrieve the Roster
+// Shows how to create and control a consist
 // Tested with ESP32-WROOM board
 //
 // Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
@@ -17,8 +17,6 @@
   #warning config.h not found. Using defaults from config.example.h
   #include "config.example.h"
 #endif
-
-void printRoster();
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
@@ -90,6 +88,9 @@ void setup() {
   Serial.println("DCC-EX connected");
 
   dccexProtocol.requestServerVersion();
+
+  // Turn track power on for locos to move
+  dccexProtocol.powerOn();
 
   lastTime = millis();
 }
