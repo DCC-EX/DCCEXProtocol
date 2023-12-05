@@ -138,6 +138,15 @@ unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>getLastServe
 <tr class="memitem:ab28d2d9ba6338d731d5955b395b904da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ab28d2d9ba6338d731d5955b395b904da">isFunctionOn</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int function)</td></tr>
 <tr class="memdesc:ab28d2d9ba6338d731d5955b395b904da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if the specified function for the provided loco is on.  <a href="classDCCEXProtocol.html#ab28d2d9ba6338d731d5955b395b904da">More...</a><br /></td></tr>
 <tr class="separator:ab28d2d9ba6338d731d5955b395b904da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece7109300a5f2df20958a18c54eed51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aece7109300a5f2df20958a18c54eed51">functionOn</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
+<tr class="memdesc:aece7109300a5f2df20958a18c54eed51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function on for the provided consist.  <a href="classDCCEXProtocol.html#aece7109300a5f2df20958a18c54eed51">More...</a><br /></td></tr>
+<tr class="separator:aece7109300a5f2df20958a18c54eed51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10378574a441f3a798bc17bdb2e049ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a10378574a441f3a798bc17bdb2e049ee">functionOff</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
+<tr class="memdesc:a10378574a441f3a798bc17bdb2e049ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function off for the provided consist.  <a href="classDCCEXProtocol.html#a10378574a441f3a798bc17bdb2e049ee">More...</a><br /></td></tr>
+<tr class="separator:a10378574a441f3a798bc17bdb2e049ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a340c6a37042f0494c4aab4480454644f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a340c6a37042f0494c4aab4480454644f">isFunctionOn</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
+<tr class="memdesc:a340c6a37042f0494c4aab4480454644f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if the specified function for the provided consist is on (Checks first loco)  <a href="classDCCEXProtocol.html#a340c6a37042f0494c4aab4480454644f">More...</a><br /></td></tr>
+<tr class="separator:a340c6a37042f0494c4aab4480454644f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8043f7e570585636124f40455a1d5a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#af8043f7e570585636124f40455a1d5a5">requestLocoUpdate</a> (int address)</td></tr>
 <tr class="memdesc:af8043f7e570585636124f40455a1d5a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Explicitly request an update for the specified loco.  <a href="classDCCEXProtocol.html#af8043f7e570585636124f40455a1d5a5">More...</a><br /></td></tr>
 <tr class="separator:af8043f7e570585636124f40455a1d5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -483,8 +492,45 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a10378574a441f3a798bc17bdb2e049ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10378574a441f3a798bc17bdb2e049ee">&#9670;&nbsp;</a></span>functionOff() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::functionOff </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classConsist.html">Consist</a> *&#160;</td>
+          <td class="paramname"><em>consist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Turn the specified function off for the provided consist. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loco</td><td>Pointer to a consist object </td></tr>
+    <tr><td class="paramname">function</td><td>Function number (0 - 27) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a0e72e184856d4dce4e98a7d739cc4a4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e72e184856d4dce4e98a7d739cc4a4f">&#9670;&nbsp;</a></span>functionOff()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e72e184856d4dce4e98a7d739cc4a4f">&#9670;&nbsp;</a></span>functionOff() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -520,8 +566,45 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aece7109300a5f2df20958a18c54eed51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aece7109300a5f2df20958a18c54eed51">&#9670;&nbsp;</a></span>functionOn() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::functionOn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classConsist.html">Consist</a> *&#160;</td>
+          <td class="paramname"><em>consist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Turn the specified function on for the provided consist. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loco</td><td>Pointer to a consist object </td></tr>
+    <tr><td class="paramname">function</td><td>Function number (0 - 27) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a6ab8652f4de1b84fab409d6fb2c3ca4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ab8652f4de1b84fab409d6fb2c3ca4f">&#9670;&nbsp;</a></span>functionOn()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ab8652f4de1b84fab409d6fb2c3ca4f">&#9670;&nbsp;</a></span>functionOn() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -802,8 +885,46 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a340c6a37042f0494c4aab4480454644f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a340c6a37042f0494c4aab4480454644f">&#9670;&nbsp;</a></span>isFunctionOn() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DCCEXProtocol::isFunctionOn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classConsist.html">Consist</a> *&#160;</td>
+          <td class="paramname"><em>consist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test if the specified function for the provided consist is on (Checks first loco) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loco</td><td>Pointer to a consist object </td></tr>
+    <tr><td class="paramname">function</td><td>Function number to test (0 - 27) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true = on, false = off </dd></dl>
+
+</div>
+</div>
 <a id="ab28d2d9ba6338d731d5955b395b904da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab28d2d9ba6338d731d5955b395b904da">&#9670;&nbsp;</a></span>isFunctionOn()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab28d2d9ba6338d731d5955b395b904da">&#9670;&nbsp;</a></span>isFunctionOn() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

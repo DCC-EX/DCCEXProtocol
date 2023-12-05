@@ -126,6 +126,9 @@
 <li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10functionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
 <li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11functionOffEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
 <li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12isFunctionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
+<li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10functionOnEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
+<li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11functionOffEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
+<li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12isFunctionOnEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
 <li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17requestLocoUpdateEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestLocoUpdate()</span></code></a></li>
 <li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8readLocoEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::readLoco()</span></code></a></li>
 <li><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13emergencyStopEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::emergencyStop()</span></code></a></li>
@@ -1120,6 +1123,51 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>loco</strong> – Pointer to a loco object </p></li>
+<li><p><strong>function</strong> – Function number to test (0 - 27) </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true = on, false = off </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10functionOnEP7Consisti">
+<span id="_CPPv3N13DCCEXProtocol10functionOnEP7Consisti"></span><span id="_CPPv2N13DCCEXProtocol10functionOnEP7Consisti"></span><span id="DCCEXProtocol::functionOn__ConsistP.i"></span><span class="target" id="classDCCEXProtocol_1aece7109300a5f2df20958a18c54eed51"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">functionOn</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv47Consist" title="Consist"><span class="n"><span class="pre">Consist</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">consist</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10functionOnEP7Consisti" title="Link to this definition"></a><br /></dt>
+<dd><p>Turn the specified function on for the provided consist. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loco</strong> – Pointer to a consist object </p></li>
+<li><p><strong>function</strong> – Function number (0 - 27) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol11functionOffEP7Consisti">
+<span id="_CPPv3N13DCCEXProtocol11functionOffEP7Consisti"></span><span id="_CPPv2N13DCCEXProtocol11functionOffEP7Consisti"></span><span id="DCCEXProtocol::functionOff__ConsistP.i"></span><span class="target" id="classDCCEXProtocol_1a10378574a441f3a798bc17bdb2e049ee"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">functionOff</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv47Consist" title="Consist"><span class="n"><span class="pre">Consist</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">consist</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol11functionOffEP7Consisti" title="Link to this definition"></a><br /></dt>
+<dd><p>Turn the specified function off for the provided consist. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loco</strong> – Pointer to a consist object </p></li>
+<li><p><strong>function</strong> – Function number (0 - 27) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol12isFunctionOnEP7Consisti">
+<span id="_CPPv3N13DCCEXProtocol12isFunctionOnEP7Consisti"></span><span id="_CPPv2N13DCCEXProtocol12isFunctionOnEP7Consisti"></span><span id="DCCEXProtocol::isFunctionOn__ConsistP.i"></span><span class="target" id="classDCCEXProtocol_1a340c6a37042f0494c4aab4480454644f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isFunctionOn</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv47Consist" title="Consist"><span class="n"><span class="pre">Consist</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">consist</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol12isFunctionOnEP7Consisti" title="Link to this definition"></a><br /></dt>
+<dd><p>Test if the specified function for the provided consist is on (Checks first loco) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loco</strong> – Pointer to a consist object </p></li>
 <li><p><strong>function</strong> – Function number to test (0 - 27) </p></li>
 </ul>
 </dd>
