@@ -40,6 +40,8 @@
   3) Use the get... functions to access the parameters.
   These parameters are ONLY VALID until you next call parse.
 */
+
+/// @brief Inbound DCC-EX command parser class to parse commands and provide interpreted parameters
 class DCCEXInbound {
 public: 
   /// @brief Setup parser once with enough space to handle the maximum number of 

@@ -31,6 +31,7 @@
 
 #include <Arduino.h>
 
+/// @brief Class to contain and maintain the various Turnout/Point attributes and methods
 class Turnout {
 public:
   /// @brief Constructor

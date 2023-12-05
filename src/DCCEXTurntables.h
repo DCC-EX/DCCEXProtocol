@@ -37,6 +37,7 @@ enum TurntableType {
   TurntableTypeUnknown = 9,
 };
 
+/// @brief Class to contain and maintain the various Turntable Index attributes and methods associated with a Turntable
 class TurntableIndex {
 public:
   /// @brief Constructor
@@ -78,6 +79,7 @@ private:
 
 };
 
+/// @brief Class to contain and maintain the various Turntable attributes and methods
 class Turntable {
 public:
   /// @brief Constructor

@@ -36,6 +36,7 @@ enum RouteType {
     RouteTypeAutomation = 'A',
 };
 
+/// @brief Class to contain and maintain the various Route attributes and methods
 class Route {
 public:
   /// @brief Constructor

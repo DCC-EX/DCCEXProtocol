@@ -50,6 +50,7 @@ enum Facing {
   FacingReversed=1,
 };
 
+/// @brief Class for a Loco object representing a DCC addressed locomotive
 class Loco {
 public:
   /// @brief Constructor
@@ -134,6 +135,7 @@ private:
   friend class Consist;
 };
 
+/// @brief Class to add an additional attribute to a Loco object to specify the direction it is facing in a consist
 class ConsistLoco {
 public:
   /// @brief Constructor
@@ -169,6 +171,7 @@ private:
 
 };
 
+/// @brief Class to create a software consist of one or more ConsistLoco objects
 class Consist {
 public:
   /// @brief Constructor
