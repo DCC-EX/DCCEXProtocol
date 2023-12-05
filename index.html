@@ -580,7 +580,7 @@
 <dd><p>Check if the provided loco is in the consist. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>address</strong> – Pointer to the loco object to check </p>
+<dd class="field-odd"><p><strong>loco</strong> – Pointer to the loco object to check </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>true|false </p>
@@ -678,7 +678,10 @@
 <dd><p>Constructor. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>facing</strong> – Direction loco is facing in the consist (FacingForward|FacingReversed) </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loco</strong> – Pointer to the <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> object to add </p></li>
+<li><p><strong>facing</strong> – Direction loco is facing in the consist (FacingForward|FacingReversed) </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -876,7 +879,7 @@
 <dd><p>dump list of parameters obtained </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Address</strong> – of output e.g. &amp;Serial </p>
+<dd class="field-odd"><p><strong>out</strong> – Address of output e.g. &amp;Serial </p>
 </dd>
 </dl>
 </dd></dl>
@@ -1064,7 +1067,13 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol25getLastServerResponseTimeEv">
 <span id="_CPPv3N13DCCEXProtocol25getLastServerResponseTimeEv"></span><span id="_CPPv2N13DCCEXProtocol25getLastServerResponseTimeEv"></span><span id="DCCEXProtocol::getLastServerResponseTime"></span><span class="target" id="classDCCEXProtocol_1a3fbbe20688623c974e2ef39c8dfd632c"></span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLastServerResponseTime</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol25getLastServerResponseTimeEv" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Retrieve the last time the server responded. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Last response time in milliseconds (from millis()) </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol11setThrottleEP4Locoi9Direction">
@@ -1148,7 +1157,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loco</strong> – Pointer to a consist object </p></li>
+<li><p><strong>consist</strong> – Pointer to a consist object </p></li>
 <li><p><strong>function</strong> – Function number (0 - 27) </p></li>
 </ul>
 </dd>
@@ -1162,7 +1171,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loco</strong> – Pointer to a consist object </p></li>
+<li><p><strong>consist</strong> – Pointer to a consist object </p></li>
 <li><p><strong>function</strong> – Function number (0 - 27) </p></li>
 </ul>
 </dd>
@@ -1176,7 +1185,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loco</strong> – Pointer to a consist object </p></li>
+<li><p><strong>consist</strong> – Pointer to a consist object </p></li>
 <li><p><strong>function</strong> – Function number to test (0 - 27) </p></li>
 </ul>
 </dd>
@@ -1500,22 +1509,26 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol6rosterE">
 <span id="_CPPv3N13DCCEXProtocol6rosterE"></span><span id="_CPPv2N13DCCEXProtocol6rosterE"></span><span id="DCCEXProtocol::roster__LocoP"></span><span class="target" id="classDCCEXProtocol_1a5252dd767c313c8c0dbecd4ffb1d0a25"></span><a class="reference internal" href="#_CPPv44Loco" title="Loco"><span class="n"><span class="pre">Loco</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">roster</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol6rosterE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Linked list of <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> objects to form the roster. </p>
+</dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol8turnoutsE">
 <span id="_CPPv3N13DCCEXProtocol8turnoutsE"></span><span id="_CPPv2N13DCCEXProtocol8turnoutsE"></span><span id="DCCEXProtocol::turnouts__TurnoutP"></span><span class="target" id="classDCCEXProtocol_1abd524a7995c9fe3c54ab0481b94e0720"></span><a class="reference internal" href="#_CPPv47Turnout" title="Turnout"><span class="n"><span class="pre">Turnout</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">turnouts</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol8turnoutsE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Linked list of <a class="reference internal" href="#classTurnout"><span class="std std-ref">Turnout</span></a> objects to form the turnout list. </p>
+</dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol6routesE">
 <span id="_CPPv3N13DCCEXProtocol6routesE"></span><span id="_CPPv2N13DCCEXProtocol6routesE"></span><span id="DCCEXProtocol::routes__RouteP"></span><span class="target" id="classDCCEXProtocol_1a41ed928c9eb8324c70eaa259efbdb988"></span><a class="reference internal" href="#_CPPv45Route" title="Route"><span class="n"><span class="pre">Route</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">routes</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol6routesE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Linked list of <a class="reference internal" href="#classRoute"><span class="std std-ref">Route</span></a> objects to form the list of routes and automations. </p>
+</dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10turntablesE">
 <span id="_CPPv3N13DCCEXProtocol10turntablesE"></span><span id="_CPPv2N13DCCEXProtocol10turntablesE"></span><span id="DCCEXProtocol::turntables__TurntableP"></span><span class="target" id="classDCCEXProtocol_1a67084ec5de1a1b031797ed7c8c514e35"></span><a class="reference internal" href="#_CPPv49Turntable" title="Turntable"><span class="n"><span class="pre">Turntable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">turntables</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10turntablesE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Linked list of <a class="reference internal" href="#classTurntable"><span class="std std-ref">Turntable</span></a> objects to form the list of turntables. </p>
+</dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
@@ -2226,18 +2239,24 @@
 <span id="_CPPv310NullStream"></span><span id="_CPPv210NullStream"></span><span id="NullStream"></span><span class="target" id="classNullStream"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NullStream</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">Stream</span></span><a class="headerlink" href="#_CPPv410NullStream" title="Link to this definition"></a><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;<a class="reference internal" href="#DCCEXProtocol_8h"><span class="std std-ref">DCCEXProtocol.h</span></a>&gt;</em></div>
-<p>Nullstream class for initial <a class="reference internal" href="#classDCCEXProtocol"><span class="std std-ref">DCCEXProtocol</span></a> instantiation. </p>
+<p>Nullstream class for initial <a class="reference internal" href="#classDCCEXProtocol"><span class="std std-ref">DCCEXProtocol</span></a> instantiation to direct streams to nothing. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream10NullStreamEv">
 <span id="_CPPv3N10NullStream10NullStreamEv"></span><span id="_CPPv2N10NullStream10NullStreamEv"></span><span id="NullStream::NullStream"></span><span class="target" id="classNullStream_1ab0d616a614956971c8389ddb6367cb51"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NullStream</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10NullStream10NullStreamEv" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Constructor for the <a class="reference internal" href="#classNullStream"><span class="std std-ref">NullStream</span></a> object. </p>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream9availableEv">
 <span id="_CPPv3N10NullStream9availableEv"></span><span id="_CPPv2N10NullStream9availableEv"></span><span id="NullStream::available"></span><span class="target" id="classNullStream_1a4fff42de93b75c8b58e8e5f088b2c7f8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">available</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10NullStream9availableEv" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream5flushEv">
@@ -2247,22 +2266,51 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream4peekEv">
 <span id="_CPPv3N10NullStream4peekEv"></span><span id="_CPPv2N10NullStream4peekEv"></span><span id="NullStream::peek"></span><span class="target" id="classNullStream_1a2c1345c786ff1585d25fd18500d5d785"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">peek</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10NullStream4peekEv" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream4readEv">
 <span id="_CPPv3N10NullStream4readEv"></span><span id="_CPPv2N10NullStream4readEv"></span><span id="NullStream::read"></span><span class="target" id="classNullStream_1ae6124da821ac633d45f17a4567646305"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10NullStream4readEv" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream5writeE7uint8_t">
 <span id="_CPPv3N10NullStream5writeE7uint8_t"></span><span id="_CPPv2N10NullStream5writeE7uint8_t"></span><span id="NullStream::write__uint8_t"></span><span class="target" id="classNullStream_1a0112c85ad6172d37f45b76a491907bab"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10NullStream5writeE7uint8_t" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>c</strong> – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N10NullStream5writeEPK7uint8_t6size_t">
 <span id="_CPPv3N10NullStream5writeEPK7uint8_t6size_t"></span><span id="_CPPv2N10NullStream5writeEPK7uint8_t6size_t"></span><span id="NullStream::write__uint8_tCP.s"></span><span class="target" id="classNullStream_1af2599c580a1d4a68c4a0eaf598e32730"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buffer</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N10NullStream5writeEPK7uint8_t6size_t" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> – </p></li>
+<li><p><strong>size</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 </dd></dl>
