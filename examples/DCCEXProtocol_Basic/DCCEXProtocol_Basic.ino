@@ -10,13 +10,13 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
-// WiFi and server configuration
-// const char* ssid = "MySSID";
-// const char* password =  "MyPWD";
-const char* ssid = "DCCEX_1ec919";
-const char* password =  "PASS_1ec919";
-IPAddress serverAddress(192,168,4,1);
-int serverPort = 2560;
+// If we haven't got a custom config.h, use the example
+#if __has_include ("config.h")
+  #include "config.h"
+#else
+  #warning config.h not found. Using defaults from config.example.h
+  #include "config.example.h"
+#endif
 
 // Global objects
 WiFiClient client;
@@ -42,8 +42,7 @@ void setup() {
   }
   Serial.println("Connected to the server");
 
-  // Uncomment for logging on Serial
-  //dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&Serial);
 
   // Pass the communication to wiThrottleProtocol
   dccexProtocol.connect(&client);

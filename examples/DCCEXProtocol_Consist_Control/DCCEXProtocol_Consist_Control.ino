@@ -1,6 +1,6 @@
-// WiThrottleProtocol library: Roster example
+// WiThrottleProtocol library: Consist control example
 //
-// Shows how to create a delegate class to handle a consist with multiple locos
+// Shows how to create and control a consist
 // Tested with ESP32-WROOM board
 //
 // Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
@@ -10,91 +10,57 @@
 #include <WiFi.h>
 #include <DCCEXProtocol.h>
 
-void printServer();
-void checkFunction(int throttleNo, int func);
+// If we haven't got a custom config.h, use the example
+#if __has_include ("config.h")
+  #include "config.h"
+#else
+  #warning config.h not found. Using defaults from config.example.h
+  #include "config.example.h"
+#endif
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
   
   public:
-    void receivedServerDescription(char* version) {   
-      Serial.println("\n\nReceived Server Description: ");
-      printServer();  
+    void receivedServerVersion(int major, int minor, int patch) {     
+      Serial.print("\n\nReceived version: ");
+      Serial.print(major);
+      Serial.print(".");
+      Serial.print(minor);
+      Serial.print(".");
+      Serial.println(patch);
     }
 
     void receivedTrackPower(TrackPower state) { 
-      Serial.print("Received Track Power: "); Serial.println(state);  
+      Serial.print("\n\nReceived Track Power: ");
+      Serial.println(state);  
+      Serial.println("\n\n");  
     }
 
-    void receivedRosterList(int rosterSize) {
-      Serial.print("Received Roster: "); Serial.println(rosterSize);  
+    void receivedLocoUpdate(Loco* loco) {
+      Serial.print("Received Loco update for DCC address: ");
+      Serial.println(loco->getAddress());
     }
-    void receivedTurnoutList(int turnoutListSize) {
-      Serial.print("Received Turnout List: "); Serial.println(turnoutListSize); 
-    }    
-    void receivedRouteList(int routeListSize) {
-        Serial.print("Received Route List: "); Serial.println(routeListSize); 
-    }
-    void receivedTurntablesList(int turntablesListSize) {
-        Serial.print("Received Turnout List: "); Serial.println(turntablesListSize); 
-    }  
-
-
-    void receivedSpeed(int throttleNo, int speed) { 
-        Serial.print("Received Throttle Speed: "); Serial.print(throttleNo); Serial.print(" Speed: "); Serial.println(speed); 
-    }
-    void receivedDirection(int throttleNo, Direction dir) { 
-        Serial.print("Received Throttle Direction: "); Serial.print(throttleNo); Serial.print(" Direction: "); Serial.println(dir); 
-    }
-    void receivedFunction(int throttleNo, int func, bool state) { 
-        Serial.print("Received Throttle Function change: "); Serial.print(throttleNo); Serial.print(" function: "); Serial.print(func); Serial.print(" state: "); Serial.println(state);
-        checkFunction(throttleNo, func);
-    }
-
+    
 };
-
-// WiFi and server configuration
-// const char* ssid = "MySSID";
-// const char* password =  "MyPWD";
-const char* ssid = "DCCEX_44182a";
-const char* password =  "PASS_44182a";
-IPAddress serverAddress(192,168,4,1);
-int serverPort = 2560;
-unsigned long lastTime = 0;
 
 // for random speed changes 
 int speed = 0;
 int up = 1;
-Direction dir = Forward;
-bool _fnState;
-bool done = false;
+unsigned long lastTime=0;
+
+// define our consist object
+Consist* consist = nullptr;
 
 // Global objects
 WiFiClient client;
-DCCEXProtocol dccexProtocol(3); // three throttles
+DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
-
-void printServer() {
-  Serial.print("  Server Version:  "); Serial.println(dccexProtocol.serverVersion);
-  Serial.print("  Server MP Type:  "); Serial.println(dccexProtocol.serverMicroprocessorType);
-  Serial.print("  Server MC Type:  "); Serial.println(dccexProtocol.serverMotorcontrollerType);
-  Serial.print("  Server Build No: "); Serial.println(dccexProtocol.serverBuildNumber);
-  Serial.println("\n\n");  
-}
-
-void checkFunction(int throttleNo, int func) {
-  Serial.print("Function "); Serial.print(func); Serial.print(": ");
-  if (dccexProtocol.isFunctionOn(throttleNo, func)) {
-    Serial.println("is on");
-  } else {
-    Serial.println("is off");
-  }
-}
 
 void setup() {
   
   Serial.begin(115200);
-  Serial.println("DCCEXProtocol Delegate Demo");
+  Serial.println("DCCEXProtocol Loco Control Demo");
   Serial.println();
 
   // Connect to WiFi network
@@ -111,7 +77,7 @@ void setup() {
   }
   Serial.println("Connected to the server");
 
-  // Uncomment for logging on Serial
+  // Logging on Serial
   dccexProtocol.setLogStream(&Serial);
 
   // Pass the delegate instance to wiThrottleProtocol
@@ -121,9 +87,10 @@ void setup() {
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");
 
-  dccexProtocol.sendServerDetailsRequest();
+  dccexProtocol.requestServerVersion();
 
-  // dccexProtocol.getRoster();
+  // Turn track power on for locos to move
+  dccexProtocol.powerOn();
 
   lastTime = millis();
 }
@@ -132,50 +99,49 @@ void loop() {
   // parse incoming messages
   dccexProtocol.check();
 
-  // sequentially request and get the required lists. To avoid overloading the buffer
-  //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
-  dccexProtocol.getLists(true, false, false, false);
+  if (!consist) {
+    consist=new Consist();
+    
+    // create a loco with DCC address 11 - LocoSourceEntry means it's not from the roster
+    Loco* loco1=new Loco(11, LocoSource::LocoSourceEntry);
+    Serial.print("Created loco: ");
+    Serial.println(loco1->getAddress());
 
-  if (dccexProtocol.isRosterFullyReceived() && !done ) { // need to wait till the roster loads
-    done = true;
+    // add this loco to the consist
+    consist->addLoco(loco1, Facing::FacingForward);
 
-    // add a loco to throttle 0 from DCC address 11
-    dccexProtocol.throttle[0].addFromEntry(11, FacingForward);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].getLocoCount());
+    // create a second loco with DCC address 12 - LocoSourceEntry means it's not from the roster
+    Loco* loco2=new Loco(12, LocoSource::LocoSourceEntry);
+    Serial.print("Created loco: ");
+    Serial.println(loco2->getAddress());
 
-    // add a loco to throttle 0 from DCC address 12
-    dccexProtocol.throttle[0].addFromEntry(12, FacingForward);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].getLocoCount());
+    // add this loco to the consist, and it will be running in reverse direction
+    consist->addLoco(loco2, Facing::FacingReversed);
 
-    // add a loco to throttle 0 from DCC address 13
-    dccexProtocol.throttle[0].addFromEntry(13, FacingReversed);
-    Serial.print("Locos in Consist: 0 "); Serial.println(dccexProtocol.throttle[0].getLocoCount());
-
+    // turn track power on or the loco won't move
+    dccexProtocol.powerOn();
   }
 
-  if ((millis() - lastTime) >= 10000) {
-    if (speed>=100) {
-      up = -10;
-    }
-    if (speed<=0) {
-      up = 10;
-      if (dir==Forward) {
-        dir = Reverse;
-      } else { 
-        dir = Forward;
+  if (consist) {
+    // every 10 seconds change speed and set a random function on or off
+    if ((millis() - lastTime) >= 10000) {
+      if (speed>=100) up = -1;
+      if (speed<=0) up = 1;
+      speed = speed + up;
+      dccexProtocol.setThrottle(consist, speed, Direction::Forward);
+
+      int fn = random(0,27);
+      int fns = random(0,100);
+      bool fnState = (fns<50) ? false : true;
+
+      if (fnState) {
+        dccexProtocol.functionOn(consist, fn);
+      } else {
+        dccexProtocol.functionOff(consist, fn);
       }
+
+      lastTime = millis();
     }
-    speed = speed + up;
-    dccexProtocol.sendThrottleAction(0, speed, dir);
-
-    int _ttl = random(0, 1);
-    int _fn = random(0,28);
-    int _fns = random(0,100);
-    _fnState = (_fns<50) ? false : true;
-
-    dccexProtocol.sendFunction(_ttl, _fn, _fnState);
-
-    lastTime = millis();
   }
 
 }

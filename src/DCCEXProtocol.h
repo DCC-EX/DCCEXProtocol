@@ -205,6 +205,22 @@ class DCCEXProtocol {
     /// @return true = on, false = off
     bool isFunctionOn(Loco* loco, int function);
 
+    /// @brief Turn the specified function on for the provided consist
+    /// @param loco Pointer to a consist object
+    /// @param function Function number (0 - 27)
+    void functionOn(Consist* consist, int function);
+
+    /// @brief Turn the specified function off for the provided consist
+    /// @param loco Pointer to a consist object
+    /// @param function Function number (0 - 27)
+    void functionOff(Consist* consist, int function);
+
+    /// @brief Test if the specified function for the provided consist is on (Checks first loco)
+    /// @param loco Pointer to a consist object
+    /// @param function Function number to test (0 - 27)
+    /// @return true = on, false = off
+    bool isFunctionOn(Consist* consist, int function);
+
     /// @brief Explicitly request an update for the specified loco
     /// @param address DCC address of the loco
     void requestLocoUpdate(int address);

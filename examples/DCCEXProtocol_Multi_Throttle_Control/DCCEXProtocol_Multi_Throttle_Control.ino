@@ -1,6 +1,6 @@
-// WiThrottleProtocol library: Loco control example
+// WiThrottleProtocol library: Multi throttle control example
 //
-// Shows how to control a single loco
+// Shows how to control locos with multiple client throttles
 // Tested with ESP32-WROOM board
 //
 // Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
@@ -17,8 +17,6 @@
   #warning config.h not found. Using defaults from config.example.h
   #include "config.example.h"
 #endif
-
-void printRoster();
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
@@ -46,18 +44,56 @@ class MyDelegate : public DCCEXProtocolDelegate {
     
 };
 
+// Example class for a throttle
+// You would associate a rotary encoder or similar with this class
+// for input and control of speed/direction
+class Throttle {
+public:
+  Throttle(DCCEXProtocol* dccexProtocol) {
+    _dccexProtocol=dccexProtocol;
+  }
+
+  void setLoco(Loco* loco) {
+    _loco=loco;
+  }
+
+  Loco* getLoco() {
+    return _loco;
+  }
+  
+  void setSpeed(int speed) {
+    if (!_loco) return;
+    _dccexProtocol->setThrottle(_loco, speed, _loco->getDirection());
+  }
+
+  void setDirection(Direction direction) {
+    if (!_loco) return;
+    _dccexProtocol->setThrottle(_loco, _loco->getSpeed(), direction);
+  }
+
+  void process() {
+    // Routine calls here included in the loop to read encoder or other inputs
+  }
+
+private:
+  DCCEXProtocol* _dccexProtocol;
+  Loco* _loco;
+
+};
+
 // for random speed changes 
 int speed = 0;
 int up = 1;
 unsigned long lastTime=0;
 
-// define our loco object
-Loco* loco = nullptr;
-
 // Global objects
 WiFiClient client;
 DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
+
+// Define an array for two throttles
+const int numThrottles=2;
+Throttle* throttles[numThrottles];
 
 void setup() {
   
@@ -92,41 +128,55 @@ void setup() {
   dccexProtocol.requestServerVersion();
 
   lastTime = millis();
+
+  // Dummy loco starting address
+  int address=12;
+
+  // Create the throttles and add a loco to each
+  for (int i=0; i<numThrottles; i++) {
+    Serial.print("Create throttle|loco address: ");
+    Serial.print(i);
+    Serial.print("|");
+    Serial.println(address+i);
+    throttles[i]=new Throttle(&dccexProtocol);
+    throttles[i]->setLoco(new Loco(address+i, LocoSource::LocoSourceEntry));
+  }
+
+  // Turn track power on so locos can move
+  dccexProtocol.powerOn();
 }
   
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
 
-  if (!loco) {
-    // add a loco with DCC address 11 - LocoSourceEntry means it's not from the roster
-    loco=new Loco(11, LocoSource::LocoSourceEntry);
-    Serial.print("Added loco: ");
-    Serial.println(loco->getAddress());
-
-    // turn track power on or the loco won't move
-    dccexProtocol.powerOn();
+  // throttle processing example
+  for (int i=0; i<numThrottles; i++) {
+    throttles[i]->process();
   }
 
-  if (loco) {
-    // every 10 seconds change speed and set a random function on or off
-    if ((millis() - lastTime) >= 10000) {
-      if (speed>=100) up = -1;
-      if (speed<=0) up = 1;
-      speed = speed + up;
-      dccexProtocol.setThrottle(loco, speed, Direction::Forward);
+  // every 10 seconds change speed and set a random function on or off
+  if ((millis() - lastTime) >= 10000) {
+    lastTime = millis();
+    for (int i=0; i<numThrottles; i++) {
+      auto th=throttles[i];
+      Loco* loco=th->getLoco();
+      if (loco) {
+        if (speed>=100) up = -1;
+        if (speed<=0) up = 1;
+        speed = speed + up;
+        dccexProtocol.setThrottle(loco, speed, Direction::Forward);
 
-      int fn = random(0,27);
-      int fns = random(0,100);
-      bool fnState = (fns<50) ? false : true;
+        int fn = random(0,27);
+        int fns = random(0,100);
+        bool fnState = (fns<50) ? false : true;
 
-      if (fnState) {
-        dccexProtocol.functionOn(loco, fn);
-      } else {
-        dccexProtocol.functionOff(loco, fn);
+        if (fnState) {
+          dccexProtocol.functionOn(loco, fn);
+        } else {
+          dccexProtocol.functionOff(loco, fn);
+        }
       }
-
-      lastTime = millis();
     }
   }
 

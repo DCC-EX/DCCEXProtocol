@@ -230,6 +230,34 @@ bool DCCEXProtocol::isFunctionOn(Loco* loco, int function) {
   return false;
 }
 
+void DCCEXProtocol::functionOn(Consist* consist, int function) {
+  // console->println(F("sendFunction(): "));
+  if (_delegate) {
+    for (ConsistLoco* cl=consist->getFirst(); cl; cl=cl->getNext()) {
+      functionOn(cl->getLoco(), function);
+    }
+  }
+  // console->println(F("sendFunction(): end"));
+}
+
+void DCCEXProtocol::functionOff(Consist* consist, int function) {
+  // console->println(F("sendFunction(): "));
+  if (_delegate) {
+    for (ConsistLoco* cl=consist->getFirst(); cl; cl=cl->getNext()) {
+      functionOff(cl->getLoco(), function);
+    }
+  }
+  // console->println(F("sendFunction(): end"));
+}
+
+bool DCCEXProtocol::isFunctionOn(Consist* consist, int function) {
+  if (_delegate) {
+    ConsistLoco* firstCL=consist->getFirst();
+    return firstCL->getLoco()->isFunctionOn(function);
+  }
+  return false;
+}
+
 void DCCEXProtocol::requestLocoUpdate(int address) {
   // console->println(F("sendLocoUpdateRequest()"));
   if (_delegate) {
