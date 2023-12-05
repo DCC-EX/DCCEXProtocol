@@ -112,37 +112,38 @@ $(function() {
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">  3) Use the get... functions to access the parameters.</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">  These parameters are ONLY VALID until you next call parse.</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classDCCEXInbound.html">   43</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDCCEXInbound.html">DCCEXInbound</a> {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>: </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDCCEXInbound.html#aedb594ed926879752ce98cf00c922b05">setup</a>(int16_t maxParameterValues);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classDCCEXInbound.html#a526f83755fa31eac2e0bc1dcdf086473">parse</a>(<span class="keywordtype">char</span>* command);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">byte</span> <a class="code" href="classDCCEXInbound.html#afcb4dc9cf155d31e2a6781eab6db3131">getOpcode</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">static</span> int16_t <a class="code" href="classDCCEXInbound.html#ae3ca1b929fe58f559ccfb965f72a4d9e">getParameterCount</a>();</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keyword">static</span> int32_t <a class="code" href="classDCCEXInbound.html#a0a89dd9c1eebfdeb444a46ac0dd04080">getNumber</a>(int16_t parameterNumber);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classDCCEXInbound.html#af6da5b2506d0e0468098737d6070c1a4">isTextParameter</a>(int16_t parameterNumber);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">char</span>* <a class="code" href="classDCCEXInbound.html#a2e38f9710a055be0fcf207b45beb3699">getText</a>(int16_t parameterNumber);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">char</span>* <a class="code" href="classDCCEXInbound.html#a4b69a04b68f0782218d722ac62a0bf0b">getSafeText</a>(int16_t parameterNumber);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDCCEXInbound.html#acbb8517e7e8184657701dba4e9b0e5ea">dump</a>(Print *);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="keyword">static</span> int16_t _maxParams;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keyword">static</span> int16_t _parameterCount;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">byte</span> _opcode;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">static</span> int32_t* _parameterValues;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">char</span>* _cmdBuffer;  </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> _isTextInternal(int16_t n);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;};</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassDCCEXInbound_html"><div class="ttname"><a href="classDCCEXInbound.html">DCCEXInbound</a></div><div class="ttdef"><b>Definition:</b> DCCEXInbound.h:43</div></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classDCCEXInbound.html">   45</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDCCEXInbound.html">DCCEXInbound</a> {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">public</span>: </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDCCEXInbound.html#aedb594ed926879752ce98cf00c922b05">setup</a>(int16_t maxParameterValues);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classDCCEXInbound.html#a526f83755fa31eac2e0bc1dcdf086473">parse</a>(<span class="keywordtype">char</span>* command);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">byte</span> <a class="code" href="classDCCEXInbound.html#afcb4dc9cf155d31e2a6781eab6db3131">getOpcode</a>();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keyword">static</span> int16_t <a class="code" href="classDCCEXInbound.html#ae3ca1b929fe58f559ccfb965f72a4d9e">getParameterCount</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keyword">static</span> int32_t <a class="code" href="classDCCEXInbound.html#a0a89dd9c1eebfdeb444a46ac0dd04080">getNumber</a>(int16_t parameterNumber);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classDCCEXInbound.html#af6da5b2506d0e0468098737d6070c1a4">isTextParameter</a>(int16_t parameterNumber);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">char</span>* <a class="code" href="classDCCEXInbound.html#a2e38f9710a055be0fcf207b45beb3699">getText</a>(int16_t parameterNumber);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">char</span>* <a class="code" href="classDCCEXInbound.html#a4b69a04b68f0782218d722ac62a0bf0b">getSafeText</a>(int16_t parameterNumber);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDCCEXInbound.html#acbb8517e7e8184657701dba4e9b0e5ea">dump</a>(Print *);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="keyword">static</span> int16_t _maxParams;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">static</span> int16_t _parameterCount;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">byte</span> _opcode;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keyword">static</span> int32_t* _parameterValues;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">char</span>* _cmdBuffer;  </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">bool</span> _isTextInternal(int16_t n);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;};</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassDCCEXInbound_html"><div class="ttname"><a href="classDCCEXInbound.html">DCCEXInbound</a></div><div class="ttdoc">Inbound DCC-EX command parser class to parse commands and provide interpreted parameters.</div><div class="ttdef"><b>Definition:</b> DCCEXInbound.h:45</div></div>
 <div class="ttc" id="aclassDCCEXInbound_html_a0a89dd9c1eebfdeb444a46ac0dd04080"><div class="ttname"><a href="classDCCEXInbound.html#a0a89dd9c1eebfdeb444a46ac0dd04080">DCCEXInbound::getNumber</a></div><div class="ttdeci">static int32_t getNumber(int16_t parameterNumber)</div><div class="ttdoc">Gets a numeric parameter (or hashed keyword) from parsed command.</div><div class="ttdef"><b>Definition:</b> DCCEXInbound.cpp:68</div></div>
 <div class="ttc" id="aclassDCCEXInbound_html_a2e38f9710a055be0fcf207b45beb3699"><div class="ttname"><a href="classDCCEXInbound.html#a2e38f9710a055be0fcf207b45beb3699">DCCEXInbound::getText</a></div><div class="ttdeci">static char * getText(int16_t parameterNumber)</div><div class="ttdoc">Gets address of text type parameter. does not create permanent copy.</div><div class="ttdef"><b>Definition:</b> DCCEXInbound.cpp:79</div></div>
 <div class="ttc" id="aclassDCCEXInbound_html_a4b69a04b68f0782218d722ac62a0bf0b"><div class="ttname"><a href="classDCCEXInbound.html#a4b69a04b68f0782218d722ac62a0bf0b">DCCEXInbound::getSafeText</a></div><div class="ttdeci">static char * getSafeText(int16_t parameterNumber)</div><div class="ttdoc">gets address of a heap copy of text type parameter.</div><div class="ttdef"><b>Definition:</b> DCCEXInbound.cpp:85</div></div>
