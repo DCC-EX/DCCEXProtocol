@@ -139,6 +139,7 @@ private:
 class ConsistLoco {
 public:
   /// @brief Constructor
+  /// @param loco Pointer to the Loco object to add
   /// @param facing Direction loco is facing in the consist (FacingForward|FacingReversed)
   ConsistLoco(Loco* loco, Facing facing);
   
@@ -212,7 +213,7 @@ public:
   int getLocoCount();
 
   /// @brief Check if the provided loco is in the consist
-  /// @param address Pointer to the loco object to check
+  /// @param loco Pointer to the loco object to check
   /// @return true|false
   bool inConsist(Loco* loco);
 

@@ -82,7 +82,7 @@ public:
   static char* getSafeText(int16_t parameterNumber);
 
   /// @brief dump list of parameters obtained
-  /// @param Address of output e.g. &Serial
+  /// @param out Address of output e.g. &Serial
   static void dump(Print *);
 
 private:

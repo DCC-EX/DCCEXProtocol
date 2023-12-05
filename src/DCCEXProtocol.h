@@ -58,16 +58,37 @@ enum TrackManagerMode {
   OFF,    // Track is off
 };
 
-/// @brief Nullstream class for initial DCCEXProtocol instantiation
+/// @brief Nullstream class for initial DCCEXProtocol instantiation to direct streams to nothing
 class NullStream : public Stream {
 public:
-	NullStream() {}
-	int available() { return 0; }
-	void flush() {}
-	int peek() { return -1; }
-	int read() { return -1; }
-	size_t write(uint8_t c) { return 1; }
-	size_t write(const uint8_t *buffer, size_t size) { return size; }
+  /// @brief Constructor for the NullStream object
+  NullStream() {}
+  
+  /// @brief 
+  /// @return 
+  int available() { return 0; }
+	
+  /// @brief 
+  void flush() {}
+	
+  /// @brief 
+  /// @return 
+  int peek() { return -1; }
+	
+  /// @brief 
+  /// @return 
+  int read() { return -1; }
+	
+  /// @brief 
+  /// @param c 
+  /// @return 
+  size_t write(uint8_t c) { return 1; }
+	
+  /// @brief 
+  /// @param buffer 
+  /// @param size 
+  /// @return 
+  size_t write(const uint8_t *buffer, size_t size) { return size; }
 
 };
 
@@ -173,6 +194,8 @@ class DCCEXProtocol {
     /// @return Patch version number eg. x.y.7
     int getPatchVersion();
 
+    /// @brief Retrieve the last time the server responded
+    /// @return Last response time in milliseconds (from millis())
     unsigned long getLastServerResponseTime();  // seconds since Arduino start
 
     // Consist/Loco methods
@@ -206,17 +229,17 @@ class DCCEXProtocol {
     bool isFunctionOn(Loco* loco, int function);
 
     /// @brief Turn the specified function on for the provided consist
-    /// @param loco Pointer to a consist object
+    /// @param consist Pointer to a consist object
     /// @param function Function number (0 - 27)
     void functionOn(Consist* consist, int function);
 
     /// @brief Turn the specified function off for the provided consist
-    /// @param loco Pointer to a consist object
+    /// @param consist Pointer to a consist object
     /// @param function Function number (0 - 27)
     void functionOff(Consist* consist, int function);
 
     /// @brief Test if the specified function for the provided consist is on (Checks first loco)
-    /// @param loco Pointer to a consist object
+    /// @param consist Pointer to a consist object
     /// @param function Function number to test (0 - 27)
     /// @return true = on, false = off
     bool isFunctionOn(Consist* consist, int function);
@@ -352,10 +375,17 @@ class DCCEXProtocol {
 
     // Attributes
 
-    Loco* roster=nullptr;           // Linked list of locos for the roster
-    Turnout* turnouts=nullptr;      // Linked list of turnouts
-    Route* routes=nullptr;          // Linked list of routes
-    Turntable* turntables=nullptr;  // Linked list of turntables
+    /// @brief Linked list of Loco objects to form the roster
+    Loco* roster=nullptr;
+    
+    /// @brief Linked list of Turnout objects to form the turnout list
+    Turnout* turnouts=nullptr;
+    
+    /// @brief Linked list of Route objects to form the list of routes and automations
+    Route* routes=nullptr;
+    
+    /// @brief Linked list of Turntable objects to form the list of turntables
+    Turntable* turntables=nullptr;
 
   private:
     // Methods
