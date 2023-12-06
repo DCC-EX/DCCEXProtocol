@@ -97,7 +97,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad1397ce38c1f0598644e057789ca88c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current index for the turntable.  <a href="classTurntable.html#ad1397ce38c1f0598644e057789ca88c5">More...</a><br /></td></tr>
 <tr class="separator:ad1397ce38c1f0598644e057789ca88c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e15940499290b9f56b3783e844b8470"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTurntable.html#a3e15940499290b9f56b3783e844b8470">setNumberOfIndexes</a> (int numberOfIndexes)</td></tr>
-<tr class="memdesc:a3e15940499290b9f56b3783e844b8470"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the number of indexes the turntable has defined.  <a href="classTurntable.html#a3e15940499290b9f56b3783e844b8470">More...</a><br /></td></tr>
+<tr class="memdesc:a3e15940499290b9f56b3783e844b8470"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the number of indexes the turntable has defined (from the &lt;JT id&gt; command response)  <a href="classTurntable.html#a3e15940499290b9f56b3783e844b8470">More...</a><br /></td></tr>
 <tr class="separator:a3e15940499290b9f56b3783e844b8470"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04d9bb1cf0f9962470295bece44741b5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTurntable.html#a04d9bb1cf0f9962470295bece44741b5">getNumberOfIndexes</a> ()</td></tr>
 <tr class="memdesc:a04d9bb1cf0f9962470295bece44741b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of indexes defined for the turntable.  <a href="classTurntable.html#a04d9bb1cf0f9962470295bece44741b5">More...</a><br /></td></tr>
@@ -118,7 +118,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a447c8554fa9ffb6419c18896ab8c6bd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of turntables.  <a href="classTurntable.html#a447c8554fa9ffb6419c18896ab8c6bd4">More...</a><br /></td></tr>
 <tr class="separator:a447c8554fa9ffb6419c18896ab8c6bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a086860cd8b4074252a1ae5e135a64d09"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTurntable.html#a086860cd8b4074252a1ae5e135a64d09">getIndexCount</a> ()</td></tr>
-<tr class="memdesc:a086860cd8b4074252a1ae5e135a64d09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the count of indexes added to the index list.  <a href="classTurntable.html#a086860cd8b4074252a1ae5e135a64d09">More...</a><br /></td></tr>
+<tr class="memdesc:a086860cd8b4074252a1ae5e135a64d09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the count of indexes added to the index list (counted from the &lt;JP id&gt; command response)  <a href="classTurntable.html#a086860cd8b4074252a1ae5e135a64d09">More...</a><br /></td></tr>
 <tr class="separator:a086860cd8b4074252a1ae5e135a64d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9e4038916068d2d09caff600aa98325"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTurntable.html">Turntable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTurntable.html#ab9e4038916068d2d09caff600aa98325">getNext</a> ()</td></tr>
 <tr class="memdesc:ab9e4038916068d2d09caff600aa98325"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next turntable object.  <a href="classTurntable.html#ab9e4038916068d2d09caff600aa98325">More...</a><br /></td></tr>
@@ -375,8 +375,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the count of indexes added to the index list. </p>
-<dl class="section return"><dt>Returns</dt><dd>Count of indexes received for this turntable </dd></dl>
+<p>Get the count of indexes added to the index list (counted from the &lt;JP id&gt; command response) </p>
+<dl class="section return"><dt>Returns</dt><dd>Count of indexes received for this turntable including home </dd></dl>
 
 </div>
 </div>
@@ -574,10 +574,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the number of indexes the turntable has defined. </p>
+<p>Set the number of indexes the turntable has defined (from the &lt;JT id&gt; command response) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">indexCount</td><td>Count of the indexes defined </td></tr>
+    <tr><td class="paramname">numberOfIndexes</td><td>Count of the indexes defined for the turntable including home </td></tr>
   </table>
   </dd>
 </dl>

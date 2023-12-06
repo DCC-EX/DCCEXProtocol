@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library Design Principles &mdash; DCCEXProtocol  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/dccex_theme.css?v=2e0e464c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/sphinx_design_overrides.css?v=de8b2a37" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="_static/dark_mode_css/dark.css?v=70edf1c7" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="canonical" href="https://dcc-ex.com/DCCEXProtocol/overview.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/dark_mode_js/default_light.js?v=c2e647ce"></script>
+        <script src="_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Documentation for the DCC-EX Native command library - DCCEXProtocol" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Documentation for the DCC-EX Native command library - DCCEXProtocol</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Library Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DCCEXProtocol</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Library Design Principles</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/DCC-EX/dccexprotocol/blob/sphinx/docs/overview.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="library-design-principles">
+<h1>Library Design Principles<a class="headerlink" href="#library-design-principles" title="Link to this heading"></a></h1>
+<p>First of all, this library implements the DCC-EX Native protocol in a non-blocking fashion. After creating a DCCEXProtocol object, you set up various necessities such as the network connection and a debug console.</p>
+<p>Then, you call the <code class="docutils literal notranslate"><span class="pre">`check()`</span></code> method as often as you can (ideally, once per invocation of the <code class="docutils literal notranslate"><span class="pre">`loop()`</span></code> method) and the library will manage the I/O stream, reading in/parsing commands and calling methods on the delegate as information is available.</p>
+<p>These patterns (Dependency Injection and Delegation) allow you to keep the different parts of your sketch from becoming too intertwined with each other. Nothing in the code that manages the pushbuttons or speed knobs needs to have any detailed knowledge of the DCC-EX native protocol.</p>
+<section id="dccexprotocol-class">
+<h2>DCCEXProtocol Class<a class="headerlink" href="#dccexprotocol-class" title="Link to this heading"></a></h2>
+<p>The DCCEXProtocol class manages all relevant objects advertised by a DCC-EX EX-CommandStation and exposes simple methods to control these objects from the client software.</p>
+<p>These objects include:</p>
+<ul class="simple">
+<li><p>Roster entries</p></li>
+<li><p>Route entries</p></li>
+<li><p>Turnouts</p></li>
+<li><p>Turntables (noting that these objects are only available in development versions)</p></li>
+</ul>
+<p>This means the client software does not need to explicitly manage the state of these objects whilever the <code class="docutils literal notranslate"><span class="pre">`check()`</span></code> method mentioned above is called appropriately.</p>
+</section>
+<section id="dccexprotocoldelegate-class">
+<h2>DCCEXProtocolDelegate Class<a class="headerlink" href="#dccexprotocoldelegate-class" title="Link to this heading"></a></h2>
+<p>The DCCEXProtocolDelegate class enables the client software to respond to various events generated by a DCC-EX EX-CommandStation as either broadcasts or responses to commands.</p>
+<p>The events able to be managed via this class are over and above those managed by the DCCEXProtocol class and are entirely customisable by the client software to provide dynamic user experience updates such as displaying status changes to objects as they are broadcast from the DCC-EX EX-CommandStation.</p>
+</section>
+</section>
+<section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
+<p>Whilst this library extrapolates the need for understanding the specific DCC-EX native commands from a throttle developer, it is highly recommended to familiarise yourself with the concepts outlined in the <a class="reference external" href="https://dcc-ex.com/throttles/tech-reference.html">https://dcc-ex.com/throttles/tech-reference.html</a>.</p>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h2>
+<p>Once the DCCEXProtocol object is instantiated, a connection must be made to the EX-CommandStation using the <cite>connect(&amp;stream)</cite> method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.</p>
+<p>It is also recommended to enable logging to an Arduino Stream using the <cite>setLogStream(&amp;stream)</cite> method.</p>
+<p>As covered in the design principles above, you must include the <cite>check()</cite> method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom DCCEXProtocolDelegate class.</p>
+<p>Refer to the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> to see how this may be implemented.</p>
+</section>
+<section id="control-and-inputs">
+<h2>Control and Inputs<a class="headerlink" href="#control-and-inputs" title="Link to this heading"></a></h2>
+<p>It is up to the client software utilising this library to manage control and input methods to provide input into the protocol functions such as setting locomotive speed and direction, turning functions on and off, and controlling the various other objects and methods available.</p>
+<p>For example, multiple rotary encoders may be used to simultaneously control multiple locomotives or consists.</p>
+<p>There is, however, no need to instantiate more than one DCCEXProtocol or DCCEXProtocolDelegate object providing the client software is written appropriately, and we recommend creating a custom class that can take the DCCEXProtocol object as a parameter to enable this.</p>
+<p>See the DCCEXProtocol_Multi_Throttle_Control example for an idea of how this may be implemented.</p>
+<p>A further note is that controls and inputs should be passed to the protocol only, and should not update local references to object attributes (such as speed and direction), but rather that the responses to these inputs as received by the protocol and delegate events should be used to update local references.</p>
+<p>In this manner, the user of the throttle/client software will see the true results of their inputs which will reflect what EX-CommandStation is doing in response to those inputs.</p>
+</section>
+<section id="retrieving-and-referring-to-object-lists">
+<h2>Retrieving and referring to object lists<a class="headerlink" href="#retrieving-and-referring-to-object-lists" title="Link to this heading"></a></h2>
+<p>To retrieve the various objects lists from EX-CommandStation, use the <cite>getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)</cite> method within your <cite>loop()</cite> function to ensure these are retrieved successfully.</p>
+<p>All objects are contained within linked lists and can be access via for loops:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Loco</span><span class="o">*</span><span class="w"> </span><span class="n">loco</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">roster</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">loco</span><span class="p">;</span><span class="w"> </span><span class="n">loco</span><span class="o">=</span><span class="n">loco</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// loco methods are available here</span>
+<span class="p">}</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Turnout</span><span class="o">*</span><span class="w"> </span><span class="n">turnout</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">turnouts</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">turnout</span><span class="p">;</span><span class="w"> </span><span class="n">turnout</span><span class="o">=</span><span class="n">turnout</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// turnout methods are available here</span>
+<span class="p">}</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Route</span><span class="o">*</span><span class="w"> </span><span class="n">route</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">route</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">route</span><span class="p">;</span><span class="w"> </span><span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// route methods are available here</span>
+<span class="p">}</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Turntable</span><span class="o">*</span><span class="w"> </span><span class="n">turntable</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">roster</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">turntable</span><span class="p">;</span><span class="w"> </span><span class="n">turntable</span><span class="o">=</span><span class="n">turntable</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// turntable methods are available here</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">TurntableIndex</span><span class="o">*</span><span class="w"> </span><span class="n">ttIndex</span><span class="o">=</span><span class="n">turntable</span><span class="o">-&gt;</span><span class="n">getFirstIndex</span><span class="p">();</span><span class="w"> </span><span class="n">ttIndex</span><span class="p">;</span><span class="w"> </span><span class="n">ttIndex</span><span class="o">=</span><span class="n">ttIndex</span><span class="o">-&gt;</span><span class="n">getNextIndex</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// turntable index methods are available here</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Refer to the DCCEXProtocol_Roster_etc example for an idea of how this may be implemented.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Documentation for the DCC-EX Native command library - DCCEXProtocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 - Peter Akers, Peter Cole.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

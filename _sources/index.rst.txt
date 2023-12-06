@@ -1,23 +1,33 @@
-.. DCCEXProtocol documentation master file, created by
-   sphinx-quickstart on Thu Nov 30 15:09:50 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to DCCEXProtocol's documentation!
-=========================================
+Documentation for the DCC-EX Native command library - DCCEXProtocol
+===================================================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+  :maxdepth: 4
+  :hidden:
+
+  self
+  overview
+  examples
+  library
+  documentation
+
+Credits
+-------
+
+The delegate and connection code in this library is taken directly from the WiThrottle library by **Copyright © 2018-2019 Blue Knobby Systems Inc.**
+The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (peteGSX), and Chris Harlow (UKBloke).
+
+DCC-EX Native command protocol library
+--------------------------------------
+
+This library implements the DCC-EX Native command protocol (as used in EX-CommandStation ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
+
+The implementation of this library is tested on ESP32 based devices running the Arduino framework. There's nothing in here that's specific to the ESP32, and little of Arduino that couldn't be replaced as needed.
+
+There has also been limited testing on STM32F103C8 Bluepill with a serial connection.
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`search`
-
-Library
-=======
-
-.. doxygenindex:: 
-  :project: DCCEXProtocol
