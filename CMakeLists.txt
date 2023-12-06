@@ -19,7 +19,7 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
   message("Found Doxygen")
   set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
-  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.out)
+  set(DOXYGEN_OUT ${CMAKE_CURRENT_SOURCE_DIR}/build/Doxyfile.out)
 
   # request to configure the file
   configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)

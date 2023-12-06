@@ -34,13 +34,13 @@
 /// @brief Class to contain and maintain the various Turnout/Point attributes and methods
 class Turnout {
 public:
-  /// @brief Constructor
+  /// @brief Constructor for a Turnout object
   /// @param id Turnout ID
   /// @param thrown true (thrown)|false (closed)
   Turnout(int id, bool thrown);
   
   /// @brief Set thrown state (true thrown, false closed)
-  /// @param isThrown true|false
+  /// @param thrown true|false
   void setThrown(bool thrown);
   
   /// @brief Set turnout name

@@ -106,8 +106,8 @@ public:
   /// @return ID of the current index
   int getIndex();
 
-  /// @brief Set the number of indexes the turntable has defined
-  /// @param indexCount Count of the indexes defined
+  /// @brief Set the number of indexes the turntable has defined (from the \<JT id\> command response)
+  /// @param numberOfIndexes Count of the indexes defined for the turntable including home
   void setNumberOfIndexes(int numberOfIndexes);
 
   /// @brief Get the number of indexes defined for the turntable
@@ -134,8 +134,8 @@ public:
   /// @return Count of turntables
   int getCount();
 
-  /// @brief Get the count of indexes added to the index list
-  /// @return Count of indexes received for this turntable
+  /// @brief Get the count of indexes added to the index list (counted from the \<JP id\> command response)
+  /// @return Count of indexes received for this turntable including home
   int getIndexCount();
 
   /// @brief Get the first turntable object

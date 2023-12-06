@@ -55,7 +55,7 @@ enum TrackManagerMode {
   PROG,   // Programming DCC track mode
   DC,     // DC mode
   DCX,    // Reverse polarity DC mode
-  OFF,    // Track is off
+  NONE,   // Track is unused
 };
 
 /// @brief Nullstream class for initial DCCEXProtocol instantiation to direct streams to nothing
@@ -64,30 +64,30 @@ public:
   /// @brief Constructor for the NullStream object
   NullStream() {}
   
-  /// @brief 
-  /// @return 
+  /// @brief Dummy availability check
+  /// @return Returns false (0) always
   int available() { return 0; }
 	
-  /// @brief 
+  /// @brief Dummy flush method
   void flush() {}
 	
-  /// @brief 
-  /// @return 
+  /// @brief Dummy peek method
+  /// @return Returns -1 always
   int peek() { return -1; }
 	
-  /// @brief 
-  /// @return 
+  /// @brief Dummy read method
+  /// @return Returns -1 always
   int read() { return -1; }
 	
-  /// @brief 
-  /// @param c 
-  /// @return 
+  /// @brief Dummy write method for single int
+  /// @param c Number received
+  /// @return Returns 1 always
   size_t write(uint8_t c) { return 1; }
 	
-  /// @brief 
-  /// @param buffer 
-  /// @param size 
-  /// @return 
+  /// @brief Dummy write method for buffered input
+  /// @param buffer Buffer received
+  /// @param size Size of buffer
+  /// @return Returns size of buffer always
   size_t write(const uint8_t *buffer, size_t size) { return size; }
 
 };

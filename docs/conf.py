@@ -3,9 +3,9 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-from sphinx.builders.html import StandaloneHTMLBuilder
+# from sphinx.builders.html import StandaloneHTMLBuilder
 import subprocess
-import os
+# import os
 
 # Doxygen
 subprocess.call('doxygen Doxyfile.in', shell=True)
@@ -21,7 +21,7 @@ author = 'Peter Akers, Peter Cole'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-  # 'sphinx_sitemap',
+  'sphinx_sitemap',
   'sphinxcontrib.spelling',
   'sphinx_rtd_dark_mode',
   'breathe'
@@ -32,8 +32,8 @@ autosectionlabel_prefix_document = True
 # Don't make dark mode the user default
 default_dark_mode = False
 
-spelling_lang='en_UK'
-tokenizer_lang='en_UK'
+spelling_lang = 'en_UK'
+tokenizer_lang = 'en_UK'
 spelling_word_list_filename = ['spelling_wordlist.txt']
 
 templates_path = ['_templates']
@@ -63,10 +63,10 @@ html_theme_options = {
     # 'titles_only': False,
     'titles_only': True,
     'collapse_navigation': False,
-    # 'navigation_depth': 3
-     'navigation_depth': -1 
+    # 'navigation_depth': 3,
+    'navigation_depth': -1,
 }
- 
+
 html_context = {
     'display_github': True,
     'github_user': 'DCC-EX',
@@ -79,10 +79,16 @@ html_css_files = [
     'css/sphinx_design_overrides.css',
 ]
 
+# Sphinx sitemap
+html_baseurl = 'https://dcc-ex.com/DCCEXProtocol/'
+html_extra_path = [
+  'robots.txt',
+]
+
 # -- Breathe configuration -------------------------------------------------
 
 breathe_projects = {
   "DCCEXProtocol": "_build/xml/"
 }
-breathe_default_project = "C++ Sphinx Doxygen Breathe"
-breathe_default_members = ('members', 'undoc-members')
+breathe_default_project = "DCCEXProtocol"
+breathe_default_members = ()
