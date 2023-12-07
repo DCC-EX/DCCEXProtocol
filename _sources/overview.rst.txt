@@ -1,6 +1,12 @@
 Library Design Principles
 =========================
 
+.. sidebar:: 
+
+  .. contents:: On this page
+    :depth: 2
+    :local:
+
 First of all, this library implements the DCC-EX Native protocol in a non-blocking fashion. After creating a DCCEXProtocol object, you set up various necessities such as the network connection and a debug console.
 
 Then, you call the ```check()``` method as often as you can (ideally, once per invocation of the ```loop()``` method) and the library will manage the I/O stream, reading in/parsing commands and calling methods on the delegate as information is available.
@@ -28,63 +34,3 @@ The DCCEXProtocolDelegate class enables the client software to respond to variou
 
 The events able to be managed via this class are over and above those managed by the DCCEXProtocol class and are entirely customisable by the client software to provide dynamic user experience updates such as displaying status changes to objects as they are broadcast from the DCC-EX EX-CommandStation.
 
-Usage
-=====
-
-Whilst this library extrapolates the need for understanding the specific DCC-EX native commands from a throttle developer, it is highly recommended to familiarise yourself with the concepts outlined in the `<https://dcc-ex.com/throttles/tech-reference.html>`_.
-
-Setup
------
-
-Once the DCCEXProtocol object is instantiated, a connection must be made to the EX-CommandStation using the `connect(&stream)` method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.
-
-It is also recommended to enable logging to an Arduino Stream using the `setLogStream(&stream)` method.
-
-As covered in the design principles above, you must include the `check()` method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom DCCEXProtocolDelegate class.
-
-Refer to the :doc:`examples` to see how this may be implemented.
-
-Control and Inputs
-------------------
-
-It is up to the client software utilising this library to manage control and input methods to provide input into the protocol functions such as setting locomotive speed and direction, turning functions on and off, and controlling the various other objects and methods available.
-
-For example, multiple rotary encoders may be used to simultaneously control multiple locomotives or consists.
-
-There is, however, no need to instantiate more than one DCCEXProtocol or DCCEXProtocolDelegate object providing the client software is written appropriately, and we recommend creating a custom class that can take the DCCEXProtocol object as a parameter to enable this.
-
-See the DCCEXProtocol_Multi_Throttle_Control example for an idea of how this may be implemented.
-
-A further note is that controls and inputs should be passed to the protocol only, and should not update local references to object attributes (such as speed and direction), but rather that the responses to these inputs as received by the protocol and delegate events should be used to update local references.
-
-In this manner, the user of the throttle/client software will see the true results of their inputs which will reflect what EX-CommandStation is doing in response to those inputs.
-
-Retrieving and referring to object lists
-----------------------------------------
-
-To retrieve the various objects lists from EX-CommandStation, use the `getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)` method within your `loop()` function to ensure these are retrieved successfully.
-
-All objects are contained within linked lists and can be access via for loops:
-
-.. code-block:: cpp
-
-  for (Loco* loco=dccexProtocol.roster->getFirst(); loco; loco=loco->getNext()) {
-    // loco methods are available here
-  }
-
-  for (Turnout* turnout=dccexProtocol.turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
-    // turnout methods are available here
-  }
-
-  for (Route* route=dccexProtocol.route->getFirst(); route; route=route->getNext()) {
-    // route methods are available here
-  }
-
-  for (Turntable* turntable=dccexProtocol.roster->getFirst(); turntable; turntable=turntable->getNext()) {
-    // turntable methods are available here
-    for (TurntableIndex* ttIndex=turntable->getFirstIndex(); ttIndex; ttIndex=ttIndex->getNextIndex()) {
-      // turntable index methods are available here
-    }
-  }
-
-Refer to the DCCEXProtocol_Roster_etc example for an idea of how this may be implemented.

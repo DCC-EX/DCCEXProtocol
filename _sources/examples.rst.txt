@@ -1,6 +1,12 @@
 Examples
 ========
 
+.. sidebar:: 
+
+  .. contents:: On this page
+    :depth: 2
+    :local:
+
 Several examples have been included to demonstrate functionality of the library.
 
 Note that all included examples use a WiFi connection, but the protocol is equally suited to other connections types utilising the Arduino Stream base class including Ethernet and Serial.

@@ -29,7 +29,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Documentation" href="documentation.html" />
+    <link rel="next" title="Indices and tables" href="site-index.html" />
     <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
@@ -54,12 +54,403 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="index.html">Documentation for the DCC-EX Native command library - DCCEXProtocol</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Library Design Principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview.html#usage">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Library Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#dccexprotocol-class">DCCEXProtocol Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#dccexprotocoldelegate-class">DCCEXProtocolDelegate Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#control-and-inputs">Control and Inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#retrieving-and-referring-to-object-lists">Retrieving and referring to object lists</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-basic">DCCEXProtocol_Basic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-delegate">DCCEXProtocol_Delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-roster-etc">DCCEXProtocol_Roster_etc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-loco-control">DCCEXProtocol_Loco_Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-consist-control">DCCEXProtocol_Consist_Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-turnout-control">DCCEXProtocol_Turnout_control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-multi-throttle-control">DCCEXProtocol_Multi_Throttle_Control</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv47Consist"><code class="docutils literal notranslate"><span class="pre">Consist</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist7ConsistEv"><code class="docutils literal notranslate"><span class="pre">Consist::Consist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist7setNameEPc"><code class="docutils literal notranslate"><span class="pre">Consist::setName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist7getNameEv"><code class="docutils literal notranslate"><span class="pre">Consist::getName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist7addLocoEP4Loco6Facing"><code class="docutils literal notranslate"><span class="pre">Consist::addLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist7addLocoEi6Facing"><code class="docutils literal notranslate"><span class="pre">Consist::addLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist10removeLocoEP4Loco"><code class="docutils literal notranslate"><span class="pre">Consist::removeLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist14removeAllLocosEv"><code class="docutils literal notranslate"><span class="pre">Consist::removeAllLocos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist13setLocoFacingEP4Loco6Facing"><code class="docutils literal notranslate"><span class="pre">Consist::setLocoFacing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist12getLocoCountEv"><code class="docutils literal notranslate"><span class="pre">Consist::getLocoCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist9inConsistEP4Loco"><code class="docutils literal notranslate"><span class="pre">Consist::inConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist9inConsistEi"><code class="docutils literal notranslate"><span class="pre">Consist::inConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist8getSpeedEv"><code class="docutils literal notranslate"><span class="pre">Consist::getSpeed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist12getDirectionEv"><code class="docutils literal notranslate"><span class="pre">Consist::getDirection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Consist::getFirst()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist17_addLocoToConsistEP11ConsistLoco"><code class="docutils literal notranslate"><span class="pre">Consist::_addLocoToConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist5_nameE"><code class="docutils literal notranslate"><span class="pre">Consist::_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist10_locoCountE"><code class="docutils literal notranslate"><span class="pre">Consist::_locoCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Consist6_firstE"><code class="docutils literal notranslate"><span class="pre">Consist::_first</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv411ConsistLoco"><code class="docutils literal notranslate"><span class="pre">ConsistLoco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco11ConsistLocoEP4Loco6Facing"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::ConsistLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco7getLocoEv"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::getLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco9setFacingE6Facing"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::setFacing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco9getFacingEv"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::getFacing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco7getNextEv"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco7setNextEP11ConsistLoco"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::setNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco5_locoE"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::_loco</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco7_facingE"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::_facing</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N11ConsistLoco5_nextE"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::_next</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv412DCCEXInbound"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound5setupE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::setup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound5parseEPc"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::parse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound9getOpcodeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getOpcode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound17getParameterCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getParameterCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound9getNumberE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getNumber()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound15isTextParameterE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::isTextParameter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound7getTextE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getText()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound11getSafeTextE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getSafeText()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound4dumpEP5Print"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::dump()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound15_isTextInternalE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_isTextInternal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound10_maxParamsE"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_maxParams</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound15_parameterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_parameterCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound7_opcodeE"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_opcode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound16_parameterValuesE"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_parameterValues</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound10_cmdBufferE"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_cmdBuffer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv413DCCEXProtocol"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13DCCEXProtocolEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::DCCEXProtocol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11setDelegateEP21DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setDelegate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12setLogStreamEP6Stream"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setLogStream()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol7connectEP6Stream"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10disconnectEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::disconnect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol5checkEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8getListsEbbbb"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getLists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13receivedListsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedLists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20requestServerVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestServerVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15receivedVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15getMajorVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getMajorVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15getMinorVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getMinorVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15getPatchVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getPatchVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25getLastServerResponseTimeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getLastServerResponseTime()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11setThrottleEP4Locoi9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setThrottle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11setThrottleEP7Consisti9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setThrottle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10functionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11functionOffEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12isFunctionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10functionOnEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11functionOffEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12isFunctionOnEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17requestLocoUpdateEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestLocoUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8readLocoEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::readLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13emergencyStopEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::emergencyStop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14getRosterCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getRosterCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14receivedRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16findLocoInRosterEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::findLocoInRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15getTurnoutCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getTurnoutCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19receivedTurnoutListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedTurnoutList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14getTurnoutByIdEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getTurnoutById()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12closeTurnoutEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::closeTurnout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12throwTurnoutEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::throwTurnout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13toggleTurnoutEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::toggleTurnout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13getRouteCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getRouteCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedRouteList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10startRouteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::startRoute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11pauseRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::pauseRoutes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12resumeRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::resumeRoutes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17getTurntableCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getTurntableCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21receivedTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedTurntableList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16getTurntableByIdEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getTurntableById()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15rotateTurntableEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::rotateTurntable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol7powerOnEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8powerOffEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12powerTrackOnEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13powerTrackOffEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17activateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateAccessory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19deactivateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateAccessory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateLinearAccessory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25deactivateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateLinearAccessory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol6rosterE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::roster</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8turnoutsE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::turnouts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol6routesE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::routes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10turntablesE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::turntables</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol5_initEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_sendCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendCommand()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processCommand()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25_processServerDescriptionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processServerDescription()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_nextServerDescriptionParam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processLocoBroadcast()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_getValidFunctionMapEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getValidFunctionMap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol22_getSpeedFromSpeedByteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getSpeedFromSpeedByte()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol26_getDirectionFromSpeedByteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getDirectionFromSpeedByte()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8_setLocoEii9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_setLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_processReadResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processReadResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10_getRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_requestedRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestedRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_processRosterListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processRosterList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19_requestRosterEntryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestRosterEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19_processRosterEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processRosterEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_getTurnoutsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getTurnouts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_requestedTurnoutsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestedTurnouts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19_processTurnoutListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurnoutList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_requestTurnoutEntryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestTurnoutEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_processTurnoutEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurnoutEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol24_processTurnoutBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurnoutBroadcast()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10_getRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getRoutes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_requestedRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestedRoutes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17_processRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processRouteList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_requestRouteEntryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestRouteEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_processRouteEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processRouteEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_getTurntablesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getTurntables()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_requestedTurntablesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestedTurntables()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21_processTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol22_requestTurntableEntryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestTurntableEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol22_processTurntableEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol27_requestTurntableIndexEntryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestTurntableIndexEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol27_processTurntableIndexEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableIndexEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol26_processTurntableBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableBroadcast()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_processTrackPowerEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_turntableCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turntableCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_majorVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_majorVersion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_minorVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_minorVersion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_patchVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_patchVersion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol7_streamE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_stream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8_consoleE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_console</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_nullStreamE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_nullStream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8_bufflenE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_bufflen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_maxCmdBufferE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_maxCmdBuffer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10_cmdBufferE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdBuffer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_outboundCommandE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_outboundCommand</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol9_delegateE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_delegate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23_lastServerResponseTimeE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_lastServerResponseTime</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_inputBufferE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_inputBuffer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol9_nextCharE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_nextChar</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_receivedVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_receivedVersion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_receivedListsE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_receivedLists</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_rosterRequestedE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_receivedRosterE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_receivedRoster</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21_turnoutListRequestedE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutListRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_receivedTurnoutListE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_receivedTurnoutList</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19_routeListRequestedE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeListRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_receivedRouteListE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_receivedRouteList</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23_turntableListRequestedE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turntableListRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol22_receivedTurntableListE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_receivedTurntableList</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv421DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedServerVersionEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedServerVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedRosterListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRosterList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate19receivedTurnoutListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRouteList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedLocoUpdateEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate16receivedReadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedReadLoco()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv44Loco"><code class="docutils literal notranslate"><span class="pre">Loco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco4LocoEi10LocoSource"><code class="docutils literal notranslate"><span class="pre">Loco::Loco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco10getAddressEv"><code class="docutils literal notranslate"><span class="pre">Loco::getAddress()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco7setNameEPc"><code class="docutils literal notranslate"><span class="pre">Loco::setName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco7getNameEv"><code class="docutils literal notranslate"><span class="pre">Loco::getName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco8setSpeedEi"><code class="docutils literal notranslate"><span class="pre">Loco::setSpeed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco8getSpeedEv"><code class="docutils literal notranslate"><span class="pre">Loco::getSpeed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco12setDirectionE9Direction"><code class="docutils literal notranslate"><span class="pre">Loco::setDirection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco12getDirectionEv"><code class="docutils literal notranslate"><span class="pre">Loco::getDirection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco9getSourceEv"><code class="docutils literal notranslate"><span class="pre">Loco::getSource()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco14setupFunctionsEPc"><code class="docutils literal notranslate"><span class="pre">Loco::setupFunctions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco12isFunctionOnEi"><code class="docutils literal notranslate"><span class="pre">Loco::isFunctionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco17setFunctionStatesEi"><code class="docutils literal notranslate"><span class="pre">Loco::setFunctionStates()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco17getFunctionStatesEv"><code class="docutils literal notranslate"><span class="pre">Loco::getFunctionStates()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco7getNextEv"><code class="docutils literal notranslate"><span class="pre">Loco::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Loco::getFirst()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco12getByAddressEi"><code class="docutils literal notranslate"><span class="pre">Loco::getByAddress()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco8_addressE"><code class="docutils literal notranslate"><span class="pre">Loco::_address</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco5_nameE"><code class="docutils literal notranslate"><span class="pre">Loco::_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco6_speedE"><code class="docutils literal notranslate"><span class="pre">Loco::_speed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco10_directionE"><code class="docutils literal notranslate"><span class="pre">Loco::_direction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco7_sourceE"><code class="docutils literal notranslate"><span class="pre">Loco::_source</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco14_functionNamesE"><code class="docutils literal notranslate"><span class="pre">Loco::_functionNames</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco15_functionStatesE"><code class="docutils literal notranslate"><span class="pre">Loco::_functionStates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco15_momentaryFlagsE"><code class="docutils literal notranslate"><span class="pre">Loco::_momentaryFlags</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco5_nextE"><code class="docutils literal notranslate"><span class="pre">Loco::_next</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco6_firstE"><code class="docutils literal notranslate"><span class="pre">Loco::_first</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv410NullStream"><code class="docutils literal notranslate"><span class="pre">NullStream</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream10NullStreamEv"><code class="docutils literal notranslate"><span class="pre">NullStream::NullStream()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream9availableEv"><code class="docutils literal notranslate"><span class="pre">NullStream::available()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream5flushEv"><code class="docutils literal notranslate"><span class="pre">NullStream::flush()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream4peekEv"><code class="docutils literal notranslate"><span class="pre">NullStream::peek()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream4readEv"><code class="docutils literal notranslate"><span class="pre">NullStream::read()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream5writeE7uint8_t"><code class="docutils literal notranslate"><span class="pre">NullStream::write()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10NullStream5writeEPK7uint8_t6size_t"><code class="docutils literal notranslate"><span class="pre">NullStream::write()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv45Route"><code class="docutils literal notranslate"><span class="pre">Route</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route5RouteEi"><code class="docutils literal notranslate"><span class="pre">Route::Route()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route5getIdEv"><code class="docutils literal notranslate"><span class="pre">Route::getId()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route7setNameEPc"><code class="docutils literal notranslate"><span class="pre">Route::setName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route7getNameEv"><code class="docutils literal notranslate"><span class="pre">Route::getName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route7setTypeE9RouteType"><code class="docutils literal notranslate"><span class="pre">Route::setType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route7getTypeEv"><code class="docutils literal notranslate"><span class="pre">Route::getType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route8getCountEv"><code class="docutils literal notranslate"><span class="pre">Route::getCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route7getNextEv"><code class="docutils literal notranslate"><span class="pre">Route::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route7getByIdEi"><code class="docutils literal notranslate"><span class="pre">Route::getById()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Route::getFirst()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route3_idE"><code class="docutils literal notranslate"><span class="pre">Route::_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route5_nameE"><code class="docutils literal notranslate"><span class="pre">Route::_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route5_typeE"><code class="docutils literal notranslate"><span class="pre">Route::_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route5_nextE"><code class="docutils literal notranslate"><span class="pre">Route::_next</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route6_countE"><code class="docutils literal notranslate"><span class="pre">Route::_count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N5Route6_firstE"><code class="docutils literal notranslate"><span class="pre">Route::_first</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv47Turnout"><code class="docutils literal notranslate"><span class="pre">Turnout</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout7TurnoutEib"><code class="docutils literal notranslate"><span class="pre">Turnout::Turnout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout9setThrownEb"><code class="docutils literal notranslate"><span class="pre">Turnout::setThrown()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout7setNameEPc"><code class="docutils literal notranslate"><span class="pre">Turnout::setName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout5getIdEv"><code class="docutils literal notranslate"><span class="pre">Turnout::getId()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout7getNameEv"><code class="docutils literal notranslate"><span class="pre">Turnout::getName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout9getThrownEv"><code class="docutils literal notranslate"><span class="pre">Turnout::getThrown()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout7getNextEv"><code class="docutils literal notranslate"><span class="pre">Turnout::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout8getCountEv"><code class="docutils literal notranslate"><span class="pre">Turnout::getCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout7getByIdEi"><code class="docutils literal notranslate"><span class="pre">Turnout::getById()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Turnout::getFirst()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout5_nextE"><code class="docutils literal notranslate"><span class="pre">Turnout::_next</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout3_idE"><code class="docutils literal notranslate"><span class="pre">Turnout::_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout5_nameE"><code class="docutils literal notranslate"><span class="pre">Turnout::_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout7_thrownE"><code class="docutils literal notranslate"><span class="pre">Turnout::_thrown</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout6_countE"><code class="docutils literal notranslate"><span class="pre">Turnout::_count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N7Turnout6_firstE"><code class="docutils literal notranslate"><span class="pre">Turnout::_first</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv49Turntable"><code class="docutils literal notranslate"><span class="pre">Turntable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable9TurntableEi"><code class="docutils literal notranslate"><span class="pre">Turntable::Turntable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable5getIdEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getId()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable7setTypeE13TurntableType"><code class="docutils literal notranslate"><span class="pre">Turntable::setType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable7getTypeEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable8setIndexEi"><code class="docutils literal notranslate"><span class="pre">Turntable::setIndex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable8getIndexEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getIndex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable18setNumberOfIndexesEi"><code class="docutils literal notranslate"><span class="pre">Turntable::setNumberOfIndexes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable18getNumberOfIndexesEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getNumberOfIndexes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable7setNameEPc"><code class="docutils literal notranslate"><span class="pre">Turntable::setName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable7getNameEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable9setMovingEb"><code class="docutils literal notranslate"><span class="pre">Turntable::setMoving()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable8isMovingEv"><code class="docutils literal notranslate"><span class="pre">Turntable::isMoving()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable8getCountEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable13getIndexCountEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getIndexCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable7getNextEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable8addIndexEP14TurntableIndex"><code class="docutils literal notranslate"><span class="pre">Turntable::addIndex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable13getFirstIndexEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getFirstIndex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable7getByIdEi"><code class="docutils literal notranslate"><span class="pre">Turntable::getById()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable12getIndexByIdEi"><code class="docutils literal notranslate"><span class="pre">Turntable::getIndexById()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Turntable::getFirst()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable3_idE"><code class="docutils literal notranslate"><span class="pre">Turntable::_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable5_typeE"><code class="docutils literal notranslate"><span class="pre">Turntable::_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable6_indexE"><code class="docutils literal notranslate"><span class="pre">Turntable::_index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable16_numberOfIndexesE"><code class="docutils literal notranslate"><span class="pre">Turntable::_numberOfIndexes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable5_nameE"><code class="docutils literal notranslate"><span class="pre">Turntable::_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable9_isMovingE"><code class="docutils literal notranslate"><span class="pre">Turntable::_isMoving</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable6_countE"><code class="docutils literal notranslate"><span class="pre">Turntable::_count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable11_indexCountE"><code class="docutils literal notranslate"><span class="pre">Turntable::_indexCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable5_nextE"><code class="docutils literal notranslate"><span class="pre">Turntable::_next</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable11_firstIndexE"><code class="docutils literal notranslate"><span class="pre">Turntable::_firstIndex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Turntable6_firstE"><code class="docutils literal notranslate"><span class="pre">Turntable::_first</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv414TurntableIndex"><code class="docutils literal notranslate"><span class="pre">TurntableIndex</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex14TurntableIndexEiiiPc"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::TurntableIndex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex7getTTIdEv"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::getTTId()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex5getIdEv"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::getId()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex8getAngleEv"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::getAngle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex7getNameEv"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::getName()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex12getNextIndexEv"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::getNextIndex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex5_ttIdE"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::_ttId</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex3_idE"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex6_angleE"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::_angle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex5_nameE"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex10_nextIndexE"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::_nextIndex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N14TurntableIndex6_firstE"><code class="docutils literal notranslate"><span class="pre">TurntableIndex::_first</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv410splitState"><code class="docutils literal notranslate"><span class="pre">splitState</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState10FIND_STARTE"><code class="docutils literal notranslate"><span class="pre">splitState::FIND_START</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState10SET_OPCODEE"><code class="docutils literal notranslate"><span class="pre">splitState::SET_OPCODE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState11SKIP_SPACESE"><code class="docutils literal notranslate"><span class="pre">splitState::SKIP_SPACES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState10CHECK_SIGNE"><code class="docutils literal notranslate"><span class="pre">splitState::CHECK_SIGN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState11BUILD_PARAME"><code class="docutils literal notranslate"><span class="pre">splitState::BUILD_PARAM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState13SKIPOVER_TEXTE"><code class="docutils literal notranslate"><span class="pre">splitState::SKIPOVER_TEXT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10splitState18COMPLETE_i_COMMANDE"><code class="docutils literal notranslate"><span class="pre">splitState::COMPLETE_i_COMMAND</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv410QUOTE_FLAG"><code class="docutils literal notranslate"><span class="pre">QUOTE_FLAG</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv415QUOTE_FLAG_AREA"><code class="docutils literal notranslate"><span class="pre">QUOTE_FLAG_AREA</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv49Direction"><code class="docutils literal notranslate"><span class="pre">Direction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Direction7ReverseE"><code class="docutils literal notranslate"><span class="pre">Direction::Reverse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9Direction7ForwardE"><code class="docutils literal notranslate"><span class="pre">Direction::Forward</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv410LocoSource"><code class="docutils literal notranslate"><span class="pre">LocoSource</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10LocoSource16LocoSourceRosterE"><code class="docutils literal notranslate"><span class="pre">LocoSource::LocoSourceRoster</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10LocoSource15LocoSourceEntryE"><code class="docutils literal notranslate"><span class="pre">LocoSource::LocoSourceEntry</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv46Facing"><code class="docutils literal notranslate"><span class="pre">Facing</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6Facing13FacingForwardE"><code class="docutils literal notranslate"><span class="pre">Facing::FacingForward</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6Facing14FacingReversedE"><code class="docutils literal notranslate"><span class="pre">Facing::FacingReversed</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv413MAX_FUNCTIONS"><code class="docutils literal notranslate"><span class="pre">MAX_FUNCTIONS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv422MAX_OBJECT_NAME_LENGTH"><code class="docutils literal notranslate"><span class="pre">MAX_OBJECT_NAME_LENGTH</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv49MIN_SPEED"><code class="docutils literal notranslate"><span class="pre">MIN_SPEED</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv49MAX_SPEED"><code class="docutils literal notranslate"><span class="pre">MAX_SPEED</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv410TrackPower"><code class="docutils literal notranslate"><span class="pre">TrackPower</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10TrackPower8PowerOffE"><code class="docutils literal notranslate"><span class="pre">TrackPower::PowerOff</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10TrackPower7PowerOnE"><code class="docutils literal notranslate"><span class="pre">TrackPower::PowerOn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N10TrackPower12PowerUnknownE"><code class="docutils literal notranslate"><span class="pre">TrackPower::PowerUnknown</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv416TrackManagerMode"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N16TrackManagerMode4MAINE"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode::MAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N16TrackManagerMode4PROGE"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode::PROG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N16TrackManagerMode2DCE"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode::DC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N16TrackManagerMode3DCXE"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode::DCX</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N16TrackManagerMode4NONEE"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode::NONE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv427MAX_OUTBOUND_COMMAND_LENGTH"><code class="docutils literal notranslate"><span class="pre">MAX_OUTBOUND_COMMAND_LENGTH</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv435MAX_SERVER_DESCRIPTION_PARAM_LENGTH"><code class="docutils literal notranslate"><span class="pre">MAX_SERVER_DESCRIPTION_PARAM_LENGTH</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv418MAX_COMMAND_PARAMS"><code class="docutils literal notranslate"><span class="pre">MAX_COMMAND_PARAMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv49RouteType"><code class="docutils literal notranslate"><span class="pre">RouteType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9RouteType14RouteTypeRouteE"><code class="docutils literal notranslate"><span class="pre">RouteType::RouteTypeRoute</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9RouteType19RouteTypeAutomationE"><code class="docutils literal notranslate"><span class="pre">RouteType::RouteTypeAutomation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv413TurntableType"><code class="docutils literal notranslate"><span class="pre">TurntableType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13TurntableType16TurntableTypeDCCE"><code class="docutils literal notranslate"><span class="pre">TurntableType::TurntableTypeDCC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13TurntableType17TurntableTypeEXTTE"><code class="docutils literal notranslate"><span class="pre">TurntableType::TurntableTypeEXTT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13TurntableType20TurntableTypeUnknownE"><code class="docutils literal notranslate"><span class="pre">TurntableType::TurntableTypeUnknown</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="site-index.html">Indices and tables</a></li>
 </ul>
 
         </div>
@@ -3068,13 +3459,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="documentation.html" class="btn btn-neutral float-right" title="Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="site-index.html" class="btn btn-neutral float-right" title="Indices and tables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023 - Peter Akers, Peter Cole.</p>
+    <p>&#169; Copyright 2023 - Peter Cole, Peter Akers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
