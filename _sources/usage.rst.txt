@@ -1,3 +1,5 @@
+.. include:: /include/include.rst
+
 Usage
 =====
 
@@ -8,16 +10,16 @@ Usage
     :local:
     
 
-Whilst this library extrapolates the need for understanding the specific DCC-EX native commands from a throttle developer, it is highly recommended to familiarise yourself with the concepts outlined in the `<https://dcc-ex.com/throttles/tech-reference.html>`_.
+Whilst this library extrapolates the need for understanding the specific |DCC-EX| native commands from a throttle developer, it is highly recommended to familiarise yourself with the concepts outlined in the `<https://dcc-ex.com/throttles/tech-reference.html>`_.
 
 Setup
 -----
 
-Once the DCCEXProtocol object is instantiated, a connection must be made to the EX-CommandStation using the `connect(&stream)` method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.
+Once the `DCCEXProtocol` object is instantiated, a connection must be made to the |EX-CS| using the `connect(&stream)` method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.
 
 It is also recommended to enable logging to an Arduino Stream using the `setLogStream(&stream)` method.
 
-As covered in the design principles above, you must include the `check()` method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom DCCEXProtocolDelegate class.
+As covered in the design principles above, you must include the `check()` method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom `DCCEXProtocolDelegate` class.
 
 Refer to the :doc:`examples` to see how this may be implemented.
 
@@ -28,9 +30,9 @@ It is up to the client software utilising this library to manage control and inp
 
 For example, multiple rotary encoders may be used to simultaneously control multiple locomotives or consists.
 
-There is, however, no need to instantiate more than one DCCEXProtocol or DCCEXProtocolDelegate object providing the client software is written appropriately, and we recommend creating a custom class that can take the DCCEXProtocol object as a parameter to enable this.
+There is, however, no need to instantiate more than one `DCCEXProtocol` or `DCCEXProtocolDelegate` object providing the client software is written appropriately, and we recommend creating a custom class that can take the `DCCEXProtocol` object as a parameter to enable this.
 
-See the DCCEXProtocol_Multi_Throttle_Control example for an idea of how this may be implemented.
+See the `DCCEXProtocol_Multi_Throttle_Control` example for an idea of how this may be implemented.
 
 A further note is that controls and inputs should be passed to the protocol only, and should not update local references to object attributes (such as speed and direction), but rather that the responses to these inputs as received by the protocol and delegate events should be used to update local references.
 
@@ -39,7 +41,7 @@ In this manner, the user of the throttle/client software will see the true resul
 Retrieving and referring to object lists
 ----------------------------------------
 
-To retrieve the various objects lists from EX-CommandStation, use the `getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)` method within your `loop()` function to ensure these are retrieved successfully.
+To retrieve the various objects lists from |EX-CS|, use the `getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)` method within your `loop()` function to ensure these are retrieved successfully.
 
 All objects are contained within linked lists and can be access via for loops:
 
@@ -64,4 +66,4 @@ All objects are contained within linked lists and can be access via for loops:
     }
   }
 
-Refer to the DCCEXProtocol_Roster_etc example for an idea of how this may be implemented.
+Refer to the `DCCEXProtocol_Roster_etc` example for an idea of how this may be implemented.
