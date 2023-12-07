@@ -5,7 +5,7 @@ Documentation for the DCC-EX Native command library - DCCEXProtocol
   :maxdepth: 4
   :hidden:
 
-  Home <self>
+  DCC-EX Native command library <self>
   overview
   usage
   examples
