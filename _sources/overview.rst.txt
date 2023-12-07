@@ -13,7 +13,7 @@ First of all, this library implements the DCC-EX Native protocol in a non-blocki
 
 Then, you call the ```check()``` method as often as you can (ideally, once per invocation of the ```loop()``` method) and the library will manage the I/O stream, reading in/parsing commands and calling methods on the delegate as information is available.
 
-These patterns (Dependency Injection and Delegation) allow you to keep the different parts of your sketch from becoming too intertwined with each other. Nothing in the code that manages the pushbuttons or speed knobs needs to have any detailed knowledge of the |EX-NP|.
+These patterns (Dependency Injection and Delegation) allow you to keep the different parts of your sketch from becoming too intertwined with each other. Nothing in the code that manages the pushbuttons or speed knobs needs to have any detailed knowledge of the |EX-NCP|.
 
 DCCEXProtocol Class
 -------------------

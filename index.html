@@ -5,7 +5,7 @@
 <meta content="DCC-EX DCC DCC++ EX DCC++EX" name="keywords" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation for the DCC-EX Native command library - DCCEXProtocol &mdash; DCCEXProtocol  documentation</title>
+  <title>Documentation for the DCC-EX Native command protocol library - DCCEXProtocol &mdash; DCCEXProtocol  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/css/dccex_theme.css?v=2e0e464c" />
@@ -54,7 +54,7 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">DCC-EX Native command library</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DCC-EX Native command protocol library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Library Design Principles</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#dccexprotocol-class">DCCEXProtocol Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#dccexprotocoldelegate-class">DCCEXProtocolDelegate Class</a></li>
@@ -477,7 +477,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Documentation for the DCC-EX Native command library - DCCEXProtocol</li>
+      <li class="breadcrumb-item active">Documentation for the DCC-EX Native command protocol library - DCCEXProtocol</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/DCC-EX/dccexprotocol/blob/sphinx/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -487,13 +487,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="documentation-for-the-dcc-ex-native-command-library-dccexprotocol">
-<h1>Documentation for the DCC-EX Native command library - DCCEXProtocol<a class="headerlink" href="#documentation-for-the-dcc-ex-native-command-library-dccexprotocol" title="Link to this heading"></a></h1>
+  <section id="documentation-for-the-dcc-ex-native-command-protocol-library-dccexprotocol">
+<h1>Documentation for the DCC-EX Native command protocol library - DCCEXProtocol<a class="headerlink" href="#documentation-for-the-dcc-ex-native-command-protocol-library-dccexprotocol" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 </div>
 <section id="dcc-ex-native-command-protocol-library">
 <h2>DCC-EX Native command protocol library<a class="headerlink" href="#dcc-ex-native-command-protocol-library" title="Link to this heading"></a></h2>
-<p>This library implements the <strong>DCC-EX</strong> Native command protocol (as used in the <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span> <span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span> ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).</p>
+<p>This library implements the <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span>
+<span class="ex-suffix"> native command protocol</span> (as used in the <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span> <span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span> ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).</p>
 <p>The implementation of this library is tested on ESP32 based devices running the Arduino framework. There’s nothing in here that’s specific to the ESP32, and little of Arduino that couldn’t be replaced as needed.</p>
 <p>There has also been limited testing on STM32F103C8 Bluepill with a serial connection.</p>
 </section>

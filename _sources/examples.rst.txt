@@ -83,5 +83,5 @@ DCCEXProtocol_mDNS
 
 This example demonstrates how client throttle software may be written to find all the |EX-CS| and WiThrottle servers that are advertising via mDNS.
 
-Note that |DCC-EX| |EX-CS| only advertise as ``wiThrottle`` servers, but will use and respond with either the **WiThrottle protocol** or the |EX-NP| depending the type of command it first receives from the client (throttle).
+Note that |DCC-EX| |EX-CS| only advertise as ``wiThrottle`` servers, but will use and respond with either the **WiThrottle protocol** or the |EX-NCP| depending the type of command it first receives from the client (throttle).
 
