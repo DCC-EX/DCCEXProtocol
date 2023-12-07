@@ -11,3 +11,4 @@ jobs:
       - uses: arduino/arduino-lint-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          library-manager: update
