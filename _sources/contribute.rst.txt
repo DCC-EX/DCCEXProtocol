@@ -1,8 +1,16 @@
 .. include:: /include/include.rst
-:orphan:
+
+Contributions
+=============
+
+The |DCC-EX| team welcomes contributions to the DCCEXProtocol library.
+
+The best way to get involved is to reach out to the |DCC-EX| team via our `Discord server <https://discord.gg/PuPnNMp8Qf>`_.
+
+You can also try the other methods outlined on our `Contact Us page <https://dcc-ex.com/support/contact-us.html>`_.
 
 Documentation
-=============
+-------------
 
 This documentation is available via the `DCC-EX website <https://dcc-ex.com/DCCEXProtocol/index.html>`_.
 
