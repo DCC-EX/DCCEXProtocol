@@ -1,13 +1,13 @@
 .. include:: /include/include.rst
 
-Documentation for the DCC-EX Native command library - DCCEXProtocol
-===================================================================
+Documentation for the DCC-EX Native command protocol library - DCCEXProtocol
+============================================================================
 
 .. toctree::
   :maxdepth: 4
   :hidden:
 
-  DCC-EX Native command library <self>
+  DCC-EX Native command protocol library <self>
   overview
   usage
   examples
@@ -17,7 +17,7 @@ Documentation for the DCC-EX Native command library - DCCEXProtocol
 DCC-EX Native command protocol library
 --------------------------------------
 
-This library implements the **DCC-EX** Native command protocol (as used in the |DCC-EX| |EX-CS| ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
+This library implements the |EX-NCP| (as used in the |DCC-EX| |EX-CS| ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
 
 The implementation of this library is tested on ESP32 based devices running the Arduino framework. There's nothing in here that's specific to the ESP32, and little of Arduino that couldn't be replaced as needed.
 
