@@ -30,7 +30,7 @@ This example demonstrates the basics of creating a WiFi connection to your |EX-C
 DCCEXProtocol_Delegate
 ----------------------
 
-This example builds on the basic example and, in addition, demonstrates how to implement a custom DCCEXProtocolDelegate class to respond to broadcasts and command responses received from |EX-CS|.
+This example builds on the basic example and, in addition, demonstrates how to implement a custom `DCCEXProtocolDelegate`` class to respond to broadcasts and command responses received from |EX-CS|.
 
 DCCEXProtocol_Roster_etc
 ------------------------
@@ -72,10 +72,16 @@ Additional Examples
 
 The following examples are not strictly related to the |EX-PL|, but hopefully will be useful for anyone developing a throttle to use with any |EX-CS|.
 
+DCCEXProtocol_SSID
+~~~~~~~~~~~~~~~~~~
+
+This example demonstrates how client throttle software may be written to find all the SSIDs (networks) that are available.
+
+
 DCCEXProtocol_mDNS
 ~~~~~~~~~~~~~~~~~~
 
 This example demonstrates how client throttle software may be written to find all the |EX-CS| and WiThrottle servers that are advertising via mDNS.
 
-Note that |DCC-EX| |EX-CS| only advertise as ``wiThrottle`` servers, but will use and respond with either the **WiThrottle protocol** or the |EX-PL| depending the type of command it first receives from the client (throttle).
+Note that |DCC-EX| |EX-CS| only advertise as ``wiThrottle`` servers, but will use and respond with either the **WiThrottle protocol** or the |EX-NP| depending the type of command it first receives from the client (throttle).
 
