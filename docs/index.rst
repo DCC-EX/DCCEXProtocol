@@ -12,6 +12,8 @@ Documentation for the DCC-EX Native command protocol library - DCCEXProtocol
   usage
   examples
   library
+  bugs-requests
+  contribute
   site-index
 
 DCC-EX Native command protocol library
