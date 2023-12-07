@@ -1,3 +1,5 @@
+.. include:: /include/include.rst
+
 Examples
 ========
 
@@ -23,17 +25,17 @@ To configure WiFi for your settings in all examples, you will need to copy the p
 DCCEXProtocol_Basic
 -------------------
 
-This example demonstrates the basics of creating a WiFi connection to your EX-CommandStation using the library, and monitoring for broadcasts and command responses.
+This example demonstrates the basics of creating a WiFi connection to your |EX-CS| using the library, and monitoring for broadcasts and command responses.
 
 DCCEXProtocol_Delegate
 ----------------------
 
-This example builds on the basic example and, in addition, demonstrates how to implement a custom DCCEXProtocolDelegate class to respond to broadcasts and command responses received from EX-CommandStation.
+This example builds on the basic example and, in addition, demonstrates how to implement a custom DCCEXProtocolDelegate class to respond to broadcasts and command responses received from |EX-CS|.
 
 DCCEXProtocol_Roster_etc
 ------------------------
 
-This example demonstrates how to retrieve the object types from EX-CommandStation, and further demonstrates how to use the delegate to display these object lists when received.
+This example demonstrates how to retrieve the object types from |EX-CS|, and further demonstrates how to use the delegate to display these object lists when received.
 
 DCCEXProtocol_Loco_Control
 --------------------------
@@ -57,8 +59,23 @@ This example demonstrates how client throttle software may be written to control
 
 What can't be demonstrated in this example is the control of speed and direction, which would typically be accomplished with the use of rotary encoders or similar.
 
-Note when setting speed and direction, these should be sent to the EX-CommandStation via the DCCEXProtocol library, and any local references to these should be set based on the response received, not directly by the input method in use.
+Note when setting speed and direction, these should be sent to the |EX-CS| via the |EX-PL|, and any local references to these should be set based on the response received, not directly by the input method in use.
 
 For example, when setting the speed based on the position of a rotary encoder, send that value via the protocol's `setThrottle()` method, but do not display that speed directly. Instead, utlise the delegate's `receivedLocoUpdate()` method to update the displayed speed.
 
 This ensures that the user of the throttle sees the accurate results of what the throttle is doing, and provides validation that the EX-CommandStation is responding to the user input.
+
+----
+
+Additional Examples
+-------------------
+
+The following examples are not strictly related to the |EX-PL|, but hopefully will be useful for anyone developing a throttle to use with any |EX-CS|.
+
+DCCEXProtocol_mDNS
+~~~~~~~~~~~~~~~~~~
+
+This example demonstrates how client throttle software may be written to find all the |EX-CS| and WiThrottle servers that are advertising via mDNS.
+
+Note that |DCC-EX| |EX-CS| only advertise as ``wiThrottle`` servers, but will use and respond with either the **WiThrottle protocol** or the |EX-PL| depending the type of command it first receives from the client (throttle).
+

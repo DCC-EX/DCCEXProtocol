@@ -1,3 +1,5 @@
+.. include:: /include/include.rst
+
 Indices and tables
 ==================
 
