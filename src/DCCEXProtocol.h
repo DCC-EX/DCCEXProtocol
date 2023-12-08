@@ -28,6 +28,12 @@
  * https://www.dcc-ex.com
  */
 
+/*
+Version information:
+
+0.0.1   - Initial library release via the Arduino Library Manager
+*/
+
 #ifndef DCCEXPROTOCOL_H
 #define DCCEXPROTOCOL_H
 
