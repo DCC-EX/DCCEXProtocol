@@ -9,10 +9,37 @@ The best way to get involved is to reach out to the |DCC-EX| team via our `Disco
 
 You can also try the other methods outlined on our `Contact Us page <https://dcc-ex.com/support/contact-us.html>`_.
 
+Library Maintenance
+-------------------
+
+As this library is designed to be available via the Arduino Library Manager, there are certain requirements that must be adhered to when maintaining and updating the library.
+
+You can see DCCEXProtocol in the `Arduino Library Reference <https://www.arduino.cc/reference/en/libraries/dccexprotocol/>`_.
+
+For details of the specific requirements of maintaining Arduino libraries, you will need to familiarise yourself with these by reviewing the `Arduino Library Manager FAQ <https://github.com/arduino/library-registry/blob/main/FAQ.md>`_.
+
+Specifically, these are some items of note when making changes to the library:
+
+- Ensure all public classes, methods, and attributes are documented in the code
+- When adding new methods or attributes, use human-friendly names that indicate the desired purpose
+- When adding a new version, ensure version notes are added to DCCEXProtocol.h
+
+To ensure the Arduino Library Manager flags that a version update has been made, these activities must be performed:
+
+- Update the "library.properties" file with the new version number
+- When pushing updates to the "main" branch, ensure that the GitHub workflow "arduino-lint.yml" completes without error
+- Add a GitHub tag to the repo with the version in the format "v0.0.1-Devel" or "v0.0.1-Prod"
+
+Once an update has been made that changes the version, this will trigger the Arduino Library Manager to scan the DCCEXProtocol for changes and, providing no issues are encountered, will publish the new version for users to download or update.
+
+The Arduino Library Manager will output logs for each library maintained which we can review for errors or issues. The `DCCEXProtocol library logs <https://downloads.arduino.cc/libraries/logs/github.com/DCC-EX/DCCEXProtocol/>`_ are available here.
+
 Documentation
 -------------
 
-This documentation is available via the `DCC-EX website <https://dcc-ex.com/DCCEXProtocol/index.html>`_.
+Library documentation is created automatically when pushes and pull requests are merged to the "main" branch via the GitHub "docs.yml" workflow.
+
+The DCCEXProtocol class documentation is generated automatically via Doxygen and the Sphinx Breathe extension to convert code documentation to ReStructuredText, which Sphinx then generates the HTML content from.
 
 For contributors wishing to build local copies of the documentation while updating the library, here is the very high level process of the requirements to make this work on Windows:
 

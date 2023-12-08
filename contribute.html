@@ -458,6 +458,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs-requests.html">Bugs and Requests</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#library-maintenance">Library Maintenance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
 </ul>
 </li>
@@ -493,9 +494,30 @@
 <p>The <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span> team welcomes contributions to the DCCEXProtocol library.</p>
 <p>The best way to get involved is to reach out to the <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span> team via our <a class="reference external" href="https://discord.gg/PuPnNMp8Qf">Discord server</a>.</p>
 <p>You can also try the other methods outlined on our <a class="reference external" href="https://dcc-ex.com/support/contact-us.html">Contact Us page</a>.</p>
+<section id="library-maintenance">
+<h2>Library Maintenance<a class="headerlink" href="#library-maintenance" title="Link to this heading"></a></h2>
+<p>As this library is designed to be available via the Arduino Library Manager, there are certain requirements that must be adhered to when maintaining and updating the library.</p>
+<p>You can see DCCEXProtocol in the <a class="reference external" href="https://www.arduino.cc/reference/en/libraries/dccexprotocol/">Arduino Library Reference</a>.</p>
+<p>For details of the specific requirements of maintaining Arduino libraries, you will need to familiarise yourself with these by reviewing the <a class="reference external" href="https://github.com/arduino/library-registry/blob/main/FAQ.md">Arduino Library Manager FAQ</a>.</p>
+<p>Specifically, these are some items of note when making changes to the library:</p>
+<ul class="simple">
+<li><p>Ensure all public classes, methods, and attributes are documented in the code</p></li>
+<li><p>When adding new methods or attributes, use human-friendly names that indicate the desired purpose</p></li>
+<li><p>When adding a new version, ensure version notes are added to DCCEXProtocol.h</p></li>
+</ul>
+<p>To ensure the Arduino Library Manager flags that a version update has been made, these activities must be performed:</p>
+<ul class="simple">
+<li><p>Update the “library.properties” file with the new version number</p></li>
+<li><p>When pushing updates to the “main” branch, ensure that the GitHub workflow “arduino-lint.yml” completes without error</p></li>
+<li><p>Add a GitHub tag to the repo with the version in the format “v0.0.1-Devel” or “v0.0.1-Prod”</p></li>
+</ul>
+<p>Once an update has been made that changes the version, this will trigger the Arduino Library Manager to scan the DCCEXProtocol for changes and, providing no issues are encountered, will publish the new version for users to download or update.</p>
+<p>The Arduino Library Manager will output logs for each library maintained which we can review for errors or issues. The <a class="reference external" href="https://downloads.arduino.cc/libraries/logs/github.com/DCC-EX/DCCEXProtocol/">DCCEXProtocol library logs</a> are available here.</p>
+</section>
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
-<p>This documentation is available via the <a class="reference external" href="https://dcc-ex.com/DCCEXProtocol/index.html">DCC-EX website</a>.</p>
+<p>Library documentation is created automatically when pushes and pull requests are merged to the “main” branch via the GitHub “docs.yml” workflow.</p>
+<p>The DCCEXProtocol class documentation is generated automatically via Doxygen and the Sphinx Breathe extension to convert code documentation to ReStructuredText, which Sphinx then generates the HTML content from.</p>
 <p>For contributors wishing to build local copies of the documentation while updating the library, here is the very high level process of the requirements to make this work on Windows:</p>
 <ul class="simple">
 <li><p>Install <a class="reference external" href="https://code.visualstudio.com/docs/cpp/config-mingw#_prerequisites">MSYS2 C++</a> compilers</p></li>
