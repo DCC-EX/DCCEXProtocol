@@ -65,6 +65,7 @@ html_theme_options = {
     'collapse_navigation': False,
     # 'navigation_depth': 3,
     'navigation_depth': -1,
+    'analytics_id': 'G-L5X0KNBF0W',
 }
 
 html_context = {
