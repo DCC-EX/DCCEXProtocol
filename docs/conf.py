@@ -51,7 +51,7 @@ numfig_format = {'figure': 'Figure %s'}
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
-html_logo = "./_static/images/logo.png"
+html_logo = "./_static/images/product-logo-native-protocol-library.png"
 
 html_favicon = "./_static/images/favicon.ico"
 
