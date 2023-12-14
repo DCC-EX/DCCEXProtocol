@@ -127,6 +127,12 @@ public:
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
 
+  /// @brief Notify when a track type change is received
+  /// @param track track that changed
+  /// @param type type received (MAIN|PROG|DC|DCX|NONE)
+  /// @param address address received for DC and DCX (zero if other types)
+  virtual void receivedTrackType(char track, TrackManagerMode type, int address) {}
+
   /// @brief Notify when a turnout state change is received
   /// @param turnoutId ID of the turnout
   /// @param thrown Wether it is thrown or not (true|false)
@@ -358,7 +364,13 @@ class DCCEXProtocol {
     /// @brief Turn power off for the specified track
     /// @param track Track name (A - H)
     void powerTrackOff(char track);
-    
+
+    /// @brief set track type for the specified track
+    /// @param track Track name (A - H)
+    /// @param type Track type (MAIN, PROG, DC, DCX, NONE)
+    /// @param address dcc address for DC and DCX  (Required, but ignored if not DC or DCX)
+    void setTrackType(char track, TrackManagerMode type, int address);
+
     // DCC accessory methods
 
     /// @brief Activate DCC accessory at the specified address and subaddress
@@ -444,6 +456,7 @@ class DCCEXProtocol {
 
     // Track management methods
     void _processTrackPower();
+    void _processTrackType();
     
     // Attributes
     int _rosterCount=0;                 // Count of roster items received

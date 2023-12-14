@@ -65,6 +65,11 @@ For example, when setting the speed based on the position of a rotary encoder, s
 
 This ensures that the user of the throttle sees the accurate results of what the throttle is doing, and provides validation that the EX-CommandStation is responding to the user input.
 
+DCCEXProtocol_Track_type
+------------------------------------
+
+This example demonstrates how client throttle software can change the Track type of any track/chanbel.  (MAIN\|PROG\|DC\|DCX\|NONE)
+
 ----
 
 Additional Examples

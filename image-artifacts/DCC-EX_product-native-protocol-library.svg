@@ -2,7 +2,7 @@
 <svg
    inkscape:export-ydpi="17.060751"
    inkscape:export-xdpi="17.060751"
-   inkscape:export-filename="..\..\docs\_static\images\logos\product-logo-native-protocol-library.png"
+   inkscape:export-filename="..\docs\_static\images\product-logo-native-protocol-library.png"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    sodipodi:docname="DCC-EX_product-native-protocol-library.svg"
    id="svg40"
@@ -38,7 +38,7 @@
      inkscape:window-y="-11"
      inkscape:window-x="2869"
      inkscape:cy="163.84099"
-     inkscape:cx="1600.6004"
+     inkscape:cx="-741.4855"
      inkscape:zoom="0.23803567"
      showgrid="false"
      id="namedview42"
@@ -430,7 +430,7 @@
      inkscape:export-ydpi="18.431187"><tspan
        x="205.2832"
        y="1421.3719"
-       id="tspan936">DCC-EX</tspan></text>
+       id="tspan1032">DCC-EX</tspan></text>
   <rect
      style="fill:none;fill-opacity:1;stroke-width:0.377953;-inkscape-stroke:none;stop-color:#000000;stroke:none"
      id="rect46006"
@@ -452,11 +452,11 @@
      inkscape:export-ydpi="18.431187"><tspan
        x="205.2832"
        y="1421.3719"
-       id="tspan942"><tspan
+       id="tspan1038"><tspan
          style="fill:#00353d"
-         id="tspan938">DCC-</tspan><tspan
+         id="tspan1034">DCC-</tspan><tspan
          style="fill:#00a3b9"
-         id="tspan940">EX</tspan></tspan></text>
+         id="tspan1036">EX</tspan></tspan></text>
   <text
      xml:space="preserve"
      id="text4777"
@@ -471,7 +471,7 @@
      inkscape:export-ydpi="18.431187"><tspan
        x="205.2832"
        y="1412.7389"
-       id="tspan944">Native Protocol Library</tspan></text>
+       id="tspan1040">Native Protocol Library</tspan></text>
   <text
      xml:space="preserve"
      id="text2480-6-0-6"
@@ -482,9 +482,9 @@
      inkscape:export-ydpi="18.431187"><tspan
        x="205.2832"
        y="1412.7389"
-       id="tspan948"><tspan
+       id="tspan1044"><tspan
          style="fill:#00353d"
-         id="tspan946">Native Protocol Library</tspan></tspan></text>
+         id="tspan1042">Native Protocol Library</tspan></tspan></text>
   <path
      d="M 858.02466,472.51298 H 2044.0679"
      stroke="#000000"

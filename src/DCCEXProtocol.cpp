@@ -453,6 +453,25 @@ void DCCEXProtocol::powerTrackOff(char track) {
   }
 }
 
+void DCCEXProtocol::setTrackType(char track, TrackManagerMode type, int address) {
+  if (_delegate) {
+    if (type == MAIN) {
+      sprintf(_outboundCommand, "<= %c MAIN>", track);
+    } else if (type == PROG) {
+      sprintf(_outboundCommand, "<= %c PROG>", track);
+    } else if (type == DC) {
+      sprintf(_outboundCommand, "<= %c DC %d>", track, address);
+    } else if (type == DCX) {
+      sprintf(_outboundCommand, "<= %c DCX %d>", track, address);
+    } else if (type == NONE) {
+      sprintf(_outboundCommand, "<= %c NONE>", track);
+    } else {
+      return;
+    }
+    _sendCommand();
+  }
+}
+
 // DCC accessory methods
 
 void DCCEXProtocol::activateAccessory(int accessoryAddress, int accessorySubAddr) {
@@ -532,6 +551,11 @@ void DCCEXProtocol::_processCommand() {
       case 'p':   // Power broadcast
         if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount()!=1) break;
         _processTrackPower();
+        break;
+
+      case '=':   // Track type broadcast
+        if (DCCEXInbound::getParameterCount()<2) break;
+        _processTrackType();
         break;
 
       case 'l':   // Loco/cab broadcast
@@ -1072,4 +1096,26 @@ void DCCEXProtocol::_processTrackPower() {
     _delegate->receivedTrackPower(state);
   }
   // console->println(F("processTrackPower(): end"));
+}
+
+void DCCEXProtocol::_processTrackType() {
+  // _console->println(F("processTrackType()"));
+  if (_delegate) {
+    char _track = DCCEXInbound::getNumber(0);
+    int _type = DCCEXInbound::getNumber(1);
+    TrackManagerMode _trackType;
+    switch (_type) {
+      case 2698315: _trackType = MAIN;
+      case 2788330: _trackType = PROG;
+      case 2183: _trackType = DC;
+      case 71999:  _trackType = DCX;
+      case 2857034: _trackType = NONE;
+      default: return;
+    }
+    int _address = 0; 
+    if (DCCEXInbound::getParameterCount()>2) _address = DCCEXInbound::getNumber(2);
+
+    _delegate->receivedTrackType(_track, _trackType, _address);
+  }
+  // _console->println(F("processTrackType(): end"));
 }
