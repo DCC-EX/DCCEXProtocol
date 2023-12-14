@@ -102,6 +102,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:afb516d842f413a08570de0b72f5a818c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">receivedTrackPower</a> (TrackPower state)</td></tr>
 <tr class="memdesc:afb516d842f413a08570de0b72f5a818c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a track power state change is received.  <a href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">More...</a><br /></td></tr>
 <tr class="separator:afb516d842f413a08570de0b72f5a818c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a670af62bf715b954efd9ec9e42f63a75"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a670af62bf715b954efd9ec9e42f63a75">receivedTrackType</a> (char track, TrackManagerMode type, int address)</td></tr>
+<tr class="memdesc:a670af62bf715b954efd9ec9e42f63a75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a track type change is received.  <a href="classDCCEXProtocolDelegate.html#a670af62bf715b954efd9ec9e42f63a75">More...</a><br /></td></tr>
+<tr class="separator:a670af62bf715b954efd9ec9e42f63a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57730f2272ce4038e63534083c8e7dea"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a57730f2272ce4038e63534083c8e7dea">receivedTurnoutAction</a> (int turnoutId, bool thrown)</td></tr>
 <tr class="memdesc:a57730f2272ce4038e63534083c8e7dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a turnout state change is received.  <a href="classDCCEXProtocolDelegate.html#a57730f2272ce4038e63534083c8e7dea">More...</a><br /></td></tr>
 <tr class="separator:a57730f2272ce4038e63534083c8e7dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -263,6 +266,58 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>Power state received (PowerOff|PowerOn|PowerUnknown) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a670af62bf715b954efd9ec9e42f63a75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a670af62bf715b954efd9ec9e42f63a75">&#9670;&nbsp;</a></span>receivedTrackType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedTrackType </td>
+          <td>(</td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>track</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TrackManagerMode&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a track type change is received. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">track</td><td>track that changed </td></tr>
+    <tr><td class="paramname">type</td><td>type received (MAIN|PROG|DC|DCX|NONE) </td></tr>
+    <tr><td class="paramname">address</td><td>address received for DC and DCX (zero if other types) </td></tr>
   </table>
   </dd>
 </dl>

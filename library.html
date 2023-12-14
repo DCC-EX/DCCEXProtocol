@@ -74,6 +74,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-consist-control">DCCEXProtocol_Consist_Control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-turnout-control">DCCEXProtocol_Turnout_control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-multi-throttle-control">DCCEXProtocol_Multi_Throttle_Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-track-type">DCCEXProtocol_Track_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#additional-examples">Additional Examples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="examples.html#dccexprotocol-ssid">DCCEXProtocol_SSID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="examples.html#dccexprotocol-mdns">DCCEXProtocol_mDNS</a></li>
@@ -181,6 +182,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8powerOffEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerOff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12powerTrackOnEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13powerTrackOffEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17activateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol19deactivateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateLinearAccessory()</span></code></a></li>
@@ -225,6 +227,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol27_processTurntableIndexEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableIndexEntry()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol26_processTurntableBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_processTrackPowerEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17_processTrackTypeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
@@ -263,6 +266,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedLocoUpdateEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoUpdate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate16receivedReadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedReadLoco()</span></code></a></li>
@@ -1476,6 +1480,21 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei">
+<span id="_CPPv3N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei"></span><span id="_CPPv2N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei"></span><span id="DCCEXProtocol::setTrackType__c.TrackManagerMode.i"></span><span class="target" id="classDCCEXProtocol_1a71d4fb46a06466e7555eede709ecda2e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setTrackType</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">track</span></span>, <a class="reference internal" href="#_CPPv416TrackManagerMode" title="TrackManagerMode"><span class="n"><span class="pre">TrackManagerMode</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei" title="Link to this definition"></a><br /></dt>
+<dd><p>set track type for the specified track </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track</strong> – Track name (A - H) </p></li>
+<li><p><strong>type</strong> – Track type (MAIN, PROG, DC, DCX, NONE) </p></li>
+<li><p><strong>address</strong> – dcc address for DC and DCX (Required, but ignored if not DC or DCX) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol17activateAccessoryEii">
 <span id="_CPPv3N13DCCEXProtocol17activateAccessoryEii"></span><span id="_CPPv2N13DCCEXProtocol17activateAccessoryEii"></span><span id="DCCEXProtocol::activateAccessory__i.i"></span><span class="target" id="classDCCEXProtocol_1a87f6450a0186a92aacb46c961f2eb28e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">activateAccessory</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">accessoryAddress</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">accessorySubAddr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol17activateAccessoryEii" title="Link to this definition"></a><br /></dt>
 <dd><p>Activate DCC accessory at the specified address and subaddress. </p>
@@ -1735,6 +1754,11 @@
 <span id="_CPPv3N13DCCEXProtocol18_processTrackPowerEv"></span><span id="_CPPv2N13DCCEXProtocol18_processTrackPowerEv"></span><span id="DCCEXProtocol::_processTrackPower"></span><span class="target" id="classDCCEXProtocol_1a79928d79b05f60d9d76d9be7cc372d21"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processTrackPower</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol18_processTrackPowerEv" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol17_processTrackTypeEv">
+<span id="_CPPv3N13DCCEXProtocol17_processTrackTypeEv"></span><span id="_CPPv2N13DCCEXProtocol17_processTrackTypeEv"></span><span id="DCCEXProtocol::_processTrackType"></span><span class="target" id="classDCCEXProtocol_1a34dfd887a7fb003fd593c2ed7a2b6b5b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processTrackType</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol17_processTrackTypeEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
@@ -1946,6 +1970,21 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>state</strong> – Power state received (PowerOff|PowerOn|PowerUnknown) </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei">
+<span id="_CPPv3N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"></span><span id="_CPPv2N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"></span><span id="DCCEXProtocolDelegate::receivedTrackType__c.TrackManagerMode.i"></span><span class="target" id="classDCCEXProtocolDelegate_1a670af62bf715b954efd9ec9e42f63a75"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedTrackType</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">track</span></span>, <a class="reference internal" href="#_CPPv416TrackManagerMode" title="TrackManagerMode"><span class="n"><span class="pre">TrackManagerMode</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a track type change is received. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track</strong> – track that changed </p></li>
+<li><p><strong>type</strong> – type received (MAIN|PROG|DC|DCX|NONE) </p></li>
+<li><p><strong>address</strong> – address received for DC and DCX (zero if other types) </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

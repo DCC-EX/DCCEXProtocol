@@ -228,6 +228,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a5fb6ec36bb3b7a29e944a7654195afe5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a5fb6ec36bb3b7a29e944a7654195afe5">powerTrackOff</a> (char track)</td></tr>
 <tr class="memdesc:a5fb6ec36bb3b7a29e944a7654195afe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn power off for the specified track.  <a href="classDCCEXProtocol.html#a5fb6ec36bb3b7a29e944a7654195afe5">More...</a><br /></td></tr>
 <tr class="separator:a5fb6ec36bb3b7a29e944a7654195afe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71d4fb46a06466e7555eede709ecda2e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a71d4fb46a06466e7555eede709ecda2e">setTrackType</a> (char track, TrackManagerMode type, int address)</td></tr>
+<tr class="memdesc:a71d4fb46a06466e7555eede709ecda2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set track type for the specified track  <a href="classDCCEXProtocol.html#a71d4fb46a06466e7555eede709ecda2e">More...</a><br /></td></tr>
+<tr class="separator:a71d4fb46a06466e7555eede709ecda2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87f6450a0186a92aacb46c961f2eb28e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a87f6450a0186a92aacb46c961f2eb28e">activateAccessory</a> (int accessoryAddress, int accessorySubAddr)</td></tr>
 <tr class="memdesc:a87f6450a0186a92aacb46c961f2eb28e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activate DCC accessory at the specified address and subaddress.  <a href="classDCCEXProtocol.html#a87f6450a0186a92aacb46c961f2eb28e">More...</a><br /></td></tr>
 <tr class="separator:a87f6450a0186a92aacb46c961f2eb28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1364,6 +1367,50 @@ Public Attributes</h2></td></tr>
     <tr><td class="paramname">loco</td><td>Pointer to a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object </td></tr>
     <tr><td class="paramname">speed</td><td>Speed (0 - 126) </td></tr>
     <tr><td class="paramname">direction</td><td>Direction (Forward|Reverse) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a71d4fb46a06466e7555eede709ecda2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71d4fb46a06466e7555eede709ecda2e">&#9670;&nbsp;</a></span>setTrackType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setTrackType </td>
+          <td>(</td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>track</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TrackManagerMode&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set track type for the specified track </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">track</td><td>Track name (A - H) </td></tr>
+    <tr><td class="paramname">type</td><td>Track type (MAIN, PROG, DC, DCX, NONE) </td></tr>
+    <tr><td class="paramname">address</td><td>dcc address for DC and DCX (Required, but ignored if not DC or DCX) </td></tr>
   </table>
   </dd>
 </dl>

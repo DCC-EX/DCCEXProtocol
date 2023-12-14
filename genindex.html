@@ -71,6 +71,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-consist-control">DCCEXProtocol_Consist_Control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-turnout-control">DCCEXProtocol_Turnout_control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-multi-throttle-control">DCCEXProtocol_Multi_Throttle_Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-track-type">DCCEXProtocol_Track_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#additional-examples">Additional Examples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="examples.html#dccexprotocol-ssid">DCCEXProtocol_SSID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="examples.html#dccexprotocol-mdns">DCCEXProtocol_mDNS</a></li>
@@ -178,6 +179,7 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8powerOffEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerOff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12powerTrackOnEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13powerTrackOffEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17activateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol19deactivateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateLinearAccessory()</span></code></a></li>
@@ -222,6 +224,7 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol27_processTurntableIndexEntryEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableIndexEntry()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processTurntableBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18_processTrackPowerEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17_processTrackTypeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
@@ -260,6 +263,7 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedLocoUpdateEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoUpdate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate16receivedReadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedReadLoco()</span></code></a></li>
@@ -662,6 +666,8 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol18_processTrackPowerEv">DCCEXProtocol::_processTrackPower (C++ function)</a>
 </li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol17_processTrackTypeEv">DCCEXProtocol::_processTrackType (C++ function)</a>
+</li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol24_processTurnoutBroadcastEv">DCCEXProtocol::_processTurnoutBroadcast (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol20_processTurnoutEntryEv">DCCEXProtocol::_processTurnoutEntry (C++ function)</a>
@@ -822,6 +828,8 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol11setThrottleEP4Locoi9Direction">DCCEXProtocol::setThrottle (C++ function)</a>, <a href="library.html#_CPPv4N13DCCEXProtocol11setThrottleEP7Consisti9Direction">[1]</a>
 </li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei">DCCEXProtocol::setTrackType (C++ function)</a>
+</li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol10startRouteEi">DCCEXProtocol::startRoute (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol12throwTurnoutEi">DCCEXProtocol::throwTurnout (C++ function)</a>
@@ -845,6 +853,8 @@
       <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedServerVersionEiii">DCCEXProtocolDelegate::receivedServerVersion (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower">DCCEXProtocolDelegate::receivedTrackPower (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei">DCCEXProtocolDelegate::receivedTrackType (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib">DCCEXProtocolDelegate::receivedTurnoutAction (C++ function)</a>
 </li>
