@@ -68,7 +68,7 @@ This ensures that the user of the throttle sees the accurate results of what the
 DCCEXProtocol_Track_type
 ------------------------------------
 
-This example demonstrates how client throttle software can change the Track type of any track/chanbel.  (MAIN\|PROG\|DC\|DCX\|NONE)
+This example demonstrates how client throttle software can change the Track type of any track/channel.  (MAIN\|PROG\|DC\|DCX\|NONE)
 
 ----
 

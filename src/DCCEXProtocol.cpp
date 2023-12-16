@@ -455,18 +455,23 @@ void DCCEXProtocol::powerTrackOff(char track) {
 
 void DCCEXProtocol::setTrackType(char track, TrackManagerMode type, int address) {
   if (_delegate) {
-    if (type == MAIN) {
-      sprintf(_outboundCommand, "<= %c MAIN>", track);
-    } else if (type == PROG) {
-      sprintf(_outboundCommand, "<= %c PROG>", track);
-    } else if (type == DC) {
-      sprintf(_outboundCommand, "<= %c DC %d>", track, address);
-    } else if (type == DCX) {
-      sprintf(_outboundCommand, "<= %c DCX %d>", track, address);
-    } else if (type == NONE) {
-      sprintf(_outboundCommand, "<= %c NONE>", track);
-    } else {
-      return;
+    switch (type) {
+      case MAIN: 
+        sprintf(_outboundCommand, "<= %c MAIN>", track); 
+        break;
+      case PROG: 
+        sprintf(_outboundCommand, "<= %c PROG>", track); 
+        break; 
+      case DC: 
+        sprintf(_outboundCommand, "<= %c DC %d>", track, address); 
+        break;
+      case DCX: 
+        sprintf(_outboundCommand, "<= %c DCX %d>", track, address); 
+        break;
+      case NONE: 
+        sprintf(_outboundCommand, "<= %c NONE>", track); 
+        break;
+      default: return;
     }
     _sendCommand();
   }
@@ -1105,11 +1110,11 @@ void DCCEXProtocol::_processTrackType() {
     int _type = DCCEXInbound::getNumber(1);
     TrackManagerMode _trackType;
     switch (_type) {
-      case 2698315: _trackType = MAIN;
-      case 2788330: _trackType = PROG;
-      case 2183: _trackType = DC;
-      case 71999:  _trackType = DCX;
-      case 2857034: _trackType = NONE;
+      case 2698315: _trackType = MAIN; break;
+      case 2788330: _trackType = PROG; break;
+      case 2183: _trackType = DC; break;
+      case 71999:  _trackType = DCX; break;
+      case 2857034: _trackType = NONE; break;
       default: return;
     }
     int _address = 0; 

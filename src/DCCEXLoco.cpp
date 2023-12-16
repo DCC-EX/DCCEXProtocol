@@ -243,6 +243,7 @@ void Consist::removeLoco(Loco* loco) {
         _first=current->getNext();
       }
       delete current;
+      _locoCount--;
       break;
     }
     previous=current;
@@ -250,6 +251,7 @@ void Consist::removeLoco(Loco* loco) {
   }
   if (!_first) {
     _first=nullptr;
+    _locoCount = 0;
   }
 }
 
@@ -265,6 +267,7 @@ void Consist::removeAllLocos() {
     current=next;
   }
   _first=nullptr;
+  _locoCount = 0;
 }
 
 void Consist::setLocoFacing(Loco* loco, Facing facing) {
@@ -311,6 +314,15 @@ Direction Consist::getDirection() {
 
 ConsistLoco* Consist::getFirst() {
   return _first;
+}
+
+ConsistLoco* Consist::getByAddress(int address) {
+  for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
+    if (cl->getLoco()->getAddress()==address) {
+      return cl;
+    }
+  }
+  return nullptr;
 }
 
 // Private methods

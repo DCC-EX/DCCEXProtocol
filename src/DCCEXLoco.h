@@ -234,6 +234,10 @@ public:
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco* getFirst();
 
+  /// @brief Get the loco in the consist with the specified address
+  /// @return Pointer to the first ConsistLoco object
+  ConsistLoco* getByAddress(int address);
+
 private:
   char* _name;
   int _locoCount;
