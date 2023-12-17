@@ -3,11 +3,11 @@
 ..
 .. |DCC-EX| raw:: html
 
-  <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span>
+  <a href="https://dcc-ex.com/"><span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span></a>
 ..
 .. |EX-CS| raw:: html
 
-  <span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span>
+  <a href="https://dcc-ex.com/"><span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span></a>
 ..
 .. |EX-NCL| raw:: html
 
