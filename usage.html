@@ -506,10 +506,10 @@
 </ul>
 </nav>
 </aside>
-<p>Whilst this library extrapolates the need for understanding the specific <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span> native commands from a throttle developer, it is highly recommended to familiarise yourself with the concepts outlined in the <a class="reference external" href="https://dcc-ex.com/throttles/tech-reference.html">https://dcc-ex.com/throttles/tech-reference.html</a>.</p>
+<p>Whilst this library extrapolates the need for understanding the specific <a href="https://dcc-ex.com/"><span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span></a> native commands from a throttle developer, it is highly recommended to familiarise yourself with the concepts outlined in the <a class="reference external" href="https://dcc-ex.com/throttles/tech-reference.html">https://dcc-ex.com/throttles/tech-reference.html</a>.</p>
 <section id="setup">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Setup</a><a class="headerlink" href="#setup" title="Link to this heading"></a></h2>
-<p>Once the <cite>DCCEXProtocol</cite> object is instantiated, a connection must be made to the <span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span> using the <cite>connect(&amp;stream)</cite> method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.</p>
+<p>Once the <cite>DCCEXProtocol</cite> object is instantiated, a connection must be made to the <a href="https://dcc-ex.com/"><span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span></a> using the <cite>connect(&amp;stream)</cite> method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.</p>
 <p>It is also recommended to enable logging to an Arduino Stream using the <cite>setLogStream(&amp;stream)</cite> method.</p>
 <p>As covered in the design principles above, you must include the <cite>check()</cite> method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom <cite>DCCEXProtocolDelegate</cite> class.</p>
 <p>Refer to the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> to see how this may be implemented.</p>
@@ -525,7 +525,7 @@
 </section>
 <section id="retrieving-and-referring-to-object-lists">
 <h2><a class="toc-backref" href="#id3" role="doc-backlink">Retrieving and referring to object lists</a><a class="headerlink" href="#retrieving-and-referring-to-object-lists" title="Link to this heading"></a></h2>
-<p>To retrieve the various objects lists from <span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span>, use the <cite>getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)</cite> method within your <cite>loop()</cite> function to ensure these are retrieved successfully.</p>
+<p>To retrieve the various objects lists from <a href="https://dcc-ex.com/"><span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span></a>, use the <cite>getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)</cite> method within your <cite>loop()</cite> function to ensure these are retrieved successfully.</p>
 <p>All objects are contained within linked lists and can be access via for loops:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Loco</span><span class="o">*</span><span class="w"> </span><span class="n">loco</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">roster</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">loco</span><span class="p">;</span><span class="w"> </span><span class="n">loco</span><span class="o">=</span><span class="n">loco</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// loco methods are available here</span>
