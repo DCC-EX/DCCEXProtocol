@@ -511,6 +511,43 @@
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Setup</a><a class="headerlink" href="#setup" title="Link to this heading"></a></h2>
 <p>Once the <cite>DCCEXProtocol</cite> object is instantiated, a connection must be made to the <a href="https://dcc-ex.com/"><span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span></a> using the <cite>connect(&amp;stream)</cite> method and providing a suitable Arduino Stream, such as a WiFi client or serial connection.</p>
 <p>It is also recommended to enable logging to an Arduino Stream using the <cite>setLogStream(&amp;stream)</cite> method.</p>
+<p>An example using an ESP32 with WiFi to connect to EX-CommandStation, with logging to the serial console:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">WiFiClient</span><span class="w"> </span><span class="n">client</span><span class="p">;</span>
+<span class="n">DCCEXProtocol</span><span class="w"> </span><span class="n">dccexProtocol</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">WiFi</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">ssid</span><span class="p">,</span><span class="w"> </span><span class="n">password</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">WiFi</span><span class="p">.</span><span class="n">status</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">WL_CONNECTED</span><span class="p">)</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">client</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">serverAddress</span><span class="p">,</span><span class="w"> </span><span class="n">serverPort</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">setLogStream</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Serial</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">client</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">check</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// other code here</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>An example using STM32F103C8 Bluepill with hardware serial port 1 connecting to EX-CommandStation, and logging to the USB serial console:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">DCCEXProtocol</span><span class="w"> </span><span class="n">dccexProtocol</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Serial1</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">setLogStream</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Serial</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Serial1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">check</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// other code here</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <p>As covered in the design principles above, you must include the <cite>check()</cite> method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom <cite>DCCEXProtocolDelegate</cite> class.</p>
 <p>Refer to the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> to see how this may be implemented.</p>
 </section>
