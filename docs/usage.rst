@@ -19,6 +19,47 @@ Once the `DCCEXProtocol` object is instantiated, a connection must be made to th
 
 It is also recommended to enable logging to an Arduino Stream using the `setLogStream(&stream)` method.
 
+An example using an ESP32 with WiFi to connect to EX-CommandStation, with logging to the serial console:
+
+.. code-block:: cpp
+
+  WiFiClient client;
+  DCCEXProtocol dccexProtocol;
+
+  void setup() {
+    Serial.begin(115200);
+    WiFi.begin(ssid, password);
+    while(WiFi.status() != WL_CONNECTED) delay(1000);
+    if (!client.connect(serverAddress, serverPort)) {
+      while(1) delay(1000);
+    }
+    dccexProtocol.setLogStream(&Serial);
+    dccexProtocol.connect(&client);
+  }
+
+  void loop() {
+    dccexProtocol.check();
+    // other code here
+  }
+
+An example using STM32F103C8 Bluepill with hardware serial port 1 connecting to EX-CommandStation, and logging to the USB serial console:
+
+.. code-block:: cpp
+
+  DCCEXProtocol dccexProtocol;
+  
+  void setup() {
+    Serial.begin(115200);
+    Serial1.begin(115200);
+    dccexProtocol.setLogStream(&Serial);
+    dccexProtocol.connect(&Serial1);
+  }
+
+  void loop() {
+    dccexProtocol.check();
+    // other code here
+  }
+
 As covered in the design principles above, you must include the `check()` method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom `DCCEXProtocolDelegate` class.
 
 Refer to the :doc:`examples` to see how this may be implemented.

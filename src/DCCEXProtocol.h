@@ -31,6 +31,12 @@
 /*
 Version information:
 
+0.0.4   - No functional changes, update author/maintainer and URL library properties
+0.0.3   - Add getByAddress method to ConsistLoco
+        - Fix bug when removing locos from a consist
+        - Tidy setTrackType() method
+0.0.2   - Add TrackManager configuration method and broadcast processing
+        - Add TrackManager, SSID, and mDNS examples
 0.0.1   - Initial library release via the Arduino Library Manager
 */
 
