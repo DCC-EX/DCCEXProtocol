@@ -287,6 +287,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco12isFunctionOnEi"><code class="docutils literal notranslate"><span class="pre">Loco::isFunctionOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco17setFunctionStatesEi"><code class="docutils literal notranslate"><span class="pre">Loco::setFunctionStates()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco17getFunctionStatesEv"><code class="docutils literal notranslate"><span class="pre">Loco::getFunctionStates()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco15getFunctionNameEi"><code class="docutils literal notranslate"><span class="pre">Loco::getFunctionName()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco7getNextEv"><code class="docutils literal notranslate"><span class="pre">Loco::getNext()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Loco::getFirst()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N4Loco12getByAddressEi"><code class="docutils literal notranslate"><span class="pre">Loco::getByAddress()</span></code></a></li>
@@ -667,8 +668,11 @@
 <span id="_CPPv3N7Consist12getByAddressEi"></span><span id="_CPPv2N7Consist12getByAddressEi"></span><span id="Consist::getByAddress__i"></span><span class="target" id="classConsist_1a1ae98b1b9d353a5e1b1d58a729bc1e11"></span><a class="reference internal" href="#_CPPv411ConsistLoco" title="ConsistLoco"><span class="n"><span class="pre">ConsistLoco</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">getByAddress</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N7Consist12getByAddressEi" title="Link to this definition"></a><br /></dt>
 <dd><p>Get the loco in the consist with the specified address. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Pointer to the first <a class="reference internal" href="#classConsistLoco"><span class="std std-ref">ConsistLoco</span></a> object </p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>address</strong> – DCC address of loco to retrieve </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the first <a class="reference internal" href="#classConsistLoco"><span class="std std-ref">ConsistLoco</span></a> object </p>
 </dd>
 </dl>
 </dd></dl>
@@ -2197,6 +2201,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Integer representing current function states </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Loco15getFunctionNameEi">
+<span id="_CPPv3N4Loco15getFunctionNameEi"></span><span id="_CPPv2N4Loco15getFunctionNameEi"></span><span id="Loco::getFunctionName__i"></span><span class="target" id="classLoco_1a5f8e1f819d545465ab4b84bde471b3f4"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">getFunctionName</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Loco15getFunctionNameEi" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the name/label for a function. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>function</strong> – Number of the function to return the name/label of </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>char* representing the function name/label </p>
 </dd>
 </dl>
 </dd></dl>
