@@ -31,6 +31,9 @@
 /*
 Version information:
 
+0.0.6   - add getFunctionName(int function);
+0.0.5   - Increase MAX_FUNCTIONS to 32. 
+        - Also add check to make sure the incoming does not exceed MAX_FUNCTIONS
 0.0.4   - No functional changes, update author/maintainer and URL library properties
 0.0.3   - Add getByAddress method to ConsistLoco
         - Fix bug when removing locos from a consist
