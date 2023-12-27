@@ -124,12 +124,16 @@ void Loco::setupFunctions(char *functionNames) {
         _momentaryFlags &= ~1<<fkey;
       }
     }
-    //    console->print("Function ");
-    //    console->print(fkey);
-    //    console->print(momentary ? F("  Momentary ") : F(""));
-    //    console->print(" ");
-    //    console->println(fName);
+    //  Serial.print("Function ");
+    //  Serial.print(fkey);
+    //  Serial.print(momentary ? F("  Momentary ") : F(""));
+    //  Serial.print(" ");
+    //  Serial.println(fName);
+    //  Serial.println(_functionNames[fkey]); 
     fkey++;
+  }
+  if (fkey<MAX_FUNCTIONS) {
+    for (int i=fkey; i<MAX_FUNCTIONS; i++) {_functionNames[i] = nullptr;}
   }
 }
 
@@ -143,6 +147,10 @@ void Loco::setFunctionStates(int functionStates) {
 
 int Loco::getFunctionStates() {
   return _functionStates;
+}
+
+char* Loco::getFunctionName(int function) {
+  return _functionNames[function];
 }
 
 Loco* Loco::getFirst() {

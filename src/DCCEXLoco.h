@@ -107,6 +107,11 @@ public:
   /// @return Integer representing current function states
   int getFunctionStates();
 
+  /// @brief Get the name/label for a function
+  /// @param function Number of the function to return the name/label of
+  /// @return char* representing the function name/label
+  char* getFunctionName(int function);
+
   /// @brief Get first Loco object
   /// @return Pointer to the first Loco object
   static Loco* getFirst();
@@ -235,6 +240,7 @@ public:
   ConsistLoco* getFirst();
 
   /// @brief Get the loco in the consist with the specified address
+  /// @param address DCC address of loco to retrieve
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco* getByAddress(int address);
 
