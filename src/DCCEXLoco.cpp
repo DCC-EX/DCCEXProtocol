@@ -116,11 +116,13 @@ void Loco::setupFunctions(char *functionNames) {
     // int fkey = function number 0....
     // bool momentary = is it a momentary
     // fName = pointer to the function name 
-    _functionNames[fkey] = fName;
-    if (momentary) {
-      _momentaryFlags |= 1<<fkey;
-    } else {
-      _momentaryFlags &= ~1<<fkey;
+    if (fkey < MAX_FUNCTIONS) {
+      _functionNames[fkey] = fName;
+      if (momentary) {
+        _momentaryFlags |= 1<<fkey;
+      } else {
+        _momentaryFlags &= ~1<<fkey;
+      }
     }
     //    console->print("Function ");
     //    console->print(fkey);

@@ -31,7 +31,7 @@
 
 #include <Arduino.h>
 
-static const int MAX_FUNCTIONS = 28;
+static const int MAX_FUNCTIONS = 32;
 const int MAX_OBJECT_NAME_LENGTH = 30;  // including Loco name, Turnout/Point names, Route names, etc. names
 #define MAX_SINGLE_COMMAND_PARAM_LENGTH 500  // Unfortunately includes the function list for an individual loco
 
