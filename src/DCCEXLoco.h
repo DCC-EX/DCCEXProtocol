@@ -112,6 +112,11 @@ public:
   /// @return char* representing the function name/label
   char* getFunctionName(int function);
 
+  /// @brief Get the name/label for a function
+  /// @param function Number of the function to return the name/label of
+  /// @return char* representing the function name/label
+  bool isFunctionMomentary(int function);
+
   /// @brief Get first Loco object
   /// @return Pointer to the first Loco object
   static Loco* getFirst();

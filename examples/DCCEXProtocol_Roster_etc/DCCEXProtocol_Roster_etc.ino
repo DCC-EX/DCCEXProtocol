@@ -81,6 +81,17 @@ void printRoster() {
     Serial.print(" ~");
     Serial.print(name);
     Serial.println("~");
+    for (int i=0; i<32; i++) {
+      char* fName = loco->getFunctionName(i);
+      if (fName != nullptr) {
+        Serial.print("loadFunctionLabels() "); 
+        Serial.print(fName);
+        if (loco->isFunctionMomentary(i)) {
+          Serial.print(" - Momentary");
+        }
+        Serial.println();
+      }
+    }
   }
   Serial.println("\n");  
 }

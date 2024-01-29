@@ -121,7 +121,7 @@ void Loco::setupFunctions(char *functionNames) {
       if (momentary) {
         _momentaryFlags |= 1<<fkey;
       } else {
-        _momentaryFlags &= ~1<<fkey;
+        _momentaryFlags &= ~(1<<fkey);
       }
     }
     //  Serial.print("Function ");
@@ -151,6 +151,10 @@ int Loco::getFunctionStates() {
 
 char* Loco::getFunctionName(int function) {
   return _functionNames[function];
+}
+
+bool Loco::isFunctionMomentary(int function) {
+  return _momentaryFlags & 1<<function;
 }
 
 Loco* Loco::getFirst() {
