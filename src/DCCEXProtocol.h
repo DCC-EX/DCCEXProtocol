@@ -31,7 +31,7 @@
 /*
 Version information:
 
-0.0.6   - add isFunctionMomentary(int function);
+0.0.7   - add isFunctionMomentary(int function);
 0.0.6   - add getFunctionName(int function);
 0.0.5   - Increase MAX_FUNCTIONS to 32. 
         - Also add check to make sure the incoming does not exceed MAX_FUNCTIONS
