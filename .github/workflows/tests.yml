@@ -1,0 +1,21 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  x86_64-linux-gnu-gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+      - run: cmake -Bbuild
+        env:
+          CC:   gcc-13
+          CXX:  g++-13
+      - run: cmake --build build --parallel --target DCCEXProtocolTests
+      - run: ctest --test-dir build --schedule-random
