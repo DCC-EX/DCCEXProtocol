@@ -31,8 +31,9 @@
 /*
 Version information:
 
-0.0.7   - add isFunctionMomentary(int function);
-0.0.6   - add getFunctionName(int function);
+0.0.8   - No functional changes, add cross-platform and unit testing capabilities (credit to higaski)
+0.0.7   - Add isFunctionMomentary(int function);
+0.0.6   - Add getFunctionName(int function);
 0.0.5   - Increase MAX_FUNCTIONS to 32. 
         - Also add check to make sure the incoming does not exceed MAX_FUNCTIONS
 0.0.4   - No functional changes, update author/maintainer and URL library properties
