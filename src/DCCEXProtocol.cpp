@@ -547,6 +547,12 @@ void DCCEXProtocol::_processCommand() {
         }
         break;
       
+      case 'm':   // Broadcast message
+        if (DCCEXInbound::isTextParameter(0)) {
+          _processMessage();
+        }
+        break;
+      
       case 'I':   // Turntable broadcast
         if (DCCEXInbound::getParameterCount()==3) {
           _processTurntableBroadcast();
@@ -648,6 +654,10 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
     _delegate->receivedServerVersion(_majorVersion, _minorVersion, _patchVersion);
   }
   // console->println(F("processServerDescription(): end"));
+}
+
+void DCCEXProtocol::_processMessage() { //<m "message">
+  _delegate->receivedMessage(DCCEXInbound::getSafeText(0));
 }
 
 char* DCCEXProtocol::_nextServerDescriptionParam(char* description, int startAt, bool lookingAtVersionNumber) {

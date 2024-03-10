@@ -31,6 +31,7 @@
 /*
 Version information:
 
+0.0.10  - Add support for broadcast messages
 0.0.9   - if loco is selected by address and that loco is in the roster (with the same DCC Address), updated and send speed commands for both
 0.0.8   - No functional changes, add cross-platform and unit testing capabilities (credit to higaski)
 0.0.7   - Add isFunctionMomentary(int function);
@@ -118,6 +119,10 @@ public:
   /// @param minor Minor version of EX-CommandStation (eg. 5.0.7 returns 0)
   /// @param patch Patch version of EX-CommandStation (eg. 5.0.7 returns 7)
   virtual void receivedServerVersion(int major, int minor, int patch) {}
+
+  /// @brief Notify when a broadcast message has been received
+  /// @param message message that has been broadcast
+  virtual void receivedMessage(char* message) {}
 
   /// @brief Notify when the roster list is received
   virtual void receivedRosterList() {}
@@ -424,6 +429,7 @@ class DCCEXProtocol {
     void _sendCommand();
     void _processCommand();
     void _processServerDescription();
+    void _processMessage();
     char* _nextServerDescriptionParam(char* description, int startAt, bool lookingAtVersionNumber);
 
     // Consist/loco methods
