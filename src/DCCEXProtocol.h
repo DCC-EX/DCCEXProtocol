@@ -31,6 +31,7 @@
 /*
 Version information:
 
+0.0.9   - if loco is selected by address and that loco is in the roster (with the same DCC Address), updated and send speed commands for both
 0.0.8   - No functional changes, add cross-platform and unit testing capabilities (credit to higaski)
 0.0.7   - Add isFunctionMomentary(int function);
 0.0.6   - Add getFunctionName(int function);
