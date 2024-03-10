@@ -80,6 +80,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a07057e8b7e6746b92e0378a5790b8970"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a07057e8b7e6746b92e0378a5790b8970">receivedServerVersion</a> (int major, int minor, int patch)</td></tr>
 <tr class="memdesc:a07057e8b7e6746b92e0378a5790b8970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when the server version has been received.  <a href="classDCCEXProtocolDelegate.html#a07057e8b7e6746b92e0378a5790b8970">More...</a><br /></td></tr>
 <tr class="separator:a07057e8b7e6746b92e0378a5790b8970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a591e2ae2ac2043eac860892805855425"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a591e2ae2ac2043eac860892805855425">receivedMessage</a> (char *message)</td></tr>
+<tr class="memdesc:a591e2ae2ac2043eac860892805855425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a broadcast message has been received.  <a href="classDCCEXProtocolDelegate.html#a591e2ae2ac2043eac860892805855425">More...</a><br /></td></tr>
+<tr class="separator:a591e2ae2ac2043eac860892805855425"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e8263c6031cb75b5fe70801e708e503"><td class="memItemLeft" align="right" valign="top"><a id="a2e8263c6031cb75b5fe70801e708e503"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a2e8263c6031cb75b5fe70801e708e503">receivedRosterList</a> ()</td></tr>
 <tr class="memdesc:a2e8263c6031cb75b5fe70801e708e503"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when the roster list is received. <br /></td></tr>
@@ -146,6 +149,40 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">loco</td><td>Pointer to the loco object </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a591e2ae2ac2043eac860892805855425"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a591e2ae2ac2043eac860892805855425">&#9670;&nbsp;</a></span>receivedMessage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedMessage </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>message</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a broadcast message has been received. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>message that has been broadcast </td></tr>
   </table>
   </dd>
 </dl>

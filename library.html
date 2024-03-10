@@ -196,6 +196,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_sendCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendCommand()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processCommand()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25_processServerDescriptionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processServerDescription()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processMessageEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processMessage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_nextServerDescriptionParam()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processLocoBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_getValidFunctionMapEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getValidFunctionMap()</span></code></a></li>
@@ -261,6 +262,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv421DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedServerVersionEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedServerVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate15receivedMessageEPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedMessage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedRosterListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRosterList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate19receivedTurnoutListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRouteList()</span></code></a></li>
@@ -1612,6 +1614,11 @@
 <dd></dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol15_processMessageEv">
+<span id="_CPPv3N13DCCEXProtocol15_processMessageEv"></span><span id="_CPPv2N13DCCEXProtocol15_processMessageEv"></span><span id="DCCEXProtocol::_processMessage"></span><span class="target" id="classDCCEXProtocol_1ad87afc1e6e39db52d8576fbc438663e2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processMessage</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol15_processMessageEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib">
 <span id="_CPPv3N13DCCEXProtocol27_nextServerDescriptionParamEPcib"></span><span id="_CPPv2N13DCCEXProtocol27_nextServerDescriptionParamEPcib"></span><span id="DCCEXProtocol::_nextServerDescriptionParam__cP.i.b"></span><span class="target" id="classDCCEXProtocol_1a1a922bb7706952979791140651bf1aa5"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">_nextServerDescriptionParam</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">description</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">startAt</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lookingAtVersionNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
@@ -1941,6 +1948,17 @@
 <li><p><strong>minor</strong> – Minor version of EX-CommandStation (eg. 5.0.7 returns 0) </p></li>
 <li><p><strong>patch</strong> – Patch version of EX-CommandStation (eg. 5.0.7 returns 7) </p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate15receivedMessageEPc">
+<span id="_CPPv3N21DCCEXProtocolDelegate15receivedMessageEPc"></span><span id="_CPPv2N21DCCEXProtocolDelegate15receivedMessageEPc"></span><span id="DCCEXProtocolDelegate::receivedMessage__cP"></span><span class="target" id="classDCCEXProtocolDelegate_1a591e2ae2ac2043eac860892805855425"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedMessage</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate15receivedMessageEPc" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a broadcast message has been received. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – message that has been broadcast </p>
 </dd>
 </dl>
 </dd></dl>
