@@ -31,6 +31,7 @@
 /*
 Version information:
 
+0.0.8   - if loco is selected by address and that loco is in the roster (with the same DCC Address), updated and send speed commands for both
 0.0.7   - add isFunctionMomentary(int function);
 0.0.6   - add getFunctionName(int function);
 0.0.5   - Increase MAX_FUNCTIONS to 32. 
