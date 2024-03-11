@@ -97,6 +97,8 @@ void DCCEXProtocol::check() {
       if (r=='>') {
         if (DCCEXInbound::parse(_cmdBuffer)) {
           // Process stuff here
+          _console->print("<== ");
+          _console->println(_cmdBuffer);
           _processCommand();
         }
         // Clear buffer after use
@@ -560,7 +562,7 @@ void DCCEXProtocol::_processCommand() {
         break;
 
       case 'p':   // Power broadcast
-        if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount()!=1) break;
+        if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount()>2) break;
         _processTrackPower();
         break;
 
@@ -1111,7 +1113,7 @@ void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
 // Track management methods
 
 void DCCEXProtocol::_processTrackPower() {
-  // console->println(F("processTrackPower()"));
+  // _console->println(F("processTrackPower()"));
   if (_delegate) {
     TrackPower state = PowerUnknown;
     if (DCCEXInbound::getNumber(0)==PowerOff) {
@@ -1119,9 +1121,20 @@ void DCCEXProtocol::_processTrackPower() {
     } else if (DCCEXInbound::getNumber(0)==PowerOn) {
       state = PowerOn;
     }
+    // _console->print(F("processTrackPower(): state: "));
+    // _console->println(state);
+
+    if (DCCEXInbound::getParameterCount()==2) {
+      int _track = DCCEXInbound::getNumber(1);
+      // _console->print("processTrackPower(): 2nd : ");
+      // _console->println(_track);
+      _delegate->receivedIndividualTrackPower(state,_track); 
+
+      if (DCCEXInbound::getNumber(1) != 2698315) { return;}   // not equal "MAIN"
+    }
     _delegate->receivedTrackPower(state);
   }
-  // console->println(F("processTrackPower(): end"));
+  // _console->print(F("processTrackPower(): end"));
 }
 
 void DCCEXProtocol::_processTrackType() {

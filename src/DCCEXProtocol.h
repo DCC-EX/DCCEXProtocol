@@ -31,6 +31,8 @@
 /*
 Version information:
 
+0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
+        - imporved logic for overall track power
 0.0.10  - Add support for broadcast messages
 0.0.9   - if loco is selected by address and that loco is in the roster (with the same DCC Address), updated and send speed commands for both
 0.0.8   - No functional changes, add cross-platform and unit testing capabilities (credit to higaski)
@@ -140,9 +142,14 @@ public:
   /// @param loco Pointer to the loco object
   virtual void receivedLocoUpdate(Loco* loco) {}
   
-  /// @brief Notify when a track power state change is received
+  /// @brief Notify when the global track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
+
+  /// @brief Notify when an individual track power state change is received
+  /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
+  /// @param track which track changed 65=A..72=H | 2698315=MAIN | 2788330=PROG | 2183=DC | 71999=DCX
+  virtual void receivedIndividualTrackPower(TrackPower state, int track) {}
 
   /// @brief Notify when a track type change is received
   /// @param track track that changed
