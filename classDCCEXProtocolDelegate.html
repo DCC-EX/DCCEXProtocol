@@ -103,8 +103,11 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a7e4f00bfe338f5fa02ac86a7b1095c1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when an update to a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object is received.  <a href="classDCCEXProtocolDelegate.html#a7e4f00bfe338f5fa02ac86a7b1095c1d">More...</a><br /></td></tr>
 <tr class="separator:a7e4f00bfe338f5fa02ac86a7b1095c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb516d842f413a08570de0b72f5a818c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">receivedTrackPower</a> (TrackPower state)</td></tr>
-<tr class="memdesc:afb516d842f413a08570de0b72f5a818c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a track power state change is received.  <a href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">More...</a><br /></td></tr>
+<tr class="memdesc:afb516d842f413a08570de0b72f5a818c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when the global track power state change is received.  <a href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">More...</a><br /></td></tr>
 <tr class="separator:afb516d842f413a08570de0b72f5a818c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a0c628f19a9e8688413c59463f1e19f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a7a0c628f19a9e8688413c59463f1e19f">receivedIndividualTrackPower</a> (TrackPower state, int track)</td></tr>
+<tr class="memdesc:a7a0c628f19a9e8688413c59463f1e19f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when an individual track power state change is received.  <a href="classDCCEXProtocolDelegate.html#a7a0c628f19a9e8688413c59463f1e19f">More...</a><br /></td></tr>
+<tr class="separator:a7a0c628f19a9e8688413c59463f1e19f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a670af62bf715b954efd9ec9e42f63a75"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a670af62bf715b954efd9ec9e42f63a75">receivedTrackType</a> (char track, TrackManagerMode type, int address)</td></tr>
 <tr class="memdesc:a670af62bf715b954efd9ec9e42f63a75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a track type change is received.  <a href="classDCCEXProtocolDelegate.html#a670af62bf715b954efd9ec9e42f63a75">More...</a><br /></td></tr>
 <tr class="separator:a670af62bf715b954efd9ec9e42f63a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,6 +124,51 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Delegate responses and broadcast events to the client software to enable custom event handlers. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7a0c628f19a9e8688413c59463f1e19f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a0c628f19a9e8688413c59463f1e19f">&#9670;&nbsp;</a></span>receivedIndividualTrackPower()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedIndividualTrackPower </td>
+          <td>(</td>
+          <td class="paramtype">TrackPower&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>track</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when an individual track power state change is received. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Power state received (PowerOff|PowerOn|PowerUnknown) </td></tr>
+    <tr><td class="paramname">track</td><td>which track changed 65=A..72=H | 2698315=MAIN | 2788330=PROG | 2183=DC | 71999=DCX </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a7e4f00bfe338f5fa02ac86a7b1095c1d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7e4f00bfe338f5fa02ac86a7b1095c1d">&#9670;&nbsp;</a></span>receivedLocoUpdate()</h2>
 
@@ -299,7 +347,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table>
 </div><div class="memdoc">
 
-<p>Notify when a track power state change is received. </p>
+<p>Notify when the global track power state change is received. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>Power state received (PowerOff|PowerOn|PowerUnknown) </td></tr>

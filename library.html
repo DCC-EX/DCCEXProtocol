@@ -269,6 +269,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedLocoUpdateEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoUpdate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedIndividualTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
@@ -2001,10 +2002,24 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower">
 <span id="_CPPv3N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"></span><span id="_CPPv2N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"></span><span id="DCCEXProtocolDelegate::receivedTrackPower__TrackPower"></span><span class="target" id="classDCCEXProtocolDelegate_1afb516d842f413a08570de0b72f5a818c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedTrackPower</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv410TrackPower" title="TrackPower"><span class="n"><span class="pre">TrackPower</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower" title="Link to this definition"></a><br /></dt>
-<dd><p>Notify when a track power state change is received. </p>
+<dd><p>Notify when the global track power state change is received. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>state</strong> – Power state received (PowerOff|PowerOn|PowerUnknown) </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri">
+<span id="_CPPv3N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri"></span><span id="_CPPv2N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri"></span><span id="DCCEXProtocolDelegate::receivedIndividualTrackPower__TrackPower.i"></span><span class="target" id="classDCCEXProtocolDelegate_1a7a0c628f19a9e8688413c59463f1e19f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedIndividualTrackPower</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv410TrackPower" title="TrackPower"><span class="n"><span class="pre">TrackPower</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">track</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when an individual track power state change is received. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> – Power state received (PowerOff|PowerOn|PowerUnknown) </p></li>
+<li><p><strong>track</strong> – which track changed 65=A..72=H | 2698315=MAIN | 2788330=PROG | 2183=DC | 71999=DCX </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
