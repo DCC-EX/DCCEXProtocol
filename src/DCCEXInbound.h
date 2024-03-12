@@ -36,15 +36,15 @@
   1) setup is done once with your expected max parameter count.
   2) Call parse with your command input buffer.
     If it returns true... you have results.
-    
+
   3) Use the get... functions to access the parameters.
   These parameters are ONLY VALID until you next call parse.
 */
 
 /// @brief Inbound DCC-EX command parser class to parse commands and provide interpreted parameters
 class DCCEXInbound {
-public: 
-  /// @brief Setup parser once with enough space to handle the maximum number of 
+public:
+  /// @brief Setup parser once with enough space to handle the maximum number of
   ///  parameters expected from the command station.
   /// @param maxParameterValues Maximum parameter values to accommodate
   static void setup(int16_t maxParameterValues);
@@ -52,7 +52,7 @@ public:
   /// @brief Pass in a command string to parse
   /// @param command Char array of command to parse
   /// @return True if parsed ok, false if badly terminated command or too many parameters
-  static bool parse(char* command);
+  static bool parse(char *command);
 
   /// @brief Gets the DCC-EX OPCODE of the parsed command (the first char after the <)
   static byte getOpcode();
@@ -71,15 +71,15 @@ public:
   static bool isTextParameter(int16_t parameterNumber);
 
   /// @brief Gets address of text type parameter.
-  ///         does not create permanent copy 
+  ///         does not create permanent copy
   /// @param parameterNumber The number of the parameter to retrieve
   /// @return Char array of text (use once and discard)
-  static char* getText(int16_t parameterNumber);
-  
+  static char *getText(int16_t parameterNumber);
+
   /// @brief gets address of a heap copy of text type parameter.
-  /// @param parameterNumber 
-  /// @return 
-  static char* getSafeText(int16_t parameterNumber);
+  /// @param parameterNumber
+  /// @return
+  static char *getSafeText(int16_t parameterNumber);
 
   /// @brief dump list of parameters obtained
   /// @param out Address of output e.g. &Serial
@@ -89,8 +89,8 @@ private:
   static int16_t _maxParams;
   static int16_t _parameterCount;
   static byte _opcode;
-  static int32_t* _parameterValues;
-  static char* _cmdBuffer;  
+  static int32_t *_parameterValues;
+  static char *_cmdBuffer;
   static bool _isTextInternal(int16_t n);
 };
 

@@ -26,64 +26,49 @@
  *
  */
 
-#include <Arduino.h>
 #include "DCCEXRoutes.h"
+#include <Arduino.h>
+
 
 // Public methods
 
-Route* Route::_first=nullptr;
+Route *Route::_first = nullptr;
 
 Route::Route(int id) {
-  _id=id;
-  _name=nullptr;
-  _next=nullptr;
+  _id = id;
+  _name = nullptr;
+  _next = nullptr;
   if (!_first) {
-    _first=this;
+    _first = this;
   } else {
-    Route* current=_first;
-    while (current->_next!=nullptr) {
-      current=current->_next;
+    Route *current = _first;
+    while (current->_next != nullptr) {
+      current = current->_next;
     }
-    current->_next=this;
+    current->_next = this;
   }
   _count++;
 }
 
-int Route::getId() {
-  return _id;
-}
+int Route::getId() { return _id; }
 
-void Route::setName(char* name) {
-  _name=name;
-}
+void Route::setName(char *name) { _name = name; }
 
-char* Route::getName() {
-  return _name;
-}
+char *Route::getName() { return _name; }
 
-void Route::setType(RouteType type) {
-  _type = type;
-}
+void Route::setType(RouteType type) { _type = type; }
 
-RouteType Route::getType() {
-  return (RouteType)_type;
-}
+RouteType Route::getType() { return (RouteType)_type; }
 
-int Route::getCount() {
-  return _count;
-}
+int Route::getCount() { return _count; }
 
-Route* Route::getFirst() {
-  return _first;
-}
+Route *Route::getFirst() { return _first; }
 
-Route* Route::getNext() {
-  return _next;
-}
+Route *Route::getNext() { return _next; }
 
-Route* Route::getById(int id) {
-  for (Route* r=getFirst(); r; r=r->getNext()) {
-    if (r->getId()==id) {
+Route *Route::getById(int id) {
+  for (Route *r = getFirst(); r; r = r->getNext()) {
+    if (r->getId() == id) {
       return r;
     }
   }

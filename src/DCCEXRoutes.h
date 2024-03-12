@@ -32,8 +32,8 @@
 #include <Arduino.h>
 
 enum RouteType {
-    RouteTypeRoute = 'R',
-    RouteTypeAutomation = 'A',
+  RouteTypeRoute = 'R',
+  RouteTypeAutomation = 'A',
 };
 
 /// @brief Class to contain and maintain the various Route attributes and methods
@@ -42,18 +42,18 @@ public:
   /// @brief Constructor
   /// @param id Route ID
   Route(int id);
-  
+
   /// @brief Get route ID
   /// @return ID of the route
   int getId();
 
   /// @brief Set route name
   /// @param name Name to set for the route
-  void setName(char* name);
+  void setName(char *name);
 
   /// @brief Get route name
   /// @return Current name of the route
-  char* getName();
+  char *getName();
 
   /// @brief Set route type (A automation, R route)
   /// @param type RouteType - RouteTypeAutomation|RouteTypeRoute
@@ -69,24 +69,23 @@ public:
 
   /// @brief Get first Route object
   /// @return Pointer to the first Route object
-  static Route* getFirst();
+  static Route *getFirst();
 
   /// @brief Get next Route object
   /// @return Pointer to the next Route object
-  Route* getNext();
+  Route *getNext();
 
   /// @brief Get route object by its ID
   /// @return Pointer to the Route, or nullptr if not found
-  Route* getById(int id);
-  
+  Route *getById(int id);
+
 private:
   int _id;
-  char* _name;
+  char *_name;
   char _type;
-  static Route* _first;
-  Route* _next;
-  int _count=0;
-
+  static Route *_first;
+  Route *_next;
+  int _count = 0;
 };
 
 #endif

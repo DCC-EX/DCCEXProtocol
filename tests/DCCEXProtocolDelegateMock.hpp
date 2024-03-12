@@ -25,8 +25,7 @@ public:
   MOCK_METHOD(void, receivedTrackPower, (TrackPower), (override));
 
   // Notify when a track type change is received
-  MOCK_METHOD(void, receivedTrackType, (char, TrackManagerMode, int),
-              (override));
+  MOCK_METHOD(void, receivedTrackType, (char, TrackManagerMode, int), (override));
 
   // Notify when a turnout state change is received
   MOCK_METHOD(void, receivedTurnoutAction, (int, bool), (override));
