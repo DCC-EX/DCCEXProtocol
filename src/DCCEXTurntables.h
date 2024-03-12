@@ -45,12 +45,12 @@ public:
   /// @param id ID of the index
   /// @param angle Angle from home for this index (0 - 3600)
   /// @param name Name of the index
-  TurntableIndex(int ttId, int id, int angle, char* name);
+  TurntableIndex(int ttId, int id, int angle, char *name);
 
   /// @brief Get the turntable ID
   /// @return ID of the turntable this index is associated with
   int getTTId();
-  
+
   /// @brief Get index ID (0 is always home)
   /// @return ID of this index
   int getId();
@@ -61,22 +61,21 @@ public:
 
   /// @brief Get index name
   /// @return Current name of the index
-  char* getName();
+  char *getName();
 
   /// @brief Get next TurntableIndex object
   /// @return Pointer to the next TurntableIndex object
-  TurntableIndex* getNextIndex();
+  TurntableIndex *getNextIndex();
 
 private:
   int _ttId;
   int _id;
   int _angle;
-  char* _name;
-  static TurntableIndex* _first;
-  TurntableIndex* _nextIndex;
+  char *_name;
+  static TurntableIndex *_first;
+  TurntableIndex *_nextIndex;
 
   friend class Turntable;
-
 };
 
 /// @brief Class to contain and maintain the various Turntable attributes and methods
@@ -116,11 +115,11 @@ public:
 
   /// @brief Set the turntable name
   /// @param name Name to set for the turntable
-  void setName(char* name);
+  void setName(char *name);
 
   /// @brief  Get the turntable name
   /// @return Current name of the turntable
-  char* getName();
+  char *getName();
 
   /// @brief Set the movement state (false stationary, true moving)
   /// @param moving true|false
@@ -140,43 +139,42 @@ public:
 
   /// @brief Get the first turntable object
   /// @return Pointer to the first Turntable object
-  static Turntable* getFirst();
+  static Turntable *getFirst();
 
   /// @brief Get the next turntable object
   /// @return Pointer to the next Turntable object
-  Turntable* getNext();
+  Turntable *getNext();
 
   /// @brief Add a turntable index object to the index list for this turntable
   /// @param index TurntableIndex object to add
-  void addIndex(TurntableIndex* index);
+  void addIndex(TurntableIndex *index);
 
   /// @brief Get the first associated turntable index
   /// @return Pointer to the first associated TurntableIndex object
-  TurntableIndex* getFirstIndex();
+  TurntableIndex *getFirstIndex();
 
   /// @brief Get a turntable object by its ID
   /// @param id ID of the turntable to retrieve
   /// @return Pointer to the Turntable object or nullptr if not found
-  Turntable* getById(int id);
+  Turntable *getById(int id);
 
   /// @brief Get TurntableIndex object by its ID
   /// @param id ID of the index to retrieve
   /// @return Pointer to the TurntableIndex object or nullptr if not found
-  TurntableIndex* getIndexById(int id);
+  TurntableIndex *getIndexById(int id);
 
 private:
   int _id;
   TurntableType _type;
   int _index;
   int _numberOfIndexes;
-  char* _name;
+  char *_name;
   bool _isMoving;
-  int _count=0;
+  int _count = 0;
   int _indexCount;
-  static Turntable* _first;
-  Turntable* _next;
-  TurntableIndex* _firstIndex;
-
+  static Turntable *_first;
+  Turntable *_next;
+  TurntableIndex *_firstIndex;
 };
 
 #endif

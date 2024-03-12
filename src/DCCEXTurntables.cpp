@@ -26,155 +26,114 @@
  *
  */
 
-#include <Arduino.h>
 #include "DCCEXTurntables.h"
+#include <Arduino.h>
+
 
 // class TurntableIndex
 
-TurntableIndex* TurntableIndex::_first=nullptr;
+TurntableIndex *TurntableIndex::_first = nullptr;
 
-TurntableIndex::TurntableIndex(int ttId, int id, int angle, char* name) {
-  _ttId=ttId;
-  _id=id;
-  _angle=angle;
-  _name=name;
-  _nextIndex=nullptr;
+TurntableIndex::TurntableIndex(int ttId, int id, int angle, char *name) {
+  _ttId = ttId;
+  _id = id;
+  _angle = angle;
+  _name = name;
+  _nextIndex = nullptr;
 }
 
-int TurntableIndex::getTTId() {
-  return _ttId;
-}
+int TurntableIndex::getTTId() { return _ttId; }
 
-int TurntableIndex::getId() {
-  return _id;
-}
+int TurntableIndex::getId() { return _id; }
 
-int TurntableIndex::getAngle() {
-  return _angle;
-}
+int TurntableIndex::getAngle() { return _angle; }
 
-char* TurntableIndex::getName() {
-  return _name;
-}
+char *TurntableIndex::getName() { return _name; }
 
-TurntableIndex* TurntableIndex::getNextIndex() {
-  return _nextIndex;
-}
+TurntableIndex *TurntableIndex::getNextIndex() { return _nextIndex; }
 
 // class Turntable
 
-Turntable* Turntable::_first=nullptr;
+Turntable *Turntable::_first = nullptr;
 
 Turntable::Turntable(int id) {
-  _id=id;
-  _type=TurntableTypeUnknown;
-  _index=0;
-  _numberOfIndexes=0;
-  _name=nullptr;
-  _firstIndex=nullptr;
-  _indexCount=0;
-  _next=nullptr;
+  _id = id;
+  _type = TurntableTypeUnknown;
+  _index = 0;
+  _numberOfIndexes = 0;
+  _name = nullptr;
+  _firstIndex = nullptr;
+  _indexCount = 0;
+  _next = nullptr;
   if (!_first) {
-    _first=this;
+    _first = this;
   } else {
-    Turntable* current=_first;
-    while (current->_next!=nullptr) {
-      current=current->_next;
+    Turntable *current = _first;
+    while (current->_next != nullptr) {
+      current = current->_next;
     }
-    current->_next=this;
+    current->_next = this;
   }
   _count++;
 }
 
-int Turntable::getId() {
-  return _id;
-}
+int Turntable::getId() { return _id; }
 
-void Turntable::setType(TurntableType type) {
-  _type=type;
-}
+void Turntable::setType(TurntableType type) { _type = type; }
 
-TurntableType Turntable::getType() {
-  return (TurntableType)_type;
-}
+TurntableType Turntable::getType() { return (TurntableType)_type; }
 
-void Turntable::setIndex(int index) {
-  _index=index;
-}
+void Turntable::setIndex(int index) { _index = index; }
 
-int Turntable::getIndex() {
-  return _index;
-}
+int Turntable::getIndex() { return _index; }
 
-void Turntable::setNumberOfIndexes(int numberOfIndexes) {
-  _numberOfIndexes=numberOfIndexes;
-}
+void Turntable::setNumberOfIndexes(int numberOfIndexes) { _numberOfIndexes = numberOfIndexes; }
 
-int Turntable::getNumberOfIndexes() {
-  return _numberOfIndexes;
-}
+int Turntable::getNumberOfIndexes() { return _numberOfIndexes; }
 
-void Turntable::setName(char* name) {
-  _name=name;
-}
+void Turntable::setName(char *name) { _name = name; }
 
-char* Turntable::getName() {
-  return _name;
-}
+char *Turntable::getName() { return _name; }
 
-void Turntable::setMoving(bool moving) {
-  _isMoving=moving;
-}
+void Turntable::setMoving(bool moving) { _isMoving = moving; }
 
-bool Turntable::isMoving() {
-  return _isMoving;
-}
+bool Turntable::isMoving() { return _isMoving; }
 
-int Turntable::getCount() {
-  return _count;
-}
+int Turntable::getCount() { return _count; }
 
-int Turntable::getIndexCount() {
-  return _indexCount;
-}
+int Turntable::getIndexCount() { return _indexCount; }
 
-Turntable* Turntable::getFirst() {
-  return _first;
-}
+Turntable *Turntable::getFirst() { return _first; }
 
-Turntable* Turntable::getNext() {
-  return _next;
-}
+Turntable *Turntable::getNext() { return _next; }
 
-void Turntable::addIndex(TurntableIndex* index) {
-  if (this->_firstIndex==nullptr) {
-    this->_firstIndex=index;
+void Turntable::addIndex(TurntableIndex *index) {
+  if (this->_firstIndex == nullptr) {
+    this->_firstIndex = index;
   } else {
-    TurntableIndex* current=this->_firstIndex;
-    while (current->_nextIndex!=nullptr) {
-      current=current->_nextIndex;
+    TurntableIndex *current = this->_firstIndex;
+    while (current->_nextIndex != nullptr) {
+      current = current->_nextIndex;
     }
-    current->_nextIndex=index;
+    current->_nextIndex = index;
   }
   _indexCount++;
 }
 
-TurntableIndex* Turntable::getFirstIndex() {
-  return _firstIndex;
-}
+TurntableIndex *Turntable::getFirstIndex() { return _firstIndex; }
 
-Turntable* Turntable::getById(int id) {
-  for (Turntable* tt=getFirst(); tt; tt=tt->getNext()) {
-    if (tt->getId()==id) {
+Turntable *Turntable::getById(int id) {
+  for (Turntable *tt = getFirst(); tt; tt = tt->getNext()) {
+    if (tt->getId() == id) {
       return tt;
     }
   }
   return nullptr;
 }
 
-TurntableIndex* Turntable::getIndexById(int id) {
-  for (TurntableIndex* tti=getFirstIndex(); tti; tti=tti->getNextIndex()) {
-    if (tti->getId()==id) {
+TurntableIndex *Turntable::getIndexById(int id) {
+  for (TurntableIndex *tti = getFirstIndex(); tti; tti = tti->getNextIndex()) {
+    if (tti->getId() == id) {
       return tti;
     }
   }

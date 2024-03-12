@@ -38,14 +38,14 @@ public:
   /// @param id Turnout ID
   /// @param thrown true (thrown)|false (closed)
   Turnout(int id, bool thrown);
-  
+
   /// @brief Set thrown state (true thrown, false closed)
   /// @param thrown true|false
   void setThrown(bool thrown);
-  
+
   /// @brief Set turnout name
   /// @param _name Name to set the turnout
-  void setName(char* _name);
+  void setName(char *_name);
 
   /// @brief Get turnout Id
   /// @return ID of the turnout
@@ -53,7 +53,7 @@ public:
 
   /// @brief Get turnout name
   /// @return Current name of the turnout
-  char* getName();
+  char *getName();
 
   /// @brief Get thrown state (true thrown, false closed)
   /// @return true|false
@@ -61,11 +61,11 @@ public:
 
   /// @brief Get first turnout object
   /// @return Pointer to the first Turnout object
-  static Turnout* getFirst();
+  static Turnout *getFirst();
 
   /// @brief Get next turnout object
   /// @return Pointer to the next Turnout object
-  Turnout* getNext();
+  Turnout *getNext();
 
   /// @brief Get the number of turnouts
   /// @return Count of turnouts
@@ -74,16 +74,15 @@ public:
   /// @brief Get turnout object by turnout ID
   /// @param id ID of the turnout to retrieve
   /// @return Pointer to the turnout object or nullptr if not found
-  Turnout* getById(int id);
-  
+  Turnout *getById(int id);
+
 private:
-  static Turnout* _first;
-  Turnout* _next;
+  static Turnout *_first;
+  Turnout *_next;
   int _id;
-  char* _name;
+  char *_name;
   bool _thrown;
-  int _count=0;
-  
+  int _count = 0;
 };
 
 #endif

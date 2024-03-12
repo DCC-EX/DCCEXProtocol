@@ -26,88 +26,73 @@
  *
  */
 
-#include <Arduino.h>
 #include "DCCEXLoco.h"
+#include <Arduino.h>
+
 
 // class Loco
 // Public methods
 
-Loco* Loco::_first=nullptr;
+Loco *Loco::_first = nullptr;
 
 Loco::Loco(int address, LocoSource source) {
-  _address=address;
-  _source=source;
-  _direction=Forward;
-  _speed=0;
-  _name=nullptr;
-  _functionStates=0;
-  _momentaryFlags=0;
-  _next=nullptr;
+  _address = address;
+  _source = source;
+  _direction = Forward;
+  _speed = 0;
+  _name = nullptr;
+  _functionStates = 0;
+  _momentaryFlags = 0;
+  _next = nullptr;
   if (!_first) {
-    _first=this;
+    _first = this;
   } else {
-    Loco* current=_first;
-    while (current->_next!=nullptr) {
-      current=current->_next;
+    Loco *current = _first;
+    while (current->_next != nullptr) {
+      current = current->_next;
     }
-    current->_next=this;
+    current->_next = this;
   }
 }
 
-int Loco::getAddress() {
-  return _address;
-}
+int Loco::getAddress() { return _address; }
 
-void Loco::setName(char* name) {
-  _name=name;
-}
+void Loco::setName(char *name) { _name = name; }
 
-char* Loco::getName() {
-  return _name;
-}
+char *Loco::getName() { return _name; }
 
-void Loco::setSpeed(int speed) {
-  _speed=speed;
-}
+void Loco::setSpeed(int speed) { _speed = speed; }
 
-int Loco::getSpeed() {
-  return _speed;
-}
+int Loco::getSpeed() { return _speed; }
 
-void Loco::setDirection(Direction direction) {
-  _direction=direction;
-}
+void Loco::setDirection(Direction direction) { _direction = direction; }
 
-Direction Loco::getDirection() {
-  return (Direction)_direction;
-}
+Direction Loco::getDirection() { return (Direction)_direction; }
 
-LocoSource Loco::getSource() {
-  return (LocoSource)_source;
-}
+LocoSource Loco::getSource() { return (LocoSource)_source; }
 
 void Loco::setupFunctions(char *functionNames) {
-  // Importtant note: 
-  // The functionNames string is modified in place. 
+  // Importtant note:
+  // The functionNames string is modified in place.
   //   console->print(F("Splitting \""));
   //   console->print(functionNames);
   //   console->println(F("\""));
-  char * t=functionNames;
-  int fkey=0;
+  char *t = functionNames;
+  int fkey = 0;
 
-  while(*t) {
-    bool momentary=false;
-    if(*t=='*')  {
-      momentary=true;
+  while (*t) {
+    bool momentary = false;
+    if (*t == '*') {
+      momentary = true;
       t++;
     }
-    char * fName=t;  // function name starts here
-    while(*t) { // loop completes at end of name ('/' or 0)
-      if (*t=='/') {
-      // found end of name
-      *t='\0'; // mark name ends here 
-      t++;
-      break;
+    char *fName = t; // function name starts here
+    while (*t) {     // loop completes at end of name ('/' or 0)
+      if (*t == '/') {
+        // found end of name
+        *t = '\0'; // mark name ends here
+        t++;
+        break;
       }
       t++;
     }
@@ -115,13 +100,13 @@ void Loco::setupFunctions(char *functionNames) {
     // At this point we have a function key
     // int fkey = function number 0....
     // bool momentary = is it a momentary
-    // fName = pointer to the function name 
+    // fName = pointer to the function name
     if (fkey < MAX_FUNCTIONS) {
       _functionNames[fkey] = fName;
       if (momentary) {
-        _momentaryFlags |= 1<<fkey;
+        _momentaryFlags |= 1 << fkey;
       } else {
-        _momentaryFlags &= ~(1<<fkey);
+        _momentaryFlags &= ~(1 << fkey);
       }
     }
     //  Serial.print("Function ");
@@ -129,44 +114,32 @@ void Loco::setupFunctions(char *functionNames) {
     //  Serial.print(momentary ? F("  Momentary ") : F(""));
     //  Serial.print(" ");
     //  Serial.println(fName);
-    //  Serial.println(_functionNames[fkey]); 
+    //  Serial.println(_functionNames[fkey]);
     fkey++;
   }
-  if (fkey<MAX_FUNCTIONS) {
-    for (int i=fkey; i<MAX_FUNCTIONS; i++) {_functionNames[i] = nullptr;}
+  if (fkey < MAX_FUNCTIONS) {
+    for (int i = fkey; i < MAX_FUNCTIONS; i++) {
+      _functionNames[i] = nullptr;
+    }
   }
 }
 
-bool Loco::isFunctionOn(int function) {
-  return _functionStates & 1<<function;
-}
+bool Loco::isFunctionOn(int function) { return _functionStates & 1 << function; }
 
-void Loco::setFunctionStates(int functionStates) {
-  _functionStates=functionStates;
-}
+void Loco::setFunctionStates(int functionStates) { _functionStates = functionStates; }
 
-int Loco::getFunctionStates() {
-  return _functionStates;
-}
+int Loco::getFunctionStates() { return _functionStates; }
 
-char* Loco::getFunctionName(int function) {
-  return _functionNames[function];
-}
+char *Loco::getFunctionName(int function) { return _functionNames[function]; }
 
-bool Loco::isFunctionMomentary(int function) {
-  return _momentaryFlags & 1<<function;
-}
+bool Loco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << function; }
 
-Loco* Loco::getFirst() {
-  return _first;
-}
+Loco *Loco::getFirst() { return _first; }
 
-Loco* Loco::getNext() {
-  return _next;
-}
+Loco *Loco::getNext() { return _next; }
 
-Loco* Loco::getByAddress(int address) {
-  for (Loco* l=getFirst(); l; l=l->getNext()) {
+Loco *Loco::getByAddress(int address) {
+  for (Loco *l = getFirst(); l; l = l->getNext()) {
     if (l->getAddress() == address) {
       return l;
     }
@@ -177,128 +150,114 @@ Loco* Loco::getByAddress(int address) {
 // class ConsistLoco
 // Public methods
 
-ConsistLoco::ConsistLoco(Loco* loco, Facing facing) {
-  _loco=loco;
-  _facing=facing;
-  _next=nullptr;
+ConsistLoco::ConsistLoco(Loco *loco, Facing facing) {
+  _loco = loco;
+  _facing = facing;
+  _next = nullptr;
 }
 
-Loco* ConsistLoco::getLoco() {
-  return _loco;
-}
+Loco *ConsistLoco::getLoco() { return _loco; }
 
-void ConsistLoco::setFacing(Facing facing) {
-  _facing=facing;
-}
+void ConsistLoco::setFacing(Facing facing) { _facing = facing; }
 
-Facing ConsistLoco::getFacing() {
-  return (Facing)_facing;
-}
+Facing ConsistLoco::getFacing() { return (Facing)_facing; }
 
-ConsistLoco* ConsistLoco::getNext() {
-  return _next;
-}
+ConsistLoco *ConsistLoco::getNext() { return _next; }
 
-void ConsistLoco::setNext(ConsistLoco* consistLoco) {
-  _next=consistLoco;
-}
+void ConsistLoco::setNext(ConsistLoco *consistLoco) { _next = consistLoco; }
 
 // class Consist
 // Public methods
 
 Consist::Consist() {
-  _name=nullptr;
-  _locoCount=0;
-  _first=nullptr;
+  _name = nullptr;
+  _locoCount = 0;
+  _first = nullptr;
 }
 
-void Consist::setName(char* name) {
-  _name=name;
-}
+void Consist::setName(char *name) { _name = name; }
 
-char* Consist::getName() {
-  return _name;
-}
+char *Consist::getName() { return _name; }
 
-void Consist::addLoco(Loco* loco, Facing facing) {
-  if (inConsist(loco)) return;  // Already in the consist
-  if (_locoCount==0) {
-    facing=FacingForward;  // Force forward facing for the first loco added
-    _name=loco->getName();  // Set consist name to the first loco name
+void Consist::addLoco(Loco *loco, Facing facing) {
+  if (inConsist(loco))
+    return; // Already in the consist
+  if (_locoCount == 0) {
+    facing = FacingForward;  // Force forward facing for the first loco added
+    _name = loco->getName(); // Set consist name to the first loco name
   }
-  ConsistLoco* conLoco=new ConsistLoco(loco, facing);
+  ConsistLoco *conLoco = new ConsistLoco(loco, facing);
   _addLocoToConsist(conLoco);
 }
 
 void Consist::addLoco(int address, Facing facing) {
-  if (inConsist(address)) return;
-  if (_locoCount==0) {
-    facing=FacingForward;
+  if (inConsist(address))
+    return;
+  if (_locoCount == 0) {
+    facing = FacingForward;
     char temp[6];
     snprintf(temp, 6, "%d", address);
-    _name=temp;
+    _name = temp;
   }
-  Loco* loco=new Loco(address, LocoSourceEntry);
-  ConsistLoco* conLoco=new ConsistLoco(loco, facing);
+  Loco *loco = new Loco(address, LocoSourceEntry);
+  ConsistLoco *conLoco = new ConsistLoco(loco, facing);
   _addLocoToConsist(conLoco);
 }
 
-void Consist::removeLoco(Loco* loco) {
-  ConsistLoco* previous=nullptr;
-  ConsistLoco* current=_first;
+void Consist::removeLoco(Loco *loco) {
+  ConsistLoco *previous = nullptr;
+  ConsistLoco *current = _first;
   while (current) {
-    if (current->getLoco()==loco) {
-      if (loco->getSource()==LocoSourceEntry) {
+    if (current->getLoco() == loco) {
+      if (loco->getSource() == LocoSourceEntry) {
         delete loco;
       }
       if (previous) {
         previous->setNext(current->getNext());
       } else {
-        _first=current->getNext();
+        _first = current->getNext();
       }
       delete current;
       _locoCount--;
       break;
     }
-    previous=current;
-    current=current->getNext();
+    previous = current;
+    current = current->getNext();
   }
   if (!_first) {
-    _first=nullptr;
+    _first = nullptr;
     _locoCount = 0;
   }
 }
 
 void Consist::removeAllLocos() {
-  ConsistLoco* current=_first;
+  ConsistLoco *current = _first;
   while (current) {
-    ConsistLoco* next=current->getNext();
-    Loco* loco=current->getLoco();
-    if (loco->getSource()==LocoSourceEntry) {
+    ConsistLoco *next = current->getNext();
+    Loco *loco = current->getLoco();
+    if (loco->getSource() == LocoSourceEntry) {
       delete loco;
     }
     delete current;
-    current=next;
+    current = next;
   }
-  _first=nullptr;
+  _first = nullptr;
   _locoCount = 0;
 }
 
-void Consist::setLocoFacing(Loco* loco, Facing facing) {
-  for (ConsistLoco* cl=_first; cl; cl=cl->getNext()) {
-    if (cl->getLoco()==loco) {
+void Consist::setLocoFacing(Loco *loco, Facing facing) {
+  for (ConsistLoco *cl = _first; cl; cl = cl->getNext()) {
+    if (cl->getLoco() == loco) {
       cl->setFacing(facing);
     }
   }
 }
 
-int Consist::getLocoCount() {
-  return _locoCount;
-}
+int Consist::getLocoCount() { return _locoCount; }
 
-bool Consist::inConsist(Loco* loco) {
-  for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
-    if (cl->getLoco()==loco) {
+bool Consist::inConsist(Loco *loco) {
+  for (ConsistLoco *cl = _first; cl; cl = cl->_next) {
+    if (cl->getLoco() == loco) {
       return true;
     }
   }
@@ -306,8 +265,8 @@ bool Consist::inConsist(Loco* loco) {
 }
 
 bool Consist::inConsist(int address) {
-  for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
-    if (cl->getLoco()->getAddress()==address) {
+  for (ConsistLoco *cl = _first; cl; cl = cl->_next) {
+    if (cl->getLoco()->getAddress() == address) {
       return true;
     }
   }
@@ -315,24 +274,24 @@ bool Consist::inConsist(int address) {
 }
 
 int Consist::getSpeed() {
-  ConsistLoco* cl=_first;
-  if (!cl) return 0;
+  ConsistLoco *cl = _first;
+  if (!cl)
+    return 0;
   return cl->getLoco()->getSpeed();
 }
 
 Direction Consist::getDirection() {
-  ConsistLoco* cl=_first;
-  if (!cl) return Forward;
+  ConsistLoco *cl = _first;
+  if (!cl)
+    return Forward;
   return cl->getLoco()->getDirection();
 }
 
-ConsistLoco* Consist::getFirst() {
-  return _first;
-}
+ConsistLoco *Consist::getFirst() { return _first; }
 
-ConsistLoco* Consist::getByAddress(int address) {
-  for (ConsistLoco* cl=_first; cl; cl=cl->_next) {
-    if (cl->getLoco()->getAddress()==address) {
+ConsistLoco *Consist::getByAddress(int address) {
+  for (ConsistLoco *cl = _first; cl; cl = cl->_next) {
+    if (cl->getLoco()->getAddress() == address) {
       return cl;
     }
   }
@@ -341,15 +300,15 @@ ConsistLoco* Consist::getByAddress(int address) {
 
 // Private methods
 
-void Consist::_addLocoToConsist(ConsistLoco* conLoco) {
-  if (this->_first==nullptr) {
-    this->_first=conLoco;
+void Consist::_addLocoToConsist(ConsistLoco *conLoco) {
+  if (this->_first == nullptr) {
+    this->_first = conLoco;
   } else {
-    ConsistLoco* current=this->_first;
-    while (current->_next!=nullptr) {
-      current=current->_next;
+    ConsistLoco *current = this->_first;
+    while (current->_next != nullptr) {
+      current = current->_next;
     }
-    current->_next=conLoco;
+    current->_next = conLoco;
   }
   _locoCount++;
 }

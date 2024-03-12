@@ -6,16 +6,16 @@
 // Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
 // Luca Dentella, 2020
 
-
-#include <WiFi.h>
 #include <DCCEXProtocol.h>
+#include <WiFi.h>
+
 
 // If we haven't got a custom config.h, use the example
-#if __has_include ("config.h")
-  #include "config.h"
+#if __has_include("config.h")
+#include "config.h"
 #else
-  #warning config.h not found. Using defaults from config.example.h
-  #include "config.example.h"
+#warning config.h not found. Using defaults from config.example.h
+#include "config.example.h"
 #endif
 
 void printRoster();
@@ -25,43 +25,42 @@ void printTurntables();
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
-  
-  public:
-    void receivedServerVersion(int major, int minor, int patch) {     
-      Serial.print("\n\nReceived version: ");
-      Serial.print(major);
-      Serial.print(".");
-      Serial.print(minor);
-      Serial.print(".");
-      Serial.println(patch);
-    }
 
-    void receivedTrackPower(TrackPower state) { 
-      Serial.print("\n\nReceived Track Power: ");
-      Serial.println(state);  
-      Serial.println("\n\n");  
-    }
+public:
+  void receivedServerVersion(int major, int minor, int patch) {
+    Serial.print("\n\nReceived version: ");
+    Serial.print(major);
+    Serial.print(".");
+    Serial.print(minor);
+    Serial.print(".");
+    Serial.println(patch);
+  }
 
-    void receivedRosterList() {
-      Serial.println("\n\nReceived Roster");
-      printRoster();
-    }
-    void receivedTurnoutList() {
-      Serial.print("\n\nReceived Turnouts/Points list");
-      printTurnouts();
-      Serial.println("\n\n");  
-    }    
-    void receivedRouteList() {
-      Serial.print("\n\nReceived Routes List");
-      printRoutes();
-      Serial.println("\n\n");  
-    }
-    void receivedTurntableList() {
-      Serial.print("\n\nReceived Turntables list");
-      printTurntables();
-      Serial.println("\n\n");  
-    }
+  void receivedTrackPower(TrackPower state) {
+    Serial.print("\n\nReceived Track Power: ");
+    Serial.println(state);
+    Serial.println("\n\n");
+  }
 
+  void receivedRosterList() {
+    Serial.println("\n\nReceived Roster");
+    printRoster();
+  }
+  void receivedTurnoutList() {
+    Serial.print("\n\nReceived Turnouts/Points list");
+    printTurnouts();
+    Serial.println("\n\n");
+  }
+  void receivedRouteList() {
+    Serial.print("\n\nReceived Routes List");
+    printRoutes();
+    Serial.println("\n\n");
+  }
+  void receivedTurntableList() {
+    Serial.print("\n\nReceived Turntables list");
+    printTurntables();
+    Serial.println("\n\n");
+  }
 };
 
 unsigned long lastTime = 0;
@@ -74,17 +73,17 @@ DCCEXProtocol dccexProtocol;
 MyDelegate myDelegate;
 
 void printRoster() {
-  for (Loco* loco=dccexProtocol.roster->getFirst(); loco; loco=loco->getNext()) {
-    int id=loco->getAddress();
-    char* name=loco->getName();
+  for (Loco *loco = dccexProtocol.roster->getFirst(); loco; loco = loco->getNext()) {
+    int id = loco->getAddress();
+    char *name = loco->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
     Serial.println("~");
-    for (int i=0; i<32; i++) {
-      char* fName = loco->getFunctionName(i);
+    for (int i = 0; i < 32; i++) {
+      char *fName = loco->getFunctionName(i);
       if (fName != nullptr) {
-        Serial.print("loadFunctionLabels() "); 
+        Serial.print("loadFunctionLabels() ");
         Serial.print(fName);
         if (loco->isFunctionMomentary(i)) {
           Serial.print(" - Momentary");
@@ -93,73 +92,77 @@ void printRoster() {
       }
     }
   }
-  Serial.println("\n");  
+  Serial.println("\n");
 }
 
 void printTurnouts() {
-  for (Turnout* turnout=dccexProtocol.turnouts->getFirst(); turnout; turnout=turnout->getNext()) {
-    int id=turnout->getId();
-    char* name=turnout->getName();
+  for (Turnout *turnout = dccexProtocol.turnouts->getFirst(); turnout; turnout = turnout->getNext()) {
+    int id = turnout->getId();
+    char *name = turnout->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
     Serial.println("~");
   }
-  Serial.println("\n");  
+  Serial.println("\n");
 }
 
 void printRoutes() {
-  for (Route* route=dccexProtocol.routes->getFirst(); route; route=route->getNext()) {
-    int id=route->getId();
-    char* name=route->getName();
+  for (Route *route = dccexProtocol.routes->getFirst(); route; route = route->getNext()) {
+    int id = route->getId();
+    char *name = route->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
     Serial.println("~");
   }
-  Serial.println("\n");  
+  Serial.println("\n");
 }
 
 void printTurntables() {
-  for (Turntable* turntable=dccexProtocol.turntables->getFirst(); turntable; turntable=turntable->getNext()) {
-    int id=turntable->getId();
-    char* name=turntable->getName();
+  for (Turntable *turntable = dccexProtocol.turntables->getFirst(); turntable; turntable = turntable->getNext()) {
+    int id = turntable->getId();
+    char *name = turntable->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
     Serial.println("~");
 
     int j = 0;
-    for (TurntableIndex* turntableIndex=turntable->getFirstIndex(); turntableIndex; turntableIndex=turntableIndex->getNextIndex()) {
-      char* indexName = turntableIndex->getName();
-      Serial.print("  index"); 
-      Serial.print(j); 
-      Serial.print(" ~"); 
-      Serial.print(indexName); 
-      Serial.println("~");  
+    for (TurntableIndex *turntableIndex = turntable->getFirstIndex(); turntableIndex;
+         turntableIndex = turntableIndex->getNextIndex()) {
+      char *indexName = turntableIndex->getName();
+      Serial.print("  index");
+      Serial.print(j);
+      Serial.print(" ~");
+      Serial.print(indexName);
+      Serial.println("~");
       j++;
     }
   }
-  Serial.println("\n");  
+  Serial.println("\n");
 }
 
 void setup() {
-  
+
   Serial.begin(115200);
   Serial.println("DCCEXProtocol Roster and Objects Demo");
   Serial.println();
 
   // Connect to WiFi network
-  Serial.println("Connecting to WiFi.."); 
+  Serial.println("Connecting to WiFi..");
   WiFi.begin(ssid, password);
-  while(WiFi.status() != WL_CONNECTED) delay(1000);  
-  Serial.print("Connected with IP: "); Serial.println(WiFi.localIP());
+  while (WiFi.status() != WL_CONNECTED)
+    delay(1000);
+  Serial.print("Connected with IP: ");
+  Serial.println(WiFi.localIP());
 
   // Connect to the server
   Serial.println("Connecting to the server...");
   if (!client.connect(serverAddress, serverPort)) {
     Serial.println("connection failed");
-    while(1) delay(1000);
+    while (1)
+      delay(1000);
   }
   Serial.println("Connected to the server");
 
@@ -175,15 +178,13 @@ void setup() {
 
   dccexProtocol.requestServerVersion();
   dccexProtocol.powerOn();
-
 }
-  
+
 void loop() {
   // parse incoming messages
   dccexProtocol.check();
 
   // sequentially request and get the required lists. To avoid overloading the buffer
-  //getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
+  // getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)
   dccexProtocol.getLists(true, true, true, true);
-
 }
