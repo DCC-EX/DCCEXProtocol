@@ -104,19 +104,19 @@ $(function() {
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">enum</span> RouteType {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    RouteTypeRoute = <span class="charliteral">&#39;R&#39;</span>,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    RouteTypeAutomation = <span class="charliteral">&#39;A&#39;</span>,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  RouteTypeRoute = <span class="charliteral">&#39;R&#39;</span>,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  RouteTypeAutomation = <span class="charliteral">&#39;A&#39;</span>,</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classRoute.html">   40</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRoute.html">Route</a> {</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <a class="code" href="classRoute.html#a8f61aed9dbdb1db0e7231420e0900991">Route</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordtype">int</span> <a class="code" href="classRoute.html#ab929139926b989d1e9970d9df3bda4c9">getId</a>();</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classRoute.html#ac1d6b296a11bfe1fa83cdd00c8d0ae4a">setName</a>(<span class="keywordtype">char</span>* name);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classRoute.html#ac1d6b296a11bfe1fa83cdd00c8d0ae4a">setName</a>(<span class="keywordtype">char</span> *name);</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">char</span>* <a class="code" href="classRoute.html#a29dc7db1d9574f67f07cdea133894fd5">getName</a>();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">char</span> *<a class="code" href="classRoute.html#a29dc7db1d9574f67f07cdea133894fd5">getName</a>();</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classRoute.html#afccd1b9a83cc8cce26d2e7d5c3080ad5">setType</a>(RouteType type);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
@@ -124,34 +124,33 @@ $(function() {
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keywordtype">int</span> <a class="code" href="classRoute.html#ae80d75ab7afcc9486f1544dc92dd0f24">getCount</a>();</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keyword">static</span> <a class="code" href="classRoute.html">Route</a>* <a class="code" href="classRoute.html#a152290fc1acb92771dfcaebdc71b7397">getFirst</a>();</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keyword">static</span> <a class="code" href="classRoute.html">Route</a> *<a class="code" href="classRoute.html#a152290fc1acb92771dfcaebdc71b7397">getFirst</a>();</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <a class="code" href="classRoute.html">Route</a>* <a class="code" href="classRoute.html#a40c9c7f6f150ae0969557b1fcd9e909a">getNext</a>();</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <a class="code" href="classRoute.html">Route</a> *<a class="code" href="classRoute.html#a40c9c7f6f150ae0969557b1fcd9e909a">getNext</a>();</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <a class="code" href="classRoute.html">Route</a>* <a class="code" href="classRoute.html#a2c33d7e29894ab9a34bf4e9d10242583">getById</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <a class="code" href="classRoute.html">Route</a> *<a class="code" href="classRoute.html#a2c33d7e29894ab9a34bf4e9d10242583">getById</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="keywordtype">int</span> _id;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <span class="keywordtype">char</span>* _name;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <span class="keywordtype">char</span> *_name;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="keywordtype">char</span> _type;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="keyword">static</span> <a class="code" href="classRoute.html">Route</a>* _first;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <a class="code" href="classRoute.html">Route</a>* _next;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordtype">int</span> _count=0;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;};</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="keyword">static</span> <a class="code" href="classRoute.html">Route</a> *_first;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <a class="code" href="classRoute.html">Route</a> *_next;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordtype">int</span> _count = 0;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;};</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassRoute_html"><div class="ttname"><a href="classRoute.html">Route</a></div><div class="ttdoc">Class to contain and maintain the various Route attributes and methods.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.h:40</div></div>
-<div class="ttc" id="aclassRoute_html_a152290fc1acb92771dfcaebdc71b7397"><div class="ttname"><a href="classRoute.html#a152290fc1acb92771dfcaebdc71b7397">Route::getFirst</a></div><div class="ttdeci">static Route * getFirst()</div><div class="ttdoc">Get first Route object.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:76</div></div>
-<div class="ttc" id="aclassRoute_html_a29dc7db1d9574f67f07cdea133894fd5"><div class="ttname"><a href="classRoute.html#a29dc7db1d9574f67f07cdea133894fd5">Route::getName</a></div><div class="ttdeci">char * getName()</div><div class="ttdoc">Get route name.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:60</div></div>
-<div class="ttc" id="aclassRoute_html_a2c33d7e29894ab9a34bf4e9d10242583"><div class="ttname"><a href="classRoute.html#a2c33d7e29894ab9a34bf4e9d10242583">Route::getById</a></div><div class="ttdeci">Route * getById(int id)</div><div class="ttdoc">Get route object by its ID.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:84</div></div>
-<div class="ttc" id="aclassRoute_html_a40c9c7f6f150ae0969557b1fcd9e909a"><div class="ttname"><a href="classRoute.html#a40c9c7f6f150ae0969557b1fcd9e909a">Route::getNext</a></div><div class="ttdeci">Route * getNext()</div><div class="ttdoc">Get next Route object.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:80</div></div>
-<div class="ttc" id="aclassRoute_html_a8f61aed9dbdb1db0e7231420e0900991"><div class="ttname"><a href="classRoute.html#a8f61aed9dbdb1db0e7231420e0900991">Route::Route</a></div><div class="ttdeci">Route(int id)</div><div class="ttdoc">Constructor.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:36</div></div>
-<div class="ttc" id="aclassRoute_html_ab83d56a910f8c84683b5bda826a084b3"><div class="ttname"><a href="classRoute.html#ab83d56a910f8c84683b5bda826a084b3">Route::getType</a></div><div class="ttdeci">RouteType getType()</div><div class="ttdoc">Get route type (A automation, R route)</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:68</div></div>
-<div class="ttc" id="aclassRoute_html_ab929139926b989d1e9970d9df3bda4c9"><div class="ttname"><a href="classRoute.html#ab929139926b989d1e9970d9df3bda4c9">Route::getId</a></div><div class="ttdeci">int getId()</div><div class="ttdoc">Get route ID.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:52</div></div>
-<div class="ttc" id="aclassRoute_html_ac1d6b296a11bfe1fa83cdd00c8d0ae4a"><div class="ttname"><a href="classRoute.html#ac1d6b296a11bfe1fa83cdd00c8d0ae4a">Route::setName</a></div><div class="ttdeci">void setName(char *name)</div><div class="ttdoc">Set route name.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:56</div></div>
-<div class="ttc" id="aclassRoute_html_ae80d75ab7afcc9486f1544dc92dd0f24"><div class="ttname"><a href="classRoute.html#ae80d75ab7afcc9486f1544dc92dd0f24">Route::getCount</a></div><div class="ttdeci">int getCount()</div><div class="ttdoc">Get count of routes.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:72</div></div>
-<div class="ttc" id="aclassRoute_html_afccd1b9a83cc8cce26d2e7d5c3080ad5"><div class="ttname"><a href="classRoute.html#afccd1b9a83cc8cce26d2e7d5c3080ad5">Route::setType</a></div><div class="ttdeci">void setType(RouteType type)</div><div class="ttdoc">Set route type (A automation, R route)</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:64</div></div>
+<div class="ttc" id="aclassRoute_html_a152290fc1acb92771dfcaebdc71b7397"><div class="ttname"><a href="classRoute.html#a152290fc1acb92771dfcaebdc71b7397">Route::getFirst</a></div><div class="ttdeci">static Route * getFirst()</div><div class="ttdoc">Get first Route object.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:65</div></div>
+<div class="ttc" id="aclassRoute_html_a29dc7db1d9574f67f07cdea133894fd5"><div class="ttname"><a href="classRoute.html#a29dc7db1d9574f67f07cdea133894fd5">Route::getName</a></div><div class="ttdeci">char * getName()</div><div class="ttdoc">Get route name.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:57</div></div>
+<div class="ttc" id="aclassRoute_html_a2c33d7e29894ab9a34bf4e9d10242583"><div class="ttname"><a href="classRoute.html#a2c33d7e29894ab9a34bf4e9d10242583">Route::getById</a></div><div class="ttdeci">Route * getById(int id)</div><div class="ttdoc">Get route object by its ID.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:69</div></div>
+<div class="ttc" id="aclassRoute_html_a40c9c7f6f150ae0969557b1fcd9e909a"><div class="ttname"><a href="classRoute.html#a40c9c7f6f150ae0969557b1fcd9e909a">Route::getNext</a></div><div class="ttdeci">Route * getNext()</div><div class="ttdoc">Get next Route object.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:67</div></div>
+<div class="ttc" id="aclassRoute_html_a8f61aed9dbdb1db0e7231420e0900991"><div class="ttname"><a href="classRoute.html#a8f61aed9dbdb1db0e7231420e0900991">Route::Route</a></div><div class="ttdeci">Route(int id)</div><div class="ttdoc">Constructor.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:37</div></div>
+<div class="ttc" id="aclassRoute_html_ab83d56a910f8c84683b5bda826a084b3"><div class="ttname"><a href="classRoute.html#ab83d56a910f8c84683b5bda826a084b3">Route::getType</a></div><div class="ttdeci">RouteType getType()</div><div class="ttdoc">Get route type (A automation, R route)</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:61</div></div>
+<div class="ttc" id="aclassRoute_html_ab929139926b989d1e9970d9df3bda4c9"><div class="ttname"><a href="classRoute.html#ab929139926b989d1e9970d9df3bda4c9">Route::getId</a></div><div class="ttdeci">int getId()</div><div class="ttdoc">Get route ID.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:53</div></div>
+<div class="ttc" id="aclassRoute_html_ac1d6b296a11bfe1fa83cdd00c8d0ae4a"><div class="ttname"><a href="classRoute.html#ac1d6b296a11bfe1fa83cdd00c8d0ae4a">Route::setName</a></div><div class="ttdeci">void setName(char *name)</div><div class="ttdoc">Set route name.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:55</div></div>
+<div class="ttc" id="aclassRoute_html_ae80d75ab7afcc9486f1544dc92dd0f24"><div class="ttname"><a href="classRoute.html#ae80d75ab7afcc9486f1544dc92dd0f24">Route::getCount</a></div><div class="ttdeci">int getCount()</div><div class="ttdoc">Get count of routes.</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:63</div></div>
+<div class="ttc" id="aclassRoute_html_afccd1b9a83cc8cce26d2e7d5c3080ad5"><div class="ttname"><a href="classRoute.html#afccd1b9a83cc8cce26d2e7d5c3080ad5">Route::setType</a></div><div class="ttdeci">void setType(RouteType type)</div><div class="ttdoc">Set route type (A automation, R route)</div><div class="ttdef"><b>Definition:</b> DCCEXRoutes.cpp:59</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
