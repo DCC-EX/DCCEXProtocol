@@ -20,7 +20,7 @@
  *
  * All other rights reserved.
  *
- * This library is aimed at making thinges easier for throttle developers writing software for
+ * This library is aimed at making things easier for throttle developers writing software for
  * Arduino based hardware throttles that wish to use DCC-EX EX-CommandStation native API
  * commands.
  *
@@ -182,6 +182,9 @@ public:
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
   DCCEXProtocol(int maxCmdBuffer = 500);
+
+  /// @brief Destructor for the DCCEXProtocol object
+  ~DCCEXProtocol();
 
   /// @brief Set the delegate object for callbacks
   /// @param delegate

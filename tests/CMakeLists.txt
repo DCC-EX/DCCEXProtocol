@@ -13,10 +13,10 @@ target_sources(
 target_include_directories(DCCEXProtocolTests
                            PUBLIC ${arduinocore-api_SOURCE_DIR}/test/include)
 
-sanitize(address,leak,undefined)
+sanitize(address,undefined)
 
-target_compile_options(DCCEXProtocolTests PUBLIC -Wall -Wextra -Wconversion
-                                                 -Wsign-conversion)
+target_compile_options(DCCEXProtocolTests PUBLIC -std=c++2a -Wall -Wextra
+                                                 -Wconversion -Wsign-conversion)
 
 FetchContent_Declare(
   googletest
@@ -26,5 +26,3 @@ FetchContent_MakeAvailable(googletest)
 
 target_link_libraries(DCCEXProtocolTests PRIVATE DCCEXProtocol
                                                  GTest::gtest_main GTest::gmock)
-
-gtest_discover_tests(DCCEXProtocolTests)

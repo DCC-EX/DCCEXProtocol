@@ -48,19 +48,26 @@ enum splitState : byte {
   COMPLETE_i_COMMAND
 };
 
-int16_t DCCEXInbound::_maxParams;
-int16_t DCCEXInbound::_parameterCount;
-byte DCCEXInbound::_opcode;
-int32_t *DCCEXInbound::_parameterValues;
-char *DCCEXInbound::_cmdBuffer;
+int16_t DCCEXInbound::_maxParams = 0;
+int16_t DCCEXInbound::_parameterCount = 0;
+byte DCCEXInbound::_opcode = 0;
+int32_t *DCCEXInbound::_parameterValues = nullptr;
+char *DCCEXInbound::_cmdBuffer = nullptr;
 
 // Public methods
 
 void DCCEXInbound::setup(int16_t maxParameterValues) {
-  _parameterValues = (int32_t *)malloc(maxParameterValues * sizeof(int32_t));
+  _parameterValues = (int32_t *)realloc(_parameterValues, maxParameterValues * sizeof(int32_t));
   _maxParams = maxParameterValues;
   _parameterCount = 0;
   _opcode = 0;
+}
+
+void DCCEXInbound::cleanup() {
+  if (_parameterValues) {
+    free(_parameterValues);
+    _parameterValues = nullptr;
+  }
 }
 
 byte DCCEXInbound::getOpcode() { return _opcode; }
@@ -93,7 +100,7 @@ char *DCCEXInbound::getText(int16_t parameterNumber) {
 char *DCCEXInbound::getSafeText(int16_t parameterNumber) {
   char *unsafe = getText(parameterNumber);
   if (!unsafe)
-    return unsafe; // bad parameter number probabaly
+    return unsafe; // bad parameter number probably
   char *safe = (char *)malloc(strlen(unsafe) + 1);
   strcpy(safe, unsafe);
   return safe;

@@ -62,6 +62,14 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
   _bufflen = 0;
 }
 
+DCCEXProtocol::~DCCEXProtocol() {
+  // Free memory for command buffer
+  delete[] (_cmdBuffer);
+
+  // Cleanup command parser
+  DCCEXInbound::cleanup();
+}
+
 // Set the delegate instance for callbacks
 void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) { this->_delegate = delegate; }
 
@@ -618,7 +626,7 @@ void DCCEXProtocol::_processCommand() {
 }
 
 void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType /
-                                                  //buildNumber>
+                                                  // buildNumber>
   // console->println(F("processServerDescription()"));
   if (_delegate) {
     char *description;

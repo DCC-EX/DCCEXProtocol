@@ -49,6 +49,9 @@ public:
   /// @param maxParameterValues Maximum parameter values to accommodate
   static void setup(int16_t maxParameterValues);
 
+  /// @brief Cleanup parser
+  static void cleanup();
+
   /// @brief Pass in a command string to parse
   /// @param command Char array of command to parse
   /// @return True if parsed ok, false if badly terminated command or too many parameters
