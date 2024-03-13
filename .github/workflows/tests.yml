@@ -18,4 +18,4 @@ jobs:
           CC:   gcc-13
           CXX:  g++-13
       - run: cmake --build build --parallel --target DCCEXProtocolTests
-      - run: ctest --test-dir build --schedule-random
+      - run: ./build/tests/DCCEXProtocolTests --gtest_shuffle

@@ -1,8 +1,6 @@
 include(GoogleTest)
 include(${CMAKE_SOURCE_DIR}/cmake/sanitize.cmake)
 
-option(SANITIZE "Enable sanitizers")
-
 file(GLOB_RECURSE SRC *.cpp)
 add_executable(DCCEXProtocolTests ${SRC})
 
@@ -15,9 +13,7 @@ target_sources(
 target_include_directories(DCCEXProtocolTests
                            PUBLIC ${arduinocore-api_SOURCE_DIR}/test/include)
 
-if(SANITIZE)
-  sanitize(address,undefined)
-endif()
+sanitize(address,leak,undefined)
 
 target_compile_options(DCCEXProtocolTests PUBLIC -Wall -Wextra -Wconversion
                                                  -Wsign-conversion)
