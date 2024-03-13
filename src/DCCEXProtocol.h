@@ -441,7 +441,6 @@ private:
   void _processCommand();
   void _processServerDescription();
   void _processMessage();
-  char *_nextServerDescriptionParam(char *description, int startAt, bool lookingAtVersionNumber);
 
   // Consist/loco methods
   void _processLocoBroadcast();
@@ -492,9 +491,7 @@ private:
   int _turnoutCount = 0;                              // Count of turnout objects received
   int _routeCount = 0;                                // Count of route objects received
   int _turntableCount = 0;                            // Count of turntable objects received
-  int _majorVersion = 0;                              // EX-CommandStation major version X.y.z
-  int _minorVersion = 0;                              // EX-CommandStation minor version x.Y.z
-  int _patchVersion = 0;                              // EX-CommandStation patch version x.y.Z
+  int _version[3] = {};                               // EX-CommandStation version x.y.z
   Stream *_stream;                                    // Stream object where commands are sent/received
   Stream *_console;                                   // Stream object for console output
   NullStream _nullStream;                             // Send streams to null if no object provided

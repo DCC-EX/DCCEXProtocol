@@ -94,7 +94,6 @@ char *DCCEXInbound::getText(int16_t parameterNumber) {
   if (!_isTextInternal(parameterNumber))
     return 0;
   return _cmdBuffer + (_parameterValues[parameterNumber] & ~QUOTE_FLAG_AREA);
-  ;
 }
 
 char *DCCEXInbound::getSafeText(int16_t parameterNumber) {

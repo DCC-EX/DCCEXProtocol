@@ -161,11 +161,11 @@ void DCCEXProtocol::requestServerVersion() {
 
 bool DCCEXProtocol::receivedVersion() { return _receivedVersion; }
 
-int DCCEXProtocol::getMajorVersion() { return _majorVersion; }
+int DCCEXProtocol::getMajorVersion() { return _version[0]; }
 
-int DCCEXProtocol::getMinorVersion() { return _minorVersion; }
+int DCCEXProtocol::getMinorVersion() { return _version[1]; }
 
-int DCCEXProtocol::getPatchVersion() { return _patchVersion; }
+int DCCEXProtocol::getPatchVersion() { return _version[2]; }
 
 unsigned long DCCEXProtocol::getLastServerResponseTime() { return _lastServerResponseTime; }
 
@@ -629,54 +629,47 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
                                                   // buildNumber>
   // console->println(F("processServerDescription()"));
   if (_delegate) {
-    char *description;
-    description = (char *)malloc(strlen(DCCEXInbound::getSafeText(0)) + 1);
-    sprintf(description, "%s", DCCEXInbound::getText(0));
-    int versionStartAt = 7; // e.g. "DCC-EX V-"
-    char *temp = _nextServerDescriptionParam(description, versionStartAt, true);
-    _majorVersion = atoi(temp);
-    versionStartAt = versionStartAt + strlen(temp) + 1;
-    temp = _nextServerDescriptionParam(description, versionStartAt, true);
-    _minorVersion = atoi(temp);
-    versionStartAt = versionStartAt + strlen(temp) + 1;
-    temp = _nextServerDescriptionParam(description, versionStartAt, true);
-    _patchVersion = atoi(temp);
+    char *description{DCCEXInbound::getText(0) + 7};
+    int *version = _version;
+
+    while (description < _cmdBuffer + _maxCmdBuffer) {
+      // Delimiter
+      char const delim = *description++;
+      if (delim != '-' && delim != '.')
+        continue;
+
+      // Int
+      char const first_digit = *description;
+      if (!isdigit(first_digit))
+        continue;
+
+      // string to int
+      int const v = atoi(description);
+      if (v < 0)
+        return; // Error
+      else if (v < 10)
+        description += 1;
+      else if (v < 100)
+        description += 2;
+      else if (v < 1000)
+        description += 3;
+      else
+        return; // Error
+
+      // Done after 3 numbers
+      *version++ = v;
+      if (version - _version >= 3)
+        break;
+    }
+
     _receivedVersion = true;
-    _delegate->receivedServerVersion(_majorVersion, _minorVersion, _patchVersion);
+    _delegate->receivedServerVersion(_version[0], _version[1], _version[2]);
   }
   // console->println(F("processServerDescription(): end"));
 }
 
 void DCCEXProtocol::_processMessage() { //<m "message">
   _delegate->receivedMessage(DCCEXInbound::getSafeText(0));
-}
-
-char *DCCEXProtocol::_nextServerDescriptionParam(char *description, int startAt, bool lookingAtVersionNumber) {
-  char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
-  int i = 0;
-  size_t j;
-  bool started = false;
-  for (j = startAt; j < strlen(description) && i < (MAX_SERVER_DESCRIPTION_PARAM_LENGTH - 1); j++) {
-    if (started) {
-      if (description[j] == ' ' || description[j] == '\0')
-        break;
-      if (lookingAtVersionNumber && (description[j] == '-' || description[j] == '.'))
-        break;
-      _tempString[i] = description[j];
-      i++;
-    } else {
-      if (description[j] == ' ')
-        started = true;
-      if (lookingAtVersionNumber && (description[j] == '-' || description[j] == '.'))
-        started = true;
-    }
-  }
-  _tempString[i] = '\0';
-  char *_result;
-  _result = (char *)malloc(strlen(_tempString));
-  sprintf(_result, "%s", _tempString);
-  // console->println(_result);
-  return _result;
 }
 
 // Consist/loco methods
