@@ -1,4 +1,3 @@
-include(GoogleTest)
 include(${CMAKE_SOURCE_DIR}/cmake/sanitize.cmake)
 
 file(GLOB_RECURSE SRC *.cpp)

@@ -36,8 +36,7 @@ endforeach()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC})
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND CMAKE_SYSTEM_NAME STREQUAL
-                                                CMAKE_HOST_SYSTEM_NAME)
+if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory(docs)
   add_subdirectory(tests)
 endif()

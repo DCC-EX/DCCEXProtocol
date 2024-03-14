@@ -6,6 +6,9 @@ public:
   // Notify when the server version has been received
   MOCK_METHOD(void, receivedServerVersion, (int, int, int), (override));
 
+  // Notify when a broadcast message has been received
+  MOCK_METHOD(void, receivedMessage, (char *), (override));
+
   // Notify when the roster list is received
   MOCK_METHOD(void, receivedRosterList, (), (override));
 

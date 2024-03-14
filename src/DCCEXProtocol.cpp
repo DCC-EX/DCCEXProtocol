@@ -669,7 +669,7 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
 }
 
 void DCCEXProtocol::_processMessage() { //<m "message">
-  _delegate->receivedMessage(DCCEXInbound::getSafeText(0));
+  _delegate->receivedMessage(DCCEXInbound::getText(0));
 }
 
 // Consist/loco methods
