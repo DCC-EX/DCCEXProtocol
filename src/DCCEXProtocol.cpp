@@ -580,7 +580,7 @@ void DCCEXProtocol::_processCommand() {
         }
       } else if (DCCEXInbound::getNumber(0) == 'P') { // Receive turntable position info
         if (DCCEXInbound::getParameterCount() == 5 &&
-            DCCEXInbound::isTextParameter(4)) { // Turntable position index enry
+            DCCEXInbound::isTextParameter(4)) { // Turntable position index entry
           _processTurntableIndexEntry();
         }
       } else if (DCCEXInbound::getNumber(0) == 'R') { // Receive roster info
@@ -629,7 +629,7 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
                                                   // buildNumber>
   // console->println(F("processServerDescription()"));
   if (_delegate) {
-    char *description{DCCEXInbound::getText(0) + 7};
+    char *description{DCCEXInbound::getTextParameter(0) + 7};
     int *version = _version;
 
     while (description < _cmdBuffer + _maxCmdBuffer) {
@@ -669,7 +669,7 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
 }
 
 void DCCEXProtocol::_processMessage() { //<m "message">
-  _delegate->receivedMessage(DCCEXInbound::getText(0));
+  _delegate->receivedMessage(DCCEXInbound::getTextParameter(0));
 }
 
 // Consist/loco methods
@@ -782,8 +782,8 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
   // console->println(F("processRosterEntry()"));
   // find the roster entry to update
   int address = DCCEXInbound::getNumber(1);
-  char *name = DCCEXInbound::getSafeText(2);
-  char *funcs = DCCEXInbound::getSafeText(3);
+  char *name = DCCEXInbound::copyTextParameter(2);
+  char *funcs = DCCEXInbound::copyTextParameter(3);
   bool missingRosters = false;
 
   Loco *loco = roster->getByAddress(address);
@@ -855,7 +855,7 @@ void DCCEXProtocol::_processTurnoutEntry() {
   // find the turnout entry to update
   int id = DCCEXInbound::getNumber(1);
   bool thrown = (DCCEXInbound::getNumber(2) == 'T');
-  char *name = DCCEXInbound::getSafeText(3);
+  char *name = DCCEXInbound::copyTextParameter(3);
   bool missingTurnouts = false;
 
   Turnout *t = turnouts->getById(id);
@@ -939,7 +939,7 @@ void DCCEXProtocol::_processRouteEntry() {
   // find the Route entry to update
   int id = DCCEXInbound::getNumber(1);
   RouteType type = (RouteType)DCCEXInbound::getNumber(2);
-  char *name = DCCEXInbound::getSafeText(3);
+  char *name = DCCEXInbound::copyTextParameter(3);
   bool missingRoutes = false;
 
   Route *r = routes->getById(id);
@@ -1009,7 +1009,7 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
   TurntableType ttType = (TurntableType)DCCEXInbound::getNumber(2);
   int index = DCCEXInbound::getNumber(3);
   int indexCount = DCCEXInbound::getNumber(4);
-  char *name = DCCEXInbound::getSafeText(5);
+  char *name = DCCEXInbound::copyTextParameter(5);
 
   Turntable *tt = turntables->getById(id);
   if (tt) {
@@ -1041,7 +1041,7 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
     int ttId = DCCEXInbound::getNumber(1);
     int index = DCCEXInbound::getNumber(2);
     int angle = DCCEXInbound::getNumber(3);
-    char *name = DCCEXInbound::getSafeText(4);
+    char *name = DCCEXInbound::copyTextParameter(4);
     if (index == 0) { // Index 0 is always home, and never has a label, so set one
       sprintf(name, "Home");
     }
