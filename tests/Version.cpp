@@ -1,5 +1,10 @@
 #include "DCCEXProtocolTest.hpp"
 
+TEST_F(DCCEXProtocolTest, request) {
+  _dccexProtocol.requestServerVersion();
+  EXPECT_EQ(_stream, "<s>\r\n");
+}
+
 TEST_F(DCCEXProtocolTest, versionJustZeros) {
   EXPECT_FALSE(_dccexProtocol.receivedVersion());
   _stream << "<iDCCEX V-0.0.0 / MEGA / STANDARD_MOTOR_SHIELD / 7>";
