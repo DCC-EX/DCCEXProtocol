@@ -49,6 +49,9 @@ public:
   /// @param maxParameterValues Maximum parameter values to accommodate
   static void setup(int16_t maxParameterValues);
 
+  /// @brief Cleanup parser
+  static void cleanup();
+
   /// @brief Pass in a command string to parse
   /// @param command Char array of command to parse
   /// @return True if parsed ok, false if badly terminated command or too many parameters
@@ -74,12 +77,12 @@ public:
   ///         does not create permanent copy
   /// @param parameterNumber The number of the parameter to retrieve
   /// @return Char array of text (use once and discard)
-  static char *getText(int16_t parameterNumber);
+  static char *getTextParameter(int16_t parameterNumber);
 
   /// @brief gets address of a heap copy of text type parameter.
   /// @param parameterNumber
   /// @return
-  static char *getSafeText(int16_t parameterNumber);
+  static char *copyTextParameter(int16_t parameterNumber);
 
   /// @brief dump list of parameters obtained
   /// @param out Address of output e.g. &Serial

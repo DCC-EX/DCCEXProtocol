@@ -29,7 +29,6 @@
 #include "DCCEXLoco.h"
 #include <Arduino.h>
 
-
 // class Loco
 // Public methods
 
@@ -72,7 +71,7 @@ Direction Loco::getDirection() { return (Direction)_direction; }
 LocoSource Loco::getSource() { return (LocoSource)_source; }
 
 void Loco::setupFunctions(char *functionNames) {
-  // Importtant note:
+  // Important note:
   // The functionNames string is modified in place.
   //   console->print(F("Splitting \""));
   //   console->print(functionNames);

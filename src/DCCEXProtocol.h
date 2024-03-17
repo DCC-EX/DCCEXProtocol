@@ -20,7 +20,7 @@
  *
  * All other rights reserved.
  *
- * This library is aimed at making thinges easier for throttle developers writing software for
+ * This library is aimed at making things easier for throttle developers writing software for
  * Arduino based hardware throttles that wish to use DCC-EX EX-CommandStation native API
  * commands.
  *
@@ -182,6 +182,9 @@ public:
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
   DCCEXProtocol(int maxCmdBuffer = 500);
+
+  /// @brief Destructor for the DCCEXProtocol object
+  ~DCCEXProtocol();
 
   /// @brief Set the delegate object for callbacks
   /// @param delegate
@@ -438,7 +441,6 @@ private:
   void _processCommand();
   void _processServerDescription();
   void _processMessage();
-  char *_nextServerDescriptionParam(char *description, int startAt, bool lookingAtVersionNumber);
 
   // Consist/loco methods
   void _processLocoBroadcast();
@@ -489,9 +491,7 @@ private:
   int _turnoutCount = 0;                              // Count of turnout objects received
   int _routeCount = 0;                                // Count of route objects received
   int _turntableCount = 0;                            // Count of turntable objects received
-  int _majorVersion = 0;                              // EX-CommandStation major version X.y.z
-  int _minorVersion = 0;                              // EX-CommandStation minor version x.Y.z
-  int _patchVersion = 0;                              // EX-CommandStation patch version x.y.Z
+  int _version[3] = {};                               // EX-CommandStation version x.y.z
   Stream *_stream;                                    // Stream object where commands are sent/received
   Stream *_console;                                   // Stream object for console output
   NullStream _nullStream;                             // Send streams to null if no object provided
