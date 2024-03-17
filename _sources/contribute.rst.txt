@@ -5,7 +5,7 @@ Contributions
 
 The |DCC-EX| team welcomes contributions to the DCCEXProtocol library.
 
-The best way to get involved is to reach out to the |DCC-EX| team via our `Discord server <https://discord.gg/PuPnNMp8Qf>`_.
+The best way to get involved is to reach out to the |DCC-EX| team via our `Discord server <https://discord.gg/9DDjjpxzHB>`_.
 
 You can also try the other methods outlined on our `Contact Us page <https://dcc-ex.com/support/contact-us.html>`_.
 
