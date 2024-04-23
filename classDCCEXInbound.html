@@ -80,6 +80,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aedb594ed926879752ce98cf00c922b05"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#aedb594ed926879752ce98cf00c922b05">setup</a> (int16_t maxParameterValues)</td></tr>
 <tr class="memdesc:aedb594ed926879752ce98cf00c922b05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup parser once with enough space to handle the maximum number of parameters expected from the command station.  <a href="classDCCEXInbound.html#aedb594ed926879752ce98cf00c922b05">More...</a><br /></td></tr>
 <tr class="separator:aedb594ed926879752ce98cf00c922b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4ca8455aa05e758d408fed9b6fef184"><td class="memItemLeft" align="right" valign="top"><a id="ac4ca8455aa05e758d408fed9b6fef184"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#ac4ca8455aa05e758d408fed9b6fef184">cleanup</a> ()</td></tr>
+<tr class="memdesc:ac4ca8455aa05e758d408fed9b6fef184"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleanup parser. <br /></td></tr>
+<tr class="separator:ac4ca8455aa05e758d408fed9b6fef184"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a526f83755fa31eac2e0bc1dcdf086473"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#a526f83755fa31eac2e0bc1dcdf086473">parse</a> (char *command)</td></tr>
 <tr class="memdesc:a526f83755fa31eac2e0bc1dcdf086473"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass in a command string to parse.  <a href="classDCCEXInbound.html#a526f83755fa31eac2e0bc1dcdf086473">More...</a><br /></td></tr>
 <tr class="separator:a526f83755fa31eac2e0bc1dcdf086473"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -96,12 +100,12 @@ static byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memitem:af6da5b2506d0e0468098737d6070c1a4"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#af6da5b2506d0e0468098737d6070c1a4">isTextParameter</a> (int16_t parameterNumber)</td></tr>
 <tr class="memdesc:af6da5b2506d0e0468098737d6070c1a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a parameter is actually text rather than numeric.  <a href="classDCCEXInbound.html#af6da5b2506d0e0468098737d6070c1a4">More...</a><br /></td></tr>
 <tr class="separator:af6da5b2506d0e0468098737d6070c1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e38f9710a055be0fcf207b45beb3699"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#a2e38f9710a055be0fcf207b45beb3699">getText</a> (int16_t parameterNumber)</td></tr>
-<tr class="memdesc:a2e38f9710a055be0fcf207b45beb3699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets address of text type parameter. does not create permanent copy.  <a href="classDCCEXInbound.html#a2e38f9710a055be0fcf207b45beb3699">More...</a><br /></td></tr>
-<tr class="separator:a2e38f9710a055be0fcf207b45beb3699"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b69a04b68f0782218d722ac62a0bf0b"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#a4b69a04b68f0782218d722ac62a0bf0b">getSafeText</a> (int16_t parameterNumber)</td></tr>
-<tr class="memdesc:a4b69a04b68f0782218d722ac62a0bf0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">gets address of a heap copy of text type parameter.  <a href="classDCCEXInbound.html#a4b69a04b68f0782218d722ac62a0bf0b">More...</a><br /></td></tr>
-<tr class="separator:a4b69a04b68f0782218d722ac62a0bf0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29eec9021dcd939a3a3160b623f964a4"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#a29eec9021dcd939a3a3160b623f964a4">getTextParameter</a> (int16_t parameterNumber)</td></tr>
+<tr class="memdesc:a29eec9021dcd939a3a3160b623f964a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets address of text type parameter. does not create permanent copy.  <a href="classDCCEXInbound.html#a29eec9021dcd939a3a3160b623f964a4">More...</a><br /></td></tr>
+<tr class="separator:a29eec9021dcd939a3a3160b623f964a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa879c31f192f401576e82e823d0070e6"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#aa879c31f192f401576e82e823d0070e6">copyTextParameter</a> (int16_t parameterNumber)</td></tr>
+<tr class="memdesc:aa879c31f192f401576e82e823d0070e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">gets address of a heap copy of text type parameter.  <a href="classDCCEXInbound.html#aa879c31f192f401576e82e823d0070e6">More...</a><br /></td></tr>
+<tr class="separator:aa879c31f192f401576e82e823d0070e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbb8517e7e8184657701dba4e9b0e5ea"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXInbound.html#acbb8517e7e8184657701dba4e9b0e5ea">dump</a> (Print *)</td></tr>
 <tr class="memdesc:acbb8517e7e8184657701dba4e9b0e5ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">dump list of parameters obtained  <a href="classDCCEXInbound.html#acbb8517e7e8184657701dba4e9b0e5ea">More...</a><br /></td></tr>
 <tr class="separator:acbb8517e7e8184657701dba4e9b0e5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +113,41 @@ static byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Inbound DCC-EX command parser class to parse commands and provide interpreted parameters. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa879c31f192f401576e82e823d0070e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa879c31f192f401576e82e823d0070e6">&#9670;&nbsp;</a></span>copyTextParameter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char * DCCEXInbound::copyTextParameter </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>parameterNumber</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>gets address of a heap copy of text type parameter. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parameterNumber</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a id="acbb8517e7e8184657701dba4e9b0e5ea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acbb8517e7e8184657701dba4e9b0e5ea">&#9670;&nbsp;</a></span>dump()</h2>
 
@@ -200,8 +239,8 @@ static byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a id="a4b69a04b68f0782218d722ac62a0bf0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b69a04b68f0782218d722ac62a0bf0b">&#9670;&nbsp;</a></span>getSafeText()</h2>
+<a id="a29eec9021dcd939a3a3160b623f964a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29eec9021dcd939a3a3160b623f964a4">&#9670;&nbsp;</a></span>getTextParameter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -210,42 +249,7 @@ static byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">char * DCCEXInbound::getSafeText </td>
-          <td>(</td>
-          <td class="paramtype">int16_t&#160;</td>
-          <td class="paramname"><em>parameterNumber</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>gets address of a heap copy of text type parameter. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">parameterNumber</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-</div>
-</div>
-<a id="a2e38f9710a055be0fcf207b45beb3699"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e38f9710a055be0fcf207b45beb3699">&#9670;&nbsp;</a></span>getText()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">char * DCCEXInbound::getText </td>
+          <td class="memname">char * DCCEXInbound::getTextParameter </td>
           <td>(</td>
           <td class="paramtype">int16_t&#160;</td>
           <td class="paramname"><em>parameterNumber</em></td><td>)</td>

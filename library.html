@@ -119,13 +119,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv412DCCEXInbound"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound5setupE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::setup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound7cleanupEv"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::cleanup()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound5parseEPc"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::parse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound9getOpcodeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getOpcode()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound17getParameterCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getParameterCount()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound9getNumberE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getNumber()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound15isTextParameterE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::isTextParameter()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound7getTextE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getText()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound11getSafeTextE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getSafeText()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound16getTextParameterE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::getTextParameter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound17copyTextParameterE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::copyTextParameter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound4dumpEP5Print"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::dump()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound15_isTextInternalE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_isTextInternal()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N12DCCEXInbound10_maxParamsE"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::_maxParams</span></code></a></li>
@@ -137,6 +138,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv413DCCEXProtocol"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13DCCEXProtocolEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::DCCEXProtocol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocolD0Ev"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::~DCCEXProtocol()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11setDelegateEP21DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setDelegate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12setLogStreamEP6Stream"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setLogStream()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol7connectEP6Stream"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::connect()</span></code></a></li>
@@ -197,7 +199,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processCommand()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25_processServerDescriptionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processServerDescription()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processMessageEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processMessage()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_nextServerDescriptionParam()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processLocoBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_getValidFunctionMapEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getValidFunctionMap()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol22_getSpeedFromSpeedByteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getSpeedFromSpeedByte()</span></code></a></li>
@@ -234,9 +235,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_turntableCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turntableCount</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_majorVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_majorVersion</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_minorVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_minorVersion</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_patchVersionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_patchVersion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8_versionE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_version</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol7_streamE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_stream</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8_consoleE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_console</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_nullStreamE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_nullStream</span></code></a></li>
@@ -836,6 +835,12 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound7cleanupEv">
+<span id="_CPPv3N12DCCEXInbound7cleanupEv"></span><span id="_CPPv2N12DCCEXInbound7cleanupEv"></span><span id="DCCEXInbound::cleanup"></span><span class="target" id="classDCCEXInbound_1ac4ca8455aa05e758d408fed9b6fef184"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cleanup</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N12DCCEXInbound7cleanupEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Cleanup parser. </p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound5parseEPc">
 <span id="_CPPv3N12DCCEXInbound5parseEPc"></span><span id="_CPPv2N12DCCEXInbound5parseEPc"></span><span id="DCCEXInbound::parse__cP"></span><span class="target" id="classDCCEXInbound_1a526f83755fa31eac2e0bc1dcdf086473"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parse</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">command</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N12DCCEXInbound5parseEPc" title="Link to this definition"></a><br /></dt>
 <dd><p>Pass in a command string to parse. </p>
@@ -892,8 +897,8 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound7getTextE7int16_t">
-<span id="_CPPv3N12DCCEXInbound7getTextE7int16_t"></span><span id="_CPPv2N12DCCEXInbound7getTextE7int16_t"></span><span id="DCCEXInbound::getText__int16_t"></span><span class="target" id="classDCCEXInbound_1a2e38f9710a055be0fcf207b45beb3699"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">getText</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">parameterNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N12DCCEXInbound7getTextE7int16_t" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound16getTextParameterE7int16_t">
+<span id="_CPPv3N12DCCEXInbound16getTextParameterE7int16_t"></span><span id="_CPPv2N12DCCEXInbound16getTextParameterE7int16_t"></span><span id="DCCEXInbound::getTextParameter__int16_t"></span><span class="target" id="classDCCEXInbound_1a29eec9021dcd939a3a3160b623f964a4"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">getTextParameter</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">parameterNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N12DCCEXInbound16getTextParameterE7int16_t" title="Link to this definition"></a><br /></dt>
 <dd><p>Gets address of text type parameter. does not create permanent copy. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -906,8 +911,8 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound11getSafeTextE7int16_t">
-<span id="_CPPv3N12DCCEXInbound11getSafeTextE7int16_t"></span><span id="_CPPv2N12DCCEXInbound11getSafeTextE7int16_t"></span><span id="DCCEXInbound::getSafeText__int16_t"></span><span class="target" id="classDCCEXInbound_1a4b69a04b68f0782218d722ac62a0bf0b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">getSafeText</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">parameterNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N12DCCEXInbound11getSafeTextE7int16_t" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound17copyTextParameterE7int16_t">
+<span id="_CPPv3N12DCCEXInbound17copyTextParameterE7int16_t"></span><span id="_CPPv2N12DCCEXInbound17copyTextParameterE7int16_t"></span><span id="DCCEXInbound::copyTextParameter__int16_t"></span><span class="target" id="classDCCEXInbound_1aa879c31f192f401576e82e823d0070e6"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">copyTextParameter</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">parameterNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N12DCCEXInbound17copyTextParameterE7int16_t" title="Link to this definition"></a><br /></dt>
 <dd><p>gets address of a heap copy of text type parameter. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -943,27 +948,27 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-static-attributes">Private Static Attributes</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound10_maxParamsE">
-<span id="_CPPv3N12DCCEXInbound10_maxParamsE"></span><span id="_CPPv2N12DCCEXInbound10_maxParamsE"></span><span id="DCCEXInbound::_maxParams__int16_t"></span><span class="target" id="classDCCEXInbound_1a96ce9fac96ef579913c187fbb6220432"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_maxParams</span></span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound10_maxParamsE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N12DCCEXInbound10_maxParamsE"></span><span id="_CPPv2N12DCCEXInbound10_maxParamsE"></span><span id="DCCEXInbound::_maxParams__int16_t"></span><span class="target" id="classDCCEXInbound_1a96ce9fac96ef579913c187fbb6220432"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_maxParams</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound10_maxParamsE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound15_parameterCountE">
-<span id="_CPPv3N12DCCEXInbound15_parameterCountE"></span><span id="_CPPv2N12DCCEXInbound15_parameterCountE"></span><span id="DCCEXInbound::_parameterCount__int16_t"></span><span class="target" id="classDCCEXInbound_1affd52bb4ec3dddb134495a649d2026a8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_parameterCount</span></span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound15_parameterCountE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N12DCCEXInbound15_parameterCountE"></span><span id="_CPPv2N12DCCEXInbound15_parameterCountE"></span><span id="DCCEXInbound::_parameterCount__int16_t"></span><span class="target" id="classDCCEXInbound_1affd52bb4ec3dddb134495a649d2026a8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_parameterCount</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound15_parameterCountE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound7_opcodeE">
-<span id="_CPPv3N12DCCEXInbound7_opcodeE"></span><span id="_CPPv2N12DCCEXInbound7_opcodeE"></span><span id="DCCEXInbound::_opcode__byte"></span><span class="target" id="classDCCEXInbound_1aa9e8d8d2d237c8aa936b806582055c6e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">byte</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_opcode</span></span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound7_opcodeE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N12DCCEXInbound7_opcodeE"></span><span id="_CPPv2N12DCCEXInbound7_opcodeE"></span><span id="DCCEXInbound::_opcode__byte"></span><span class="target" id="classDCCEXInbound_1aa9e8d8d2d237c8aa936b806582055c6e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">byte</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_opcode</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound7_opcodeE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound16_parameterValuesE">
-<span id="_CPPv3N12DCCEXInbound16_parameterValuesE"></span><span id="_CPPv2N12DCCEXInbound16_parameterValuesE"></span><span id="DCCEXInbound::_parameterValues__int32_tP"></span><span class="target" id="classDCCEXInbound_1a994ed0fbdf1baf2806b6f500cbe85498"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">_parameterValues</span></span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound16_parameterValuesE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N12DCCEXInbound16_parameterValuesE"></span><span id="_CPPv2N12DCCEXInbound16_parameterValuesE"></span><span id="DCCEXInbound::_parameterValues__int32_tP"></span><span class="target" id="classDCCEXInbound_1a994ed0fbdf1baf2806b6f500cbe85498"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">_parameterValues</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound16_parameterValuesE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N12DCCEXInbound10_cmdBufferE">
-<span id="_CPPv3N12DCCEXInbound10_cmdBufferE"></span><span id="_CPPv2N12DCCEXInbound10_cmdBufferE"></span><span id="DCCEXInbound::_cmdBuffer__cP"></span><span class="target" id="classDCCEXInbound_1a1a50f85239559d070858718f6dfa8c85"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">_cmdBuffer</span></span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound10_cmdBufferE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N12DCCEXInbound10_cmdBufferE"></span><span id="_CPPv2N12DCCEXInbound10_cmdBufferE"></span><span id="DCCEXInbound::_cmdBuffer__cP"></span><span class="target" id="classDCCEXInbound_1a1a50f85239559d070858718f6dfa8c85"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">_cmdBuffer</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">nullptr</span></span><a class="headerlink" href="#_CPPv4N12DCCEXInbound10_cmdBufferE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -986,6 +991,12 @@
 <dd class="field-odd"><p><strong>maxCmdBuffer</strong> – Optional - maximum number of bytes for the command buffer (default 500) </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocolD0Ev">
+<span id="_CPPv3N13DCCEXProtocolD0Ev"></span><span id="_CPPv2N13DCCEXProtocolD0Ev"></span><span id="DCCEXProtocol::~DCCEXProtocol"></span><span class="target" id="classDCCEXProtocol_1a51422bbae9c0d2a8da6326d8183511dc"></span><span class="sig-name descname"><span class="n"><span class="pre">~DCCEXProtocol</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocolD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destructor for the <a class="reference internal" href="#classDCCEXProtocol"><span class="std std-ref">DCCEXProtocol</span></a> object. </p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -1620,11 +1631,6 @@
 <dd></dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib">
-<span id="_CPPv3N13DCCEXProtocol27_nextServerDescriptionParamEPcib"></span><span id="_CPPv2N13DCCEXProtocol27_nextServerDescriptionParamEPcib"></span><span id="DCCEXProtocol::_nextServerDescriptionParam__cP.i.b"></span><span class="target" id="classDCCEXProtocol_1a1a922bb7706952979791140651bf1aa5"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">_nextServerDescriptionParam</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">description</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">startAt</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lookingAtVersionNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol27_nextServerDescriptionParamEPcib" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv">
 <span id="_CPPv3N13DCCEXProtocol21_processLocoBroadcastEv"></span><span id="_CPPv2N13DCCEXProtocol21_processLocoBroadcastEv"></span><span id="DCCEXProtocol::_processLocoBroadcast"></span><span class="target" id="classDCCEXProtocol_1a5aa0cc015f54e78fbbdbe5a0af86f11b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processLocoBroadcast</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
@@ -1808,18 +1814,8 @@
 <dd></dd></dl>
 
 <dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13_majorVersionE">
-<span id="_CPPv3N13DCCEXProtocol13_majorVersionE"></span><span id="_CPPv2N13DCCEXProtocol13_majorVersionE"></span><span id="DCCEXProtocol::_majorVersion__i"></span><span class="target" id="classDCCEXProtocol_1ac0c2c082109ce765c3155742299b84a5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_majorVersion</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13_majorVersionE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13_minorVersionE">
-<span id="_CPPv3N13DCCEXProtocol13_minorVersionE"></span><span id="_CPPv2N13DCCEXProtocol13_minorVersionE"></span><span id="DCCEXProtocol::_minorVersion__i"></span><span class="target" id="classDCCEXProtocol_1a50d7397454f5468098d3771d255eb5ac"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_minorVersion</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13_minorVersionE" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13_patchVersionE">
-<span id="_CPPv3N13DCCEXProtocol13_patchVersionE"></span><span id="_CPPv2N13DCCEXProtocol13_patchVersionE"></span><span id="DCCEXProtocol::_patchVersion__i"></span><span class="target" id="classDCCEXProtocol_1ab48203b40758446a47c87833ba9d66dc"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_patchVersion</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13_patchVersionE" title="Link to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol8_versionE">
+<span id="_CPPv3N13DCCEXProtocol8_versionE"></span><span id="_CPPv2N13DCCEXProtocol8_versionE"></span><span id="DCCEXProtocol::_version__iA"></span><span class="target" id="classDCCEXProtocol_1adf661b1d3be3a416575fc850d91b22ac"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_version</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol8_versionE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
