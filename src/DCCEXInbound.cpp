@@ -48,19 +48,26 @@ enum splitState : byte {
   COMPLETE_i_COMMAND
 };
 
-int16_t DCCEXInbound::_maxParams;
-int16_t DCCEXInbound::_parameterCount;
-byte DCCEXInbound::_opcode;
-int32_t *DCCEXInbound::_parameterValues;
-char *DCCEXInbound::_cmdBuffer;
+int16_t DCCEXInbound::_maxParams = 0;
+int16_t DCCEXInbound::_parameterCount = 0;
+byte DCCEXInbound::_opcode = 0;
+int32_t *DCCEXInbound::_parameterValues = nullptr;
+char *DCCEXInbound::_cmdBuffer = nullptr;
 
 // Public methods
 
 void DCCEXInbound::setup(int16_t maxParameterValues) {
-  _parameterValues = (int32_t *)malloc(maxParameterValues * sizeof(int32_t));
+  _parameterValues = (int32_t *)realloc(_parameterValues, maxParameterValues * sizeof(int32_t));
   _maxParams = maxParameterValues;
   _parameterCount = 0;
   _opcode = 0;
+}
+
+void DCCEXInbound::cleanup() {
+  if (_parameterValues) {
+    free(_parameterValues);
+    _parameterValues = nullptr;
+  }
 }
 
 byte DCCEXInbound::getOpcode() { return _opcode; }
@@ -81,19 +88,18 @@ bool DCCEXInbound::isTextParameter(int16_t parameterNumber) {
   return _isTextInternal(parameterNumber);
 }
 
-char *DCCEXInbound::getText(int16_t parameterNumber) {
+char *DCCEXInbound::getTextParameter(int16_t parameterNumber) {
   if (parameterNumber < 0 || parameterNumber >= _parameterCount)
     return 0;
   if (!_isTextInternal(parameterNumber))
     return 0;
   return _cmdBuffer + (_parameterValues[parameterNumber] & ~QUOTE_FLAG_AREA);
-  ;
 }
 
-char *DCCEXInbound::getSafeText(int16_t parameterNumber) {
-  char *unsafe = getText(parameterNumber);
+char *DCCEXInbound::copyTextParameter(int16_t parameterNumber) {
+  char *unsafe = getTextParameter(parameterNumber);
   if (!unsafe)
-    return unsafe; // bad parameter number probabaly
+    return unsafe; // bad parameter number probably
   char *safe = (char *)malloc(strlen(unsafe) + 1);
   strcpy(safe, unsafe);
   return safe;
@@ -203,10 +209,10 @@ void DCCEXInbound::dump(Print *out) {
 
   for (int i = 0; i < getParameterCount(); i++) {
     if (isTextParameter(i)) {
-      out->print(F("getText("));
+      out->print(F("getTextParameter("));
       out->print(i);
       out->print(F(")=\""));
-      out->print(getText(i));
+      out->print(getTextParameter(i));
       out->println('"');
     } else {
       out->print(F("getNumber("));

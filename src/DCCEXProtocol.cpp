@@ -62,6 +62,14 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
   _bufflen = 0;
 }
 
+DCCEXProtocol::~DCCEXProtocol() {
+  // Free memory for command buffer
+  delete[] (_cmdBuffer);
+
+  // Cleanup command parser
+  DCCEXInbound::cleanup();
+}
+
 // Set the delegate instance for callbacks
 void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) { this->_delegate = delegate; }
 
@@ -153,11 +161,11 @@ void DCCEXProtocol::requestServerVersion() {
 
 bool DCCEXProtocol::receivedVersion() { return _receivedVersion; }
 
-int DCCEXProtocol::getMajorVersion() { return _majorVersion; }
+int DCCEXProtocol::getMajorVersion() { return _version[0]; }
 
-int DCCEXProtocol::getMinorVersion() { return _minorVersion; }
+int DCCEXProtocol::getMinorVersion() { return _version[1]; }
 
-int DCCEXProtocol::getPatchVersion() { return _patchVersion; }
+int DCCEXProtocol::getPatchVersion() { return _version[2]; }
 
 unsigned long DCCEXProtocol::getLastServerResponseTime() { return _lastServerResponseTime; }
 
@@ -572,7 +580,7 @@ void DCCEXProtocol::_processCommand() {
         }
       } else if (DCCEXInbound::getNumber(0) == 'P') { // Receive turntable position info
         if (DCCEXInbound::getParameterCount() == 5 &&
-            DCCEXInbound::isTextParameter(4)) { // Turntable position index enry
+            DCCEXInbound::isTextParameter(4)) { // Turntable position index entry
           _processTurntableIndexEntry();
         }
       } else if (DCCEXInbound::getNumber(0) == 'R') { // Receive roster info
@@ -618,57 +626,50 @@ void DCCEXProtocol::_processCommand() {
 }
 
 void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType /
-                                                  //buildNumber>
+                                                  // buildNumber>
   // console->println(F("processServerDescription()"));
   if (_delegate) {
-    char *description;
-    description = (char *)malloc(strlen(DCCEXInbound::getSafeText(0)) + 1);
-    sprintf(description, "%s", DCCEXInbound::getText(0));
-    int versionStartAt = 7; // e.g. "DCC-EX V-"
-    char *temp = _nextServerDescriptionParam(description, versionStartAt, true);
-    _majorVersion = atoi(temp);
-    versionStartAt = versionStartAt + strlen(temp) + 1;
-    temp = _nextServerDescriptionParam(description, versionStartAt, true);
-    _minorVersion = atoi(temp);
-    versionStartAt = versionStartAt + strlen(temp) + 1;
-    temp = _nextServerDescriptionParam(description, versionStartAt, true);
-    _patchVersion = atoi(temp);
+    char *description{DCCEXInbound::getTextParameter(0) + 7};
+    int *version = _version;
+
+    while (description < _cmdBuffer + _maxCmdBuffer) {
+      // Delimiter
+      char const delim = *description++;
+      if (delim != '-' && delim != '.')
+        continue;
+
+      // Int
+      char const first_digit = *description;
+      if (!isdigit(first_digit))
+        continue;
+
+      // string to int
+      int const v = atoi(description);
+      if (v < 0)
+        return; // Error
+      else if (v < 10)
+        description += 1;
+      else if (v < 100)
+        description += 2;
+      else if (v < 1000)
+        description += 3;
+      else
+        return; // Error
+
+      // Done after 3 numbers
+      *version++ = v;
+      if (version - _version >= 3)
+        break;
+    }
+
     _receivedVersion = true;
-    _delegate->receivedServerVersion(_majorVersion, _minorVersion, _patchVersion);
+    _delegate->receivedServerVersion(_version[0], _version[1], _version[2]);
   }
   // console->println(F("processServerDescription(): end"));
 }
 
 void DCCEXProtocol::_processMessage() { //<m "message">
-  _delegate->receivedMessage(DCCEXInbound::getSafeText(0));
-}
-
-char *DCCEXProtocol::_nextServerDescriptionParam(char *description, int startAt, bool lookingAtVersionNumber) {
-  char _tempString[MAX_SERVER_DESCRIPTION_PARAM_LENGTH];
-  int i = 0;
-  size_t j;
-  bool started = false;
-  for (j = startAt; j < strlen(description) && i < (MAX_SERVER_DESCRIPTION_PARAM_LENGTH - 1); j++) {
-    if (started) {
-      if (description[j] == ' ' || description[j] == '\0')
-        break;
-      if (lookingAtVersionNumber && (description[j] == '-' || description[j] == '.'))
-        break;
-      _tempString[i] = description[j];
-      i++;
-    } else {
-      if (description[j] == ' ')
-        started = true;
-      if (lookingAtVersionNumber && (description[j] == '-' || description[j] == '.'))
-        started = true;
-    }
-  }
-  _tempString[i] = '\0';
-  char *_result;
-  _result = (char *)malloc(strlen(_tempString));
-  sprintf(_result, "%s", _tempString);
-  // console->println(_result);
-  return _result;
+  _delegate->receivedMessage(DCCEXInbound::getTextParameter(0));
 }
 
 // Consist/loco methods
@@ -781,8 +782,8 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
   // console->println(F("processRosterEntry()"));
   // find the roster entry to update
   int address = DCCEXInbound::getNumber(1);
-  char *name = DCCEXInbound::getSafeText(2);
-  char *funcs = DCCEXInbound::getSafeText(3);
+  char *name = DCCEXInbound::copyTextParameter(2);
+  char *funcs = DCCEXInbound::copyTextParameter(3);
   bool missingRosters = false;
 
   Loco *loco = roster->getByAddress(address);
@@ -854,7 +855,7 @@ void DCCEXProtocol::_processTurnoutEntry() {
   // find the turnout entry to update
   int id = DCCEXInbound::getNumber(1);
   bool thrown = (DCCEXInbound::getNumber(2) == 'T');
-  char *name = DCCEXInbound::getSafeText(3);
+  char *name = DCCEXInbound::copyTextParameter(3);
   bool missingTurnouts = false;
 
   Turnout *t = turnouts->getById(id);
@@ -938,7 +939,7 @@ void DCCEXProtocol::_processRouteEntry() {
   // find the Route entry to update
   int id = DCCEXInbound::getNumber(1);
   RouteType type = (RouteType)DCCEXInbound::getNumber(2);
-  char *name = DCCEXInbound::getSafeText(3);
+  char *name = DCCEXInbound::copyTextParameter(3);
   bool missingRoutes = false;
 
   Route *r = routes->getById(id);
@@ -1008,7 +1009,7 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
   TurntableType ttType = (TurntableType)DCCEXInbound::getNumber(2);
   int index = DCCEXInbound::getNumber(3);
   int indexCount = DCCEXInbound::getNumber(4);
-  char *name = DCCEXInbound::getSafeText(5);
+  char *name = DCCEXInbound::copyTextParameter(5);
 
   Turntable *tt = turntables->getById(id);
   if (tt) {
@@ -1040,7 +1041,7 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
     int ttId = DCCEXInbound::getNumber(1);
     int index = DCCEXInbound::getNumber(2);
     int angle = DCCEXInbound::getNumber(3);
-    char *name = DCCEXInbound::getSafeText(4);
+    char *name = DCCEXInbound::copyTextParameter(4);
     if (index == 0) { // Index 0 is always home, and never has a label, so set one
       sprintf(name, "Home");
     }
