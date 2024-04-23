@@ -1,6 +1,9 @@
 /* -*- c++ -*-
  *
  *
+ * Copyright © 2024 Peter Akers
+ * Copyright © 2024 Peter Cole
+ * Copyright © 2024 Vincent Hamp
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -31,6 +34,7 @@
 /*
 Version information:
 
+0.0.12  - Improved memory management
 0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
         - improved logic for overall track power
 0.0.10  - Add support for broadcast messages
