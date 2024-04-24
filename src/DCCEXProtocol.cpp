@@ -96,6 +96,10 @@ void DCCEXProtocol::check() {
         _cmdBuffer[_bufflen] = r;
         _bufflen++;
         _cmdBuffer[_bufflen] = 0;
+      } else {
+        // Clear buffer if full
+        _cmdBuffer[0] = 0;
+        _bufflen = 0;
       }
 
       if (r == '>') {
