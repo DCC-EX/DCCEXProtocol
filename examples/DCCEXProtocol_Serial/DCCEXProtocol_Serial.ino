@@ -34,38 +34,47 @@ void printTurntables();
 class MyDelegate : public DCCEXProtocolDelegate {
 public:
   void receivedServerVersion(int major, int minor, int patch) {
-    Serial.print("\n\nReceived version: ");
-    Serial.print(major);
-    Serial.print(".");
-    Serial.print(minor);
-    Serial.print(".");
-    Serial.println(patch);
+    CONSOLE.print("\n\nReceived version: ");
+    CONSOLE.print(major);
+    CONSOLE.print(".");
+    CONSOLE.print(minor);
+    CONSOLE.print(".");
+    CONSOLE.println(patch);
   }
 
   void receivedTrackPower(TrackPower state) {
-    Serial.print("\n\nReceived Track Power: ");
-    Serial.println(state);
-    Serial.println("\n\n");
+    CONSOLE.print("\n\nReceived Track Power: ");
+    CONSOLE.println(state);
+    CONSOLE.println("\n\n");
   }
 
   void receivedRosterList() {
-    Serial.println("\n\nReceived Roster");
+    CONSOLE.println("\n\nReceived Roster");
     printRoster();
   }
   void receivedTurnoutList() {
-    Serial.print("\n\nReceived Turnouts/Points list");
+    CONSOLE.print("\n\nReceived Turnouts/Points list");
     printTurnouts();
-    Serial.println("\n\n");
+    CONSOLE.println("\n\n");
   }
   void receivedRouteList() {
-    Serial.print("\n\nReceived Routes List");
+    CONSOLE.print("\n\nReceived Routes List");
     printRoutes();
-    Serial.println("\n\n");
+    CONSOLE.println("\n\n");
   }
   void receivedTurntableList() {
-    Serial.print("\n\nReceived Turntables list");
+    CONSOLE.print("\n\nReceived Turntables list");
     printTurntables();
-    Serial.println("\n\n");
+    CONSOLE.println("\n\n");
+  }
+
+  void receivedScreenUpdate(int screen, int row, char *message) {
+    CONSOLE.println("\n\nReceived screen|row|message");
+    CONSOLE.print(screen);
+    CONSOLE.print("|");
+    CONSOLE.print(row);
+    CONSOLE.print("|");
+    CONSOLE.println(message);
   }
 
 };
@@ -78,71 +87,71 @@ void printRoster() {
   for (Loco *loco = dccexProtocol.roster->getFirst(); loco; loco = loco->getNext()) {
     int id = loco->getAddress();
     char *name = loco->getName();
-    Serial.print(id);
-    Serial.print(" ~");
-    Serial.print(name);
-    Serial.println("~");
+    CONSOLE.print(id);
+    CONSOLE.print(" ~");
+    CONSOLE.print(name);
+    CONSOLE.println("~");
     for (int i = 0; i < 32; i++) {
       char *fName = loco->getFunctionName(i);
       if (fName != nullptr) {
-        Serial.print("loadFunctionLabels() ");
-        Serial.print(fName);
+        CONSOLE.print("loadFunctionLabels() ");
+        CONSOLE.print(fName);
         if (loco->isFunctionMomentary(i)) {
-          Serial.print(" - Momentary");
+          CONSOLE.print(" - Momentary");
         }
-        Serial.println();
+        CONSOLE.println();
       }
     }
   }
-  Serial.println("\n");
+  CONSOLE.println("\n");
 }
 
 void printTurnouts() {
   for (Turnout *turnout = dccexProtocol.turnouts->getFirst(); turnout; turnout = turnout->getNext()) {
     int id = turnout->getId();
     char *name = turnout->getName();
-    Serial.print(id);
-    Serial.print(" ~");
-    Serial.print(name);
-    Serial.println("~");
+    CONSOLE.print(id);
+    CONSOLE.print(" ~");
+    CONSOLE.print(name);
+    CONSOLE.println("~");
   }
-  Serial.println("\n");
+  CONSOLE.println("\n");
 }
 
 void printRoutes() {
   for (Route *route = dccexProtocol.routes->getFirst(); route; route = route->getNext()) {
     int id = route->getId();
     char *name = route->getName();
-    Serial.print(id);
-    Serial.print(" ~");
-    Serial.print(name);
-    Serial.println("~");
+    CONSOLE.print(id);
+    CONSOLE.print(" ~");
+    CONSOLE.print(name);
+    CONSOLE.println("~");
   }
-  Serial.println("\n");
+  CONSOLE.println("\n");
 }
 
 void printTurntables() {
   for (Turntable *turntable = dccexProtocol.turntables->getFirst(); turntable; turntable = turntable->getNext()) {
     int id = turntable->getId();
     char *name = turntable->getName();
-    Serial.print(id);
-    Serial.print(" ~");
-    Serial.print(name);
-    Serial.println("~");
+    CONSOLE.print(id);
+    CONSOLE.print(" ~");
+    CONSOLE.print(name);
+    CONSOLE.println("~");
 
     int j = 0;
     for (TurntableIndex *turntableIndex = turntable->getFirstIndex(); turntableIndex;
          turntableIndex = turntableIndex->getNextIndex()) {
       char *indexName = turntableIndex->getName();
-      Serial.print("  index");
-      Serial.print(j);
-      Serial.print(" ~");
-      Serial.print(indexName);
-      Serial.println("~");
+      CONSOLE.print("  index");
+      CONSOLE.print(j);
+      CONSOLE.print(" ~");
+      CONSOLE.print(indexName);
+      CONSOLE.println("~");
       j++;
     }
   }
-  Serial.println("\n");
+  CONSOLE.println("\n");
 }
 
 void setup() {
