@@ -37,6 +37,7 @@ Version information:
 0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
         - Add serial connectivity example
         - Add support for SCREEN updates to delegate
+        - Enhance buffer management to clear command buffer if full
 0.0.12  - Improved memory management
 0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
         - improved logic for overall track power
