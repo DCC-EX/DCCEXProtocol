@@ -34,6 +34,9 @@
 /*
 Version information:
 
+0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
+        - Add serial connectivity example
+        - Add support for SCREEN updates to delegate
 0.0.12  - Improved memory management
 0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
         - improved logic for overall track power
@@ -176,6 +179,12 @@ public:
   /// @brief Notify when a loco address is read from the programming track
   /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
+
+  /// @brief Notify when a screen update is received
+  /// @param screen Screen number
+  /// @param row Row number
+  /// @param message Message to display on the screen/row
+  virtual void receivedScreenUpdate(int screen, int row, char *message) {}
 };
 
 /// @brief Main class for the DCCEXProtocol library
@@ -445,6 +454,7 @@ private:
   void _processCommand();
   void _processServerDescription();
   void _processMessage();
+  void _processScreenUpdate();
 
   // Consist/loco methods
   void _processLocoBroadcast();
@@ -506,7 +516,7 @@ private:
   DCCEXProtocolDelegate *_delegate = nullptr;         // Pointer to the delegate for notifications
   unsigned long _lastServerResponseTime;              // Records the timestamp of the last server response
   char _inputBuffer[512];                             // Char array for input buffer
-  ssize_t _nextChar;                                  // where the next character to be read goes in the buffer
+  int _nextChar;                                      // where the next character to be read goes in the buffer
   bool _receivedVersion = false;                      // Flag that server version has been received
   bool _receivedLists = false;                        // Flag if all requested lists have been received
   bool _rosterRequested = false;                      // Flag that roster has been requested

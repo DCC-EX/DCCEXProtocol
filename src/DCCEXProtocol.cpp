@@ -523,6 +523,12 @@ void DCCEXProtocol::_sendCommand() {
 void DCCEXProtocol::_processCommand() {
   if (_delegate) {
     switch (DCCEXInbound::getOpcode()) {
+    case '@': // Screen update
+      if (DCCEXInbound::isTextParameter(2) && DCCEXInbound::getParameterCount() == 3) {
+        _processScreenUpdate();
+      }
+      break;
+    
     case 'i': // iDCC-EX server info
       if (DCCEXInbound::isTextParameter(0)) {
         _processServerDescription();
@@ -627,7 +633,7 @@ void DCCEXProtocol::_processCommand() {
 
 void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType /
                                                   // buildNumber>
-  // console->println(F("processServerDescription()"));
+  // _console->println(F("processServerDescription()"));
   if (_delegate) {
     char *description{DCCEXInbound::getTextParameter(0) + 7};
     int *version = _version;
@@ -665,11 +671,15 @@ void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microproce
     _receivedVersion = true;
     _delegate->receivedServerVersion(_version[0], _version[1], _version[2]);
   }
-  // console->println(F("processServerDescription(): end"));
+  // _console->println(F("processServerDescription(): end"));
 }
 
 void DCCEXProtocol::_processMessage() { //<m "message">
   _delegate->receivedMessage(DCCEXInbound::getTextParameter(0));
+}
+
+void DCCEXProtocol::_processScreenUpdate() { //<@ screen row "message">
+  _delegate->receivedScreenUpdate(DCCEXInbound::getNumber(0), DCCEXInbound::getNumber(1), DCCEXInbound::getTextParameter(2));
 }
 
 // Consist/loco methods
