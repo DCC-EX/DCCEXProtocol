@@ -120,6 +120,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a8d292afeb6e6c3c5e5c108bef131d935"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a8d292afeb6e6c3c5e5c108bef131d935">receivedReadLoco</a> (int address)</td></tr>
 <tr class="memdesc:a8d292afeb6e6c3c5e5c108bef131d935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a loco address is read from the programming track.  <a href="classDCCEXProtocolDelegate.html#a8d292afeb6e6c3c5e5c108bef131d935">More...</a><br /></td></tr>
 <tr class="separator:a8d292afeb6e6c3c5e5c108bef131d935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79523676b61d3ecfcd89b03a648d294c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a79523676b61d3ecfcd89b03a648d294c">receivedScreenUpdate</a> (int screen, int row, char *message)</td></tr>
+<tr class="memdesc:a79523676b61d3ecfcd89b03a648d294c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a screen update is received.  <a href="classDCCEXProtocolDelegate.html#a79523676b61d3ecfcd89b03a648d294c">More...</a><br /></td></tr>
+<tr class="separator:a79523676b61d3ecfcd89b03a648d294c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Delegate responses and broadcast events to the client software to enable custom event handlers. </p>
@@ -265,6 +268,58 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">address</td><td>DCC address read from the programming track, or -1 for a failure to read </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a79523676b61d3ecfcd89b03a648d294c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79523676b61d3ecfcd89b03a648d294c">&#9670;&nbsp;</a></span>receivedScreenUpdate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedScreenUpdate </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>row</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>message</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a screen update is received. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">screen</td><td>Screen number </td></tr>
+    <tr><td class="paramname">row</td><td>Row number </td></tr>
+    <tr><td class="paramname">message</td><td>Message to display on the screen/row </td></tr>
   </table>
   </dd>
 </dl>

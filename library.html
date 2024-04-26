@@ -199,6 +199,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processCommand()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25_processServerDescriptionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processServerDescription()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_processMessageEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processMessage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_processScreenUpdateEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processScreenUpdate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processLocoBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol20_getValidFunctionMapEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getValidFunctionMap()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol22_getSpeedFromSpeedByteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getSpeedFromSpeedByte()</span></code></a></li>
@@ -273,6 +274,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate16receivedReadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedReadLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedScreenUpdate()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv44Loco"><code class="docutils literal notranslate"><span class="pre">Loco</span></code></a><ul>
@@ -1631,6 +1633,11 @@
 <dd></dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol20_processScreenUpdateEv">
+<span id="_CPPv3N13DCCEXProtocol20_processScreenUpdateEv"></span><span id="_CPPv2N13DCCEXProtocol20_processScreenUpdateEv"></span><span id="DCCEXProtocol::_processScreenUpdate"></span><span class="target" id="classDCCEXProtocol_1a699cb5cc4d69aeaeb4e66b7c1d5d5077"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processScreenUpdate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol20_processScreenUpdateEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv">
 <span id="_CPPv3N13DCCEXProtocol21_processLocoBroadcastEv"></span><span id="_CPPv2N13DCCEXProtocol21_processLocoBroadcastEv"></span><span id="DCCEXProtocol::_processLocoBroadcast"></span><span class="target" id="classDCCEXProtocol_1a5aa0cc015f54e78fbbdbe5a0af86f11b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processLocoBroadcast</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol21_processLocoBroadcastEv" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
@@ -1870,7 +1877,7 @@
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol9_nextCharE">
-<span id="_CPPv3N13DCCEXProtocol9_nextCharE"></span><span id="_CPPv2N13DCCEXProtocol9_nextCharE"></span><span id="DCCEXProtocol::_nextChar__ssize_t"></span><span class="target" id="classDCCEXProtocol_1af5c3e3a0cbc8d481749491e32891d04d"></span><span class="n"><span class="pre">ssize_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_nextChar</span></span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol9_nextCharE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N13DCCEXProtocol9_nextCharE"></span><span id="_CPPv2N13DCCEXProtocol9_nextCharE"></span><span id="DCCEXProtocol::_nextChar__i"></span><span class="target" id="classDCCEXProtocol_1a150835f0b34e51b5ea61a1e3ff59c4b3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_nextChar</span></span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol9_nextCharE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
@@ -2071,6 +2078,21 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>address</strong> – DCC address read from the programming track, or -1 for a failure to read </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc">
+<span id="_CPPv3N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"></span><span id="_CPPv2N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"></span><span id="DCCEXProtocolDelegate::receivedScreenUpdate__i.i.cP"></span><span class="target" id="classDCCEXProtocolDelegate_1a79523676b61d3ecfcd89b03a648d294c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedScreenUpdate</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">screen</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">row</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">message</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a screen update is received. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>screen</strong> – Screen number </p></li>
+<li><p><strong>row</strong> – Row number </p></li>
+<li><p><strong>message</strong> – Message to display on the screen/row </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
