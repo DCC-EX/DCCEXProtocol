@@ -34,6 +34,7 @@
 /*
 Version information:
 
+0.0.14  - add getNumberSupportedLocos()   used for the fake heartbeat
 0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
         - Add serial connectivity example
         - Add support for SCREEN updates to delegate
