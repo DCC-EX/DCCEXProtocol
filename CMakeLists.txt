@@ -8,8 +8,8 @@ file(GLOB_RECURSE SRC src/*.cpp)
 add_library(DCCEXProtocol STATIC ${SRC})
 add_library(DCCEX::Protocol ALIAS DCCEXProtocol)
 
-# Requires at least C++11
-target_compile_features(DCCEXProtocol PUBLIC cxx_std_11)
+# Stuck at C++11
+target_compile_options(DCCEXProtocol PRIVATE -std=c++11)
 
 # Don't bother users with warnings by setting 'SYSTEM'
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -36,13 +36,7 @@ endforeach()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC})
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  include(CTest)
+if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory(docs)
-endif()
-
-if(BUILD_TESTING
-   AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME
-   AND CMAKE_SYSTEM_NAME STREQUAL CMAKE_HOST_SYSTEM_NAME)
   add_subdirectory(tests)
 endif()

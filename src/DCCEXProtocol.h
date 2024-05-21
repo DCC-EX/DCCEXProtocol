@@ -1,6 +1,9 @@
 /* -*- c++ -*-
  *
  *
+ * Copyright © 2024 Peter Akers
+ * Copyright © 2024 Peter Cole
+ * Copyright © 2024 Vincent Hamp
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -20,7 +23,7 @@
  *
  * All other rights reserved.
  *
- * This library is aimed at making thinges easier for throttle developers writing software for
+ * This library is aimed at making things easier for throttle developers writing software for
  * Arduino based hardware throttles that wish to use DCC-EX EX-CommandStation native API
  * commands.
  *
@@ -31,7 +34,11 @@
 /*
 Version information:
 
-0.0.12  - add getNumberSupportedLocos()   used for the fake heartbeat
+0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
+        - Add serial connectivity example
+        - Add support for SCREEN updates to delegate
+        - Enhance buffer management to clear command buffer if full
+0.0.12  - Improved memory management
 0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
         - improved logic for overall track power
 0.0.10  - Add support for broadcast messages
@@ -173,6 +180,12 @@ public:
   /// @brief Notify when a loco address is read from the programming track
   /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
+
+  /// @brief Notify when a screen update is received
+  /// @param screen Screen number
+  /// @param row Row number
+  /// @param message Message to display on the screen/row
+  virtual void receivedScreenUpdate(int screen, int row, char *message) {}
 };
 
 /// @brief Main class for the DCCEXProtocol library
@@ -183,6 +196,9 @@ public:
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
   DCCEXProtocol(int maxCmdBuffer = 500);
+
+  /// @brief Destructor for the DCCEXProtocol object
+  ~DCCEXProtocol();
 
   /// @brief Set the delegate object for callbacks
   /// @param delegate
@@ -442,7 +458,7 @@ private:
   void _processCommand();
   void _processServerDescription();
   void _processMessage();
-  char *_nextServerDescriptionParam(char *description, int startAt, bool lookingAtVersionNumber);
+  void _processScreenUpdate();
 
   // Consist/loco methods
   void _processLocoBroadcast();
@@ -493,9 +509,7 @@ private:
   int _turnoutCount = 0;                              // Count of turnout objects received
   int _routeCount = 0;                                // Count of route objects received
   int _turntableCount = 0;                            // Count of turntable objects received
-  int _majorVersion = 0;                              // EX-CommandStation major version X.y.z
-  int _minorVersion = 0;                              // EX-CommandStation minor version x.Y.z
-  int _patchVersion = 0;                              // EX-CommandStation patch version x.y.Z
+  int _version[3] = {};                               // EX-CommandStation version x.y.z
   Stream *_stream;                                    // Stream object where commands are sent/received
   Stream *_console;                                   // Stream object for console output
   NullStream _nullStream;                             // Send streams to null if no object provided
@@ -506,7 +520,7 @@ private:
   DCCEXProtocolDelegate *_delegate = nullptr;         // Pointer to the delegate for notifications
   unsigned long _lastServerResponseTime;              // Records the timestamp of the last server response
   char _inputBuffer[512];                             // Char array for input buffer
-  ssize_t _nextChar;                                  // where the next character to be read goes in the buffer
+  int _nextChar;                                      // where the next character to be read goes in the buffer
   bool _receivedVersion = false;                      // Flag that server version has been received
   bool _receivedLists = false;                        // Flag if all requested lists have been received
   bool _rosterRequested = false;                      // Flag that roster has been requested
