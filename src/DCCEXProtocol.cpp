@@ -489,6 +489,13 @@ void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) {
   // console->println(F("sendAccessory() end"));
 }
 
+void DCCEXProtocol::getNumberSupportedLocos() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<#>");
+    _sendCommand();
+  }
+}
+
 // Private methods
 // Protocol and server methods
 
@@ -514,6 +521,9 @@ void DCCEXProtocol::_sendCommand() {
 
 void DCCEXProtocol::_processCommand() {
   if (_delegate) {
+    // last Response time
+    _lastServerResponseTime = millis();
+
     switch (DCCEXInbound::getOpcode()) {
     case 'i': // iDCC-EX server info
       if (DCCEXInbound::isTextParameter(0)) {

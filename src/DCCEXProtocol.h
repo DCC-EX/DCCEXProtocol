@@ -31,6 +31,7 @@
 /*
 Version information:
 
+0.0.12  - add getNumberSupportedLocos()   used for the fake heartbeat
 0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
         - improved logic for overall track power
 0.0.10  - Add support for broadcast messages
@@ -415,6 +416,9 @@ public:
   /// @brief Deactivate DCC accessory at the specified linear address
   /// @param linearAddress Linear address of the DCC accessory
   void deactivateLinearAccessory(int linearAddress);
+
+  /// @brief Request the number of supported cabs(locos)
+  void getNumberSupportedLocos();
 
   // Attributes
 
