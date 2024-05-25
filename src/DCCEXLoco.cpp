@@ -209,14 +209,14 @@ void Consist::removeLoco(Loco *loco) {
   while (current) {
     if (current->getLoco() == loco) {
       if (loco->getSource() == LocoSourceEntry) {
-        delete loco;
+        // delete loco;
       }
       if (previous) {
         previous->setNext(current->getNext());
       } else {
         _first = current->getNext();
       }
-      delete current;
+      // delete current;
       _locoCount--;
       break;
     }
@@ -235,9 +235,9 @@ void Consist::removeAllLocos() {
     ConsistLoco *next = current->getNext();
     Loco *loco = current->getLoco();
     if (loco->getSource() == LocoSourceEntry) {
-      delete loco;
+      // delete loco;
     }
-    delete current;
+    // delete current;
     current = next;
   }
   _first = nullptr;

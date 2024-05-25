@@ -34,6 +34,7 @@
 /*
 Version information:
 
+0.0.15  - any acquired loco is now retained in the roster
 0.0.14  - add getNumberSupportedLocos()   used for the fake heartbeat
 0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
         - Add serial connectivity example
