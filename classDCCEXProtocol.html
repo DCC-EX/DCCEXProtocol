@@ -102,6 +102,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#afda94b0a2530af11d5416c4036ef27dd">check</a> ()</td></tr>
 <tr class="memdesc:afda94b0a2530af11d5416c4036ef27dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for incoming DCC-EX broadcasts/responses and parse them. <br /></td></tr>
 <tr class="separator:afda94b0a2530af11d5416c4036ef27dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a929399a017991deb4fae1f4a138f62bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a929399a017991deb4fae1f4a138f62bb">sendCommand</a> (char *cmd)</td></tr>
+<tr class="memdesc:a929399a017991deb4fae1f4a138f62bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">allows sending of an arbitray command  <a href="classDCCEXProtocol.html#a929399a017991deb4fae1f4a138f62bb">More...</a><br /></td></tr>
+<tr class="separator:a929399a017991deb4fae1f4a138f62bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9687b51b6471b91e74d80237132eb308"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a9687b51b6471b91e74d80237132eb308">getLists</a> (bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)</td></tr>
 <tr class="memdesc:a9687b51b6471b91e74d80237132eb308"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)  <a href="classDCCEXProtocol.html#a9687b51b6471b91e74d80237132eb308">More...</a><br /></td></tr>
 <tr class="separator:a9687b51b6471b91e74d80237132eb308"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1231,6 +1234,32 @@ Public Attributes</h2></td></tr>
     <tr><td class="paramname">turntableId</td><td>ID of the turntable </td></tr>
     <tr><td class="paramname">position</td><td>Position index to rotate to </td></tr>
     <tr><td class="paramname">activity</td><td>Optional activity for EX-Turntable objects only </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a929399a017991deb4fae1f4a138f62bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a929399a017991deb4fae1f4a138f62bb">&#9670;&nbsp;</a></span>sendCommand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::sendCommand </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>cmd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>allows sending of an arbitray command </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cmd</td><td>Command to send </td></tr>
   </table>
   </dd>
 </dl>
