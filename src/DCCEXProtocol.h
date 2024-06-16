@@ -34,6 +34,7 @@
 /*
 Version information:
 
+0.0.16  - add public sendCommand method
 0.0.15  - any acquired loco is now retained in the roster
 0.0.14  - add getNumberSupportedLocos()   used for the fake heartbeat
 0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
@@ -219,6 +220,10 @@ public:
 
   /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
   void check();
+
+  /// @brief allows sending of an arbitray command
+  /// @param cmd Command to send
+  void sendCommand(char *cmd);
 
   /// @brief Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)
   /// @param rosterRequired Request the roster list (true|false)

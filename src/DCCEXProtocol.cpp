@@ -117,6 +117,11 @@ void DCCEXProtocol::check() {
   }
 }
 
+void DCCEXProtocol::sendCommand(char *cmd) {
+  sprintf(_outboundCommand, "<%s>", cmd);
+  _sendCommand();
+}
+
 // sequentially request and get the required lists. To avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
                              bool turntableListRequired) {
