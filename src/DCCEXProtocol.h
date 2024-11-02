@@ -34,6 +34,8 @@
 /*
 Version information:
 
+0.0.17  - Fix typo in turntable example
+        - Fix bug where the turntable isMoving() method always returned true
 0.0.16  - add public sendCommand method
 0.0.15  - any acquired loco is now retained in the roster
 0.0.14  - add getNumberSupportedLocos()   used for the fake heartbeat

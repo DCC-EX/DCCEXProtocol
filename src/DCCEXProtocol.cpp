@@ -1106,17 +1106,17 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
 }
 
 void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
-  // console->println(F("processTurntableAction(): "));
+  // _console->println(F("_processTurntableBroadcast(): "));
   int id = DCCEXInbound::getNumber(0);
   int newIndex = DCCEXInbound::getNumber(1);
   bool moving = DCCEXInbound::getNumber(2);
   Turntable *tt = getTurntableById(id);
-  if (tt && tt->getIndex() != newIndex) {
+  if (tt) {
     tt->setIndex(newIndex);
     tt->setMoving(moving);
   }
   _delegate->receivedTurntableAction(id, newIndex, moving);
-  // console->println(F("processTurntableAction(): end"));
+  // _console->println(F("processTurntableAction(): end"));
 }
 
 // Track management methods

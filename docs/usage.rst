@@ -100,7 +100,7 @@ All objects are contained within linked lists and can be access via for loops:
     // route methods are available here
   }
 
-  for (Turntable* turntable=dccexProtocol.roster->getFirst(); turntable; turntable=turntable->getNext()) {
+  for (Turntable* turntable=dccexProtocol.turntables->getFirst(); turntable; turntable=turntable->getNext()) {
     // turntable methods are available here
     for (TurntableIndex* ttIndex=turntable->getFirstIndex(); ttIndex; ttIndex=ttIndex->getNextIndex()) {
       // turntable index methods are available here
