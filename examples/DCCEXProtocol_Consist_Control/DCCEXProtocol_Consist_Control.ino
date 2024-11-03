@@ -85,6 +85,8 @@ void setup() {
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
 
+  dccexProtocol.enableHeartbeat();
+
   // Pass the communication to wiThrottleProtocol
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");

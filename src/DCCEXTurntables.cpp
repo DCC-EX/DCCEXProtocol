@@ -29,7 +29,6 @@
 #include "DCCEXTurntables.h"
 #include <Arduino.h>
 
-
 // class TurntableIndex
 
 TurntableIndex *TurntableIndex::_first = nullptr;
@@ -62,6 +61,7 @@ Turntable::Turntable(int id) {
   _index = 0;
   _numberOfIndexes = 0;
   _name = nullptr;
+  _isMoving = false;
   _firstIndex = nullptr;
   _indexCount = 0;
   _next = nullptr;

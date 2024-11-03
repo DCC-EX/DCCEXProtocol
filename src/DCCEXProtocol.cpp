@@ -60,11 +60,16 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
   DCCEXInbound::setup(MAX_COMMAND_PARAMS);
   _cmdBuffer[0] = 0;
   _bufflen = 0;
+
+  // Set heartbeat defaults
+  _enableHeartbeat = 0;
+  _heartbeatDelay = 0;
+  _lastHeartbeat = 0;
 }
 
 DCCEXProtocol::~DCCEXProtocol() {
   // Free memory for command buffer
-  delete[] (_cmdBuffer);
+  delete[](_cmdBuffer);
 
   // Cleanup command parser
   DCCEXInbound::cleanup();
@@ -75,6 +80,11 @@ void DCCEXProtocol::setDelegate(DCCEXProtocolDelegate *delegate) { this->_delega
 
 // Set the Stream used for logging
 void DCCEXProtocol::setLogStream(Stream *console) { this->_console = console; }
+
+void DCCEXProtocol::enableHeartbeat(unsigned long heartbeatDelay) {
+  _enableHeartbeat = true;
+  _heartbeatDelay = heartbeatDelay;
+}
 
 void DCCEXProtocol::connect(Stream *stream) {
   _init();
@@ -113,6 +123,9 @@ void DCCEXProtocol::check() {
         _cmdBuffer[0] = 0;
         _bufflen = 0;
       }
+    }
+    if (_enableHeartbeat) {
+      _sendHeartbeat();
     }
   }
 }
@@ -532,7 +545,8 @@ void DCCEXProtocol::_sendCommand() {
     _stream->println(_outboundCommand);
     _console->print("==> ");
     _console->println(_outboundCommand);
-    *_outboundCommand = 0; // clear it once it has been sent
+    *_outboundCommand = 0;     // clear it once it has been sent
+    _lastHeartbeat = millis(); // If we sent a command, a heartbeat isn't necessary
   }
 }
 
@@ -547,7 +561,7 @@ void DCCEXProtocol::_processCommand() {
         _processScreenUpdate();
       }
       break;
-    
+
     case 'i': // iDCC-EX server info
       if (DCCEXInbound::isTextParameter(0)) {
         _processServerDescription();
@@ -698,7 +712,16 @@ void DCCEXProtocol::_processMessage() { //<m "message">
 }
 
 void DCCEXProtocol::_processScreenUpdate() { //<@ screen row "message">
-  _delegate->receivedScreenUpdate(DCCEXInbound::getNumber(0), DCCEXInbound::getNumber(1), DCCEXInbound::getTextParameter(2));
+  _delegate->receivedScreenUpdate(DCCEXInbound::getNumber(0), DCCEXInbound::getNumber(1),
+                                  DCCEXInbound::getTextParameter(2));
+}
+
+void DCCEXProtocol::_sendHeartbeat() {
+  if (millis() - _lastHeartbeat > _heartbeatDelay) {
+    _lastHeartbeat = millis();
+    sprintf(_outboundCommand, "<#>");
+    _sendCommand();
+  }
 }
 
 // Consist/loco methods
@@ -1106,17 +1129,17 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
 }
 
 void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
-  // console->println(F("processTurntableAction(): "));
+  // _console->println(F("_processTurntableBroadcast(): "));
   int id = DCCEXInbound::getNumber(0);
   int newIndex = DCCEXInbound::getNumber(1);
   bool moving = DCCEXInbound::getNumber(2);
   Turntable *tt = getTurntableById(id);
-  if (tt && tt->getIndex() != newIndex) {
+  if (tt) {
     tt->setIndex(newIndex);
     tt->setMoving(moving);
   }
   _delegate->receivedTurntableAction(id, newIndex, moving);
-  // console->println(F("processTurntableAction(): end"));
+  // _console->println(F("processTurntableAction(): end"));
 }
 
 // Track management methods

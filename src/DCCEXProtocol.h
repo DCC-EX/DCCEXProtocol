@@ -34,6 +34,9 @@
 /*
 Version information:
 
+0.0.17  - Fix typo in turntable example
+        - Fix bug where the turntable isMoving() method always returned true
+        - Add enableHeartbeat(heartbeatDelay) to send a heartbeat every x ms if a command is not sent
 0.0.16  - add public sendCommand method
 0.0.15  - any acquired loco is now retained in the roster
 0.0.14  - add getNumberSupportedLocos()   used for the fake heartbeat
@@ -210,6 +213,10 @@ public:
   /// @brief Set the stream object for console output
   /// @param console
   void setLogStream(Stream *console);
+
+  /// @brief Enable heartbeat if required - can help WiFi connections that drop out
+  /// @param heartbeatDelay Time in milliseconds between heartbeats - defaults to one minute (60000ms)
+  void enableHeartbeat(unsigned long heartbeatDelay = 60000);
 
   /// @brief Connect the stream object to interact with DCC-EX
   /// @param stream
@@ -466,6 +473,7 @@ private:
   void _processServerDescription();
   void _processMessage();
   void _processScreenUpdate();
+  void _sendHeartbeat();
 
   // Consist/loco methods
   void _processLocoBroadcast();
@@ -538,6 +546,9 @@ private:
   bool _receivedRouteList = false;                    // Flag that route list received
   bool _turntableListRequested = false;               // Flag that turntable list requested
   bool _receivedTurntableList = false;                // Flag that turntable list received
+  bool _enableHeartbeat;                              // Flag if heartbeat is enabled
+  unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
+  unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command
 };
 
 #endif // DCCEXPROTOCOL_H

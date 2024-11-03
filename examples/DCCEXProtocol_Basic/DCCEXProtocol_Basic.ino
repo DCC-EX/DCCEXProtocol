@@ -48,6 +48,8 @@ void setup() {
 
   dccexProtocol.setLogStream(&Serial);
 
+  dccexProtocol.enableHeartbeat();
+
   // Pass the communication to wiThrottleProtocol
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");
