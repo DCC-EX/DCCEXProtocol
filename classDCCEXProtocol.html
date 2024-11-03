@@ -91,6 +91,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acb1582dc81a360b503948981daa64214"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#acb1582dc81a360b503948981daa64214">setLogStream</a> (Stream *console)</td></tr>
 <tr class="memdesc:acb1582dc81a360b503948981daa64214"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the stream object for console output.  <a href="classDCCEXProtocol.html#acb1582dc81a360b503948981daa64214">More...</a><br /></td></tr>
 <tr class="separator:acb1582dc81a360b503948981daa64214"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87c5a0c92b5b33c4be830dec864dcf66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a87c5a0c92b5b33c4be830dec864dcf66">enableHeartbeat</a> (unsigned long heartbeatDelay=60000)</td></tr>
+<tr class="memdesc:a87c5a0c92b5b33c4be830dec864dcf66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable heartbeat if required - can help WiFi connections that drop out.  <a href="classDCCEXProtocol.html#a87c5a0c92b5b33c4be830dec864dcf66">More...</a><br /></td></tr>
+<tr class="separator:a87c5a0c92b5b33c4be830dec864dcf66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25d1ec19646d6f7b89c8302c21c67f3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a25d1ec19646d6f7b89c8302c21c67f3f">connect</a> (Stream *stream)</td></tr>
 <tr class="memdesc:a25d1ec19646d6f7b89c8302c21c67f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect the stream object to interact with DCC-EX.  <a href="classDCCEXProtocol.html#a25d1ec19646d6f7b89c8302c21c67f3f">More...</a><br /></td></tr>
 <tr class="separator:a25d1ec19646d6f7b89c8302c21c67f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -476,6 +479,32 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">linearAddress</td><td>Linear address of the DCC accessory </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a87c5a0c92b5b33c4be830dec864dcf66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87c5a0c92b5b33c4be830dec864dcf66">&#9670;&nbsp;</a></span>enableHeartbeat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::enableHeartbeat </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>heartbeatDelay</em> = <code>60000</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable heartbeat if required - can help WiFi connections that drop out. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">heartbeatDelay</td><td>Time in milliseconds between heartbeats - defaults to one minute (60000ms) </td></tr>
   </table>
   </dd>
 </dl>
