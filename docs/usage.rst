@@ -19,6 +19,8 @@ Once the `DCCEXProtocol` object is instantiated, a connection must be made to th
 
 It is also recommended to enable logging to an Arduino Stream using the `setLogStream(&stream)` method.
 
+For WiFi clients, long periods of no interactive commands being sent may cause the WiFi client to be disconnected, so it is recommended to enable heartbeats for these, which defaults to sending a heartbeat every 60 seconds. If commands are sent regularly, no heartbeats are sent.
+
 An example using an ESP32 with WiFi to connect to EX-CommandStation, with logging to the serial console:
 
 .. code-block:: cpp
@@ -34,6 +36,7 @@ An example using an ESP32 with WiFi to connect to EX-CommandStation, with loggin
       while(1) delay(1000);
     }
     dccexProtocol.setLogStream(&Serial);
+    dccexProtocol.enableHeartbeat();
     dccexProtocol.connect(&client);
   }
 
