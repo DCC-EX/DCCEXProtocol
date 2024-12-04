@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="DCC-EX DCC DCC++ EX DCC++EX" name="keywords" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search &mdash; DCCEXProtocol  documentation</title>
+  <title>Library Tests &mdash; DCCEXProtocol  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/css/dccex_theme.css?v=2ceefcef" />
@@ -13,8 +15,7 @@
 
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="canonical" href="https://dcc-ex.com/DCCEXProtocol/search.html" />
-    
+    <link rel="canonical" href="https://dcc-ex.com/DCCEXProtocol/tests.html" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -27,10 +28,10 @@
         <script src="_static/dark_mode_js/default_light.js?v=c2e647ce"></script>
         <script src="_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
     <script src="_static/js/theme.js"></script>
-    <script src="_static/searchtools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributions" href="contribute.html" />
+    <link rel="prev" title="Bugs and Requests" href="bugs-requests.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,14 +47,14 @@
               <img src="_static/product-logo-native-protocol-library.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">DCC-EX Native command protocol library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Library Design Principles</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#dccexprotocol-class">DCCEXProtocol Class</a></li>
@@ -475,7 +476,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs-requests.html">Bugs and Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Library Tests</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Library Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#library-maintenance">Library Maintenance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#documentation">Documentation</a></li>
@@ -498,8 +499,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Search</li>
+      <li class="breadcrumb-item active">Library Tests</li>
       <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/DCC-EX/dccexprotocol/blob/sphinx/docs/tests.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -507,22 +509,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <section id="library-tests">
+<h1>Library Tests<a class="headerlink" href="#library-tests" title="Link to this heading"></a></h1>
+<p>Courtesy of Vincent Hamp, the <span class="dccex-suffix">DCC-</span><span class="dccex-prefix">EX</span>
+<span class="ex-suffix">Native command protocol library</span> has unit tests that can be run locally as well automatically being run as a GitHub action when pushing to the main branch (see tests.yml in the repository).</p>
+<p>These tests are written using GoogleTest which allows for mocking as well as testing.</p>
+<p>To run these locally, you will need cmake, doxygen, and C++ build tools. If generating graphs with Doxygen, graphviz is also required.</p>
+<p>It is recommended these be run on Linux or macOS, as you will need to use MSYS2/MinGW on Windows, and various functions are unsupported, in addition to the case insensitivity of Windows causing issues with some Arduino/C++ headers (eg. string.h in Windows is the same as String.h).</p>
+<p>If you are using a Windows PC for the tests, it is best to utilise Windows Subsystem for Linux with Ubuntu, or your preference of distribution.</p>
+<p>For Ubuntu, install the required packages with:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span><span class="w"> </span><span class="n">apt</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">build</span><span class="o">-</span><span class="n">essential</span><span class="w"> </span><span class="n">doxygen</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="n">graphviz</span>
+</pre></div>
+</div>
+<p>Once these packages are installed, running the tests is pretty simple:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="o">&lt;</span><span class="n">directory</span><span class="o">&gt;/</span><span class="n">DCCEXProtocol</span>
+<span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">Bbuild</span>
+<span class="n">cmake</span><span class="w"> </span><span class="o">--</span><span class="n">build</span><span class="w"> </span><span class="n">build</span>
+<span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span><span class="n">DCCEXProtocolTests</span><span class="w"> </span><span class="o">--</span><span class="n">gtest_shuffle</span>
+</pre></div>
+</div>
+<p>If you have issues compiling the tests, you may need to delete the build directory if it already existed before you started. It is not included in the repository and is used locally only.</p>
+</section>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bugs-requests.html" class="btn btn-neutral float-left" title="Bugs and Requests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contribute.html" class="btn btn-neutral float-right" title="Contributions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
@@ -555,14 +570,7 @@
       gtag('config', 'G-L5X0KNBF0W', {
           'anonymize_ip': false,
       });
-    </script>
-  <script>
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script id="searchindexloader"></script>
-   
-
+    </script> 
 
 </body>
 </html>
