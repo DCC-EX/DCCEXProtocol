@@ -13,6 +13,7 @@ Documentation for the DCC-EX Native command protocol library - DCCEXProtocol
   examples
   library
   bugs-requests
+  tests
   contribute
   site-index
 
