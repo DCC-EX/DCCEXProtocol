@@ -3,12 +3,6 @@
 Library Tests
 =============
 
-.. sidebar:: 
-
-  .. contents:: On this page
-    :depth: 2
-    :local:
-
 Courtesy of Vincent Hamp, the |EX-NCL| has unit tests that can be run locally as well automatically being run as a GitHub action when pushing to the main branch (see tests.yml in the repository).
 
 These tests are written using GoogleTest which allows for mocking as well as testing.
@@ -21,13 +15,13 @@ If you are using a Windows PC for the tests, it is best to utilise Windows Subsy
 
 For Ubuntu, install the required packages with:
 
-.. codeblock::
+.. code-block::
 
   sudo apt install build-essential doxygen cmake graphviz
 
 Once these packages are installed, running the tests is pretty simple:
 
-.. codeblock::
+.. code-block::
 
   cd <directory>/DCCEXProtocol
   cmake -Bbuild
