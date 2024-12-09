@@ -148,11 +148,7 @@ Loco *Loco::getByAddress(int address) {
 
 Loco::~Loco() {
   if (_name) {
-    delete[] _name;
-  }
-
-  if (_functionNames) {
-    delete[] _functionNames;
+    free(_name);
   }
 
   if (_first == this) {

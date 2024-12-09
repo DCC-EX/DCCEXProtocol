@@ -16,23 +16,23 @@ bool operator==(StreamMock lhs, StreamMock rhs) { return stream2string(lhs) == s
 bool operator==(StreamMock lhs, std::string rhs) { return stream2string(lhs) == rhs; }
 
 // Set delegate and stream
-DCCEXProtocolTest::DCCEXProtocolTest() {
+DCCEXProtocolTest::DCCEXProtocolTest() {}
+
+DCCEXProtocolTest::~DCCEXProtocolTest() {}
+
+void DCCEXProtocolTest::SetUp() {
   _dccexProtocol.setDelegate(&_delegate);
   _dccexProtocol.setLogStream(&_console);
   _dccexProtocol.connect(&_stream);
 }
 
-DCCEXProtocolTest::~DCCEXProtocolTest() {}
-
-void DCCEXProtocolTest::SetUp() {}
-
 void DCCEXProtocolTest::TearDown() {
-  // // Clean up the roster
-  // Loco *currentLoco = _dccexProtocol.roster->getFirst();
-  // while (currentLoco != nullptr) {
-  //   Loco *nextLoco = currentLoco->getNext();
-  //   delete currentLoco;
-  //   currentLoco = nextLoco;
-  // }
-  // _dccexProtocol.roster = nullptr;
+  // Clean up the roster
+  Loco *currentLoco = _dccexProtocol.roster->getFirst();
+  while (currentLoco != nullptr) {
+    Loco *nextLoco = currentLoco->getNext();
+    delete currentLoco;
+    currentLoco = nextLoco;
+  }
+  _dccexProtocol.roster = nullptr;
 }
