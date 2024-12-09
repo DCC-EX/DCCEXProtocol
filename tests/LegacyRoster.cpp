@@ -18,7 +18,7 @@ TEST_F(DCCEXProtocolTest, createLoco) {
 /// @brief Create a roster of Locos using the legacy constructor
 TEST_F(DCCEXProtocolTest, legacyRosterCreation) {
   // Roster should start empty, don't continue if it isn't
-  ASSERT_NE(_dccexProtocol.roster->getFirst(), nullptr);
+  ASSERT_EQ(_dccexProtocol.roster->getFirst(), nullptr);
 
   // Add three locos
   Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);

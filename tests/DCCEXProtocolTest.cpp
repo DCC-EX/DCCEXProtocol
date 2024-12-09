@@ -24,6 +24,8 @@ void DCCEXProtocolTest::SetUp() {
   _dccexProtocol.setDelegate(&_delegate);
   _dccexProtocol.setLogStream(&_console);
   _dccexProtocol.connect(&_stream);
+  Loco::setFirst(nullptr);
+  _dccexProtocol.roster = nullptr;
 }
 
 void DCCEXProtocolTest::TearDown() {
