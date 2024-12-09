@@ -146,6 +146,28 @@ Loco *Loco::getByAddress(int address) {
   return nullptr;
 }
 
+Loco::~Loco() {
+  if (_name) {
+    delete[] _name;
+  }
+
+  if (_functionNames) {
+    delete[] _functionNames;
+  }
+
+  if (_first == this) {
+    _first = _next;
+  } else {
+    Loco *currentLoco = _first;
+    while (currentLoco && currentLoco->_next != this) {
+      currentLoco = currentLoco->_next;
+    }
+    if (currentLoco) {
+      currentLoco->_next = _next;
+    }
+  }
+}
+
 // class ConsistLoco
 // Public methods
 

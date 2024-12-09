@@ -130,6 +130,9 @@ public:
   /// @return Loco object or nullptr if it doesn't exist
   static Loco *getByAddress(int address);
 
+  /// @brief Destructor for a Loco
+  ~Loco();
+
 private:
   int _address;
   char *_name;
