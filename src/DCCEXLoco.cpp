@@ -56,7 +56,13 @@ Loco::Loco(int address, LocoSource source) {
 
 int Loco::getAddress() { return _address; }
 
-void Loco::setName(char *name) { _name = name; }
+void Loco::setName(char *name) {
+  if (_name) {
+    free(_name);
+  }
+  _name = (char *)malloc(strlen(name) + 1);
+  strcpy(_name, name);
+}
 
 char *Loco::getName() { return _name; }
 
@@ -146,13 +152,16 @@ Loco *Loco::getByAddress(int address) {
   return nullptr;
 }
 
+void Loco::setFirst(Loco *firstLoco) { _first = firstLoco; }
+
 Loco::~Loco() {
   if (_name) {
     free(_name);
+    _name = nullptr;
   }
 
-  if (_first == this) {
-    _first = _next;
+  if (Loco::getFirst() == this) {
+    Loco::setFirst(_next);
   } else {
     Loco *currentLoco = _first;
     while (currentLoco && currentLoco->_next != this) {
@@ -162,6 +171,7 @@ Loco::~Loco() {
       currentLoco->_next = _next;
     }
   }
+  _next = nullptr;
 }
 
 // class ConsistLoco

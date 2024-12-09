@@ -854,6 +854,9 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
     // console->println(getRosterCount());
     _delegate->receivedRosterList();
   }
+
+  free(name);
+  free(funcs);
   // console->println(F("processRosterEntry(): end"));
 }
 
@@ -925,6 +928,8 @@ void DCCEXProtocol::_processTurnoutEntry() {
     // console->println(F("processTurnoutsEntry(): received all"));
     _delegate->receivedTurnoutList();
   }
+
+  free(name);
   // console->println(F("processTurnoutEntry() end"));
 }
 
@@ -1009,6 +1014,8 @@ void DCCEXProtocol::_processRouteEntry() {
     // console->println(F("processRoutesEntry(): received all"));
     _delegate->receivedRouteList();
   }
+
+  free(name);
   // console->println(F("processRouteEntry() end"));
 }
 
@@ -1074,6 +1081,7 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
       _requestTurntableEntry(tt->getNext()->getId());
     }
   }
+  free(name);
   // console->println(F("processTurntableEntry(): end"));
 }
 
@@ -1124,6 +1132,8 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
       // console->println(F("processTurntableIndexEntry(): received all"));
       _delegate->receivedTurntableList();
     }
+
+    free(name);
   }
   // console->println(F("processTurntableIndexEntry(): end"));
 }

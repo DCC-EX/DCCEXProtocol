@@ -130,6 +130,10 @@ public:
   /// @return Loco object or nullptr if it doesn't exist
   static Loco *getByAddress(int address);
 
+  /// @brief Set the static first Loco pointer
+  /// @param firstLoco Pointer to the first Loco in the roster
+  static void setFirst(Loco *firstLoco);
+
   /// @brief Destructor for a Loco
   ~Loco();
 
