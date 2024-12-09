@@ -452,7 +452,9 @@ public:
 
   // Attributes
 
-  /// @brief Linked list of Loco objects to form the roster
+  [[deprecated("This roster attribute has been deprecated and will be removed in a future version of the library. "
+               "Please use the getRoster() method instead.")]]
+  /// @brief DEPRECATED: Linked list of Loco objects to form the roster, please use getRoster() instead
   Loco *roster = nullptr;
 
   /// @brief Linked list of Turnout objects to form the turnout list

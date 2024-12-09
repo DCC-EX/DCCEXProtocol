@@ -53,7 +53,10 @@ enum Facing {
 /// @brief Class for a Loco object representing a DCC addressed locomotive
 class Loco {
 public:
-  /// @brief Constructor
+  [[deprecated("This method of creating a Loco instance has been deprecated and will be removed in a future version of "
+               "the library. "
+               "Please create Loco instances using the Loco(int address, bool addToRoster) constructor instead.")]]
+  /// @brief DEPRECATED: This is the legacy constructor, please use Loco(int address, bool addToRoster) instead
   /// @param address DCC address of loco
   /// @param source LocoSourceRoster (from roster) or LocoSourceEntry (from user input)
   Loco(int address, LocoSource source);
