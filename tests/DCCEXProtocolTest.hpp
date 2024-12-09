@@ -16,6 +16,9 @@ public:
   virtual ~DCCEXProtocolTest();
 
 protected:
+  void SetUp() override;
+  void TearDown() override;
+
   DCCEXProtocol _dccexProtocol;
   DCCEXProtocolDelegateMock _delegate;
   StreamMock _console;

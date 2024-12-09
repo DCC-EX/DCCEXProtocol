@@ -23,3 +23,16 @@ DCCEXProtocolTest::DCCEXProtocolTest() {
 }
 
 DCCEXProtocolTest::~DCCEXProtocolTest() {}
+
+void DCCEXProtocolTest::SetUp() {}
+
+void DCCEXProtocolTest::TearDown() {
+  // // Clean up the roster
+  // Loco *currentLoco = _dccexProtocol.roster->getFirst();
+  // while (currentLoco != nullptr) {
+  //   Loco *nextLoco = currentLoco->getNext();
+  //   delete currentLoco;
+  //   currentLoco = nextLoco;
+  // }
+  // _dccexProtocol.roster = nullptr;
+}
