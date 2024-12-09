@@ -55,12 +55,12 @@ TEST_F(DCCEXProtocolTest, createLoco) {
   EXPECT_EQ(loco1->getSource(), LocoSource::LocoSourceEntry);
 
   // Ensure next is nullptr as this is the only loco
-  // ASSERT_NE(loco1->getNext(), nullptr);
+  EXPECT_EQ(loco1->getNext(), nullptr);
 }
 
 TEST_F(DCCEXProtocolTest, legacyRosterCreation) {
   // Roster should start empty
-  // EXPECT_EQ(_dccexProtocol.roster->getFirst(), nullptr);
+  ASSERT_NE(_dccexProtocol.roster->getFirst(), nullptr);
 
   // Add three locos
   Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
@@ -72,7 +72,7 @@ TEST_F(DCCEXProtocolTest, legacyRosterCreation) {
 
   // Now verify the roster
   Loco* firstLoco = _dccexProtocol.roster->getFirst();
-  ASSERT_NE(firstLoco, nullptr);
+  EXPECT_NE(firstLoco, nullptr);
   
   // Check first loco details
   EXPECT_EQ(firstLoco->getAddress(), 42);
@@ -80,16 +80,16 @@ TEST_F(DCCEXProtocolTest, legacyRosterCreation) {
 
   // Verify second loco details
   Loco* secondLoco = firstLoco->getNext();
-  ASSERT_NE(secondLoco, nullptr);
+  EXPECT_NE(secondLoco, nullptr);
   EXPECT_EQ(secondLoco->getAddress(), 9);
   EXPECT_STREQ(secondLoco->getName(), "Loco9");
 
   // Verify third loco details
   Loco *thirdLoco = secondLoco->getNext();
-  ASSERT_NE(thirdLoco, nullptr);
+  EXPECT_NE(thirdLoco, nullptr);
   EXPECT_EQ(thirdLoco->getAddress(), 120);
   EXPECT_STREQ(thirdLoco->getName(), "Loco120");
 
   // Verify end of linked list
-  // ASSERT_NE(thirdLoco->getNext(), nullptr);
+  ASSERT_NE(thirdLoco->getNext(), nullptr);
 }
