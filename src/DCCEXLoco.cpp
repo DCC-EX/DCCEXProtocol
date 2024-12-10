@@ -37,6 +37,9 @@ Loco *Loco::_first = nullptr;
 Loco::Loco(int address, LocoSource source) {
   _address = address;
   _source = source;
+  for (int i = 0; i < MAX_FUNCTIONS; i++) {
+    _functionNames[i] = nullptr;
+  }
   _direction = Forward;
   _speed = 0;
   _name = nullptr;
@@ -59,6 +62,9 @@ Loco::Loco(int address, bool inRoster) : _address(address) {
     _source = LocoSource::LocoSourceRoster;
   } else {
     _source = LocoSource::LocoSourceEntry;
+  }
+  for (int i = 0; i < MAX_FUNCTIONS; i++) {
+    _functionNames[i] = nullptr;
   }
   _direction = Forward;
   _speed = 0;
@@ -91,56 +97,55 @@ Direction Loco::getDirection() { return (Direction)_direction; }
 LocoSource Loco::getSource() { return (LocoSource)_source; }
 
 void Loco::setupFunctions(char *functionNames) {
-  // Important note:
-  // The functionNames string is modified in place.
-  //   console->print(F("Splitting \""));
-  //   console->print(functionNames);
-  //   console->println(F("\""));
-  char *t = functionNames;
-  int fkey = 0;
-
-  while (*t) {
-    bool momentary = false;
-    if (*t == '*') {
-      momentary = true;
-      t++;
-    }
-    char *fName = t; // function name starts here
-    while (*t) {     // loop completes at end of name ('/' or 0)
-      if (*t == '/') {
-        // found end of name
-        *t = '\0'; // mark name ends here
-        t++;
-        break;
-      }
-      t++;
-    }
-
-    // At this point we have a function key
-    // int fkey = function number 0....
-    // bool momentary = is it a momentary
-    // fName = pointer to the function name
-    if (fkey < MAX_FUNCTIONS) {
-      _functionNames[fkey] = fName;
-      if (momentary) {
-        _momentaryFlags |= 1 << fkey;
-      } else {
-        _momentaryFlags &= ~(1 << fkey);
-      }
-    }
-    //  Serial.print("Function ");
-    //  Serial.print(fkey);
-    //  Serial.print(momentary ? F("  Momentary ") : F(""));
-    //  Serial.print(" ");
-    //  Serial.println(fName);
-    //  Serial.println(_functionNames[fkey]);
-    fkey++;
+  if (functionNames == nullptr) {
+    return;
   }
-  if (fkey < MAX_FUNCTIONS) {
-    for (int i = fkey; i < MAX_FUNCTIONS; i++) {
+  // Copy functionNames so fNames can be freed later
+  char *fNames = (char *)malloc(strlen(functionNames) + 1);
+  if (fNames == nullptr) {
+    return;
+  }
+  strcpy(fNames, functionNames);
+  int fIndex = 0;
+  int fNamesLength = strlen(fNames);
+  int fNameStart = 0;
+  // Free any existing function names
+  for (int i = 0; i < MAX_FUNCTIONS; i++) {
+    if (_functionNames[i] != nullptr) {
+      free(_functionNames[i]);
       _functionNames[i] = nullptr;
     }
   }
+  for (int i = 0; i <= fNamesLength; i++) {
+    if (fNames[i] == '/' || fNames[i] == '\0') { // Check if it's the end of the name
+      if (fIndex < MAX_FUNCTIONS) {              // Make sure it's a sane index
+        if (_functionNames[fIndex] != nullptr) { // If it exists already, free it
+          free(_functionNames[fIndex]);
+        }
+        bool momentary = false;
+        if (fNames[fNameStart] == '*') { // If * it's momentary, and skip to next index for name
+          momentary = true;
+          fNameStart++;
+        }
+        int nameLength = i - fNameStart;                         // Calculate the length of the name
+        _functionNames[fIndex] = (char *)malloc(nameLength + 1); // Allocate mem
+        if (_functionNames[fIndex] != nullptr) {
+          strncpy(_functionNames[fIndex], &fNames[fNameStart], nameLength); // Copy name
+          _functionNames[fIndex][nameLength] = '\0';                        // Null terminate it
+        }
+        if (momentary) {
+          _momentaryFlags |= 1 << fIndex;
+        } else {
+          _momentaryFlags &= ~(1 << fIndex);
+        }
+        fIndex++;
+      } else {
+        break;
+      }
+      fNameStart = i + 1; // Move to the next name
+    }
+  }
+  free(fNames);
 }
 
 bool Loco::isFunctionOn(int function) { return _functionStates & 1 << function; }
@@ -172,6 +177,12 @@ Loco::~Loco() {
   if (_name) {
     free(_name);
     _name = nullptr;
+  }
+
+  for (int i = 0; i < MAX_FUNCTIONS; i++) {
+    if (_functionNames[i]) {
+      free(_functionNames[i]);
+    }
   }
 
   if (Loco::getFirst() == this) {
