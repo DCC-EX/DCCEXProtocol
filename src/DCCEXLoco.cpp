@@ -54,6 +54,20 @@ Loco::Loco(int address, LocoSource source) {
   }
 }
 
+Loco::Loco(int address, bool inRoster) : _address(address) {
+  if (inRoster) {
+    _source = LocoSource::LocoSourceRoster;
+  } else {
+    _source = LocoSource::LocoSourceEntry;
+  }
+  _direction = Forward;
+  _speed = 0;
+  _name = nullptr;
+  _functionStates = 0;
+  _momentaryFlags = 0;
+  _next = nullptr;
+}
+
 int Loco::getAddress() { return _address; }
 
 void Loco::setName(char *name) {

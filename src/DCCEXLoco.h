@@ -55,11 +55,16 @@ class Loco {
 public:
   [[deprecated("This method of creating a Loco instance has been deprecated and will be removed in a future version of "
                "the library. "
-               "Please create Loco instances using the Loco(int address, bool addToRoster) constructor instead.")]]
-  /// @brief DEPRECATED: This is the legacy constructor, please use Loco(int address, bool addToRoster) instead
+               "Please create Loco instances using the Loco(int address, bool inRoster) constructor instead.")]]
+  /// @brief DEPRECATED: This is the legacy constructor, please use Loco(int address, bool inRoster) instead
   /// @param address DCC address of loco
   /// @param source LocoSourceRoster (from roster) or LocoSourceEntry (from user input)
   Loco(int address, LocoSource source);
+
+  /// @brief Constructor for a Loco instance
+  /// @param address DCC address of this Loco
+  /// @param inRoster true sets source to LocoSourceRoster, false sets source to LocoSourceEntry (default)
+  Loco(int address, bool inRoster = false);
 
   /// @brief Get loco address
   /// @return DCC address of loco

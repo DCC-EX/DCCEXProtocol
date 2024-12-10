@@ -1,7 +1,7 @@
 #include "DCCEXProtocolTest.hpp"
 
 /// @brief Create a single Loco using the legacy constructor
-TEST_F(DCCEXProtocolTest, createLoco) {
+TEST_F(DCCEXProtocolTest, createLegacyLoco) {
   // Create an individual loco
   Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
   loco1->setName("Loco 1");
@@ -16,7 +16,7 @@ TEST_F(DCCEXProtocolTest, createLoco) {
 }
 
 /// @brief Create a roster of Locos using the legacy constructor
-TEST_F(DCCEXProtocolTest, legacyRosterCreation) {
+TEST_F(DCCEXProtocolTest, createLegacyRoster) {
   // Roster should start empty, don't continue if it isn't
   ASSERT_EQ(_dccexProtocol.roster->getFirst(), nullptr);
 
