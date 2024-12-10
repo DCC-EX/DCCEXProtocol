@@ -1,9 +1,9 @@
 #include "DCCEXProtocolTest.hpp"
 
 /// @brief Create a single Loco that is not part of a roster
-TEST_F(DCCEXProtocolTest, createLoco) {
+TEST_F(DCCEXProtocolTest, createDCCEXLoco) {
   // Create an individual loco
-  Loco *loco100 = new Loco(100, false);
+  DCCEXLoco *loco100 = new DCCEXLoco(100, false);
   loco100->setName("Loco 100");
   loco100->setupFunctions("Lights/*Horn/Bell///Idiot on tracks");
 

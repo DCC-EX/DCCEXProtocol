@@ -34,6 +34,9 @@
 /*
 Version information:
 
+0.1.0   - Deprecate Loco, ConsistLoco, and Consist in favour of DCCEXLoco, DCCEXConsistLoco, and DCCEXConsist
+        - Implement new roster management to support individual DCCEXLoco instances
+        - Fix general memory leak issues
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true
         - Add enableHeartbeat(heartbeatDelay) to send a heartbeat every x ms if a command is not sent
@@ -73,6 +76,7 @@ Version information:
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
+#include "Loco.h"
 #include <Arduino.h>
 
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100;         // Max number of bytes for outbound commands

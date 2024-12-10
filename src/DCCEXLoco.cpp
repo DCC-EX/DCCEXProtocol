@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2024 Peter Cole
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -27,37 +28,8 @@
  */
 
 #include "DCCEXLoco.h"
-#include <Arduino.h>
 
-// class Loco
-// Public methods
-
-Loco *Loco::_first = nullptr;
-
-Loco::Loco(int address, LocoSource source) {
-  _address = address;
-  _source = source;
-  for (int i = 0; i < MAX_FUNCTIONS; i++) {
-    _functionNames[i] = nullptr;
-  }
-  _direction = Forward;
-  _speed = 0;
-  _name = nullptr;
-  _functionStates = 0;
-  _momentaryFlags = 0;
-  _next = nullptr;
-  if (!_first) {
-    _first = this;
-  } else {
-    Loco *current = _first;
-    while (current->_next != nullptr) {
-      current = current->_next;
-    }
-    current->_next = this;
-  }
-}
-
-Loco::Loco(int address, bool inRoster) : _address(address) {
+DCCEXLoco::DCCEXLoco(int address, bool inRoster) : _address(address) {
   if (inRoster) {
     _source = LocoSource::LocoSourceRoster;
   } else {
@@ -74,9 +46,9 @@ Loco::Loco(int address, bool inRoster) : _address(address) {
   _next = nullptr;
 }
 
-int Loco::getAddress() { return _address; }
+int DCCEXLoco::getAddress() { return _address; }
 
-void Loco::setName(char *name) {
+void DCCEXLoco::setName(const char *name) {
   if (_name) {
     free(_name);
   }
@@ -84,19 +56,19 @@ void Loco::setName(char *name) {
   strcpy(_name, name);
 }
 
-char *Loco::getName() { return _name; }
+const char *DCCEXLoco::getName() { return _name; }
 
-void Loco::setSpeed(int speed) { _speed = speed; }
+void DCCEXLoco::setSpeed(int speed) { _speed = speed; }
 
-int Loco::getSpeed() { return _speed; }
+int DCCEXLoco::getSpeed() { return _speed; }
 
-void Loco::setDirection(Direction direction) { _direction = direction; }
+void DCCEXLoco::setDirection(Direction direction) { _direction = direction; }
 
-Direction Loco::getDirection() { return (Direction)_direction; }
+Direction DCCEXLoco::getDirection() { return (Direction)_direction; }
 
-LocoSource Loco::getSource() { return (LocoSource)_source; }
+LocoSource DCCEXLoco::getSource() { return (LocoSource)_source; }
 
-void Loco::setupFunctions(char *functionNames) {
+void DCCEXLoco::setupFunctions(const char *functionNames) {
   if (functionNames == nullptr) {
     return;
   }
@@ -148,32 +120,19 @@ void Loco::setupFunctions(char *functionNames) {
   free(fNames);
 }
 
-bool Loco::isFunctionOn(int function) { return _functionStates & 1 << function; }
+bool DCCEXLoco::isFunctionOn(int function) { return _functionStates & 1 << function; }
 
-void Loco::setFunctionStates(int functionStates) { _functionStates = functionStates; }
+void DCCEXLoco::setFunctionStates(int functionStates) { _functionStates = functionStates; }
 
-int Loco::getFunctionStates() { return _functionStates; }
+int DCCEXLoco::getFunctionStates() { return _functionStates; }
 
-char *Loco::getFunctionName(int function) { return _functionNames[function]; }
+const char *DCCEXLoco::getFunctionName(int function) { return _functionNames[function]; }
 
-bool Loco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << function; }
+bool DCCEXLoco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << function; }
 
-Loco *Loco::getFirst() { return _first; }
+DCCEXLoco *DCCEXLoco::getNext() { return _next; }
 
-Loco *Loco::getNext() { return _next; }
-
-Loco *Loco::getByAddress(int address) {
-  for (Loco *l = getFirst(); l; l = l->getNext()) {
-    if (l->getAddress() == address) {
-      return l;
-    }
-  }
-  return nullptr;
-}
-
-void Loco::setFirst(Loco *firstLoco) { _first = firstLoco; }
-
-Loco::~Loco() {
+DCCEXLoco::~DCCEXLoco() {
   if (_name) {
     free(_name);
     _name = nullptr;
@@ -184,183 +143,5 @@ Loco::~Loco() {
       free(_functionNames[i]);
     }
   }
-
-  if (Loco::getFirst() == this) {
-    Loco::setFirst(_next);
-  } else {
-    Loco *currentLoco = _first;
-    while (currentLoco && currentLoco->_next != this) {
-      currentLoco = currentLoco->_next;
-    }
-    if (currentLoco) {
-      currentLoco->_next = _next;
-    }
-  }
   _next = nullptr;
-}
-
-// class ConsistLoco
-// Public methods
-
-ConsistLoco::ConsistLoco(Loco *loco, Facing facing) {
-  _loco = loco;
-  _facing = facing;
-  _next = nullptr;
-}
-
-Loco *ConsistLoco::getLoco() { return _loco; }
-
-void ConsistLoco::setFacing(Facing facing) { _facing = facing; }
-
-Facing ConsistLoco::getFacing() { return (Facing)_facing; }
-
-ConsistLoco *ConsistLoco::getNext() { return _next; }
-
-void ConsistLoco::setNext(ConsistLoco *consistLoco) { _next = consistLoco; }
-
-// class Consist
-// Public methods
-
-Consist::Consist() {
-  _name = nullptr;
-  _locoCount = 0;
-  _first = nullptr;
-}
-
-void Consist::setName(char *name) { _name = name; }
-
-char *Consist::getName() { return _name; }
-
-void Consist::addLoco(Loco *loco, Facing facing) {
-  if (inConsist(loco))
-    return; // Already in the consist
-  if (_locoCount == 0) {
-    facing = FacingForward;  // Force forward facing for the first loco added
-    _name = loco->getName(); // Set consist name to the first loco name
-  }
-  ConsistLoco *conLoco = new ConsistLoco(loco, facing);
-  _addLocoToConsist(conLoco);
-}
-
-void Consist::addLoco(int address, Facing facing) {
-  if (inConsist(address))
-    return;
-  if (_locoCount == 0) {
-    facing = FacingForward;
-    char temp[6];
-    snprintf(temp, 6, "%d", address);
-    _name = temp;
-  }
-  Loco *loco = new Loco(address, LocoSourceEntry);
-  ConsistLoco *conLoco = new ConsistLoco(loco, facing);
-  _addLocoToConsist(conLoco);
-}
-
-void Consist::removeLoco(Loco *loco) {
-  ConsistLoco *previous = nullptr;
-  ConsistLoco *current = _first;
-  while (current) {
-    if (current->getLoco() == loco) {
-      if (loco->getSource() == LocoSourceEntry) {
-        // delete loco;
-      }
-      if (previous) {
-        previous->setNext(current->getNext());
-      } else {
-        _first = current->getNext();
-      }
-      // delete current;
-      _locoCount--;
-      break;
-    }
-    previous = current;
-    current = current->getNext();
-  }
-  if (!_first) {
-    _first = nullptr;
-    _locoCount = 0;
-  }
-}
-
-void Consist::removeAllLocos() {
-  ConsistLoco *current = _first;
-  while (current) {
-    ConsistLoco *next = current->getNext();
-    Loco *loco = current->getLoco();
-    if (loco->getSource() == LocoSourceEntry) {
-      // delete loco;
-    }
-    // delete current;
-    current = next;
-  }
-  _first = nullptr;
-  _locoCount = 0;
-}
-
-void Consist::setLocoFacing(Loco *loco, Facing facing) {
-  for (ConsistLoco *cl = _first; cl; cl = cl->getNext()) {
-    if (cl->getLoco() == loco) {
-      cl->setFacing(facing);
-    }
-  }
-}
-
-int Consist::getLocoCount() { return _locoCount; }
-
-bool Consist::inConsist(Loco *loco) {
-  for (ConsistLoco *cl = _first; cl; cl = cl->_next) {
-    if (cl->getLoco() == loco) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool Consist::inConsist(int address) {
-  for (ConsistLoco *cl = _first; cl; cl = cl->_next) {
-    if (cl->getLoco()->getAddress() == address) {
-      return true;
-    }
-  }
-  return false;
-}
-
-int Consist::getSpeed() {
-  ConsistLoco *cl = _first;
-  if (!cl)
-    return 0;
-  return cl->getLoco()->getSpeed();
-}
-
-Direction Consist::getDirection() {
-  ConsistLoco *cl = _first;
-  if (!cl)
-    return Forward;
-  return cl->getLoco()->getDirection();
-}
-
-ConsistLoco *Consist::getFirst() { return _first; }
-
-ConsistLoco *Consist::getByAddress(int address) {
-  for (ConsistLoco *cl = _first; cl; cl = cl->_next) {
-    if (cl->getLoco()->getAddress() == address) {
-      return cl;
-    }
-  }
-  return nullptr;
-}
-
-// Private methods
-
-void Consist::_addLocoToConsist(ConsistLoco *conLoco) {
-  if (this->_first == nullptr) {
-    this->_first = conLoco;
-  } else {
-    ConsistLoco *current = this->_first;
-    while (current->_next != nullptr) {
-      current = current->_next;
-    }
-    current->_next = conLoco;
-  }
-  _locoCount++;
 }
