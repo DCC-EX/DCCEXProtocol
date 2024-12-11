@@ -5,11 +5,18 @@ TEST_F(DCCEXProtocolTest, createLegacyLoco) {
   // Create an individual loco
   Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
   loco1->setName("Loco 1");
+  loco1->setupFunctions("Lights/*Horn/Bell///Function 5");
 
   // Check address is 1, name is correct, and LocoSource correct
   EXPECT_EQ(loco1->getAddress(), 1);
   EXPECT_STREQ(loco1->getName(), "Loco 1");
   EXPECT_EQ(loco1->getSource(), LocoSource::LocoSourceEntry);
+
+  // Check our functions
+  EXPECT_FALSE(loco1->isFunctionMomentary(0));
+  EXPECT_TRUE(loco1->isFunctionMomentary(1));
+  EXPECT_STREQ(loco1->getFunctionName(2), "Bell");
+  EXPECT_STREQ(loco1->getFunctionName(5), "Function 5");
 
   // Ensure next is nullptr as this is the only loco
   ASSERT_EQ(loco1->getNext(), nullptr);
@@ -52,5 +59,6 @@ TEST_F(DCCEXProtocolTest, createLegacyRoster) {
   EXPECT_EQ(thirdLoco->getSource(), LocoSource::LocoSourceRoster);
 
   // Verify end of linked list and fail fatally if next is not nullptr
-  ASSERT_EQ(thirdLoco->getNext(), nullptr) << "Unexpected fourth Loco at address: " << thirdLoco->getNext()->getAddress();
+  ASSERT_EQ(thirdLoco->getNext(), nullptr)
+      << "Unexpected fourth Loco at address: " << thirdLoco->getNext()->getAddress();
 }

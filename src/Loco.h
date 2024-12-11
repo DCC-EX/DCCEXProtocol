@@ -32,31 +32,12 @@
 #include "DCCEXLoco.h"
 #include <Arduino.h>
 
-// static const int MAX_FUNCTIONS = 32;
-// const int MAX_OBJECT_NAME_LENGTH = 30;      // including Loco name, Turnout/Point names, Route names, etc. names
-// #define MAX_SINGLE_COMMAND_PARAM_LENGTH 500 // Unfortunately includes the function list for an individual loco
-
-// enum Direction {
-//   Reverse = 0,
-//   Forward = 1,
-// };
-
-// enum LocoSource {
-//   LocoSourceRoster = 0,
-//   LocoSourceEntry = 1,
-// };
-
-// enum Facing {
-//   FacingForward = 0,
-//   FacingReversed = 1,
-// };
-
 /// @brief Class for a Loco object representing a DCC addressed locomotive
 class Loco {
 public:
   [[deprecated("This method of creating a Loco instance has been deprecated and will be removed in a future version of "
                "the library. "
-               "Please create Loco instances using the Loco(int address, bool inRoster) constructor instead.")]]
+               "Please create Loco instances using the DCCEXLoco(int address, bool inRoster) constructor instead.")]]
   /// @brief DEPRECATED: This is the legacy constructor, please use Loco(int address, bool inRoster) instead
   /// @param address DCC address of loco
   /// @param source LocoSourceRoster (from roster) or LocoSourceEntry (from user input)
@@ -184,6 +165,9 @@ public:
   /// @param consistLoco Pointer to the ConsistLoco object
   void setNext(ConsistLoco *consistLoco);
 
+  /// @brief Destructor for a ConsistLoco
+  ~ConsistLoco();
+
 private:
   Loco *_loco;
   Facing _facing;
@@ -258,6 +242,9 @@ public:
   /// @param address DCC address of loco to retrieve
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco *getByAddress(int address);
+
+  /// @brief Destructor for the Consist
+  ~Consist();
 
 private:
   char *_name;

@@ -34,9 +34,7 @@
 
 Loco *Loco::_first = nullptr;
 
-Loco::Loco(int address, LocoSource source) {
-  _address = address;
-  _source = source;
+Loco::Loco(int address, LocoSource source) : _address(address), _source(source) {
   for (int i = 0; i < MAX_FUNCTIONS; i++) {
     _functionNames[i] = nullptr;
   }
@@ -61,9 +59,11 @@ int Loco::getAddress() { return _address; }
 
 void Loco::setName(char *name) {
   if (_name) {
-    free(_name);
+    delete[] _name;
+    _name = nullptr;
   }
-  _name = (char *)malloc(strlen(name) + 1);
+  int nameLength = strlen(name);
+  _name = new char[nameLength + 1];
   strcpy(_name, name);
 }
 
@@ -158,7 +158,7 @@ void Loco::setFirst(Loco *firstLoco) { _first = firstLoco; }
 
 Loco::~Loco() {
   if (_name) {
-    free(_name);
+    delete[] _name;
     _name = nullptr;
   }
 
@@ -185,11 +185,7 @@ Loco::~Loco() {
 // class ConsistLoco
 // Public methods
 
-ConsistLoco::ConsistLoco(Loco *loco, Facing facing) {
-  _loco = loco;
-  _facing = facing;
-  _next = nullptr;
-}
+ConsistLoco::ConsistLoco(Loco *loco, Facing facing) : _loco(loco), _facing(facing), _next(nullptr) {}
 
 Loco *ConsistLoco::getLoco() { return _loco; }
 
@@ -201,16 +197,31 @@ ConsistLoco *ConsistLoco::getNext() { return _next; }
 
 void ConsistLoco::setNext(ConsistLoco *consistLoco) { _next = consistLoco; }
 
+ConsistLoco::~ConsistLoco() {
+  if (_loco && _loco->getSource() == LocoSource::LocoSourceEntry) {
+    delete _loco;
+    _loco = nullptr;
+  }
+  _next = nullptr;
+}
+
 // class Consist
 // Public methods
 
-Consist::Consist() {
-  _name = nullptr;
-  _locoCount = 0;
-  _first = nullptr;
-}
+Consist::Consist() : _name(nullptr), _locoCount(0), _first(nullptr) {}
 
-void Consist::setName(char *name) { _name = name; }
+void Consist::setName(char *name) {
+  if (name == nullptr) {
+    return;
+  }
+
+  if (_name) {
+    delete[] _name;
+  }
+  int nameLength = strlen(name);
+  _name = new char[nameLength + 1];
+  strcpy(_name, name);
+}
 
 char *Consist::getName() { return _name; }
 
@@ -218,8 +229,10 @@ void Consist::addLoco(Loco *loco, Facing facing) {
   if (inConsist(loco))
     return; // Already in the consist
   if (_locoCount == 0) {
-    facing = FacingForward;  // Force forward facing for the first loco added
-    _name = loco->getName(); // Set consist name to the first loco name
+    facing = FacingForward; // Force forward facing for the first loco added
+    if (_name == nullptr) {
+      setName(loco->getName()); // Set consist name to the first loco name if no consist name
+    }
   }
   ConsistLoco *conLoco = new ConsistLoco(loco, facing);
   _addLocoToConsist(conLoco);
@@ -230,9 +243,13 @@ void Consist::addLoco(int address, Facing facing) {
     return;
   if (_locoCount == 0) {
     facing = FacingForward;
-    char temp[6];
-    snprintf(temp, 6, "%d", address);
-    _name = temp;
+    if (_name == nullptr) { // If no consist name, set to address of first loco
+      int digits = (address == 0) ? 1 : log10(address) + 1;
+      char *temp = new char[digits + 1];
+      snprintf(temp, digits + 1, "%d", address);
+      setName(temp);
+      delete[] temp;
+    }
   }
   Loco *loco = new Loco(address, LocoSourceEntry);
   ConsistLoco *conLoco = new ConsistLoco(loco, facing);
@@ -331,6 +348,27 @@ ConsistLoco *Consist::getByAddress(int address) {
     }
   }
   return nullptr;
+}
+
+Consist::~Consist() {
+  // Clean up the name
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+
+  // Clean up the linked list
+  ConsistLoco *currentCL = _first;
+  while (currentCL != nullptr) {
+    // Store the next CL
+    ConsistLoco *nextCL = currentCL->getNext();
+    // Delete the current CL
+    delete currentCL;
+    // Move to the next CL
+    currentCL = nextCL;
+  }
+  // Set _first to nullptr after cleanup
+  _first = nullptr;
 }
 
 // Private methods
