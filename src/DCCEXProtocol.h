@@ -34,6 +34,9 @@
 /*
 Version information:
 
+1.0.0   - No functional changes, first Production release
+        - Various memory leak bugfixes
+        - More testing
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true
         - Add enableHeartbeat(heartbeatDelay) to send a heartbeat every x ms if a command is not sent

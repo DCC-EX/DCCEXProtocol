@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2024 Peter Cole
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -130,6 +131,9 @@ public:
   /// @return Loco object or nullptr if it doesn't exist
   static Loco *getByAddress(int address);
 
+  /// @brief Destructor for the Loco object
+  ~Loco();
+
 private:
   int _address;
   char *_name;
@@ -172,6 +176,9 @@ public:
   /// @brief Set the next consist loco object
   /// @param consistLoco Pointer to the ConsistLoco object
   void setNext(ConsistLoco *consistLoco);
+
+  /// @brief Destructor for a ConsistLoco
+  ~ConsistLoco();
 
 private:
   Loco *_loco;
@@ -247,6 +254,9 @@ public:
   /// @param address DCC address of loco to retrieve
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco *getByAddress(int address);
+
+  /// @brief Destructor for a Consist
+  ~Consist();
 
 private:
   char *_name;

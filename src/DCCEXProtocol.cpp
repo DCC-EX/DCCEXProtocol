@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2024 Peter Cole
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -69,7 +70,7 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
 
 DCCEXProtocol::~DCCEXProtocol() {
   // Free memory for command buffer
-  delete[](_cmdBuffer);
+  delete[] (_cmdBuffer);
 
   // Cleanup command parser
   DCCEXInbound::cleanup();
@@ -854,6 +855,9 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
     // console->println(getRosterCount());
     _delegate->receivedRosterList();
   }
+
+  free(name);
+  free(funcs);
   // console->println(F("processRosterEntry(): end"));
 }
 
