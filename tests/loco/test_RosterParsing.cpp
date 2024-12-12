@@ -26,9 +26,9 @@
  *
  */
 
-#include "../setup/DCCEXProtocolTests.h"
+#include "../setup/LocoTests.h"
 
-TEST_F(DCCEXProtocolTests, getEmptyRoster) {
+TEST_F(LocoTests, parseEmptyRoster) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());
   _dccexProtocol.getLists(true, false, false, false);
   EXPECT_EQ(_stream, "<JR>\r\n");
@@ -42,7 +42,7 @@ TEST_F(DCCEXProtocolTests, getEmptyRoster) {
   EXPECT_TRUE(_dccexProtocol.receivedRoster());
 }
 
-TEST_F(DCCEXProtocolTests, getRosterWithThreeIDs) {
+TEST_F(LocoTests, parseRosterWithThreeIDs) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());
   _dccexProtocol.getLists(true, false, false, false);
   EXPECT_EQ(_stream, "<JR>\r\n");

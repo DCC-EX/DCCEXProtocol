@@ -31,9 +31,6 @@
 #include "TestHarnessBase.hpp"
 
 /// @brief Test harness for Loco and associated classes
-class LocoTests : public TestHarnessBase {
-protected:
-  void TearDown() override;
-};
+class LocoTests : public TestHarnessBase {};
 
 #endif // LOCOTESTS_H

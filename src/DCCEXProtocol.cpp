@@ -327,7 +327,9 @@ void DCCEXProtocol::clearRoster() {
 
 void DCCEXProtocol::refreshRoster() {
   clearRoster();
+  _receivedLists = false;
   _receivedRoster = false;
+  _rosterRequested = false;
 }
 
 // Turnout methods
