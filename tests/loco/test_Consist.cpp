@@ -157,4 +157,5 @@ TEST_F(LocoTests, createConsistByLoco) {
 //   delete loco10;
 //   delete loco2;
 //   delete loco10000;
+//   delete consist;
 // }

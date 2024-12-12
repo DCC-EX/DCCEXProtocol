@@ -36,6 +36,7 @@ void TestHarnessBase::SetUp() {
   _dccexProtocol.setDelegate(&_delegate);
   _dccexProtocol.setLogStream(&_console);
   _dccexProtocol.connect(&_stream);
+  _dccexProtocol.clearRoster();
 }
 
 void TestHarnessBase::TearDown() {}

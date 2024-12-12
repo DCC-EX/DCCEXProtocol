@@ -104,6 +104,9 @@ TEST_F(LocoTests, createRoster) {
   EXPECT_EQ(thirdLoco->getSource(), LocoSource::LocoSourceRoster);
 
   // Verify end of linked list and fail fatally if next is not nullptr
-  ASSERT_EQ(thirdLoco->getNext(), nullptr)
+  EXPECT_EQ(thirdLoco->getNext(), nullptr)
       << "Unexpected fourth Loco at address: " << thirdLoco->getNext()->getAddress();
+
+  // Clean up roster
+  _dccexProtocol.clearRoster();
 }

@@ -319,6 +319,17 @@ Loco *DCCEXProtocol::findLocoInRoster(int address) {
   return nullptr;
 }
 
+void DCCEXProtocol::clearRoster() {
+  Loco::clearRoster();
+  roster = nullptr;
+  _rosterCount = 0;
+}
+
+void DCCEXProtocol::refreshRoster() {
+  clearRoster();
+  _receivedRoster = false;
+}
+
 // Turnout methods
 
 int DCCEXProtocol::getTurnoutCount() { return _turnoutCount; }

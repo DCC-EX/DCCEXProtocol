@@ -135,6 +135,9 @@ public:
   /// @return Loco object or nullptr if it doesn't exist
   static Loco *getByAddress(int address);
 
+  /// @brief Clear all Locos from the roster
+  static void clearRoster();
+
   /// @brief Destructor for the Loco object
   ~Loco();
 

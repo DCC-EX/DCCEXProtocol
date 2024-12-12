@@ -341,6 +341,12 @@ public:
   /// @return Pointer to the Loco object
   Loco *findLocoInRoster(int address);
 
+  /// @brief Clear the roster
+  void clearRoster();
+
+  /// @brief Clear the roster and request again
+  void refreshRoster();
+
   // Turnout methods
 
   /// @brief Get the number of turnouts
