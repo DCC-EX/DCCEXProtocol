@@ -223,11 +223,11 @@ public:
   /// @param facing Direction the loco is facing (FacingForward|FacingReversed)
   void addLoco(int address, Facing facing);
 
-  /// @brief Remove a loco from the consist
+  /// @brief Remove a loco from the consist - Loco objects with LocoSourceEntry will also be deleted
   /// @param loco Pointer to a loco object to remove
   void removeLoco(Loco *loco);
 
-  /// @brief Remove all locos from a consist
+  /// @brief Remove all locos from a consist - Loco objects with LocoSourceEntry will also be deleted
   void removeAllLocos();
 
   /// @brief Update the direction of a loco in the consist
