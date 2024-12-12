@@ -1,4 +1,4 @@
-name: tests
+name: Run GoogleTest
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main, devel]
 
 jobs:
-  x86_64-linux-gnu-gcc:
+  build_run_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
