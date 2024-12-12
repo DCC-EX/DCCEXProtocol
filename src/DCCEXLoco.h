@@ -122,6 +122,10 @@ public:
   /// @return Pointer to the first Loco object
   static Loco *getFirst();
 
+  /// @brief Set the next loco in the roster list
+  /// @param loco Pointer to the next Loco object
+  void setNext(Loco *loco);
+
   /// @brief Get next Loco object
   /// @return Pointer to the next Loco object
   Loco *getNext();
@@ -145,6 +149,10 @@ private:
   int32_t _momentaryFlags;
   static Loco *_first;
   Loco *_next;
+
+  /// @brief Method to remove this loco from the roster list
+  /// @param loco Pointer to the Loco to remove
+  static void _removeFromList(Loco *loco);
 
   friend class Consist;
 };

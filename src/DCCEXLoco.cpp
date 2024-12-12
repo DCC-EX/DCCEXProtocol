@@ -45,14 +45,16 @@ Loco::Loco(int address, LocoSource source) : _address(address), _source(source) 
   _functionStates = 0;
   _momentaryFlags = 0;
   _next = nullptr;
-  if (!_first) {
-    _first = this;
-  } else {
-    Loco *current = _first;
-    while (current->_next != nullptr) {
-      current = current->_next;
+  if (_source == LocoSource::LocoSourceRoster) {
+    if (!_first) {
+      _first = this;
+    } else {
+      Loco *current = _first;
+      while (current->_next != nullptr) {
+        current = current->_next;
+      }
+      current->_next = this;
     }
-    current->_next = this;
   }
 }
 
@@ -152,6 +154,8 @@ bool Loco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << fun
 
 Loco *Loco::getFirst() { return _first; }
 
+void Loco::setNext(Loco *loco) { _next = loco; }
+
 Loco *Loco::getNext() { return _next; }
 
 Loco *Loco::getByAddress(int address) {
@@ -164,6 +168,8 @@ Loco *Loco::getByAddress(int address) {
 }
 
 Loco::~Loco() {
+  _removeFromList(this);
+
   if (_name) {
     delete[] _name;
     _name = nullptr;
@@ -176,18 +182,27 @@ Loco::~Loco() {
     }
   }
 
-  if (Loco::getFirst() == this) {
-    _first = _next;
+  _next = nullptr;
+}
+
+// Private methods
+
+void Loco::_removeFromList(Loco *loco) {
+  if (!loco) {
+    return;
+  }
+
+  if (getFirst() == loco) {
+    _first = loco->getNext();
   } else {
     Loco *currentLoco = _first;
-    while (currentLoco && currentLoco->_next != this) {
-      currentLoco = currentLoco->_next;
+    while (currentLoco && currentLoco->getNext() != loco) {
+      currentLoco = currentLoco->getNext();
     }
     if (currentLoco) {
-      currentLoco->_next = _next;
+      currentLoco->setNext(loco->getNext());
     }
   }
-  _next = nullptr;
 }
 
 // class ConsistLoco
@@ -227,12 +242,18 @@ Consist::Consist() {
 }
 
 void Consist::setName(char *name) {
+  if (name == nullptr) {
+    return;
+  }
   if (_name) {
     delete[] _name;
     _name = nullptr;
   }
   int nameLength = strlen(name);
   _name = new char[nameLength + 1];
+  if (_name == nullptr) {
+    return;
+  }
   strcpy(_name, name);
 }
 
@@ -277,15 +298,17 @@ void Consist::removeLoco(Loco *loco) {
     // If the currentCL is our loco to remove, process it
     if (currentCL->getLoco() == loco) {
       // If there is a previous, set its next to the current's next to skip currentCL
+      ConsistLoco *nextCL = currentCL->getNext();
       if (previousCL) {
-        previousCL->setNext(currentCL->getNext());
+        previousCL->setNext(nextCL);
         // Otherwise the first is now the next
       } else {
-        _first = currentCL->getNext();
+        _first = nextCL;
       }
       // Delete the currentCL and decrement the count of locos
       delete currentCL;
       _locoCount--;
+      currentCL = nextCL;
       // Otherwise move to the next one in the list
     } else {
       previousCL = currentCL;

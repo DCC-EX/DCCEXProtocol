@@ -29,7 +29,7 @@
 #include "../setup/LocoTests.h"
 
 /// @brief Create a single Loco using the legacy constructor
-TEST_F(LocoTests, createLoco) {
+TEST_F(LocoTests, createSingleLoco) {
   // Create an individual loco
   Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
   loco1->setName("Loco 1");
@@ -54,12 +54,17 @@ TEST_F(LocoTests, createLoco) {
   EXPECT_EQ(loco1->getSpeed(), 13);
   EXPECT_EQ(loco1->getDirection(), Direction::Reverse);
 
-  // Make sure this is the first loco and we can retrieve it via address
-  EXPECT_EQ(Loco::getFirst(), loco1);
-  EXPECT_EQ(Loco::getByAddress(1), loco1);
+  // Make sure this is not in the roster
+  EXPECT_EQ(Loco::getFirst(), nullptr);
+
+  // Make sure we can't find it by address either
+  EXPECT_EQ(Loco::getByAddress(1), nullptr);
 
   // Ensure next is nullptr as this is the only loco
-  ASSERT_EQ(loco1->getNext(), nullptr);
+  EXPECT_EQ(loco1->getNext(), nullptr);
+
+  // Clean up
+  delete loco1;
 }
 
 /// @brief Create a roster of Locos using the legacy constructor
