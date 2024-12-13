@@ -373,6 +373,19 @@ void DCCEXProtocol::toggleTurnout(int turnoutId) {
   }
 }
 
+void DCCEXProtocol::clearTurnoutList() {
+  Turnout::clearTurnoutList();
+  turnouts = nullptr;
+  _turnoutCount = 0;
+}
+
+void DCCEXProtocol::refreshTurnoutList() {
+  clearTurnoutList();
+  _receivedLists = false;
+  _receivedTurnoutList = false;
+  _turnoutListRequested = false;
+}
+
 // Route methods
 
 int DCCEXProtocol::getRouteCount() { return _routeCount; }
@@ -936,6 +949,8 @@ void DCCEXProtocol::_processTurnoutEntry() {
       _requestTurnoutEntry(t->getNext()->getId());
     }
   }
+
+  free(name);
 
   if (!missingTurnouts) {
     _receivedTurnoutList = true;

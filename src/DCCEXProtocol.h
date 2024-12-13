@@ -34,9 +34,11 @@
 /*
 Version information:
 
-1.0.0   - No functional changes, first Production release
+1.0.0   - First Production release
+        - Add methods to clear and refresh the various lists
         - Various memory leak bugfixes
         - Fix bug where any Loco created was added to the roster, despite LocoSourceEntry being set
+        - Fix bug where Turnout::getById() was not a static method, causing runtime errors
         - Implemented many new tests
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true
@@ -373,6 +375,12 @@ public:
   /// @brief Toggle the specified turnout/point (if closed, will throw, and vice versa)
   /// @param turnoutId ID of the turnout/point
   void toggleTurnout(int turnoutId);
+
+  /// @brief Clear the list of turnouts
+  void clearTurnoutList();
+
+  /// @brief Clear the list of turnouts and request again
+  void refreshTurnoutList();
 
   // Route methods
 
