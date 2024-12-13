@@ -434,7 +434,7 @@ void DCCEXProtocol::resumeRoutes() {
 }
 
 void DCCEXProtocol::clearRouteList() {
-  // Route::clearRouteList();
+  Route::clearRouteList();
   routes = nullptr;
   _routeCount = 0;
 }
@@ -1075,6 +1075,8 @@ void DCCEXProtocol::_processRouteEntry() {
       _requestRouteEntry(r->getNext()->getId());
     }
   }
+
+  free(name);
 
   if (!missingRoutes) {
     _receivedRouteList = true;

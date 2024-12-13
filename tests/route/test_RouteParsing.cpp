@@ -65,7 +65,7 @@ TEST_F(RouteTests, parseThreeRoutes) {
   _dccexProtocol.check();
 
   // Third route response - Route with no description
-  _stream << R"(jA 221 R "">)";
+  _stream << R"(<jA 221 R "">)";
   // Delegate should call one here
   EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
   _dccexProtocol.check();

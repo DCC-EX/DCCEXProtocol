@@ -67,6 +67,10 @@ public:
   /// @return Pointer to the first Route object
   static Route *getFirst();
 
+  /// @brief Set the next route in the list
+  /// @param route Pointer to the next route
+  void setNext(Route *route);
+
   /// @brief Get next Route object
   /// @return Pointer to the next Route object
   Route *getNext();
@@ -75,12 +79,22 @@ public:
   /// @return Pointer to the Route, or nullptr if not found
   static Route *getById(int id);
 
+  /// @brief Clear the list of routes
+  static void clearRouteList();
+
+  /// @brief Destructor for a route
+  ~Route();
+
 private:
   int _id;
   char *_name;
   char _type;
   static Route *_first;
   Route *_next;
+
+  /// @brief Remove the route from the list
+  /// @param route Pointer to the route to remove
+  void _removeFromList(Route *route);
 };
 
 #endif
