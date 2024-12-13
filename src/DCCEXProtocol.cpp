@@ -192,6 +192,20 @@ int DCCEXProtocol::getPatchVersion() { return _version[2]; }
 
 unsigned long DCCEXProtocol::getLastServerResponseTime() { return _lastServerResponseTime; }
 
+void DCCEXProtocol::clearAllLists() {
+  clearRoster();
+  clearTurnoutList();
+  clearTurntableList();
+  clearRouteList();
+}
+
+void DCCEXProtocol::refreshAllLists() {
+  refreshRoster();
+  refreshTurnoutList();
+  refreshTurntableList();
+  refreshRouteList();
+}
+
 // Consist/loco methods
 
 void DCCEXProtocol::setThrottle(Loco *loco, int speed, Direction direction) {
@@ -419,6 +433,19 @@ void DCCEXProtocol::resumeRoutes() {
   // console->println(F("sendResumeRoutes() end"));
 }
 
+void DCCEXProtocol::clearRouteList() {
+  // Route::clearRouteList();
+  routes = nullptr;
+  _routeCount = 0;
+}
+
+void DCCEXProtocol::refreshRouteList() {
+  clearRouteList();
+  _receivedLists = false;
+  _receivedRouteList = false;
+  _routeListRequested = false;
+}
+
 // Turntable methods
 
 int DCCEXProtocol::getTurntableCount() { return _turntableCount; }
@@ -451,6 +478,19 @@ void DCCEXProtocol::rotateTurntable(int turntableId, int position, int activity)
     _sendCommand();
   }
   // console->println(F("sendTurntable() end"));
+}
+
+void DCCEXProtocol::clearTurntableList() {
+  // Turntable::clearTurntableList();
+  turntables = nullptr;
+  _turntableCount = 0;
+}
+
+void DCCEXProtocol::refreshTurntableList() {
+  clearTurntableList();
+  _receivedLists = false;
+  _receivedTurntableList = false;
+  _turntableListRequested = false;
 }
 
 // Track management methods

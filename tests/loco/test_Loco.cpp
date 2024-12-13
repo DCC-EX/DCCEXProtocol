@@ -107,6 +107,6 @@ TEST_F(LocoTests, createRoster) {
   EXPECT_EQ(thirdLoco->getNext(), nullptr)
       << "Unexpected fourth Loco at address: " << thirdLoco->getNext()->getAddress();
 
-  // Clean up roster
-  _dccexProtocol.clearRoster();
+  // // Clean up roster
+  // _dccexProtocol.clearRoster();
 }

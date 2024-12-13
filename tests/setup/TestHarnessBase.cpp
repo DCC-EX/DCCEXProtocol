@@ -39,4 +39,6 @@ void TestHarnessBase::SetUp() {
   _dccexProtocol.clearRoster();
 }
 
-void TestHarnessBase::TearDown() {}
+void TestHarnessBase::TearDown() {
+  _dccexProtocol.clearAllLists();
+}

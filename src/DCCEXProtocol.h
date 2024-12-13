@@ -272,6 +272,12 @@ public:
   /// @return Last response time in milliseconds (from millis())
   unsigned long getLastServerResponseTime(); // seconds since Arduino start
 
+  /// @brief Clear roster, turnout, turntable, and route lists
+  void clearAllLists();
+
+  /// @brief Clear roster, turnout, turntable, and route lists and request new ones
+  void refreshAllLists();
+
   // Consist/Loco methods
 
   /// @brief Set the provided loco to the specified speed and direction
@@ -402,6 +408,12 @@ public:
   /// @brief Resume all routes/automations
   void resumeRoutes();
 
+  /// @brief Clear all routes
+  void clearRouteList();
+
+  /// @brief Clear all routes and request a new list
+  void refreshRouteList();
+
   // Turntable methods
 
   /// @brief Get the number of turntable entries
@@ -422,6 +434,12 @@ public:
   /// @param position Position index to rotate to
   /// @param activity Optional activity for EX-Turntable objects only
   void rotateTurntable(int turntableId, int position, int activity = 0);
+
+  /// @brief Clear all turntables
+  void clearTurntableList();
+
+  /// @brief Clear all turntables and request a new list
+  void refreshTurntableList();
 
   // Track management methods
 
