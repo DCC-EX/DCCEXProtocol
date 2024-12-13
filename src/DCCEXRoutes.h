@@ -63,10 +63,6 @@ public:
   /// @return RouteTypeAutomation|RouteTypeRoute
   RouteType getType();
 
-  /// @brief Get count of routes
-  /// @return Count of routes
-  int getCount();
-
   /// @brief Get first Route object
   /// @return Pointer to the first Route object
   static Route *getFirst();
@@ -77,7 +73,7 @@ public:
 
   /// @brief Get route object by its ID
   /// @return Pointer to the Route, or nullptr if not found
-  Route *getById(int id);
+  static Route *getById(int id);
 
 private:
   int _id;
@@ -85,7 +81,6 @@ private:
   char _type;
   static Route *_first;
   Route *_next;
-  int _count = 0;
 };
 
 #endif

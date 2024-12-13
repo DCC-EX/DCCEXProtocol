@@ -1066,7 +1066,7 @@ void DCCEXProtocol::_processRouteEntry() {
   char *name = DCCEXInbound::copyTextParameter(3);
   bool missingRoutes = false;
 
-  Route *r = routes->getById(id);
+  Route *r = Route::getById(id);
   if (r) {
     r->setType(type);
     r->setName(name);

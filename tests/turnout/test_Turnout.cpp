@@ -39,9 +39,6 @@ TEST_F(TurnoutTests, createSingleTurnout) {
 
   // Validate it's in the list by ID
   EXPECT_EQ(_dccexProtocol.turnouts->getById(100), turnout100);
-
-  // Clean up
-  _dccexProtocol.clearTurnoutList();
 }
 
 TEST_F(TurnoutTests, createTurnoutList) {
@@ -72,9 +69,6 @@ TEST_F(TurnoutTests, createTurnoutList) {
   EXPECT_EQ(turnout102->getId(), 102);
   EXPECT_STREQ(turnout102->getName(), "");
   EXPECT_FALSE(turnout102->getThrown());
-
-  // // Clean up
-  // _dccexProtocol.clearTurnoutList();
 }
 
 TEST_F(TurnoutTests, operateTurnout) {
@@ -93,7 +87,4 @@ TEST_F(TurnoutTests, operateTurnout) {
   // Close it and validate
   turnout100->setThrown(false);
   EXPECT_FALSE(turnout100->getThrown());
-
-  // // Clean up
-  // _dccexProtocol.clearTurnoutList();
 }
