@@ -481,7 +481,7 @@ void DCCEXProtocol::rotateTurntable(int turntableId, int position, int activity)
 }
 
 void DCCEXProtocol::clearTurntableList() {
-  // Turntable::clearTurntableList();
+  Turntable::clearTurntableList();
   turntables = nullptr;
   _turntableCount = 0;
 }
@@ -980,7 +980,7 @@ void DCCEXProtocol::_processTurnoutEntry() {
   char *name = DCCEXInbound::copyTextParameter(3);
   bool missingTurnouts = false;
 
-  Turnout *t = turnouts->getById(id);
+  Turnout *t = Turnout::getById(id);
   if (t) {
     t->setName(name);
     t->setThrown(thrown);
@@ -1137,7 +1137,7 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
   int indexCount = DCCEXInbound::getNumber(4);
   char *name = DCCEXInbound::copyTextParameter(5);
 
-  Turntable *tt = turntables->getById(id);
+  Turntable *tt = Turntable::getById(id);
   if (tt) {
     tt->setType(ttType);
     tt->setIndex(index);
@@ -1148,6 +1148,8 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
       _requestTurntableEntry(tt->getNext()->getId());
     }
   }
+
+  free(name);
   // console->println(F("processTurntableEntry(): end"));
 }
 
@@ -1192,6 +1194,8 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
       if (tt->getName() == nullptr || (numIndexes != indexCount))
         receivedAll = false;
     }
+
+    free(name);
 
     if (receivedAll) {
       _receivedTurntableList = true;

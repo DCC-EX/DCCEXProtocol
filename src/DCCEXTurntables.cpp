@@ -31,13 +31,13 @@
 
 // class TurntableIndex
 
-TurntableIndex *TurntableIndex::_first = nullptr;
-
 TurntableIndex::TurntableIndex(int ttId, int id, int angle, char *name) {
   _ttId = ttId;
   _id = id;
   _angle = angle;
-  _name = name;
+  int nameLength = strlen(name);
+  _name = new char[nameLength + 1];
+  strcpy(_name, name);
   _nextIndex = nullptr;
 }
 
@@ -50,6 +50,14 @@ int TurntableIndex::getAngle() { return _angle; }
 char *TurntableIndex::getName() { return _name; }
 
 TurntableIndex *TurntableIndex::getNextIndex() { return _nextIndex; }
+
+TurntableIndex::~TurntableIndex() {
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+  _nextIndex = nullptr;
+}
 
 // class Turntable
 
@@ -74,7 +82,6 @@ Turntable::Turntable(int id) {
     }
     current->_next = this;
   }
-  _count++;
 }
 
 int Turntable::getId() { return _id; }
@@ -91,7 +98,15 @@ void Turntable::setNumberOfIndexes(int numberOfIndexes) { _numberOfIndexes = num
 
 int Turntable::getNumberOfIndexes() { return _numberOfIndexes; }
 
-void Turntable::setName(char *name) { _name = name; }
+void Turntable::setName(char *name) {
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+  int nameLength = strlen(name);
+  _name = new char[nameLength + 1];
+  strcpy(_name, name);
+}
 
 char *Turntable::getName() { return _name; }
 
@@ -99,11 +114,11 @@ void Turntable::setMoving(bool moving) { _isMoving = moving; }
 
 bool Turntable::isMoving() { return _isMoving; }
 
-int Turntable::getCount() { return _count; }
-
 int Turntable::getIndexCount() { return _indexCount; }
 
 Turntable *Turntable::getFirst() { return _first; }
+
+void Turntable::setNext(Turntable *turntable) { _next = turntable; }
 
 Turntable *Turntable::getNext() { return _next; }
 
@@ -123,7 +138,7 @@ void Turntable::addIndex(TurntableIndex *index) {
 TurntableIndex *Turntable::getFirstIndex() { return _firstIndex; }
 
 Turntable *Turntable::getById(int id) {
-  for (Turntable *tt = getFirst(); tt; tt = tt->getNext()) {
+  for (Turntable *tt = Turntable::getFirst(); tt; tt = tt->getNext()) {
     if (tt->getId() == id) {
       return tt;
     }
@@ -138,4 +153,77 @@ TurntableIndex *Turntable::getIndexById(int id) {
     }
   }
   return nullptr;
+}
+
+void Turntable::clearTurntableList() {
+  // Count Turntables in list
+  int turntableCount = 0;
+  Turntable *currentTurntable = Turntable::getFirst();
+  while (currentTurntable != nullptr) {
+    turntableCount++;
+    currentTurntable = currentTurntable->getNext();
+  }
+
+  // Store Turntable pointers in an array for clean up
+  Turntable **deleteTurntables = new Turntable *[turntableCount];
+  currentTurntable = Turntable::getFirst();
+  for (int i = 0; i < turntableCount; i++) {
+    deleteTurntables[i] = currentTurntable;
+    currentTurntable = currentTurntable->getNext();
+  }
+
+  // Delete each Turntable
+  for (int i = 0; i < turntableCount; i++) {
+    delete deleteTurntables[i];
+  }
+
+  // Clean up the array of pointers
+  delete[] deleteTurntables;
+
+  // Reset first pointer
+  Turntable::_first = nullptr;
+}
+
+Turntable::~Turntable() {
+  _removeFromList(this);
+
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+
+  if (_firstIndex) {
+    // Clean up index list
+    TurntableIndex *currentIndex = _firstIndex;
+    while (currentIndex != nullptr) {
+      // Capture next index
+      TurntableIndex *nextIndex = currentIndex->getNextIndex();
+      // Delete current index
+      delete currentIndex;
+      // Move to the next
+      currentIndex = nextIndex;
+    }
+    // Set first to nullptr
+    _firstIndex = nullptr;
+  }
+
+  _next = nullptr;
+}
+
+void Turntable::_removeFromList(Turntable *turntable) {
+  if (!turntable) {
+    return;
+  }
+
+  if (getFirst() == turntable) {
+    _first = turntable->getNext();
+  } else {
+    Turntable *currentTurntable = _first;
+    while (currentTurntable && currentTurntable->getNext() != turntable) {
+      currentTurntable = currentTurntable->getNext();
+    }
+    if (currentTurntable) {
+      currentTurntable->setNext(turntable->getNext());
+    }
+  }
 }

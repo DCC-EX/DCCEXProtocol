@@ -41,3 +41,56 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Should be true given turntable list is empty
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
 }
+
+TEST_F(TurntableTests, parseTwoTurntables) {
+  // Received flag should be false to start
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  _dccexProtocol.getLists(false, false, false, true);
+  EXPECT_EQ(_stream, "<JO>\r\n");
+  _stream = {};
+
+  // Two turntables in response
+  _stream << "<jO 1 2>";
+  _dccexProtocol.check();
+
+  // Received should still be false while waiting for details
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+
+  // First turntable response - EX-Turntable at ID 1 with 5 indexes, currently at home position
+  _stream << R"(<jO 1 1 0 5 "EX-Turntable">)";
+
+  // Second turntable response - DCC Turntable at ID 1 with 6 indexes, currently at position 3
+  _stream << R"(<jO 2 0 3 6 "DCC Turntable">)";
+
+  // ID 1 Position responses
+  _stream << R"(<jP 1 0 900 "Home">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 1 1 450 "Position 1">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 1 2 1800 "Position 2">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 1 3 2700 "Position 3">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 1 4 3000 "Position 4">)";
+  _dccexProtocol.check();
+
+  // ID 2 Position responses
+  _stream << R"(<jP 2 0 0 "Home">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 2 1 450 "Position 1">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 2 2 1800 "Position 2">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 2 3 2700 "Position 3">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 2 4 3000 "Position 4">)";
+  _dccexProtocol.check();
+  _stream << R"(<jP 2 5 3300 "Position 5">)";
+  
+  // Delegate should call back once here
+  EXPECT_CALL(_delegate, receivedTurntableList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Now the flag should be true
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+}

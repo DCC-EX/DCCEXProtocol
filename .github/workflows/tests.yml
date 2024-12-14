@@ -15,4 +15,4 @@ jobs:
           fetch-depth: 0
       - run: cmake -Bbuild
       - run: cmake --build build --parallel --target DCCEXProtocolTests
-      - run: ./build/tests/DCCEXProtocolTests --gtest_shuffle --gtest_repeat=3 --gtest_recreate_environments_when_repeating
+      - run: ./build/tests/DCCEXProtocolTests --gtest_shuffle --gtest_repeat=5 --gtest_recreate_environments_when_repeating

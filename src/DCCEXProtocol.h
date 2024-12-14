@@ -38,7 +38,9 @@ Version information:
         - Add methods to clear and refresh the various lists
         - Various memory leak bugfixes
         - Fix bug where any Loco created was added to the roster, despite LocoSourceEntry being set
-        - Fix bug where Turnout::getById() was not a static method, causing runtime errors
+        - Fix bug where getById() for Turnout, Route, and Turntable was not a static method, causing runtime errors
+        - Removed redundant count on Turnout, Route, and Turntable as these are available from getRosterCount,
+                getTurnoutCount, getRouteCount, getTurntableCount
         - Implemented many new tests
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true
