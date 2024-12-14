@@ -41,6 +41,7 @@ Version information:
         - Fix bug where getById() for Turnout, Route, and Turntable was not a static method, causing runtime errors
         - Removed redundant count on Turnout, Route, and Turntable as these are available from getRosterCount,
                 getTurnoutCount, getRouteCount, getTurntableCount
+        - Updated all public methods setting and getting names from char * to const char * to remove compiler warnings
         - Implemented many new tests
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true

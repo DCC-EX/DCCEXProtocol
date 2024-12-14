@@ -49,11 +49,11 @@ public:
 
   /// @brief Set route name
   /// @param name Name to set for the route
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief Get route name
   /// @return Current name of the route
-  char *getName();
+  const char *getName();
 
   /// @brief Set route type (A automation, R route)
   /// @param type RouteType - RouteTypeAutomation|RouteTypeRoute

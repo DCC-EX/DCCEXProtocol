@@ -45,7 +45,7 @@ public:
   /// @param id ID of the index
   /// @param angle Angle from home for this index (0 - 3600)
   /// @param name Name of the index
-  TurntableIndex(int ttId, int id, int angle, char *name);
+  TurntableIndex(int ttId, int id, int angle, const char *name);
 
   /// @brief Get the turntable ID
   /// @return ID of the turntable this index is associated with
@@ -61,7 +61,7 @@ public:
 
   /// @brief Get index name
   /// @return Current name of the index
-  char *getName();
+  const char *getName();
 
   /// @brief Get next TurntableIndex object
   /// @return Pointer to the next TurntableIndex object
@@ -117,11 +117,11 @@ public:
 
   /// @brief Set the turntable name
   /// @param name Name to set for the turntable
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief  Get the turntable name
   /// @return Current name of the turntable
-  char *getName();
+  const char *getName();
 
   /// @brief Set the movement state (false stationary, true moving)
   /// @param moving true|false
