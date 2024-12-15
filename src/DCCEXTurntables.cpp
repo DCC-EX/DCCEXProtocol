@@ -35,9 +35,13 @@ TurntableIndex::TurntableIndex(int ttId, int id, int angle, const char *name) {
   _ttId = ttId;
   _id = id;
   _angle = angle;
-  int nameLength = strlen(name);
-  _name = new char[nameLength + 1];
-  strcpy(_name, name);
+  if (name) {
+    int nameLength = strlen(name);
+    _name = new char[nameLength + 1];
+    strcpy(_name, name);
+  } else {
+    _name = nullptr;
+  }
   _nextIndex = nullptr;
 }
 
