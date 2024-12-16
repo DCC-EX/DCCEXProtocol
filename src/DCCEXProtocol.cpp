@@ -139,7 +139,7 @@ void DCCEXProtocol::sendCommand(char *cmd) {
 // sequentially request and get the required lists. To avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
                              bool turntableListRequired) {
-  // console->println(F("getLists()"));
+  // Serial.println(F("getLists()"));
   if (!_receivedLists) {
     if (rosterRequired && !_rosterRequested) {
       _getRoster();
@@ -158,7 +158,7 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
                 } else {
                   if (!turntableListRequired || _receivedTurntableList) {
                     _receivedLists = true;
-                    _console->println(F("Lists Fully Received"));
+                    // Serial.println(F("Lists Fully Received"));
                   }
                 }
               }
@@ -168,18 +168,18 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
       }
     }
   }
-  // console->println(F("getLists(): end"));
+  // Serial.println(F("getLists(): end"));
 }
 
 bool DCCEXProtocol::receivedLists() { return _receivedLists; }
 
 void DCCEXProtocol::requestServerVersion() {
-  // console->println(F("requestServerVersion(): "));
+  // Serial.println(F("requestServerVersion(): "));
   if (_delegate) {
     sprintf(_outboundCommand, "<s>");
     _sendCommand();
   }
-  // console->println(F("requestServerVersion(): end"));
+  // Serial.println(F("requestServerVersion(): end"));
 }
 
 bool DCCEXProtocol::receivedVersion() { return _receivedVersion; }
