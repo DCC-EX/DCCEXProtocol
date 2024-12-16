@@ -65,11 +65,11 @@ public:
 
   /// @brief Set loco name
   /// @param name Name of the loco
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief Get loco name
   /// @return Name of the loco
-  char *getName();
+  const char *getName();
 
   /// @brief Set loco speed
   /// @param speed Valid speed (0 - 126)
@@ -93,7 +93,7 @@ public:
 
   /// @brief Setup functions for the loco
   /// @param functionNames Char array of function names
-  void setupFunctions(char *functionNames);
+  void setupFunctions(const char *functionNames);
 
   /// @brief Test if function is on
   /// @param function Number of the function to test
@@ -111,7 +111,7 @@ public:
   /// @brief Get the name/label for a function
   /// @param function Number of the function to return the name/label of
   /// @return char* representing the function name/label
-  char *getFunctionName(int function);
+  const char *getFunctionName(int function);
 
   /// @brief Get the name/label for a function
   /// @param function Number of the function to return the name/label of
@@ -207,11 +207,11 @@ public:
 
   /// @brief Set consist name
   /// @param name Name to set for the consist
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief Get consist name
   /// @return Current name of the consist
-  char *getName();
+  const char *getName();
 
   /// @brief Add a loco to the consist using a Loco object
   /// @param loco Pointer to a loco object

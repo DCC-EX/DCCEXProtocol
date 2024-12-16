@@ -41,6 +41,7 @@ Version information:
         - Fix bug where getById() for Turnout, Route, and Turntable was not a static method, causing runtime errors
         - Removed redundant count on Turnout, Route, and Turntable as these are available from getRosterCount,
                 getTurnoutCount, getRouteCount, getTurntableCount
+        - Updated all public methods setting and getting names from char * to const char * to remove compiler warnings
         - Implemented many new tests
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true
@@ -83,9 +84,7 @@ Version information:
 #include "DCCEXTurntables.h"
 #include <Arduino.h>
 
-const int MAX_OUTBOUND_COMMAND_LENGTH = 100;         // Max number of bytes for outbound commands
-const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH = 100; // Max number of bytes for <s> server details response
-const int MAX_COMMAND_PARAMS = 50;                  // Max number of params to parse via DCCEXInbound parser
+const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
 
 // Valid track power state values
 enum TrackPower {
@@ -209,7 +208,8 @@ public:
 
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
-  DCCEXProtocol(int maxCmdBuffer = 500);
+  /// @param maxCommandParams Optional - maximum number of parameters to parse via the DCCEXInbound parser (default 50)
+  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50);
 
   /// @brief Destructor for the DCCEXProtocol object
   ~DCCEXProtocol();

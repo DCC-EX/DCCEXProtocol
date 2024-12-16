@@ -60,7 +60,7 @@ Loco::Loco(int address, LocoSource source) : _address(address), _source(source) 
 
 int Loco::getAddress() { return _address; }
 
-void Loco::setName(char *name) {
+void Loco::setName(const char *name) {
   if (_name) {
     delete[] _name;
     _name = nullptr;
@@ -70,7 +70,7 @@ void Loco::setName(char *name) {
   strcpy(_name, name);
 }
 
-char *Loco::getName() { return _name; }
+const char *Loco::getName() { return _name; }
 
 void Loco::setSpeed(int speed) { _speed = speed; }
 
@@ -82,7 +82,7 @@ Direction Loco::getDirection() { return (Direction)_direction; }
 
 LocoSource Loco::getSource() { return (LocoSource)_source; }
 
-void Loco::setupFunctions(char *functionNames) {
+void Loco::setupFunctions(const char *functionNames) {
   if (functionNames == nullptr) {
     return;
   }
@@ -148,7 +148,7 @@ void Loco::setFunctionStates(int functionStates) { _functionStates = functionSta
 
 int Loco::getFunctionStates() { return _functionStates; }
 
-char *Loco::getFunctionName(int function) { return _functionNames[function]; }
+const char *Loco::getFunctionName(int function) { return _functionNames[function]; }
 
 bool Loco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << function; }
 
@@ -270,7 +270,7 @@ Consist::Consist() {
   _first = nullptr;
 }
 
-void Consist::setName(char *name) {
+void Consist::setName(const char *name) {
   if (name == nullptr) {
     return;
   }
@@ -286,7 +286,7 @@ void Consist::setName(char *name) {
   strcpy(_name, name);
 }
 
-char *Consist::getName() { return _name; }
+const char *Consist::getName() { return _name; }
 
 void Consist::addLoco(Loco *loco, Facing facing) {
   if (inConsist(loco))

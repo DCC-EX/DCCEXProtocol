@@ -49,7 +49,7 @@ Turnout::Turnout(int id, bool thrown) {
 
 void Turnout::setThrown(bool thrown) { _thrown = thrown; }
 
-void Turnout::setName(char *name) {
+void Turnout::setName(const char *name) {
   if (_name) {
     delete[] _name;
     _name = nullptr;
@@ -61,7 +61,7 @@ void Turnout::setName(char *name) {
 
 int Turnout::getId() { return _id; }
 
-char *Turnout::getName() { return _name; }
+const char *Turnout::getName() { return _name; }
 
 bool Turnout::getThrown() { return _thrown; }
 

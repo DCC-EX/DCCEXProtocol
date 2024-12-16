@@ -45,7 +45,7 @@ public:
 
   /// @brief Set turnout name
   /// @param _name Name to set the turnout
-  void setName(char *_name);
+  void setName(const char *_name);
 
   /// @brief Get turnout Id
   /// @return ID of the turnout
@@ -53,7 +53,7 @@ public:
 
   /// @brief Get turnout name
   /// @return Current name of the turnout
-  char *getName();
+  const char *getName();
 
   /// @brief Get thrown state (true thrown, false closed)
   /// @return true|false

@@ -48,7 +48,7 @@ static const int MAX_SPEED = 126;
 // Public methods
 // Protocol and server methods
 
-DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
+DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams) {
   // Init streams
   _stream = &_nullStream;
   _console = &_nullStream;
@@ -58,7 +58,7 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
   _maxCmdBuffer = maxCmdBuffer;
 
   // Setup command parser
-  DCCEXInbound::setup(MAX_COMMAND_PARAMS);
+  DCCEXInbound::setup(maxCommandParams);
   _cmdBuffer[0] = 0;
   _bufflen = 0;
 
@@ -1171,7 +1171,9 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
     int angle = DCCEXInbound::getNumber(3);
     char *name = DCCEXInbound::copyTextParameter(4);
     if (index == 0) { // Index 0 is always home, and never has a label, so set one
-      sprintf(name, "Home");
+      free(name);
+      name = (char *)malloc(5); // Length of "Home" + null terminator
+      strcpy(name, "Home");
     }
 
     Turntable *tt = getTurntableById(ttId);

@@ -50,7 +50,7 @@ Route::Route(int id) {
 
 int Route::getId() { return _id; }
 
-void Route::setName(char *name) {
+void Route::setName(const char *name) {
   if (_name) {
     delete[] _name;
     _name = nullptr;
@@ -60,7 +60,7 @@ void Route::setName(char *name) {
   strcpy(_name, name);
 }
 
-char *Route::getName() { return _name; }
+const char *Route::getName() { return _name; }
 
 void Route::setType(RouteType type) { _type = type; }
 

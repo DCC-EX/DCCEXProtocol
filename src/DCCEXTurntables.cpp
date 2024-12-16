@@ -31,13 +31,17 @@
 
 // class TurntableIndex
 
-TurntableIndex::TurntableIndex(int ttId, int id, int angle, char *name) {
+TurntableIndex::TurntableIndex(int ttId, int id, int angle, const char *name) {
   _ttId = ttId;
   _id = id;
   _angle = angle;
-  int nameLength = strlen(name);
-  _name = new char[nameLength + 1];
-  strcpy(_name, name);
+  if (name) {
+    int nameLength = strlen(name);
+    _name = new char[nameLength + 1];
+    strcpy(_name, name);
+  } else {
+    _name = nullptr;
+  }
   _nextIndex = nullptr;
 }
 
@@ -47,7 +51,7 @@ int TurntableIndex::getId() { return _id; }
 
 int TurntableIndex::getAngle() { return _angle; }
 
-char *TurntableIndex::getName() { return _name; }
+const char *TurntableIndex::getName() { return _name; }
 
 TurntableIndex *TurntableIndex::getNextIndex() { return _nextIndex; }
 
@@ -98,7 +102,7 @@ void Turntable::setNumberOfIndexes(int numberOfIndexes) { _numberOfIndexes = num
 
 int Turntable::getNumberOfIndexes() { return _numberOfIndexes; }
 
-void Turntable::setName(char *name) {
+void Turntable::setName(const char *name) {
   if (_name) {
     delete[] _name;
     _name = nullptr;
@@ -108,7 +112,7 @@ void Turntable::setName(char *name) {
   strcpy(_name, name);
 }
 
-char *Turntable::getName() { return _name; }
+const char *Turntable::getName() { return _name; }
 
 void Turntable::setMoving(bool moving) { _isMoving = moving; }
 
