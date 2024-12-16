@@ -78,9 +78,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae1f3a709bd5b21e522e71f10188f4d10"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ae1f3a709bd5b21e522e71f10188f4d10">DCCEXProtocol</a> (int maxCmdBuffer=500)</td></tr>
-<tr class="memdesc:ae1f3a709bd5b21e522e71f10188f4d10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> object.  <a href="classDCCEXProtocol.html#ae1f3a709bd5b21e522e71f10188f4d10">More...</a><br /></td></tr>
-<tr class="separator:ae1f3a709bd5b21e522e71f10188f4d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7234aeda0b721fec886b0a6402ddd903"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a7234aeda0b721fec886b0a6402ddd903">DCCEXProtocol</a> (int maxCmdBuffer=500, int maxCommandParams=50)</td></tr>
+<tr class="memdesc:a7234aeda0b721fec886b0a6402ddd903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> object.  <a href="classDCCEXProtocol.html#a7234aeda0b721fec886b0a6402ddd903">More...</a><br /></td></tr>
+<tr class="separator:a7234aeda0b721fec886b0a6402ddd903"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51422bbae9c0d2a8da6326d8183511dc"><td class="memItemLeft" align="right" valign="top"><a id="a51422bbae9c0d2a8da6326d8183511dc"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a51422bbae9c0d2a8da6326d8183511dc">~DCCEXProtocol</a> ()</td></tr>
 <tr class="memdesc:a51422bbae9c0d2a8da6326d8183511dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> object. <br /></td></tr>
@@ -133,6 +133,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a3fbbe20688623c974e2ef39c8dfd632c"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a3fbbe20688623c974e2ef39c8dfd632c">getLastServerResponseTime</a> ()</td></tr>
 <tr class="memdesc:a3fbbe20688623c974e2ef39c8dfd632c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the last time the server responded.  <a href="classDCCEXProtocol.html#a3fbbe20688623c974e2ef39c8dfd632c">More...</a><br /></td></tr>
 <tr class="separator:a3fbbe20688623c974e2ef39c8dfd632c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15ed121b8602ee450946e299820f40eb"><td class="memItemLeft" align="right" valign="top"><a id="a15ed121b8602ee450946e299820f40eb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a15ed121b8602ee450946e299820f40eb">clearAllLists</a> ()</td></tr>
+<tr class="memdesc:a15ed121b8602ee450946e299820f40eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear roster, turnout, turntable, and route lists. <br /></td></tr>
+<tr class="separator:a15ed121b8602ee450946e299820f40eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bb0fca6ed46e2d6edb026ef664b53f9"><td class="memItemLeft" align="right" valign="top"><a id="a7bb0fca6ed46e2d6edb026ef664b53f9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a7bb0fca6ed46e2d6edb026ef664b53f9">refreshAllLists</a> ()</td></tr>
+<tr class="memdesc:a7bb0fca6ed46e2d6edb026ef664b53f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear roster, turnout, turntable, and route lists and request new ones. <br /></td></tr>
+<tr class="separator:a7bb0fca6ed46e2d6edb026ef664b53f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07a92343c911df89fba072c3b4a07b4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a07a92343c911df89fba072c3b4a07b4a">setThrottle</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int speed, Direction direction)</td></tr>
 <tr class="memdesc:a07a92343c911df89fba072c3b4a07b4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the provided loco to the specified speed and direction.  <a href="classDCCEXProtocol.html#a07a92343c911df89fba072c3b4a07b4a">More...</a><br /></td></tr>
 <tr class="separator:a07a92343c911df89fba072c3b4a07b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,6 +185,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:af26494b97fbc03711d04165407ad0708"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoco.html">Loco</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#af26494b97fbc03711d04165407ad0708">findLocoInRoster</a> (int address)</td></tr>
 <tr class="memdesc:af26494b97fbc03711d04165407ad0708"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for the specified DCC address in the roster.  <a href="classDCCEXProtocol.html#af26494b97fbc03711d04165407ad0708">More...</a><br /></td></tr>
 <tr class="separator:af26494b97fbc03711d04165407ad0708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb4a3c993039d99eacdc19da2f793875"><td class="memItemLeft" align="right" valign="top"><a id="acb4a3c993039d99eacdc19da2f793875"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#acb4a3c993039d99eacdc19da2f793875">clearRoster</a> ()</td></tr>
+<tr class="memdesc:acb4a3c993039d99eacdc19da2f793875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the roster. <br /></td></tr>
+<tr class="separator:acb4a3c993039d99eacdc19da2f793875"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26ffdd56dbb57647fc4740c36e8e64e3"><td class="memItemLeft" align="right" valign="top"><a id="a26ffdd56dbb57647fc4740c36e8e64e3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a26ffdd56dbb57647fc4740c36e8e64e3">refreshRoster</a> ()</td></tr>
+<tr class="memdesc:a26ffdd56dbb57647fc4740c36e8e64e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the roster and request again. <br /></td></tr>
+<tr class="separator:a26ffdd56dbb57647fc4740c36e8e64e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac518f747599f703888000e07059a66a3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ac518f747599f703888000e07059a66a3">getTurnoutCount</a> ()</td></tr>
 <tr class="memdesc:ac518f747599f703888000e07059a66a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of turnouts.  <a href="classDCCEXProtocol.html#ac518f747599f703888000e07059a66a3">More...</a><br /></td></tr>
 <tr class="separator:ac518f747599f703888000e07059a66a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,6 +211,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a1dc3dced853c486824f7062a2e3e2009"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a1dc3dced853c486824f7062a2e3e2009">toggleTurnout</a> (int turnoutId)</td></tr>
 <tr class="memdesc:a1dc3dced853c486824f7062a2e3e2009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle the specified turnout/point (if closed, will throw, and vice versa)  <a href="classDCCEXProtocol.html#a1dc3dced853c486824f7062a2e3e2009">More...</a><br /></td></tr>
 <tr class="separator:a1dc3dced853c486824f7062a2e3e2009"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa26dd3b4a7f5e515c5e223c58b826ca9"><td class="memItemLeft" align="right" valign="top"><a id="aa26dd3b4a7f5e515c5e223c58b826ca9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aa26dd3b4a7f5e515c5e223c58b826ca9">clearTurnoutList</a> ()</td></tr>
+<tr class="memdesc:aa26dd3b4a7f5e515c5e223c58b826ca9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the list of turnouts. <br /></td></tr>
+<tr class="separator:aa26dd3b4a7f5e515c5e223c58b826ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15e114f0da01909f99f19f961e7c0b08"><td class="memItemLeft" align="right" valign="top"><a id="a15e114f0da01909f99f19f961e7c0b08"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a15e114f0da01909f99f19f961e7c0b08">refreshTurnoutList</a> ()</td></tr>
+<tr class="memdesc:a15e114f0da01909f99f19f961e7c0b08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the list of turnouts and request again. <br /></td></tr>
+<tr class="separator:a15e114f0da01909f99f19f961e7c0b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e8c46d5e5a7621ebb9c590cba18d6cb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a6e8c46d5e5a7621ebb9c590cba18d6cb">getRouteCount</a> ()</td></tr>
 <tr class="memdesc:a6e8c46d5e5a7621ebb9c590cba18d6cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of route entries.  <a href="classDCCEXProtocol.html#a6e8c46d5e5a7621ebb9c590cba18d6cb">More...</a><br /></td></tr>
 <tr class="separator:a6e8c46d5e5a7621ebb9c590cba18d6cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,6 +236,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aec87c99a680edaba458bb036ebbb53ea">resumeRoutes</a> ()</td></tr>
 <tr class="memdesc:aec87c99a680edaba458bb036ebbb53ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resume all routes/automations. <br /></td></tr>
 <tr class="separator:aec87c99a680edaba458bb036ebbb53ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73f5f52517efa713946f426eff86075f"><td class="memItemLeft" align="right" valign="top"><a id="a73f5f52517efa713946f426eff86075f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a73f5f52517efa713946f426eff86075f">clearRouteList</a> ()</td></tr>
+<tr class="memdesc:a73f5f52517efa713946f426eff86075f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all routes. <br /></td></tr>
+<tr class="separator:a73f5f52517efa713946f426eff86075f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac34630f78aa314509c54a6fcfe9c0d5d"><td class="memItemLeft" align="right" valign="top"><a id="ac34630f78aa314509c54a6fcfe9c0d5d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ac34630f78aa314509c54a6fcfe9c0d5d">refreshRouteList</a> ()</td></tr>
+<tr class="memdesc:ac34630f78aa314509c54a6fcfe9c0d5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all routes and request a new list. <br /></td></tr>
+<tr class="separator:ac34630f78aa314509c54a6fcfe9c0d5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4786a31b467ba06c078fc21f4818813b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a4786a31b467ba06c078fc21f4818813b">getTurntableCount</a> ()</td></tr>
 <tr class="memdesc:a4786a31b467ba06c078fc21f4818813b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of turntable entries.  <a href="classDCCEXProtocol.html#a4786a31b467ba06c078fc21f4818813b">More...</a><br /></td></tr>
 <tr class="separator:a4786a31b467ba06c078fc21f4818813b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -224,6 +256,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a4cad11c07dac9f975218ca6fdd877674"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a4cad11c07dac9f975218ca6fdd877674">rotateTurntable</a> (int turntableId, int position, int activity=0)</td></tr>
 <tr class="memdesc:a4cad11c07dac9f975218ca6fdd877674"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotate a turntable object.  <a href="classDCCEXProtocol.html#a4cad11c07dac9f975218ca6fdd877674">More...</a><br /></td></tr>
 <tr class="separator:a4cad11c07dac9f975218ca6fdd877674"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdc41efa41535f15ab8fa67c955877b0"><td class="memItemLeft" align="right" valign="top"><a id="afdc41efa41535f15ab8fa67c955877b0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#afdc41efa41535f15ab8fa67c955877b0">clearTurntableList</a> ()</td></tr>
+<tr class="memdesc:afdc41efa41535f15ab8fa67c955877b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all turntables. <br /></td></tr>
+<tr class="separator:afdc41efa41535f15ab8fa67c955877b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0e7c152954ce85c7fe6668387d67545"><td class="memItemLeft" align="right" valign="top"><a id="af0e7c152954ce85c7fe6668387d67545"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#af0e7c152954ce85c7fe6668387d67545">refreshTurntableList</a> ()</td></tr>
+<tr class="memdesc:af0e7c152954ce85c7fe6668387d67545"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all turntables and request a new list. <br /></td></tr>
+<tr class="separator:af0e7c152954ce85c7fe6668387d67545"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8a294bbe297de223751fa208921216a"><td class="memItemLeft" align="right" valign="top"><a id="ab8a294bbe297de223751fa208921216a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ab8a294bbe297de223751fa208921216a">powerOn</a> ()</td></tr>
 <tr class="memdesc:ab8a294bbe297de223751fa208921216a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global track power on command. <br /></td></tr>
@@ -280,8 +320,8 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main class for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> library. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae1f3a709bd5b21e522e71f10188f4d10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1f3a709bd5b21e522e71f10188f4d10">&#9670;&nbsp;</a></span>DCCEXProtocol()</h2>
+<a id="a7234aeda0b721fec886b0a6402ddd903"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7234aeda0b721fec886b0a6402ddd903">&#9670;&nbsp;</a></span>DCCEXProtocol()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,8 +330,18 @@ Public Attributes</h2></td></tr>
           <td class="memname">DCCEXProtocol::DCCEXProtocol </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>maxCmdBuffer</em> = <code>500</code></td><td>)</td>
+          <td class="paramname"><em>maxCmdBuffer</em> = <code>500</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>maxCommandParams</em> = <code>50</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -300,6 +350,7 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">maxCmdBuffer</td><td>Optional - maximum number of bytes for the command buffer (default 500) </td></tr>
+    <tr><td class="paramname">maxCommandParams</td><td>Optional - maximum number of parameters to parse via the <a class="el" href="classDCCEXInbound.html" title="Inbound DCC-EX command parser class to parse commands and provide interpreted parameters.">DCCEXInbound</a> parser (default 50) </td></tr>
   </table>
   </dd>
 </dl>

@@ -87,6 +87,16 @@ Retrieving and referring to object lists
 
 To retrieve the various objects lists from |EX-CS|, use the `getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)` method within your `loop()` function to ensure these are retrieved successfully.
 
+If you have a lot of defined objects in your |EX-CS| (eg. 50+ turnouts or 50+ roster entries), you will likely need to increase the maximum number of parameters allowed when defining the DCCEXProtocol instance which is now a configurable parameter as of version 1.0.0 of the library.
+
+You can set the command buffer size and parameter count:
+
+.. code-block:: cpp
+
+  // dccexProtocol(maxCmdBuffer, maxCommandParams);
+  DCCEXProtocol dccexProtocol; // Use default 500 byte buffer, 50 parameters
+  DCCEXProtocol dccexProtocol(500, 100); // Use default 500 byte buffer, 100 parameters
+
 All objects are contained within linked lists and can be access via for loops:
 
 .. code-block:: cpp
