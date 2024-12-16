@@ -85,7 +85,7 @@ Version information:
 
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100;         // Max number of bytes for outbound commands
 const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH = 100; // Max number of bytes for <s> server details response
-const int MAX_COMMAND_PARAMS = 50;                   // Max number of params to parse via DCCEXInbound parser
+const int MAX_COMMAND_PARAMS = 100;                  // Max number of params to parse via DCCEXInbound parser
 
 // Valid track power state values
 enum TrackPower {
