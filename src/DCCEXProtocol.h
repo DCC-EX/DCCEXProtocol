@@ -84,9 +84,7 @@ Version information:
 #include "DCCEXTurntables.h"
 #include <Arduino.h>
 
-const int MAX_OUTBOUND_COMMAND_LENGTH = 100;         // Max number of bytes for outbound commands
-const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH = 100; // Max number of bytes for <s> server details response
-const int MAX_COMMAND_PARAMS = 50;                   // Max number of params to parse via DCCEXInbound parser
+const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
 
 // Valid track power state values
 enum TrackPower {
@@ -210,7 +208,8 @@ public:
 
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
-  DCCEXProtocol(int maxCmdBuffer = 500);
+  /// @param maxCommandParams Optional - maximum number of parameters to parse via the DCCEXInbound parser (default 50)
+  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50);
 
   /// @brief Destructor for the DCCEXProtocol object
   ~DCCEXProtocol();
