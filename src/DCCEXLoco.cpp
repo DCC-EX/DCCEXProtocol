@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2024 Peter Cole
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -34,31 +35,42 @@
 
 Loco *Loco::_first = nullptr;
 
-Loco::Loco(int address, LocoSource source) {
-  _address = address;
-  _source = source;
+Loco::Loco(int address, LocoSource source) : _address(address), _source(source) {
+  for (int i = 0; i < MAX_FUNCTIONS; i++) {
+    _functionNames[i] = nullptr;
+  }
   _direction = Forward;
   _speed = 0;
   _name = nullptr;
   _functionStates = 0;
   _momentaryFlags = 0;
   _next = nullptr;
-  if (!_first) {
-    _first = this;
-  } else {
-    Loco *current = _first;
-    while (current->_next != nullptr) {
-      current = current->_next;
+  if (_source == LocoSource::LocoSourceRoster) {
+    if (!_first) {
+      _first = this;
+    } else {
+      Loco *current = _first;
+      while (current->_next != nullptr) {
+        current = current->_next;
+      }
+      current->_next = this;
     }
-    current->_next = this;
   }
 }
 
 int Loco::getAddress() { return _address; }
 
-void Loco::setName(char *name) { _name = name; }
+void Loco::setName(const char *name) {
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+  int nameLength = strlen(name);
+  _name = new char[nameLength + 1];
+  strcpy(_name, name);
+}
 
-char *Loco::getName() { return _name; }
+const char *Loco::getName() { return _name; }
 
 void Loco::setSpeed(int speed) { _speed = speed; }
 
@@ -70,57 +82,64 @@ Direction Loco::getDirection() { return (Direction)_direction; }
 
 LocoSource Loco::getSource() { return (LocoSource)_source; }
 
-void Loco::setupFunctions(char *functionNames) {
-  // Important note:
-  // The functionNames string is modified in place.
-  //   console->print(F("Splitting \""));
-  //   console->print(functionNames);
-  //   console->println(F("\""));
-  char *t = functionNames;
-  int fkey = 0;
+void Loco::setupFunctions(const char *functionNames) {
+  if (functionNames == nullptr) {
+    return;
+  }
+  // Copy functionNames so we can clean up later
+  char *fNames = new char[strlen(functionNames) + 1];
+  if (fNames == nullptr) {
+    return; // Bail out if malloc failed
+  }
+  strcpy(fNames, functionNames); // Copy names
 
-  while (*t) {
-    bool momentary = false;
-    if (*t == '*') {
-      momentary = true;
-      t++;
+  // Remove any existing names first
+  for (int nameIndex = 0; nameIndex < MAX_FUNCTIONS; nameIndex++) {
+    if (_functionNames[nameIndex] != nullptr) {
+      delete[] _functionNames[nameIndex];
+      _functionNames[nameIndex] = nullptr;
     }
-    char *fName = t; // function name starts here
-    while (*t) {     // loop completes at end of name ('/' or 0)
-      if (*t == '/') {
-        // found end of name
-        *t = '\0'; // mark name ends here
-        t++;
+  }
+
+  int fNameIndex = 0;                // Index for each function name
+  int fNamesLength = strlen(fNames); // Length of all names for sizing later
+  int fNameStartChar = 0;            // Position of the first char in the name
+
+  // Iterate through the fNames char array to look for names
+  for (int charIndex = 0; charIndex <= fNamesLength; charIndex++) {
+    // End of name is either / or null terminator
+    // Start of name will be in char array index fNameStart
+    if (fNames[charIndex] == '/' || fNames[charIndex] == '\0') {
+      // Make sure we're at a sane index
+      if (fNameIndex < MAX_FUNCTIONS) {
+        bool momentary = false;
+        // If start is *, it's momentary, name starts at following index
+        if (fNames[fNameStartChar] == '*') {
+          momentary = true;
+          fNameStartChar++;
+        }
+        int nameLength = charIndex - fNameStartChar;           // Calculate length of name
+        _functionNames[fNameIndex] = new char[nameLength + 1]; // Allocate mem + null terminator
+        if (_functionNames[fNameIndex] != nullptr) {
+          // Copy the name to the array index and null terminate it
+          strncpy(_functionNames[fNameIndex], &fNames[fNameStartChar], nameLength);
+          _functionNames[fNameIndex][nameLength] = '\0';
+        }
+        // Set the momentary flag
+        if (momentary) {
+          _momentaryFlags |= 1 << fNameIndex;
+        } else {
+          _momentaryFlags &= ~(1 << fNameIndex);
+        }
+        // Move to the next index
+        fNameIndex++;
+      } else {
         break;
       }
-      t++;
-    }
-
-    // At this point we have a function key
-    // int fkey = function number 0....
-    // bool momentary = is it a momentary
-    // fName = pointer to the function name
-    if (fkey < MAX_FUNCTIONS) {
-      _functionNames[fkey] = fName;
-      if (momentary) {
-        _momentaryFlags |= 1 << fkey;
-      } else {
-        _momentaryFlags &= ~(1 << fkey);
-      }
-    }
-    //  Serial.print("Function ");
-    //  Serial.print(fkey);
-    //  Serial.print(momentary ? F("  Momentary ") : F(""));
-    //  Serial.print(" ");
-    //  Serial.println(fName);
-    //  Serial.println(_functionNames[fkey]);
-    fkey++;
-  }
-  if (fkey < MAX_FUNCTIONS) {
-    for (int i = fkey; i < MAX_FUNCTIONS; i++) {
-      _functionNames[i] = nullptr;
+      fNameStartChar = charIndex + 1; // Calculate the start index of the next name
     }
   }
+  delete[] fNames; // Clean up fNames
 }
 
 bool Loco::isFunctionOn(int function) { return _functionStates & 1 << function; }
@@ -129,11 +148,13 @@ void Loco::setFunctionStates(int functionStates) { _functionStates = functionSta
 
 int Loco::getFunctionStates() { return _functionStates; }
 
-char *Loco::getFunctionName(int function) { return _functionNames[function]; }
+const char *Loco::getFunctionName(int function) { return _functionNames[function]; }
 
 bool Loco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << function; }
 
 Loco *Loco::getFirst() { return _first; }
+
+void Loco::setNext(Loco *loco) { _next = loco; }
 
 Loco *Loco::getNext() { return _next; }
 
@@ -144,6 +165,73 @@ Loco *Loco::getByAddress(int address) {
     }
   }
   return nullptr;
+}
+
+void Loco::clearRoster() {
+  // Count Locos in roster
+  int locoCount = 0;
+  Loco *currentLoco = Loco::getFirst();
+  while (currentLoco != nullptr) {
+    locoCount++;
+    currentLoco = currentLoco->getNext();
+  }
+
+  // Store Loco pointers in an array for clean up
+  Loco **deleteLocos = new Loco *[locoCount];
+  currentLoco = Loco::getFirst();
+  for (int i = 0; i < locoCount; i++) {
+    deleteLocos[i] = currentLoco;
+    currentLoco = currentLoco->getNext();
+  }
+
+  // Delete each Loco
+  for (int i = 0; i < locoCount; i++) {
+    delete deleteLocos[i];
+  }
+
+  // Clean up the array of pointers
+  delete[] deleteLocos;
+
+  // Reset first pointer
+  Loco::_first = nullptr;
+}
+
+Loco::~Loco() {
+  _removeFromList(this);
+
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+
+  for (int i = 0; i < MAX_FUNCTIONS; i++) {
+    if (_functionNames[i]) {
+      delete[] _functionNames[i];
+      _functionNames[i] = nullptr;
+    }
+  }
+
+  _next = nullptr;
+}
+
+// Private methods
+
+void Loco::_removeFromList(Loco *loco) {
+  if (!loco) {
+    return;
+  }
+
+  if (getFirst() == loco) {
+    _first = loco->getNext();
+  } else {
+    Loco *currentLoco = _first;
+    while (currentLoco && currentLoco->getNext() != loco) {
+      currentLoco = currentLoco->getNext();
+    }
+    if (currentLoco) {
+      currentLoco->setNext(loco->getNext());
+    }
+  }
 }
 
 // class ConsistLoco
@@ -165,6 +253,14 @@ ConsistLoco *ConsistLoco::getNext() { return _next; }
 
 void ConsistLoco::setNext(ConsistLoco *consistLoco) { _next = consistLoco; }
 
+ConsistLoco::~ConsistLoco() {
+  if (_loco && _loco->getSource() == LocoSource::LocoSourceEntry) {
+    delete _loco;
+    _loco = nullptr;
+  }
+  _next = nullptr;
+}
+
 // class Consist
 // Public methods
 
@@ -174,16 +270,32 @@ Consist::Consist() {
   _first = nullptr;
 }
 
-void Consist::setName(char *name) { _name = name; }
+void Consist::setName(const char *name) {
+  if (name == nullptr) {
+    return;
+  }
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+  int nameLength = strlen(name);
+  _name = new char[nameLength + 1];
+  if (_name == nullptr) {
+    return;
+  }
+  strcpy(_name, name);
+}
 
-char *Consist::getName() { return _name; }
+const char *Consist::getName() { return _name; }
 
 void Consist::addLoco(Loco *loco, Facing facing) {
   if (inConsist(loco))
     return; // Already in the consist
   if (_locoCount == 0) {
-    facing = FacingForward;  // Force forward facing for the first loco added
-    _name = loco->getName(); // Set consist name to the first loco name
+    facing = FacingForward; // Force forward facing for the first loco added
+    if (_name == nullptr) {
+      setName(loco->getName()); // Set consist name to the first loco name if not already set
+    }
   }
   ConsistLoco *conLoco = new ConsistLoco(loco, facing);
   _addLocoToConsist(conLoco);
@@ -194,9 +306,13 @@ void Consist::addLoco(int address, Facing facing) {
     return;
   if (_locoCount == 0) {
     facing = FacingForward;
-    char temp[6];
-    snprintf(temp, 6, "%d", address);
-    _name = temp;
+    if (_name == nullptr) {
+      int addressLength = (address == 0) ? 1 : log10(address) + 1;
+      char *newName = new char[addressLength + 1];
+      snprintf(newName, addressLength + 1, "%d", address);
+      setName(newName);
+      delete[] newName;
+    }
   }
   Loco *loco = new Loco(address, LocoSourceEntry);
   ConsistLoco *conLoco = new ConsistLoco(loco, facing);
@@ -204,25 +320,31 @@ void Consist::addLoco(int address, Facing facing) {
 }
 
 void Consist::removeLoco(Loco *loco) {
-  ConsistLoco *previous = nullptr;
-  ConsistLoco *current = _first;
-  while (current) {
-    if (current->getLoco() == loco) {
-      if (loco->getSource() == LocoSourceEntry) {
-        // delete loco;
-      }
-      if (previous) {
-        previous->setNext(current->getNext());
+  // Start with no previous, and the first CL
+  ConsistLoco *previousCL = nullptr;
+  ConsistLoco *currentCL = _first;
+  while (currentCL) {
+    // If the currentCL is our loco to remove, process it
+    if (currentCL->getLoco() == loco) {
+      // If there is a previous, set its next to the current's next to skip currentCL
+      ConsistLoco *nextCL = currentCL->getNext();
+      if (previousCL) {
+        previousCL->setNext(nextCL);
+        // Otherwise the first is now the next
       } else {
-        _first = current->getNext();
+        _first = nextCL;
       }
-      // delete current;
+      // Delete the currentCL and decrement the count of locos
+      delete currentCL;
       _locoCount--;
-      break;
+      currentCL = nextCL;
+      // Otherwise move to the next one in the list
+    } else {
+      previousCL = currentCL;
+      currentCL = currentCL->getNext();
     }
-    previous = current;
-    current = current->getNext();
   }
+  // When we're finished, if this was the last one, clean up
   if (!_first) {
     _first = nullptr;
     _locoCount = 0;
@@ -230,16 +352,17 @@ void Consist::removeLoco(Loco *loco) {
 }
 
 void Consist::removeAllLocos() {
-  ConsistLoco *current = _first;
-  while (current) {
-    ConsistLoco *next = current->getNext();
-    Loco *loco = current->getLoco();
-    if (loco->getSource() == LocoSourceEntry) {
-      // delete loco;
-    }
-    // delete current;
-    current = next;
+  // Clean up the linked list
+  ConsistLoco *currentCL = _first;
+  while (currentCL != nullptr) {
+    // Capture the next one
+    ConsistLoco *nextCL = currentCL->getNext();
+    // Delete the current one
+    delete currentCL;
+    // Set next as current
+    currentCL = nextCL;
   }
+  // Set _first to nullptr
   _first = nullptr;
   _locoCount = 0;
 }
@@ -295,6 +418,28 @@ ConsistLoco *Consist::getByAddress(int address) {
     }
   }
   return nullptr;
+}
+
+Consist::~Consist() {
+  // Clean up the name
+  if (_name) {
+    delete[] _name;
+    _name = nullptr;
+  }
+
+  // Clean up the linked list
+  ConsistLoco *currentCL = _first;
+  while (currentCL != nullptr) {
+    // Capture the next one
+    ConsistLoco *nextCL = currentCL->getNext();
+    // Delete the current one
+    delete currentCL;
+    // Set next as current
+    currentCL = nextCL;
+  }
+  // Set _first to nullptr
+  _first = nullptr;
+  _locoCount = 0;
 }
 
 // Private methods

@@ -45,7 +45,7 @@ public:
 
   /// @brief Set turnout name
   /// @param _name Name to set the turnout
-  void setName(char *_name);
+  void setName(const char *_name);
 
   /// @brief Get turnout Id
   /// @return ID of the turnout
@@ -53,7 +53,7 @@ public:
 
   /// @brief Get turnout name
   /// @return Current name of the turnout
-  char *getName();
+  const char *getName();
 
   /// @brief Get thrown state (true thrown, false closed)
   /// @return true|false
@@ -63,18 +63,24 @@ public:
   /// @return Pointer to the first Turnout object
   static Turnout *getFirst();
 
+  /// @brief Set the next turnout in the list
+  /// @param turnout Pointer to the next Turnout
+  void setNext(Turnout *turnout);
+
   /// @brief Get next turnout object
   /// @return Pointer to the next Turnout object
   Turnout *getNext();
 
-  /// @brief Get the number of turnouts
-  /// @return Count of turnouts
-  int getCount();
-
   /// @brief Get turnout object by turnout ID
   /// @param id ID of the turnout to retrieve
   /// @return Pointer to the turnout object or nullptr if not found
-  Turnout *getById(int id);
+  static Turnout *getById(int id);
+
+  /// @brief Clear the list of turnouts
+  static void clearTurnoutList();
+
+  /// @brief Destructor for a Turnout
+  ~Turnout();
 
 private:
   static Turnout *_first;
@@ -82,7 +88,10 @@ private:
   int _id;
   char *_name;
   bool _thrown;
-  int _count = 0;
+
+  /// @brief Remove the turnout from the list
+  /// @param turnout Pointer to the turnout to remove
+  void _removeFromList(Turnout *turnout);
 };
 
 #endif

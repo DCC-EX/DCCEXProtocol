@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2024 Peter Cole
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -47,7 +48,7 @@ static const int MAX_SPEED = 126;
 // Public methods
 // Protocol and server methods
 
-DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
+DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams) {
   // Init streams
   _stream = &_nullStream;
   _console = &_nullStream;
@@ -57,7 +58,7 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
   _maxCmdBuffer = maxCmdBuffer;
 
   // Setup command parser
-  DCCEXInbound::setup(MAX_COMMAND_PARAMS);
+  DCCEXInbound::setup(maxCommandParams);
   _cmdBuffer[0] = 0;
   _bufflen = 0;
 
@@ -69,7 +70,7 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer) {
 
 DCCEXProtocol::~DCCEXProtocol() {
   // Free memory for command buffer
-  delete[](_cmdBuffer);
+  delete[] (_cmdBuffer);
 
   // Cleanup command parser
   DCCEXInbound::cleanup();
@@ -138,7 +139,7 @@ void DCCEXProtocol::sendCommand(char *cmd) {
 // sequentially request and get the required lists. To avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
                              bool turntableListRequired) {
-  // console->println(F("getLists()"));
+  // Serial.println(F("getLists()"));
   if (!_receivedLists) {
     if (rosterRequired && !_rosterRequested) {
       _getRoster();
@@ -157,7 +158,7 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
                 } else {
                   if (!turntableListRequired || _receivedTurntableList) {
                     _receivedLists = true;
-                    _console->println(F("Lists Fully Received"));
+                    // Serial.println(F("Lists Fully Received"));
                   }
                 }
               }
@@ -167,18 +168,18 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
       }
     }
   }
-  // console->println(F("getLists(): end"));
+  // Serial.println(F("getLists(): end"));
 }
 
 bool DCCEXProtocol::receivedLists() { return _receivedLists; }
 
 void DCCEXProtocol::requestServerVersion() {
-  // console->println(F("requestServerVersion(): "));
+  // Serial.println(F("requestServerVersion(): "));
   if (_delegate) {
     sprintf(_outboundCommand, "<s>");
     _sendCommand();
   }
-  // console->println(F("requestServerVersion(): end"));
+  // Serial.println(F("requestServerVersion(): end"));
 }
 
 bool DCCEXProtocol::receivedVersion() { return _receivedVersion; }
@@ -190,6 +191,20 @@ int DCCEXProtocol::getMinorVersion() { return _version[1]; }
 int DCCEXProtocol::getPatchVersion() { return _version[2]; }
 
 unsigned long DCCEXProtocol::getLastServerResponseTime() { return _lastServerResponseTime; }
+
+void DCCEXProtocol::clearAllLists() {
+  clearRoster();
+  clearTurnoutList();
+  clearTurntableList();
+  clearRouteList();
+}
+
+void DCCEXProtocol::refreshAllLists() {
+  refreshRoster();
+  refreshTurnoutList();
+  refreshTurntableList();
+  refreshRouteList();
+}
 
 // Consist/loco methods
 
@@ -318,6 +333,19 @@ Loco *DCCEXProtocol::findLocoInRoster(int address) {
   return nullptr;
 }
 
+void DCCEXProtocol::clearRoster() {
+  Loco::clearRoster();
+  roster = nullptr;
+  _rosterCount = 0;
+}
+
+void DCCEXProtocol::refreshRoster() {
+  clearRoster();
+  _receivedLists = false;
+  _receivedRoster = false;
+  _rosterRequested = false;
+}
+
 // Turnout methods
 
 int DCCEXProtocol::getTurnoutCount() { return _turnoutCount; }
@@ -359,6 +387,19 @@ void DCCEXProtocol::toggleTurnout(int turnoutId) {
   }
 }
 
+void DCCEXProtocol::clearTurnoutList() {
+  Turnout::clearTurnoutList();
+  turnouts = nullptr;
+  _turnoutCount = 0;
+}
+
+void DCCEXProtocol::refreshTurnoutList() {
+  clearTurnoutList();
+  _receivedLists = false;
+  _receivedTurnoutList = false;
+  _turnoutListRequested = false;
+}
+
 // Route methods
 
 int DCCEXProtocol::getRouteCount() { return _routeCount; }
@@ -390,6 +431,19 @@ void DCCEXProtocol::resumeRoutes() {
     _sendCommand();
   }
   // console->println(F("sendResumeRoutes() end"));
+}
+
+void DCCEXProtocol::clearRouteList() {
+  Route::clearRouteList();
+  routes = nullptr;
+  _routeCount = 0;
+}
+
+void DCCEXProtocol::refreshRouteList() {
+  clearRouteList();
+  _receivedLists = false;
+  _receivedRouteList = false;
+  _routeListRequested = false;
 }
 
 // Turntable methods
@@ -424,6 +478,19 @@ void DCCEXProtocol::rotateTurntable(int turntableId, int position, int activity)
     _sendCommand();
   }
   // console->println(F("sendTurntable() end"));
+}
+
+void DCCEXProtocol::clearTurntableList() {
+  Turntable::clearTurntableList();
+  turntables = nullptr;
+  _turntableCount = 0;
+}
+
+void DCCEXProtocol::refreshTurntableList() {
+  clearTurntableList();
+  _receivedLists = false;
+  _receivedTurntableList = false;
+  _turntableListRequested = false;
 }
 
 // Track management methods
@@ -854,6 +921,9 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
     // console->println(getRosterCount());
     _delegate->receivedRosterList();
   }
+
+  free(name);
+  free(funcs);
   // console->println(F("processRosterEntry(): end"));
 }
 
@@ -910,7 +980,7 @@ void DCCEXProtocol::_processTurnoutEntry() {
   char *name = DCCEXInbound::copyTextParameter(3);
   bool missingTurnouts = false;
 
-  Turnout *t = turnouts->getById(id);
+  Turnout *t = Turnout::getById(id);
   if (t) {
     t->setName(name);
     t->setThrown(thrown);
@@ -919,6 +989,8 @@ void DCCEXProtocol::_processTurnoutEntry() {
       _requestTurnoutEntry(t->getNext()->getId());
     }
   }
+
+  free(name);
 
   if (!missingTurnouts) {
     _receivedTurnoutList = true;
@@ -994,7 +1066,7 @@ void DCCEXProtocol::_processRouteEntry() {
   char *name = DCCEXInbound::copyTextParameter(3);
   bool missingRoutes = false;
 
-  Route *r = routes->getById(id);
+  Route *r = Route::getById(id);
   if (r) {
     r->setType(type);
     r->setName(name);
@@ -1003,6 +1075,8 @@ void DCCEXProtocol::_processRouteEntry() {
       _requestRouteEntry(r->getNext()->getId());
     }
   }
+
+  free(name);
 
   if (!missingRoutes) {
     _receivedRouteList = true;
@@ -1063,7 +1137,7 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
   int indexCount = DCCEXInbound::getNumber(4);
   char *name = DCCEXInbound::copyTextParameter(5);
 
-  Turntable *tt = turntables->getById(id);
+  Turntable *tt = Turntable::getById(id);
   if (tt) {
     tt->setType(ttType);
     tt->setIndex(index);
@@ -1074,6 +1148,8 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
       _requestTurntableEntry(tt->getNext()->getId());
     }
   }
+
+  free(name);
   // console->println(F("processTurntableEntry(): end"));
 }
 
@@ -1095,7 +1171,9 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
     int angle = DCCEXInbound::getNumber(3);
     char *name = DCCEXInbound::copyTextParameter(4);
     if (index == 0) { // Index 0 is always home, and never has a label, so set one
-      sprintf(name, "Home");
+      free(name);
+      name = (char *)malloc(5); // Length of "Home" + null terminator
+      strcpy(name, "Home");
     }
 
     Turntable *tt = getTurntableById(ttId);
@@ -1118,6 +1196,8 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
       if (tt->getName() == nullptr || (numIndexes != indexCount))
         receivedAll = false;
     }
+
+    free(name);
 
     if (receivedAll) {
       _receivedTurntableList = true;

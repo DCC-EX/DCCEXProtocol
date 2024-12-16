@@ -34,6 +34,16 @@
 /*
 Version information:
 
+1.0.0   - First Production release
+        - Add methods to clear and refresh the various lists
+        - Various memory leak bugfixes
+        - Fix bug where any Loco created was added to the roster, despite LocoSourceEntry being set
+        - Fix bug where getById() for Turnout, Route, and Turntable was not a static method, causing runtime errors
+        - Removed redundant count on Turnout, Route, and Turntable as these are available from getRosterCount,
+                getTurnoutCount, getRouteCount, getTurntableCount
+        - Updated all public methods setting and getting names from char * to const char * to remove compiler warnings
+        - Enable configuring the max parameters parsed by DCCEXInbound via the DCCEXProtocol constructor
+        - Implemented many new tests
 0.0.17  - Fix typo in turntable example
         - Fix bug where the turntable isMoving() method always returned true
         - Add enableHeartbeat(heartbeatDelay) to send a heartbeat every x ms if a command is not sent
@@ -75,9 +85,7 @@ Version information:
 #include "DCCEXTurntables.h"
 #include <Arduino.h>
 
-const int MAX_OUTBOUND_COMMAND_LENGTH = 100;         // Max number of bytes for outbound commands
-const int MAX_SERVER_DESCRIPTION_PARAM_LENGTH = 100; // Max number of bytes for <s> server details response
-const int MAX_COMMAND_PARAMS = 50;                   // Max number of params to parse via DCCEXInbound parser
+const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
 
 // Valid track power state values
 enum TrackPower {
@@ -201,7 +209,8 @@ public:
 
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
-  DCCEXProtocol(int maxCmdBuffer = 500);
+  /// @param maxCommandParams Optional - maximum number of parameters to parse via the DCCEXInbound parser (default 50)
+  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50);
 
   /// @brief Destructor for the DCCEXProtocol object
   ~DCCEXProtocol();
@@ -265,6 +274,12 @@ public:
   /// @brief Retrieve the last time the server responded
   /// @return Last response time in milliseconds (from millis())
   unsigned long getLastServerResponseTime(); // seconds since Arduino start
+
+  /// @brief Clear roster, turnout, turntable, and route lists
+  void clearAllLists();
+
+  /// @brief Clear roster, turnout, turntable, and route lists and request new ones
+  void refreshAllLists();
 
   // Consist/Loco methods
 
@@ -337,6 +352,12 @@ public:
   /// @return Pointer to the Loco object
   Loco *findLocoInRoster(int address);
 
+  /// @brief Clear the roster
+  void clearRoster();
+
+  /// @brief Clear the roster and request again
+  void refreshRoster();
+
   // Turnout methods
 
   /// @brief Get the number of turnouts
@@ -364,6 +385,12 @@ public:
   /// @param turnoutId ID of the turnout/point
   void toggleTurnout(int turnoutId);
 
+  /// @brief Clear the list of turnouts
+  void clearTurnoutList();
+
+  /// @brief Clear the list of turnouts and request again
+  void refreshTurnoutList();
+
   // Route methods
 
   /// @brief Get the number of route entries
@@ -383,6 +410,12 @@ public:
 
   /// @brief Resume all routes/automations
   void resumeRoutes();
+
+  /// @brief Clear all routes
+  void clearRouteList();
+
+  /// @brief Clear all routes and request a new list
+  void refreshRouteList();
 
   // Turntable methods
 
@@ -404,6 +437,12 @@ public:
   /// @param position Position index to rotate to
   /// @param activity Optional activity for EX-Turntable objects only
   void rotateTurntable(int turntableId, int position, int activity = 0);
+
+  /// @brief Clear all turntables
+  void clearTurntableList();
+
+  /// @brief Clear all turntables and request a new list
+  void refreshTurntableList();
 
   // Track management methods
 

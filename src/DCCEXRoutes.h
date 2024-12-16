@@ -49,11 +49,11 @@ public:
 
   /// @brief Set route name
   /// @param name Name to set for the route
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief Get route name
   /// @return Current name of the route
-  char *getName();
+  const char *getName();
 
   /// @brief Set route type (A automation, R route)
   /// @param type RouteType - RouteTypeAutomation|RouteTypeRoute
@@ -63,13 +63,13 @@ public:
   /// @return RouteTypeAutomation|RouteTypeRoute
   RouteType getType();
 
-  /// @brief Get count of routes
-  /// @return Count of routes
-  int getCount();
-
   /// @brief Get first Route object
   /// @return Pointer to the first Route object
   static Route *getFirst();
+
+  /// @brief Set the next route in the list
+  /// @param route Pointer to the next route
+  void setNext(Route *route);
 
   /// @brief Get next Route object
   /// @return Pointer to the next Route object
@@ -77,7 +77,13 @@ public:
 
   /// @brief Get route object by its ID
   /// @return Pointer to the Route, or nullptr if not found
-  Route *getById(int id);
+  static Route *getById(int id);
+
+  /// @brief Clear the list of routes
+  static void clearRouteList();
+
+  /// @brief Destructor for a route
+  ~Route();
 
 private:
   int _id;
@@ -85,7 +91,10 @@ private:
   char _type;
   static Route *_first;
   Route *_next;
-  int _count = 0;
+
+  /// @brief Remove the route from the list
+  /// @param route Pointer to the route to remove
+  void _removeFromList(Route *route);
 };
 
 #endif

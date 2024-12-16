@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2024 Peter Cole
  * Copyright © 2023 Peter Akers
  * Copyright © 2023 Peter Cole
  *
@@ -64,11 +65,11 @@ public:
 
   /// @brief Set loco name
   /// @param name Name of the loco
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief Get loco name
   /// @return Name of the loco
-  char *getName();
+  const char *getName();
 
   /// @brief Set loco speed
   /// @param speed Valid speed (0 - 126)
@@ -92,7 +93,7 @@ public:
 
   /// @brief Setup functions for the loco
   /// @param functionNames Char array of function names
-  void setupFunctions(char *functionNames);
+  void setupFunctions(const char *functionNames);
 
   /// @brief Test if function is on
   /// @param function Number of the function to test
@@ -110,7 +111,7 @@ public:
   /// @brief Get the name/label for a function
   /// @param function Number of the function to return the name/label of
   /// @return char* representing the function name/label
-  char *getFunctionName(int function);
+  const char *getFunctionName(int function);
 
   /// @brief Get the name/label for a function
   /// @param function Number of the function to return the name/label of
@@ -121,6 +122,10 @@ public:
   /// @return Pointer to the first Loco object
   static Loco *getFirst();
 
+  /// @brief Set the next loco in the roster list
+  /// @param loco Pointer to the next Loco object
+  void setNext(Loco *loco);
+
   /// @brief Get next Loco object
   /// @return Pointer to the next Loco object
   Loco *getNext();
@@ -129,6 +134,12 @@ public:
   /// @param address DCC address of the loco to get
   /// @return Loco object or nullptr if it doesn't exist
   static Loco *getByAddress(int address);
+
+  /// @brief Clear all Locos from the roster
+  static void clearRoster();
+
+  /// @brief Destructor for the Loco object
+  ~Loco();
 
 private:
   int _address;
@@ -141,6 +152,10 @@ private:
   int32_t _momentaryFlags;
   static Loco *_first;
   Loco *_next;
+
+  /// @brief Method to remove this loco from the roster list
+  /// @param loco Pointer to the Loco to remove
+  static void _removeFromList(Loco *loco);
 
   friend class Consist;
 };
@@ -173,6 +188,9 @@ public:
   /// @param consistLoco Pointer to the ConsistLoco object
   void setNext(ConsistLoco *consistLoco);
 
+  /// @brief Destructor for a ConsistLoco
+  ~ConsistLoco();
+
 private:
   Loco *_loco;
   Facing _facing;
@@ -189,11 +207,11 @@ public:
 
   /// @brief Set consist name
   /// @param name Name to set for the consist
-  void setName(char *name);
+  void setName(const char *name);
 
   /// @brief Get consist name
   /// @return Current name of the consist
-  char *getName();
+  const char *getName();
 
   /// @brief Add a loco to the consist using a Loco object
   /// @param loco Pointer to a loco object
@@ -205,11 +223,11 @@ public:
   /// @param facing Direction the loco is facing (FacingForward|FacingReversed)
   void addLoco(int address, Facing facing);
 
-  /// @brief Remove a loco from the consist
+  /// @brief Remove a loco from the consist - Loco objects with LocoSourceEntry will also be deleted
   /// @param loco Pointer to a loco object to remove
   void removeLoco(Loco *loco);
 
-  /// @brief Remove all locos from a consist
+  /// @brief Remove all locos from a consist - Loco objects with LocoSourceEntry will also be deleted
   void removeAllLocos();
 
   /// @brief Update the direction of a loco in the consist
@@ -247,6 +265,9 @@ public:
   /// @param address DCC address of loco to retrieve
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco *getByAddress(int address);
+
+  /// @brief Destructor for a Consist
+  ~Consist();
 
 private:
   char *_name;
