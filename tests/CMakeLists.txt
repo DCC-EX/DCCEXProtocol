@@ -12,8 +12,7 @@ target_sources(
 target_include_directories(DCCEXProtocolTests
                            PUBLIC ${arduinocore-api_SOURCE_DIR}/test/include)
 
-# sanitize(address,undefined)
-sanitize(undefined)
+sanitize(address,undefined)
 
 target_compile_options(DCCEXProtocolTests PUBLIC -std=c++2a -Wall -Wextra
                                                  -Wconversion -Wsign-conversion)

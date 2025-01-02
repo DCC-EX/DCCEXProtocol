@@ -28,7 +28,7 @@
 
 #include "../setup/LocoTests.h"
 
-/// @brief Create a single Loco using the legacy constructor
+/// @brief Create a single Loco
 TEST_F(LocoTests, createSingleLoco) {
   // Create an individual loco
   Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
@@ -67,7 +67,7 @@ TEST_F(LocoTests, createSingleLoco) {
   delete loco1;
 }
 
-/// @brief Create a roster of Locos using the legacy constructor
+/// @brief Create a roster of Locos
 TEST_F(LocoTests, createRoster) {
   // Roster should start empty, don't continue if it isn't
   ASSERT_EQ(_dccexProtocol.roster->getFirst(), nullptr);
