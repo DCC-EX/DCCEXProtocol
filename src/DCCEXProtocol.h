@@ -34,6 +34,7 @@
 /*
 Version information:
 
+1.0.1   - Add additional receivedLocoBroadcast() delegate method to cater for non-roster updates
 1.0.0   - First Production release
         - Add methods to clear and refresh the various lists
         - Various memory leak bugfixes
@@ -164,6 +165,13 @@ public:
   /// @brief Notify when an update to a Loco object is received
   /// @param loco Pointer to the loco object
   virtual void receivedLocoUpdate(Loco *loco) {}
+
+  /// @brief Notify when a Loco broadcast has been received - suitable for non-roster locos
+  /// @param address DCC address of the loco
+  /// @param speed Speed as derived from the speed byte
+  /// @param direction Direction as derived from the speed byte
+  /// @param functionMap Function map
+  virtual void receivedLocoBroadcast(int address, int speed, Direction direction, int functionMap) {}
 
   /// @brief Notify when the global track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)

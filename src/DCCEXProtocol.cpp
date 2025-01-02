@@ -797,25 +797,21 @@ void DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
   int address = DCCEXInbound::getNumber(0);
   int speedByte = DCCEXInbound::getNumber(2);
   int functMap = _getValidFunctionMap(DCCEXInbound::getNumber(3));
-  // Loco* loco=Loco::getByAddress(address);
-  // if (!loco) return;
-  // int speed=_getSpeedFromSpeedByte(speedByte);
-  // Direction dir=_getDirectionFromSpeedByte(speedByte);
-  // loco->setSpeed(speed);
-  // loco->setDirection(dir);
-  // loco->setFunctionStates(functMap);
-  // _delegate->receivedLocoUpdate(loco);
+  int speed = _getSpeedFromSpeedByte(speedByte);
+  Direction dir = _getDirectionFromSpeedByte(speedByte);
 
+  // Set a known Loco with the received info and call the delegate
   for (Loco *l = Loco::getFirst(); l; l = l->getNext()) {
     if (l->getAddress() == address) {
-      int speed = _getSpeedFromSpeedByte(speedByte);
-      Direction dir = _getDirectionFromSpeedByte(speedByte);
       l->setSpeed(speed);
       l->setDirection(dir);
       l->setFunctionStates(functMap);
       _delegate->receivedLocoUpdate(l);
     }
   }
+
+  // Send a broadcast for unknown as well in case it's a local Loco not in the roster
+  _delegate->receivedLocoBroadcast(address, speed, dir, functMap);
 }
 
 int DCCEXProtocol::_getValidFunctionMap(int functionMap) {

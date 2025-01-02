@@ -24,6 +24,9 @@ public:
   // Notify when an update to a Loco object is received
   MOCK_METHOD(void, receivedLocoUpdate, (Loco *), (override));
 
+  // Notify when a Loco broadcast is received
+  MOCK_METHOD(void, receivedLocoBroadcast, (int address, int speed, Direction direction, int functionMap), (override));
+
   // Notify when a track power state change is received
   MOCK_METHOD(void, receivedTrackPower, (TrackPower), (override));
 
