@@ -102,6 +102,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a7e4f00bfe338f5fa02ac86a7b1095c1d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a7e4f00bfe338f5fa02ac86a7b1095c1d">receivedLocoUpdate</a> (<a class="el" href="classLoco.html">Loco</a> *loco)</td></tr>
 <tr class="memdesc:a7e4f00bfe338f5fa02ac86a7b1095c1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when an update to a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object is received.  <a href="classDCCEXProtocolDelegate.html#a7e4f00bfe338f5fa02ac86a7b1095c1d">More...</a><br /></td></tr>
 <tr class="separator:a7e4f00bfe338f5fa02ac86a7b1095c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1aa871a0fc193f2754cfd54b502f6c2d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a1aa871a0fc193f2754cfd54b502f6c2d">receivedLocoBroadcast</a> (int address, int speed, Direction direction, int functionMap)</td></tr>
+<tr class="memdesc:a1aa871a0fc193f2754cfd54b502f6c2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> broadcast has been received - suitable for non-roster locos.  <a href="classDCCEXProtocolDelegate.html#a1aa871a0fc193f2754cfd54b502f6c2d">More...</a><br /></td></tr>
+<tr class="separator:a1aa871a0fc193f2754cfd54b502f6c2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb516d842f413a08570de0b72f5a818c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">receivedTrackPower</a> (TrackPower state)</td></tr>
 <tr class="memdesc:afb516d842f413a08570de0b72f5a818c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when the global track power state change is received.  <a href="classDCCEXProtocolDelegate.html#afb516d842f413a08570de0b72f5a818c">More...</a><br /></td></tr>
 <tr class="separator:afb516d842f413a08570de0b72f5a818c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,6 +169,65 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
   <table class="params">
     <tr><td class="paramname">state</td><td>Power state received (PowerOff|PowerOn|PowerUnknown) </td></tr>
     <tr><td class="paramname">track</td><td>which track changed 65=A..72=H | 2698315=MAIN | 2788330=PROG | 2183=DC | 71999=DCX </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1aa871a0fc193f2754cfd54b502f6c2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1aa871a0fc193f2754cfd54b502f6c2d">&#9670;&nbsp;</a></span>receivedLocoBroadcast()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedLocoBroadcast </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>speed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Direction&#160;</td>
+          <td class="paramname"><em>direction</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>functionMap</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> broadcast has been received - suitable for non-roster locos. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the loco </td></tr>
+    <tr><td class="paramname">speed</td><td>Speed as derived from the speed byte </td></tr>
+    <tr><td class="paramname">direction</td><td>Direction as derived from the speed byte </td></tr>
+    <tr><td class="paramname">functionMap</td><td>Function map </td></tr>
   </table>
   </dd>
 </dl>

@@ -288,6 +288,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRouteList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurntableListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedLocoUpdateEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedLocoBroadcastEii9Directioni"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedIndividualTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackType()</span></code></a></li>
@@ -2150,6 +2151,22 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>loco</strong> – Pointer to the loco object </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate21receivedLocoBroadcastEii9Directioni">
+<span id="_CPPv3N21DCCEXProtocolDelegate21receivedLocoBroadcastEii9Directioni"></span><span id="_CPPv2N21DCCEXProtocolDelegate21receivedLocoBroadcastEii9Directioni"></span><span id="DCCEXProtocolDelegate::receivedLocoBroadcast__i.i.Direction.i"></span><span class="target" id="classDCCEXProtocolDelegate_1a1aa871a0fc193f2754cfd54b502f6c2d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedLocoBroadcast</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">speed</span></span>, <a class="reference internal" href="#_CPPv49Direction" title="Direction"><span class="n"><span class="pre">Direction</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">direction</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">functionMap</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate21receivedLocoBroadcastEii9Directioni" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> broadcast has been received - suitable for non-roster locos. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> – DCC address of the loco </p></li>
+<li><p><strong>speed</strong> – Speed as derived from the speed byte </p></li>
+<li><p><strong>direction</strong> – Direction as derived from the speed byte </p></li>
+<li><p><strong>functionMap</strong> – Function map </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
