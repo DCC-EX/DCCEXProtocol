@@ -9,7 +9,6 @@
 #include <DCCEXProtocol.h>
 #include <WiFi.h>
 
-
 // If we haven't got a custom config.h, use the example
 #if __has_include("config.h")
 #include "config.h"
@@ -22,9 +21,8 @@ void printRoster();
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
-
 public:
-  void receivedServerVersion(int major, int minor, int patch) {
+  void receivedServerVersion(int major, int minor, int patch) override {
     Serial.print("\n\nReceived version: ");
     Serial.print(major);
     Serial.print(".");
@@ -33,15 +31,32 @@ public:
     Serial.println(patch);
   }
 
-  void receivedTrackPower(TrackPower state) {
+  void receivedTrackPower(TrackPower state) override {
     Serial.print("\n\nReceived Track Power: ");
     Serial.println(state);
     Serial.println("\n\n");
   }
 
-  void receivedLocoUpdate(Loco *loco) {
+  // Use for roster Locos (LocoSource::LocoSourceRoster)
+  void receivedLocoUpdate(Loco *loco) override {
     Serial.print("Received Loco update for DCC address: ");
     Serial.println(loco->getAddress());
+  }
+
+  // Use for locally created Locos (LocoSource::LocoSourceEntry)
+  void receivedLocoBroadcast(int address, int speed, Direction direction, int functionMap) override {
+    Serial.print("\n\nReceived Loco broadcast: address|speed|direction|functionMap: ");
+    Serial.print(address);
+    Serial.print("|");
+    Serial.print(speed);
+    Serial.print("|");
+    if (direction == Direction::Forward) {
+      Serial.print("Fwd");
+    } else {
+      Serial.print("Rev");
+    }
+    Serial.print("|");
+    Serial.println(functionMap);
   }
 };
 

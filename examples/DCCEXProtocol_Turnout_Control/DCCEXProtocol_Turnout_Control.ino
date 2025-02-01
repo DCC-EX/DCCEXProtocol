@@ -26,7 +26,7 @@ void printTurnouts();
 class MyDelegate : public DCCEXProtocolDelegate {
 
 public:
-  void receivedServerVersion(int major, int minor, int patch) {
+  void receivedServerVersion(int major, int minor, int patch) override {
     Serial.print("Received version: ");
     Serial.print(major);
     Serial.print(".");
@@ -35,12 +35,12 @@ public:
     Serial.println(patch);
   }
 
-  void receivedTurnoutList() {
+  void receivedTurnoutList() override {
     Serial.print("Received turnout list:");
     printTurnouts();
   }
 
-  void receivedTurnoutAction(int turnoutId, bool thrown) {
+  void receivedTurnoutAction(int turnoutId, bool thrown) override {
     Serial.print("Received turnout action ID|thrown: ");
     Serial.print(turnoutId);
     Serial.print("|");
@@ -63,7 +63,7 @@ MyDelegate myDelegate;
 void printTurnouts() {
   for (Turnout *turnout = dccexProtocol.turnouts->getFirst(); turnout; turnout = turnout->getNext()) {
     int id = turnout->getId();
-    char *name = turnout->getName();
+    const char *name = turnout->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);

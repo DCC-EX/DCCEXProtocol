@@ -22,7 +22,7 @@
 class MyDelegate : public DCCEXProtocolDelegate {
 
 public:
-  void receivedServerVersion(int major, int minor, int patch) {
+  void receivedServerVersion(int major, int minor, int patch) override {
     Serial.print("\n\nReceived version: ");
     Serial.print(major);
     Serial.print(".");
