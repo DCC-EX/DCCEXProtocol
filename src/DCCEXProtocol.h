@@ -34,6 +34,7 @@
 /*
 Version information:
 
+1.0.2   - No functional changes, updated examples to use receivedLocoBroadcast() for non-roster Loco objects
 1.0.1   - Add additional receivedLocoBroadcast() delegate method to cater for non-roster updates
 1.0.0   - First Production release
         - Add methods to clear and refresh the various lists

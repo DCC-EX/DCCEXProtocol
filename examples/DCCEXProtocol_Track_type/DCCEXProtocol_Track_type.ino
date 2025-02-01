@@ -22,7 +22,7 @@
 class MyDelegate : public DCCEXProtocolDelegate {
 
 public:
-  void receivedTrackType(char track, TrackManagerMode type, int address) {
+  void receivedTrackType(char track, TrackManagerMode type, int address) override {
     Serial.print("\n\nReceived TrackType: ");
     Serial.print(track);
     Serial.print(" : ");

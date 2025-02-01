@@ -33,7 +33,7 @@ void printTurntables();
 // Setup the delegate class to process broadcasts/responses
 class MyDelegate : public DCCEXProtocolDelegate {
 public:
-  void receivedServerVersion(int major, int minor, int patch) {
+  void receivedServerVersion(int major, int minor, int patch) override {
     CONSOLE.print("\n\nReceived version: ");
     CONSOLE.print(major);
     CONSOLE.print(".");
@@ -42,33 +42,33 @@ public:
     CONSOLE.println(patch);
   }
 
-  void receivedTrackPower(TrackPower state) {
+  void receivedTrackPower(TrackPower state) override {
     CONSOLE.print("\n\nReceived Track Power: ");
     CONSOLE.println(state);
     CONSOLE.println("\n\n");
   }
 
-  void receivedRosterList() {
+  void receivedRosterList() override {
     CONSOLE.println("\n\nReceived Roster");
     printRoster();
   }
-  void receivedTurnoutList() {
+  void receivedTurnoutList() override {
     CONSOLE.print("\n\nReceived Turnouts/Points list");
     printTurnouts();
     CONSOLE.println("\n\n");
   }
-  void receivedRouteList() {
+  void receivedRouteList() override {
     CONSOLE.print("\n\nReceived Routes List");
     printRoutes();
     CONSOLE.println("\n\n");
   }
-  void receivedTurntableList() {
+  void receivedTurntableList() override {
     CONSOLE.print("\n\nReceived Turntables list");
     printTurntables();
     CONSOLE.println("\n\n");
   }
 
-  void receivedScreenUpdate(int screen, int row, char *message) {
+  void receivedScreenUpdate(int screen, int row, char *message) override {
     CONSOLE.println("\n\nReceived screen|row|message");
     CONSOLE.print(screen);
     CONSOLE.print("|");
@@ -86,13 +86,13 @@ MyDelegate myDelegate;
 void printRoster() {
   for (Loco *loco = dccexProtocol.roster->getFirst(); loco; loco = loco->getNext()) {
     int id = loco->getAddress();
-    char *name = loco->getName();
+    const char *name = loco->getName();
     CONSOLE.print(id);
     CONSOLE.print(" ~");
     CONSOLE.print(name);
     CONSOLE.println("~");
     for (int i = 0; i < 32; i++) {
-      char *fName = loco->getFunctionName(i);
+      const char *fName = loco->getFunctionName(i);
       if (fName != nullptr) {
         CONSOLE.print("loadFunctionLabels() ");
         CONSOLE.print(fName);
@@ -109,7 +109,7 @@ void printRoster() {
 void printTurnouts() {
   for (Turnout *turnout = dccexProtocol.turnouts->getFirst(); turnout; turnout = turnout->getNext()) {
     int id = turnout->getId();
-    char *name = turnout->getName();
+    const char *name = turnout->getName();
     CONSOLE.print(id);
     CONSOLE.print(" ~");
     CONSOLE.print(name);
@@ -121,7 +121,7 @@ void printTurnouts() {
 void printRoutes() {
   for (Route *route = dccexProtocol.routes->getFirst(); route; route = route->getNext()) {
     int id = route->getId();
-    char *name = route->getName();
+    const char *name = route->getName();
     CONSOLE.print(id);
     CONSOLE.print(" ~");
     CONSOLE.print(name);
@@ -133,7 +133,7 @@ void printRoutes() {
 void printTurntables() {
   for (Turntable *turntable = dccexProtocol.turntables->getFirst(); turntable; turntable = turntable->getNext()) {
     int id = turntable->getId();
-    char *name = turntable->getName();
+    const char *name = turntable->getName();
     CONSOLE.print(id);
     CONSOLE.print(" ~");
     CONSOLE.print(name);
@@ -142,7 +142,7 @@ void printTurntables() {
     int j = 0;
     for (TurntableIndex *turntableIndex = turntable->getFirstIndex(); turntableIndex;
          turntableIndex = turntableIndex->getNextIndex()) {
-      char *indexName = turntableIndex->getName();
+      const char *indexName = turntableIndex->getName();
       CONSOLE.print("  index");
       CONSOLE.print(j);
       CONSOLE.print(" ~");

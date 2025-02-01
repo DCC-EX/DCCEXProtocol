@@ -27,7 +27,7 @@ void printTurntables();
 class MyDelegate : public DCCEXProtocolDelegate {
 
 public:
-  void receivedServerVersion(int major, int minor, int patch) {
+  void receivedServerVersion(int major, int minor, int patch) override {
     Serial.print("\n\nReceived version: ");
     Serial.print(major);
     Serial.print(".");
@@ -36,27 +36,27 @@ public:
     Serial.println(patch);
   }
 
-  void receivedTrackPower(TrackPower state) {
+  void receivedTrackPower(TrackPower state) override {
     Serial.print("\n\nReceived Track Power: ");
     Serial.println(state);
     Serial.println("\n\n");
   }
 
-  void receivedRosterList() {
+  void receivedRosterList() override {
     Serial.println("\n\nReceived Roster");
     printRoster();
   }
-  void receivedTurnoutList() {
+  void receivedTurnoutList() override {
     Serial.print("\n\nReceived Turnouts/Points list");
     printTurnouts();
     Serial.println("\n\n");
   }
-  void receivedRouteList() {
+  void receivedRouteList() override {
     Serial.print("\n\nReceived Routes List");
     printRoutes();
     Serial.println("\n\n");
   }
-  void receivedTurntableList() {
+  void receivedTurntableList() override {
     Serial.print("\n\nReceived Turntables list");
     printTurntables();
     Serial.println("\n\n");
@@ -75,13 +75,13 @@ MyDelegate myDelegate;
 void printRoster() {
   for (Loco *loco = dccexProtocol.roster->getFirst(); loco; loco = loco->getNext()) {
     int id = loco->getAddress();
-    char *name = loco->getName();
+    const char *name = loco->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
     Serial.println("~");
     for (int i = 0; i < 32; i++) {
-      char *fName = loco->getFunctionName(i);
+      const char *fName = loco->getFunctionName(i);
       if (fName != nullptr) {
         Serial.print("loadFunctionLabels() ");
         Serial.print(fName);
@@ -98,7 +98,7 @@ void printRoster() {
 void printTurnouts() {
   for (Turnout *turnout = dccexProtocol.turnouts->getFirst(); turnout; turnout = turnout->getNext()) {
     int id = turnout->getId();
-    char *name = turnout->getName();
+    const char *name = turnout->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
@@ -110,7 +110,7 @@ void printTurnouts() {
 void printRoutes() {
   for (Route *route = dccexProtocol.routes->getFirst(); route; route = route->getNext()) {
     int id = route->getId();
-    char *name = route->getName();
+    const char *name = route->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
@@ -122,7 +122,7 @@ void printRoutes() {
 void printTurntables() {
   for (Turntable *turntable = dccexProtocol.turntables->getFirst(); turntable; turntable = turntable->getNext()) {
     int id = turntable->getId();
-    char *name = turntable->getName();
+    const char *name = turntable->getName();
     Serial.print(id);
     Serial.print(" ~");
     Serial.print(name);
@@ -131,7 +131,7 @@ void printTurntables() {
     int j = 0;
     for (TurntableIndex *turntableIndex = turntable->getFirstIndex(); turntableIndex;
          turntableIndex = turntableIndex->getNextIndex()) {
-      char *indexName = turntableIndex->getName();
+      const char *indexName = turntableIndex->getName();
       Serial.print("  index");
       Serial.print(j);
       Serial.print(" ~");
