@@ -34,7 +34,7 @@
 /*
 Version information:
 
-1.1.2   - Add new track power methods:
+1.1.0   - Add new track power methods:
         - powerMainOn()/powerMainOff() - Control track power for MAIN track only
         - powerProgOn()/powerProgOff() - Control track power for PROG track only
         - joinProg() - Join PROG to MAIN
