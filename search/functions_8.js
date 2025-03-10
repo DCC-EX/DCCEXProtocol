@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nullstream_0',['NullStream',['../classNullStream.html#ab0d616a614956971c8389ddb6367cb51',1,'NullStream']]]
+  ['loco_0',['Loco',['../classLoco.html#a23dc670b766d84a721a7a93c52817afd',1,'Loco']]]
 ];

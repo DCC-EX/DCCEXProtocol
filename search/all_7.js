@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loco_0',['loco',['../classLoco.html',1,'Loco'],['../classLoco.html#a23dc670b766d84a721a7a93c52817afd',1,'Loco::Loco()']]]
+  ['joinprog_0',['joinProg',['../classDCCEXProtocol.html#a97ed069693d3604be3ac44c24c4481c6',1,'DCCEXProtocol']]]
 ];
