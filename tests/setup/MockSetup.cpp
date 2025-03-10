@@ -42,3 +42,12 @@ std::string stream2string(StreamMock stream) {
 bool operator==(StreamMock lhs, StreamMock rhs) { return stream2string(lhs) == stream2string(rhs); }
 
 bool operator==(StreamMock lhs, std::string rhs) { return stream2string(lhs) == rhs; }
+
+size_t ExtendedStreamMock::write(uint8_t ch) {
+  _buffer.push_back(static_cast<char>(ch));
+  return 1;
+}
+
+std::string const &ExtendedStreamMock::getBuffer() const { return _buffer; }
+
+void ExtendedStreamMock::clearBuffer() { _buffer.clear(); }

@@ -34,6 +34,10 @@
 /*
 Version information:
 
+1.1.0   - Add new track power methods:
+        - powerMainOn()/powerMainOff() - Control track power for MAIN track only
+        - powerProgOn()/powerProgOff() - Control track power for PROG track only
+        - joinProg() - Join PROG to MAIN
 1.0.2   - No functional changes, updated examples to use receivedLocoBroadcast() for non-roster Loco objects
 1.0.1   - Add additional receivedLocoBroadcast() delegate method to cater for non-roster updates
 1.0.0   - First Production release
@@ -460,6 +464,21 @@ public:
 
   /// @brief Global track power off command
   void powerOff();
+
+  /// @brief Main track power on command
+  void powerMainOn();
+
+  /// @brief Main track power off command
+  void powerMainOff();
+
+  /// @brief Prog track power on command
+  void powerProgOn();
+
+  /// @brief Prog track power off command
+  void powerProgOff();
+
+  /// @brief Join Prog track to Main
+  void joinProg();
 
   /// @brief Turn power on for the specified track
   /// @param track Track name (A - H)

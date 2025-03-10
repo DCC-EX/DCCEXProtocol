@@ -36,4 +36,21 @@
 bool operator==(StreamMock lhs, StreamMock rhs);
 bool operator==(StreamMock lhs, std::string rhs);
 
+class ExtendedStreamMock : public StreamMock {
+public:
+  /// @brief Override write method for mocking and testing buffer contents
+  /// @param ch Char to write
+  size_t write(uint8_t ch) override;
+
+  /// @brief Get the buffer
+  /// @return Buffer contents
+  const std::string &getBuffer() const;
+
+  /// @brief Clear the buffer
+  void clearBuffer();
+
+private:
+  std::string _buffer;
+};
+
 #endif // MOCKSETUP_H

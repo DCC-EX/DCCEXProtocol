@@ -31,8 +31,8 @@ TEST_F(TurnoutTests, parseEmptyTurnoutList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   _dccexProtocol.getLists(false, true, false, false);
-  EXPECT_EQ(_stream, "<JT>\r\n");
-  _stream = {};
+  EXPECT_EQ(_stream.getBuffer(), "<JT>\r\n");
+  _stream.clearBuffer();
 
   // Empty turnout list response
   _stream << "<jT>";
@@ -46,8 +46,8 @@ TEST_F(TurnoutTests, parseThreeTurnouts) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   _dccexProtocol.getLists(false, true, false, false);
-  EXPECT_EQ(_stream, "<JT>\r\n");
-  _stream = {};
+  EXPECT_EQ(_stream.getBuffer(), "<JT>\r\n");
+  _stream.clearBuffer();
 
   // Empty turnout list response
   _stream << "<jT 100 101 102>";

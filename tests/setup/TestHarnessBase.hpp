@@ -48,7 +48,8 @@ protected:
   DCCEXProtocol _dccexProtocol;
   DCCEXProtocolDelegateMock _delegate;
   StreamMock _console;
-  StreamMock _stream;
+  ExtendedStreamMock _stream;
+  // StreamMock _stream;
 };
 
 #endif // TESTHARNESSBASE_HPP
