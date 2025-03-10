@@ -509,6 +509,41 @@ void DCCEXProtocol::powerOff() {
   }
 }
 
+void DCCEXProtocol::powerMainOn() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<1 MAIN>");
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::powerMainOff() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<0 MAIN>");
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::powerProgOn() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<1 PROG>");
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::powerProgOff() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<0 PROG>");
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::joinProg() {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<1 JOIN>");
+    _sendCommand();
+  }
+}
+
 void DCCEXProtocol::powerTrackOn(char track) {
   if (_delegate) {
     sprintf(_outboundCommand, "<1 %c>", track);

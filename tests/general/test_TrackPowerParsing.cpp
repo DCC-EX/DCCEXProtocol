@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2025 Peter Cole
  * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *
@@ -37,5 +38,17 @@ TEST_F(DCCEXProtocolTests, allTracksOff) {
 TEST_F(DCCEXProtocolTests, allTracksOn) {
   _stream << "<p1>";
   EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+TEST_F(DCCEXProtocolTests, mainTrackOn) {
+  _stream << "<p1 MAIN>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+TEST_F(DCCEXProtocolTests, mainTrackOff) {
+  _stream << "<p0 MAIN>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOff)).Times(Exactly(1));
   _dccexProtocol.check();
 }

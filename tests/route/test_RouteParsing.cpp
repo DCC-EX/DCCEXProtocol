@@ -31,8 +31,8 @@ TEST_F(RouteTests, parseEmptyRouteList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   _dccexProtocol.getLists(false, false, true, false);
-  EXPECT_EQ(_stream, "<JA>\r\n");
-  _stream = {};
+  EXPECT_EQ(_stream.getBuffer(), "<JA>\r\n");
+  _stream.clearBuffer();
 
   // Empty route list response
   _stream << "<jA>";
@@ -46,8 +46,8 @@ TEST_F(RouteTests, parseThreeRoutes) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   _dccexProtocol.getLists(false, false, true, false);
-  EXPECT_EQ(_stream, "<JA>\r\n");
-  _stream = {};
+  EXPECT_EQ(_stream.getBuffer(), "<JA>\r\n");
+  _stream.clearBuffer();
 
   // Three route response
   _stream << "<jA 21 121 221>";

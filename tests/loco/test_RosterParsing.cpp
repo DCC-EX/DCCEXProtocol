@@ -31,8 +31,8 @@
 TEST_F(LocoTests, parseEmptyRoster) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());
   _dccexProtocol.getLists(true, false, false, false);
-  EXPECT_EQ(_stream, "<JR>\r\n");
-  _stream = {};
+  EXPECT_EQ(_stream.getBuffer(), "<JR>\r\n");
+  _stream.clearBuffer();
 
   // Response
   _stream << "<jR>";
@@ -45,8 +45,9 @@ TEST_F(LocoTests, parseEmptyRoster) {
 TEST_F(LocoTests, parseRosterWithThreeIDs) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());
   _dccexProtocol.getLists(true, false, false, false);
-  EXPECT_EQ(_stream, "<JR>\r\n");
-  _stream = {};
+  
+  EXPECT_EQ(_stream.getBuffer(), "<JR>\r\n");
+  _stream.clearBuffer();
 
   // Response
   _stream << "<jR 42 9 120>";
