@@ -419,7 +419,7 @@ public:
   /// @param routeId ID of the route/automation to start
   void startRoute(int routeId);
 
-  /// @brief Hand off a Loco to an Automation
+  /// @brief Hand off a Loco to an Automation - note you must retrieve the ROUTE list to use this
   /// @param locoAddress DCC address of the Loco to hand off
   /// @param automationId ID of the automation to start, must be RouteType::RouteTypeAutomation
   void handOffLoco(int locoAddress, int automationId);
