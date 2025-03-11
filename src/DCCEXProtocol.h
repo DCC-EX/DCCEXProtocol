@@ -35,6 +35,9 @@
 Version information:
 
 1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
+        - Add read CV method readCV(cv) with associated delegate method receivedReadCV(int value)
+        - Add write loco address writeLocoAddress(address) with associated delegate method:
+                receivedWriteLoco(int address)
 1.1.0   - Add new track power methods:
         - powerMainOn()/powerMainOff() - Control track power for MAIN track only
         - powerProgOn()/powerProgOff() - Control track power for PROG track only
@@ -208,6 +211,14 @@ public:
   /// @brief Notify when a loco address is read from the programming track
   /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
+
+  /// @brief Notify when a CV is read from the programming track, allows a separate response to reading the Loco address
+  /// @param address CV value read from the programming track, or -1 for a failure to read
+  virtual void receivedReadCV(int value) {}
+
+  /// @brief Notify when a Loco address has been written on the programming track
+  /// @param address DCC address written to the loco, or -1 for a failure to write
+  virtual void receivedWriteLoco(int address) {}
 
   /// @brief Notify when a screen update is received
   /// @param screen Screen number
@@ -523,6 +534,16 @@ public:
   /// @brief Request the number of supported cabs(locos)
   void getNumberSupportedLocos();
 
+  // CV programming methods
+
+  /// @brief Read the value of the provided CV from the Loco on the programming track
+  /// @param cv CV number to read the value of
+  void readCV(int cv);
+
+  /// @brief Write Loco address to the Loco on the programming track
+  /// @param address DCC address to write
+  void writeLocoAddress(int address);
+
   // Attributes
 
   /// @brief Linked list of Loco objects to form the roster
@@ -591,6 +612,9 @@ private:
   // Track management methods
   void _processTrackPower();
   void _processTrackType();
+
+  // CV programming methods
+  void _processWriteLocoResponse();
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received

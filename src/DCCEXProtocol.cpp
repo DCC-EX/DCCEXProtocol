@@ -637,6 +637,22 @@ void DCCEXProtocol::getNumberSupportedLocos() {
   }
 }
 
+// CV programming methods
+
+void DCCEXProtocol::readCV(int cv) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<R %d>", cv);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::writeLocoAddress(int address) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<W %d>", address);
+    _sendCommand();
+  }
+}
+
 // Private methods
 // Protocol and server methods
 
@@ -768,6 +784,12 @@ void DCCEXProtocol::_processCommand() {
         break;
       _processReadResponse();
       break;
+    
+    case 'w': // Write loco response
+      if (DCCEXInbound::isTextParameter(0))
+        break;
+      _processWriteLocoResponse();
+      break;
 
     default:
       break;
@@ -891,8 +913,10 @@ void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
 }
 
 void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
-  int address = DCCEXInbound::getNumber(0);
-  _delegate->receivedReadLoco(address);
+  // This could be reading the loco address, or reading a CV, must call both
+  int value = DCCEXInbound::getNumber(0);
+  _delegate->receivedReadLoco(value);
+  _delegate->receivedReadCV(value);
 }
 
 // Roster methods
@@ -1323,4 +1347,9 @@ void DCCEXProtocol::_processTrackType() {
     _delegate->receivedTrackType(_track, _trackType, _address);
   }
   // _console->println(F("processTrackType(): end"));
+}
+
+void DCCEXProtocol::_processWriteLocoResponse() { // <w id> - -1 = error
+  int value = DCCEXInbound::getNumber(0);
+  _delegate->receivedWriteLoco(value);
 }
