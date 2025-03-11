@@ -34,6 +34,7 @@
 /*
 Version information:
 
+1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
 1.1.0   - Add new track power methods:
         - powerMainOn()/powerMainOff() - Control track power for MAIN track only
         - powerProgOn()/powerProgOff() - Control track power for PROG track only
@@ -417,6 +418,11 @@ public:
   /// @brief Start a route/automation
   /// @param routeId ID of the route/automation to start
   void startRoute(int routeId);
+
+  /// @brief Hand off a Loco to an Automation
+  /// @param locoAddress DCC address of the Loco to hand off
+  /// @param automationId ID of the automation to start, must be RouteType::RouteTypeAutomation
+  void handOffLoco(int locoAddress, int automationId);
 
   /// @brief Pause all routes/automations
   void pauseRoutes();

@@ -409,10 +409,19 @@ bool DCCEXProtocol::receivedRouteList() { return _receivedRouteList; }
 void DCCEXProtocol::startRoute(int routeId) {
   // console->println(F("sendRouteAction()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "</START  %d >", routeId);
+    sprintf(_outboundCommand, "</ START %d>", routeId);
     _sendCommand();
   }
   // console->println(F("sendRouteAction() end"));
+}
+
+void DCCEXProtocol::handOffLoco(int locoAddress, int automationId) {
+  if (_delegate) {
+    Route *automation = routes->getById(automationId);
+    if (!automation || automation->getType() != RouteType::RouteTypeAutomation) return;
+    sprintf(_outboundCommand, "</ START %d %d>", locoAddress, automationId);
+    _sendCommand();
+  }
 }
 
 void DCCEXProtocol::pauseRoutes() {
