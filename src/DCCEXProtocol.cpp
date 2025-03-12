@@ -791,6 +791,14 @@ void DCCEXProtocol::_processCommand() {
       _processWriteLocoResponse();
       break;
 
+    case 'v': // Validate CV response
+      if (DCCEXInbound::isTextParameter(0))
+        break;
+      if (DCCEXInbound::getParameterCount() != 2)
+        break;
+      _processValidateCVResponse();
+      break;
+
     default:
       break;
     }
@@ -913,10 +921,8 @@ void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
 }
 
 void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
-  // This could be reading the loco address, or reading a CV, must call both
-  int value = DCCEXInbound::getNumber(0);
-  _delegate->receivedReadLoco(value);
-  _delegate->receivedReadCV(value);
+  int address = DCCEXInbound::getNumber(0);
+  _delegate->receivedReadLoco(address);
 }
 
 // Roster methods
@@ -1347,6 +1353,12 @@ void DCCEXProtocol::_processTrackType() {
     _delegate->receivedTrackType(_track, _trackType, _address);
   }
   // _console->println(F("processTrackType(): end"));
+}
+
+void DCCEXProtocol::_processValidateCVResponse() { // <v cv value> or -1 = error
+  int cv = DCCEXInbound::getNumber(0);
+  int value = DCCEXInbound::getNumber(1);
+  _delegate->receivedValidateCV(cv, value);
 }
 
 void DCCEXProtocol::_processWriteLocoResponse() { // <w id> - -1 = error

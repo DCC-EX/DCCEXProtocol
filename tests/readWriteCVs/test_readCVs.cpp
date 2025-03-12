@@ -51,10 +51,16 @@ TEST_F(CVTests, readCV) {
   ASSERT_EQ(_stream.getBuffer(), expected);
 }
 
-/// @brief Validate receiving <r value> calls both receivedReadLoco() and receivedReadCV()
+/// @brief Validate receiving <r value> calls receivedReadLoco()
 TEST_F(CVTests, readAddressCV) {
   _stream << "<r 1234>";
   EXPECT_CALL(_delegate, receivedReadLoco(1234)).Times(Exactly(1));
-  EXPECT_CALL(_delegate, receivedReadCV(1234)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/// @brief Validate receiving <v cv value> calls receivedValidateCV()
+TEST_F(CVTests, validateCV) {
+  _stream << "<v 1 3>";
+  EXPECT_CALL(_delegate, receivedValidateCV(1, 3)).Times(Exactly(1));
   _dccexProtocol.check();
 }

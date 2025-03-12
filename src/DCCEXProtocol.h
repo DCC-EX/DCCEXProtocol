@@ -212,9 +212,10 @@ public:
   /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
 
-  /// @brief Notify when a CV is read from the programming track, allows a separate response to reading the Loco address
-  /// @param address CV value read from the programming track, or -1 for a failure to read
-  virtual void receivedReadCV(int value) {}
+  /// @brief Notify when a CV is read or validated from the programming track
+  /// @param cv CV the value has been read from
+  /// @param value Value read from the CV, or -1 for a failure to read
+  virtual void receivedValidateCV(int cv, int value) {}
 
   /// @brief Notify when a Loco address has been written on the programming track
   /// @param address DCC address written to the loco, or -1 for a failure to write
@@ -614,6 +615,7 @@ private:
   void _processTrackType();
 
   // CV programming methods
+  void _processValidateCVResponse();
   void _processWriteLocoResponse();
 
   // Attributes

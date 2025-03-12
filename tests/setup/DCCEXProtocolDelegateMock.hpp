@@ -43,7 +43,7 @@ public:
   MOCK_METHOD(void, receivedReadLoco, (int), (override));
 
   // Notify when a CV is read from the programming track
-  MOCK_METHOD(void, receivedReadCV, (int), (override));
+  MOCK_METHOD(void, receivedValidateCV, (int, int), (override));
 
   // Notify when a loco address is written on the programming track
   MOCK_METHOD(void, receivedWriteLoco, (int), (override));
