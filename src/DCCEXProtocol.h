@@ -35,7 +35,8 @@
 Version information:
 
 1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
-        - Add read CV method readCV(cv) with associated delegate method receivedReadCV(int value)
+        - Add read CV method readCV(cv) with associated delegate method:
+                receivedValidateCV(int cv, int value)
         - Add write loco address writeLocoAddress(address) with associated delegate method:
                 receivedWriteLoco(int address)
 1.1.0   - Add new track power methods:
