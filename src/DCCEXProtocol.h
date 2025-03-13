@@ -42,7 +42,7 @@ Version information:
         - Add validateCVBit(cv, bit, value) method with associated delegate method:
                 receivedValidateCVBit(int cv, int bit, int value)
         - Add writeCV(cv, value) with delegate method receivedWriteCV(int cv, int value)
-        - Add writeCVBit(cv, bit, value) with delegate method receivedWriteCVBit(int cv, int bit, int value)
+        - Add writeCVBit(cv, bit, value) - note there is no response for this due to parser limitations
         - Add writeCVOnMain(address, cv, value)
         - Add writeCVBitOnMain(address, cv, bit, value)
 1.1.0   - Add new track power methods:
@@ -238,12 +238,6 @@ public:
   /// @param cv CV being written to
   /// @param value Value written, or -1 for failure
   virtual void receivedWriteCV(int cv, int value) {}
-
-  /// @brief Notify when a CV bit is written on the programming track
-  /// @param cv CV being written to
-  /// @param bit Bit of the CV being written
-  /// @param value Value written, or -1 for failure
-  virtual void receivedWriteCVBit(int cv, int bit, int value) {}
 
   /// @brief Notify when a screen update is received
   /// @param screen Screen number
@@ -678,7 +672,6 @@ private:
   void _processValidateCVBitResponse();
   void _processWriteLocoResponse();
   void _processWriteCVResponse();
-  void _processWriteCVBitResponse();
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received

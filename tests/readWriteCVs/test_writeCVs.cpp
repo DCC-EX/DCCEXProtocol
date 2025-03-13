@@ -100,10 +100,3 @@ TEST_F(CVTests, writeCVResponse) {
   EXPECT_CALL(_delegate, receivedWriteCV(1, 3)).Times(Exactly(1));
   _dccexProtocol.check();
 }
-
-/// @brief Validate a resonse to writing a CV bit calls the correct delegate method
-TEST_F(CVTests, writeCVBitResponse) {
-  _stream << "<r 19 4 1>";
-  EXPECT_CALL(_delegate, receivedWriteCVBit(19, 4, 1)).Times(Exactly(1));
-  _dccexProtocol.check();
-}

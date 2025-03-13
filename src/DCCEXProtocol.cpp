@@ -829,8 +829,6 @@ void DCCEXProtocol::_processCommand() {
         _processReadResponse();
       } else if (DCCEXInbound::getParameterCount() == 2) {
         _processWriteCVResponse();
-      } else if (DCCEXInbound::getParameterCount() == 3) {
-        _processWriteCVBitResponse();
       }
       break;
 
@@ -1428,11 +1426,4 @@ void DCCEXProtocol::_processWriteCVResponse() { // <r cv value>, value -1 = erro
   int cv = DCCEXInbound::getNumber(0);
   int value = DCCEXInbound::getNumber(1);
   _delegate->receivedWriteCV(cv, value);
-}
-
-void DCCEXProtocol::_processWriteCVBitResponse() { // <r cv bit value>, value -1 = error
-  int cv = DCCEXInbound::getNumber(0);
-  int bit = DCCEXInbound::getNumber(1);
-  int value = DCCEXInbound::getNumber(2);
-  _delegate->receivedWriteCVBit(cv, bit, value);
 }

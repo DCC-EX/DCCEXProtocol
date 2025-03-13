@@ -82,6 +82,13 @@ TEST_F(CVTests, readAddressCVResponse) {
   _dccexProtocol.check();
 }
 
+/// @brief Validate receiving <v cv value> calls receivedValidateCV()
+TEST_F(CVTests, validateCVResponse) {
+  _stream << "<v 1 3>";
+  EXPECT_CALL(_delegate, receivedValidateCV(1, 3)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
 /// @brief Validate receiving <v cv bit value> calls receivedValidateCVBit()
 TEST_F(CVTests, validateCVBitResponse) {
   _stream << "<v 1 3 1>";

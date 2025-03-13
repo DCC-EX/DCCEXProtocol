@@ -51,9 +51,6 @@ public:
   // Notify when a CV is written on the programming track
   MOCK_METHOD(void, receivedWriteCV, (int, int), (override));
 
-  // Notify when a CV bit is written on the programming track
-  MOCK_METHOD(void, receivedWriteCVBit, (int, int, int), (override));
-
   // Notify when a loco address is written on the programming track
   MOCK_METHOD(void, receivedWriteLoco, (int), (override));
 };
