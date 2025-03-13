@@ -75,3 +75,19 @@ TEST_F(RouteTests, createThreeRoutes) {
   EXPECT_STREQ(route400->getName(), "");
   EXPECT_EQ(route400->getType(), RouteType::RouteTypeRoute);
 }
+
+/// @brief Validate that sending handOffLoco(int locoAddress, int automationId) sends </ locoAddress automationId>
+TEST_F(RouteTests, automationHandOff) {
+  // Start automation ID 100 using loco address 1234
+  const char *expected = "</ START 1234 100>\r\n";
+
+  // An automation 100 must exist
+  Route *automation100 = new Route(100);
+  automation100->setType(RouteType::RouteTypeAutomation);
+
+  // Call power on
+  _dccexProtocol.handOffLoco(1234, 100);
+
+  // Ensure the buffer has what's expected
+  ASSERT_EQ(_stream.getBuffer(), expected);
+}
