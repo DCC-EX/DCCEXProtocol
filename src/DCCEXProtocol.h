@@ -579,7 +579,9 @@ public:
   /// @param value Value to write to the CV
   void writeCV(int cv, int value);
 
-  /// @brief Write the provided value to the specified bit and CV on the programming track
+  /// @brief Write the provided value to the specified bit and CV on the programming track.
+  /// Note that the response is in legacy DCC++ formatting and is not supported by the DCCEXInbound parser.
+  /// Therefore, the throttle will not receive a response. We suggest writing full CVs.
   /// @param cv CV number to write to
   /// @param bit Bit for the CV to write
   /// @param value Value to write (0|1)
