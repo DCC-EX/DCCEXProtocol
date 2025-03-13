@@ -418,7 +418,8 @@ void DCCEXProtocol::startRoute(int routeId) {
 void DCCEXProtocol::handOffLoco(int locoAddress, int automationId) {
   if (_delegate) {
     Route *automation = routes->getById(automationId);
-    if (!automation || automation->getType() != RouteType::RouteTypeAutomation) return;
+    if (!automation || automation->getType() != RouteType::RouteTypeAutomation)
+      return;
     sprintf(_outboundCommand, "</ START %d %d>", locoAddress, automationId);
     _sendCommand();
   }
@@ -646,9 +647,51 @@ void DCCEXProtocol::readCV(int cv) {
   }
 }
 
+void DCCEXProtocol::validateCV(int cv, int value) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<V %d %d>", cv, value);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::validateCVBit(int cv, int bit, int value) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<V %d %d %d>", cv, bit, value);
+    _sendCommand();
+  }
+}
+
 void DCCEXProtocol::writeLocoAddress(int address) {
   if (_delegate) {
     sprintf(_outboundCommand, "<W %d>", address);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::writeCV(int cv, int value) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<W %d %d>", cv, value);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::writeCVBit(int cv, int bit, int value) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<B %d %d %d>", cv, bit, value);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::writeCVOnMain(int address, int cv, int value) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<w %d %d %d>", address, cv, value);
+    _sendCommand();
+  }
+}
+
+void DCCEXProtocol::writeCVBitOnMain(int address, int cv, int bit, int value) {
+  if (_delegate) {
+    sprintf(_outboundCommand, "<b %d %d %d %d>", address, cv, bit, value);
     _sendCommand();
   }
 }
@@ -782,9 +825,15 @@ void DCCEXProtocol::_processCommand() {
     case 'r': // Read loco response
       if (DCCEXInbound::isTextParameter(0))
         break;
-      _processReadResponse();
+      if (DCCEXInbound::getParameterCount() == 1) {
+        _processReadResponse();
+      } else if (DCCEXInbound::getParameterCount() == 2) {
+        _processWriteCVResponse();
+      } else if (DCCEXInbound::getParameterCount() == 3) {
+        _processWriteCVBitResponse();
+      }
       break;
-    
+
     case 'w': // Write loco response
       if (DCCEXInbound::isTextParameter(0))
         break;
@@ -794,9 +843,11 @@ void DCCEXProtocol::_processCommand() {
     case 'v': // Validate CV response
       if (DCCEXInbound::isTextParameter(0))
         break;
-      if (DCCEXInbound::getParameterCount() != 2)
-        break;
-      _processValidateCVResponse();
+      if (DCCEXInbound::getParameterCount() == 2) {
+        _processValidateCVResponse();
+      } else if (DCCEXInbound::getParameterCount() == 3) {
+        _processValidateCVBitResponse();
+      }
       break;
 
     default:
@@ -1355,13 +1406,33 @@ void DCCEXProtocol::_processTrackType() {
   // _console->println(F("processTrackType(): end"));
 }
 
-void DCCEXProtocol::_processValidateCVResponse() { // <v cv value> or -1 = error
+void DCCEXProtocol::_processValidateCVResponse() { // <v cv value>, value -1 = error
   int cv = DCCEXInbound::getNumber(0);
   int value = DCCEXInbound::getNumber(1);
   _delegate->receivedValidateCV(cv, value);
 }
 
+void DCCEXProtocol::_processValidateCVBitResponse() { // <v cv bit value>, value -1 = error
+  int cv = DCCEXInbound::getNumber(0);
+  int bit = DCCEXInbound::getNumber(1);
+  int value = DCCEXInbound::getNumber(2);
+  _delegate->receivedValidateCVBit(cv, bit, value);
+}
+
 void DCCEXProtocol::_processWriteLocoResponse() { // <w id> - -1 = error
   int value = DCCEXInbound::getNumber(0);
   _delegate->receivedWriteLoco(value);
+}
+
+void DCCEXProtocol::_processWriteCVResponse() { // <r cv value>, value -1 = error
+  int cv = DCCEXInbound::getNumber(0);
+  int value = DCCEXInbound::getNumber(1);
+  _delegate->receivedWriteCV(cv, value);
+}
+
+void DCCEXProtocol::_processWriteCVBitResponse() { // <r cv bit value>, value -1 = error
+  int cv = DCCEXInbound::getNumber(0);
+  int bit = DCCEXInbound::getNumber(1);
+  int value = DCCEXInbound::getNumber(2);
+  _delegate->receivedWriteCVBit(cv, bit, value);
 }

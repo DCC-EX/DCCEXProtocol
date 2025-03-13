@@ -51,16 +51,40 @@ TEST_F(CVTests, readCV) {
   ASSERT_EQ(_stream.getBuffer(), expected);
 }
 
+/// @brief Validate calling validateCV(cv, value) generates the correct command
+TEST_F(CVTests, validateCV) {
+  // Validating CV 1 with value 3 should generate <V 1 3>
+  const char *expected = "<V 1 3>\r\n";
+
+  // Call validateCV()
+  _dccexProtocol.validateCV(1, 3);
+
+  // Buffer should contain what we expect
+  ASSERT_EQ(_stream.getBuffer(), expected);
+}
+
+/// @brief Validate calling validateCVBit(cv, bit, value) generates the correct command
+TEST_F(CVTests, validateCVBit) {
+  // Validating CV 1 bit 3 with value 1 should generate <V 1 3 1>
+  const char *expected = "<V 1 3 1>\r\n";
+
+  // Call validateCVBit()
+  _dccexProtocol.validateCVBit(1, 3, 1);
+
+  // Buffer should contain what we expect
+  ASSERT_EQ(_stream.getBuffer(), expected);
+}
+
 /// @brief Validate receiving <r value> calls receivedReadLoco()
-TEST_F(CVTests, readAddressCV) {
+TEST_F(CVTests, readAddressCVResponse) {
   _stream << "<r 1234>";
   EXPECT_CALL(_delegate, receivedReadLoco(1234)).Times(Exactly(1));
   _dccexProtocol.check();
 }
 
-/// @brief Validate receiving <v cv value> calls receivedValidateCV()
-TEST_F(CVTests, validateCV) {
-  _stream << "<v 1 3>";
-  EXPECT_CALL(_delegate, receivedValidateCV(1, 3)).Times(Exactly(1));
+/// @brief Validate receiving <v cv bit value> calls receivedValidateCVBit()
+TEST_F(CVTests, validateCVBitResponse) {
+  _stream << "<v 1 3 1>";
+  EXPECT_CALL(_delegate, receivedValidateCVBit(1, 3, 1)).Times(Exactly(1));
   _dccexProtocol.check();
 }

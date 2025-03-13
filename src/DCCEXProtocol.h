@@ -35,10 +35,16 @@
 Version information:
 
 1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
-        - Add read CV method readCV(cv) with associated delegate method:
+        - Add readCV(cv) and validateCV(cv, value) methods with associated delegate method:
                 receivedValidateCV(int cv, int value)
         - Add write loco address writeLocoAddress(address) with associated delegate method:
                 receivedWriteLoco(int address)
+        - Add validateCVBit(cv, bit, value) method with associated delegate method:
+                receivedValidateCVBit(int cv, int bit, int value)
+        - Add writeCV(cv, value) with delegate method receivedWriteCV(int cv, int value)
+        - Add writeCVBit(cv, bit, value) with delegate method receivedWriteCVBit(int cv, int bit, int value)
+        - Add writeCVOnMain(address, cv, value)
+        - Add writeCVBitOnMain(address, cv, bit, value)
 1.1.0   - Add new track power methods:
         - powerMainOn()/powerMainOff() - Control track power for MAIN track only
         - powerProgOn()/powerProgOff() - Control track power for PROG track only
@@ -218,9 +224,26 @@ public:
   /// @param value Value read from the CV, or -1 for a failure to read
   virtual void receivedValidateCV(int cv, int value) {}
 
+  /// @brief Notify when a CV bit is validated from the programming track
+  /// @param cv CV the bit is being validated in
+  /// @param bit Bit of the CV being validated
+  /// @param value Value validated from the bit, or -1 if not valid
+  virtual void receivedValidateCVBit(int cv, int bit, int value) {}
+
   /// @brief Notify when a Loco address has been written on the programming track
   /// @param address DCC address written to the loco, or -1 for a failure to write
   virtual void receivedWriteLoco(int address) {}
+
+  /// @brief Notify when a CV is written on the programming track
+  /// @param cv CV being written to
+  /// @param value Value written, or -1 for failure
+  virtual void receivedWriteCV(int cv, int value) {}
+
+  /// @brief Notify when a CV bit is written on the programming track
+  /// @param cv CV being written to
+  /// @param bit Bit of the CV being written
+  /// @param value Value written, or -1 for failure
+  virtual void receivedWriteCVBit(int cv, int bit, int value) {}
 
   /// @brief Notify when a screen update is received
   /// @param screen Screen number
@@ -542,9 +565,44 @@ public:
   /// @param cv CV number to read the value of
   void readCV(int cv);
 
+  /// @brief Validate the provided value is stored in the provided CV
+  /// @param cv CV number to validate the value of
+  /// @param value Value to validate
+  void validateCV(int cv, int value);
+
+  /// @brief Validate the provided bit is set to the specified value for the provided CV
+  /// @param cv CV number to validate the bit of
+  /// @param bit Bit for the CV to validate
+  /// @param value Value to validate (0|1)
+  void validateCVBit(int cv, int bit, int value);
+
   /// @brief Write Loco address to the Loco on the programming track
   /// @param address DCC address to write
   void writeLocoAddress(int address);
+
+  /// @brief Write the provided value to the specified CV on the programming track
+  /// @param cv CV number to write to
+  /// @param value Value to write to the CV
+  void writeCV(int cv, int value);
+
+  /// @brief Write the provided value to the specified bit and CV on the programming track
+  /// @param cv CV number to write to
+  /// @param bit Bit for the CV to write
+  /// @param value Value to write (0|1)
+  void writeCVBit(int cv, int bit, int value);
+
+  /// @brief Write the provided value to the specified Loco address and CV on the main track
+  /// @param address DCC address of the Loco
+  /// @param cv CV number to write to
+  /// @param value Value to write to the CV
+  void writeCVOnMain(int address, int cv, int value);
+
+  /// @brief Write the provided value to the specified Loco, CV, and bit on the main track
+  /// @param address DCC address of the Loco
+  /// @param cv CV number to write to
+  /// @param bit Bit for the CV to write
+  /// @param value Value to write (0|1)
+  void writeCVBitOnMain(int address, int cv, int bit, int value);
 
   // Attributes
 
@@ -617,7 +675,10 @@ private:
 
   // CV programming methods
   void _processValidateCVResponse();
+  void _processValidateCVBitResponse();
   void _processWriteLocoResponse();
+  void _processWriteCVResponse();
+  void _processWriteCVBitResponse();
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received
