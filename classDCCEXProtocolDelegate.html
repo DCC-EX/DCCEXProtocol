@@ -130,6 +130,18 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>receivedTurnt
 <tr class="memitem:a8d292afeb6e6c3c5e5c108bef131d935" id="r_a8d292afeb6e6c3c5e5c108bef131d935"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a8d292afeb6e6c3c5e5c108bef131d935">receivedReadLoco</a> (int address)</td></tr>
 <tr class="memdesc:a8d292afeb6e6c3c5e5c108bef131d935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a loco address is read from the programming track.  <br /></td></tr>
 <tr class="separator:a8d292afeb6e6c3c5e5c108bef131d935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a469ef7853e3c2b69b7ac318d5ec26378" id="r_a469ef7853e3c2b69b7ac318d5ec26378"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a469ef7853e3c2b69b7ac318d5ec26378">receivedValidateCV</a> (int cv, int value)</td></tr>
+<tr class="memdesc:a469ef7853e3c2b69b7ac318d5ec26378"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a CV is read or validated from the programming track.  <br /></td></tr>
+<tr class="separator:a469ef7853e3c2b69b7ac318d5ec26378"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af12b6c7e96dd073ec242fa28456cd241" id="r_af12b6c7e96dd073ec242fa28456cd241"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#af12b6c7e96dd073ec242fa28456cd241">receivedValidateCVBit</a> (int cv, int bit, int value)</td></tr>
+<tr class="memdesc:af12b6c7e96dd073ec242fa28456cd241"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a CV bit is validated from the programming track.  <br /></td></tr>
+<tr class="separator:af12b6c7e96dd073ec242fa28456cd241"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ab9090a619e6046ee4a9988436c6665" id="r_a3ab9090a619e6046ee4a9988436c6665"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a3ab9090a619e6046ee4a9988436c6665">receivedWriteLoco</a> (int address)</td></tr>
+<tr class="memdesc:a3ab9090a619e6046ee4a9988436c6665"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> address has been written on the programming track.  <br /></td></tr>
+<tr class="separator:a3ab9090a619e6046ee4a9988436c6665"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9708fea8657a7deff7ffcf76729cd60f" id="r_a9708fea8657a7deff7ffcf76729cd60f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a9708fea8657a7deff7ffcf76729cd60f">receivedWriteCV</a> (int cv, int value)</td></tr>
+<tr class="memdesc:a9708fea8657a7deff7ffcf76729cd60f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a CV is written on the programming track.  <br /></td></tr>
+<tr class="separator:a9708fea8657a7deff7ffcf76729cd60f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79523676b61d3ecfcd89b03a648d294c" id="r_a79523676b61d3ecfcd89b03a648d294c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a79523676b61d3ecfcd89b03a648d294c">receivedScreenUpdate</a> (int screen, int row, char *message)</td></tr>
 <tr class="memdesc:a79523676b61d3ecfcd89b03a648d294c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a screen update is received.  <br /></td></tr>
 <tr class="separator:a79523676b61d3ecfcd89b03a648d294c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -624,6 +636,182 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>receivedTurnt
     <tr><td class="paramname">turntableId</td><td>ID of the turntable </td></tr>
     <tr><td class="paramname">position</td><td>Index of the position it is moving (or has moved) to </td></tr>
     <tr><td class="paramname">moving</td><td>Whether it is moving or not (true|false) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a469ef7853e3c2b69b7ac318d5ec26378" name="a469ef7853e3c2b69b7ac318d5ec26378"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a469ef7853e3c2b69b7ac318d5ec26378">&#9670;&#160;</a></span>receivedValidateCV()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedValidateCV </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a CV is read or validated from the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV the value has been read from </td></tr>
+    <tr><td class="paramname">value</td><td>Value read from the CV, or -1 for a failure to read </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af12b6c7e96dd073ec242fa28456cd241" name="af12b6c7e96dd073ec242fa28456cd241"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af12b6c7e96dd073ec242fa28456cd241">&#9670;&#160;</a></span>receivedValidateCVBit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedValidateCVBit </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>bit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a CV bit is validated from the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV the bit is being validated in </td></tr>
+    <tr><td class="paramname">bit</td><td>Bit of the CV being validated </td></tr>
+    <tr><td class="paramname">value</td><td>Value validated from the bit, or -1 if not valid </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9708fea8657a7deff7ffcf76729cd60f" name="a9708fea8657a7deff7ffcf76729cd60f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9708fea8657a7deff7ffcf76729cd60f">&#9670;&#160;</a></span>receivedWriteCV()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedWriteCV </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a CV is written on the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV being written to </td></tr>
+    <tr><td class="paramname">value</td><td>Value written, or -1 for failure </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3ab9090a619e6046ee4a9988436c6665" name="a3ab9090a619e6046ee4a9988436c6665"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ab9090a619e6046ee4a9988436c6665">&#9670;&#160;</a></span>receivedWriteLoco()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedWriteLoco </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> address has been written on the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address written to the loco, or -1 for a failure to write </td></tr>
   </table>
   </dd>
 </dl>

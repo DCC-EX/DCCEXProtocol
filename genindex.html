@@ -183,6 +183,7 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13getRouteCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getRouteCount()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedRouteList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10startRouteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::startRoute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11handOffLocoEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::handOffLoco()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11pauseRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::pauseRoutes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12resumeRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::resumeRoutes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol14clearRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::clearRouteList()</span></code></a></li>
@@ -208,6 +209,14 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateLinearAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol25deactivateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateLinearAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol23getNumberSupportedLocosEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getNumberSupportedLocos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol6readCVEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::readCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10validateCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::validateCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13validateCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::validateCVBit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16writeLocoAddressEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeLocoAddress()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol7writeCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10writeCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVBit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13writeCVOnMainEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVOnMain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16writeCVBitOnMainEiiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVBitOnMain()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol6rosterE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::roster</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8turnoutsE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::turnouts</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol6routesE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::routes</span></code></a></li>
@@ -251,6 +260,10 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processTurntableBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18_processTrackPowerEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17_processTrackTypeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processValidateCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVBitResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteLocoResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteCVResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
@@ -297,6 +310,10 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate16receivedReadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedReadLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedValidateCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedValidateCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedValidateCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedValidateCVBit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteCV()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedScreenUpdate()</span></code></a></li>
 </ul>
 </li>
@@ -734,6 +751,14 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol21_processTurntableListEv">DCCEXProtocol::_processTurntableList (C++ function)</a>
 </li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv">DCCEXProtocol::_processValidateCVBitResponse (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol26_processValidateCVResponseEv">DCCEXProtocol::_processValidateCVResponse (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv">DCCEXProtocol::_processWriteCVResponse (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv">DCCEXProtocol::_processWriteLocoResponse (C++ function)</a>
+</li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol14_receivedListsE">DCCEXProtocol::_receivedLists (C++ member)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol15_receivedRosterE">DCCEXProtocol::_receivedRoster (C++ member)</a>
@@ -794,8 +819,6 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi">DCCEXProtocol::activateLinearAccessory (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol5checkEv">DCCEXProtocol::check (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol13clearAllListsEv">DCCEXProtocol::clearAllLists (C++ function)</a>
@@ -804,6 +827,8 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol14clearRouteListEv">DCCEXProtocol::clearRouteList (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol16clearTurnoutListEv">DCCEXProtocol::clearTurnoutList (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol18clearTurntableListEv">DCCEXProtocol::clearTurntableList (C++ function)</a>
@@ -854,6 +879,8 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol17getTurntableCountEv">DCCEXProtocol::getTurntableCount (C++ function)</a>
 </li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol11handOffLocoEii">DCCEXProtocol::handOffLoco (C++ function)</a>
+</li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol12isFunctionOnEP4Locoi">DCCEXProtocol::isFunctionOn (C++ function)</a>, <a href="library.html#_CPPv4N13DCCEXProtocol12isFunctionOnEP7Consisti">[1]</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol8joinProgEv">DCCEXProtocol::joinProg (C++ function)</a>
@@ -875,6 +902,8 @@
       <li><a href="library.html#_CPPv4N13DCCEXProtocol13powerTrackOffEc">DCCEXProtocol::powerTrackOff (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol12powerTrackOnEc">DCCEXProtocol::powerTrackOn (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol6readCVEi">DCCEXProtocol::readCV (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol8readLocoEv">DCCEXProtocol::readLoco (C++ function)</a>
 </li>
@@ -932,6 +961,20 @@
 </li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocol10turntablesE">DCCEXProtocol::turntables (C++ member)</a>
 </li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol10validateCVEii">DCCEXProtocol::validateCV (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol13validateCVBitEiii">DCCEXProtocol::validateCVBit (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol7writeCVEii">DCCEXProtocol::writeCV (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol10writeCVBitEiii">DCCEXProtocol::writeCVBit (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol16writeCVBitOnMainEiiii">DCCEXProtocol::writeCVBitOnMain (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol13writeCVOnMainEiii">DCCEXProtocol::writeCVOnMain (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N13DCCEXProtocol16writeLocoAddressEi">DCCEXProtocol::writeLocoAddress (C++ function)</a>
+</li>
       <li><a href="library.html#_CPPv4N13DCCEXProtocolD0Ev">DCCEXProtocol::~DCCEXProtocol (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv421DCCEXProtocolDelegate">DCCEXProtocolDelegate (C++ class)</a>
@@ -965,6 +1008,14 @@
       <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib">DCCEXProtocolDelegate::receivedTurntableAction (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedTurntableListEv">DCCEXProtocolDelegate::receivedTurntableList (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedValidateCVEii">DCCEXProtocolDelegate::receivedValidateCV (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedValidateCVBitEiii">DCCEXProtocolDelegate::receivedValidateCVBit (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii">DCCEXProtocolDelegate::receivedWriteCV (C++ function)</a>
+</li>
+      <li><a href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi">DCCEXProtocolDelegate::receivedWriteLoco (C++ function)</a>
 </li>
       <li><a href="library.html#_CPPv49Direction">Direction (C++ enum)</a>
 </li>

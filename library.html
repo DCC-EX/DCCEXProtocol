@@ -186,6 +186,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13getRouteCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getRouteCount()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedRouteList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10startRouteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::startRoute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11handOffLocoEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::handOffLoco()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11pauseRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::pauseRoutes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12resumeRoutesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::resumeRoutes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14clearRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::clearRouteList()</span></code></a></li>
@@ -211,6 +212,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateLinearAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25deactivateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateLinearAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23getNumberSupportedLocosEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getNumberSupportedLocos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol6readCVEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::readCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10validateCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::validateCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13validateCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::validateCVBit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16writeLocoAddressEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeLocoAddress()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol7writeCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10writeCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVBit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13writeCVOnMainEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVOnMain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16writeCVBitOnMainEiiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVBitOnMain()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol6rosterE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::roster</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8turnoutsE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::turnouts</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol6routesE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::routes</span></code></a></li>
@@ -254,6 +263,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol26_processTurntableBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol18_processTrackPowerEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol17_processTrackTypeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol26_processValidateCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVBitResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteLocoResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteCVResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
@@ -300,6 +313,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate23receivedTurntableActionEiib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurntableAction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate16receivedReadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedReadLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate18receivedValidateCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedValidateCV()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate21receivedValidateCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedValidateCVBit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteCV()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedScreenUpdate()</span></code></a></li>
 </ul>
 </li>
@@ -1524,6 +1541,20 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol11handOffLocoEii">
+<span id="_CPPv3N13DCCEXProtocol11handOffLocoEii"></span><span id="_CPPv2N13DCCEXProtocol11handOffLocoEii"></span><span id="DCCEXProtocol::handOffLoco__i.i"></span><span class="target" id="classDCCEXProtocol_1a7d6dd7b2081c1db0a0cc16ef0f779bc3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handOffLoco</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">locoAddress</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">automationId</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol11handOffLocoEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Hand off a <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> to an Automation - note you must retrieve the ROUTE list to use this. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>locoAddress</strong> – DCC address of the <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> to hand off </p></li>
+<li><p><strong>automationId</strong> – ID of the automation to start, must be RouteType::RouteTypeAutomation </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol11pauseRoutesEv">
 <span id="_CPPv3N13DCCEXProtocol11pauseRoutesEv"></span><span id="_CPPv2N13DCCEXProtocol11pauseRoutesEv"></span><span id="DCCEXProtocol::pauseRoutes"></span><span class="target" id="classDCCEXProtocol_1abfeca0e05b8aaa1fcb18c6e61d917de9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pauseRoutes</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol11pauseRoutesEv" title="Link to this definition"></a><br /></dt>
 <dd><p>Pause all routes/automations. </p>
@@ -1743,6 +1774,117 @@
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol23getNumberSupportedLocosEv">
 <span id="_CPPv3N13DCCEXProtocol23getNumberSupportedLocosEv"></span><span id="_CPPv2N13DCCEXProtocol23getNumberSupportedLocosEv"></span><span id="DCCEXProtocol::getNumberSupportedLocos"></span><span class="target" id="classDCCEXProtocol_1a642d6c2f1ff8424bf12021a8eaa23599"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getNumberSupportedLocos</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol23getNumberSupportedLocosEv" title="Link to this definition"></a><br /></dt>
 <dd><p>Request the number of supported cabs(locos) </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol6readCVEi">
+<span id="_CPPv3N13DCCEXProtocol6readCVEi"></span><span id="_CPPv2N13DCCEXProtocol6readCVEi"></span><span id="DCCEXProtocol::readCV__i"></span><span class="target" id="classDCCEXProtocol_1aee95c31806048fbb4b5adcb069b75e7f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">readCV</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol6readCVEi" title="Link to this definition"></a><br /></dt>
+<dd><p>Read the value of the provided CV from the <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> on the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cv</strong> – CV number to read the value of </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10validateCVEii">
+<span id="_CPPv3N13DCCEXProtocol10validateCVEii"></span><span id="_CPPv2N13DCCEXProtocol10validateCVEii"></span><span id="DCCEXProtocol::validateCV__i.i"></span><span class="target" id="classDCCEXProtocol_1ae181d4404131978ea397f3c1ddaae8c7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">validateCV</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10validateCVEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Validate the provided value is stored in the provided CV. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV number to validate the value of </p></li>
+<li><p><strong>value</strong> – Value to validate </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13validateCVBitEiii">
+<span id="_CPPv3N13DCCEXProtocol13validateCVBitEiii"></span><span id="_CPPv2N13DCCEXProtocol13validateCVBitEiii"></span><span id="DCCEXProtocol::validateCVBit__i.i.i"></span><span class="target" id="classDCCEXProtocol_1abea07c17f6479bdaac0d82fe2d4cac8e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">validateCVBit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bit</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13validateCVBitEiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Validate the provided bit is set to the specified value for the provided CV. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV number to validate the bit of </p></li>
+<li><p><strong>bit</strong> – Bit for the CV to validate </p></li>
+<li><p><strong>value</strong> – Value to validate (0|1) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol16writeLocoAddressEi">
+<span id="_CPPv3N13DCCEXProtocol16writeLocoAddressEi"></span><span id="_CPPv2N13DCCEXProtocol16writeLocoAddressEi"></span><span id="DCCEXProtocol::writeLocoAddress__i"></span><span class="target" id="classDCCEXProtocol_1a9534dfaaa14f64b4ac832dbe0ed14f79"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeLocoAddress</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol16writeLocoAddressEi" title="Link to this definition"></a><br /></dt>
+<dd><p>Write <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> address to the <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> on the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>address</strong> – DCC address to write </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol7writeCVEii">
+<span id="_CPPv3N13DCCEXProtocol7writeCVEii"></span><span id="_CPPv2N13DCCEXProtocol7writeCVEii"></span><span id="DCCEXProtocol::writeCV__i.i"></span><span class="target" id="classDCCEXProtocol_1ae40fb3875237cd2115391bdc5bf72c9c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCV</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol7writeCVEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Write the provided value to the specified CV on the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV number to write to </p></li>
+<li><p><strong>value</strong> – Value to write to the CV </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10writeCVBitEiii">
+<span id="_CPPv3N13DCCEXProtocol10writeCVBitEiii"></span><span id="_CPPv2N13DCCEXProtocol10writeCVBitEiii"></span><span id="DCCEXProtocol::writeCVBit__i.i.i"></span><span class="target" id="classDCCEXProtocol_1aaa2744541cd4db839300c13dbe156ddd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCVBit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bit</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10writeCVBitEiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Write the provided value to the specified bit and CV on the programming track. Note that the response is in legacy DCC++ formatting and is not supported by the <a class="reference internal" href="#classDCCEXInbound"><span class="std std-ref">DCCEXInbound</span></a> parser. Therefore, the throttle will not receive a response. We suggest writing full CVs. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV number to write to </p></li>
+<li><p><strong>bit</strong> – Bit for the CV to write </p></li>
+<li><p><strong>value</strong> – Value to write (0|1) </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13writeCVOnMainEiii">
+<span id="_CPPv3N13DCCEXProtocol13writeCVOnMainEiii"></span><span id="_CPPv2N13DCCEXProtocol13writeCVOnMainEiii"></span><span id="DCCEXProtocol::writeCVOnMain__i.i.i"></span><span class="target" id="classDCCEXProtocol_1a3074891cc02577138734bc3d55fce304"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCVOnMain</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13writeCVOnMainEiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Write the provided value to the specified <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> address and CV on the main track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> – DCC address of the <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a></p></li>
+<li><p><strong>cv</strong> – CV number to write to </p></li>
+<li><p><strong>value</strong> – Value to write to the CV </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol16writeCVBitOnMainEiiii">
+<span id="_CPPv3N13DCCEXProtocol16writeCVBitOnMainEiiii"></span><span id="_CPPv2N13DCCEXProtocol16writeCVBitOnMainEiiii"></span><span id="DCCEXProtocol::writeCVBitOnMain__i.i.i.i"></span><span class="target" id="classDCCEXProtocol_1a3bed8a312bb199a571686d5a8bdc1fe9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writeCVBitOnMain</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bit</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol16writeCVBitOnMainEiiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Write the provided value to the specified <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a>, CV, and bit on the main track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> – DCC address of the <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a></p></li>
+<li><p><strong>cv</strong> – CV number to write to </p></li>
+<li><p><strong>bit</strong> – Bit for the CV to write </p></li>
+<li><p><strong>value</strong> – Value to write (0|1) </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -1968,6 +2110,26 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol17_processTrackTypeEv">
 <span id="_CPPv3N13DCCEXProtocol17_processTrackTypeEv"></span><span id="_CPPv2N13DCCEXProtocol17_processTrackTypeEv"></span><span id="DCCEXProtocol::_processTrackType"></span><span class="target" id="classDCCEXProtocol_1a34dfd887a7fb003fd593c2ed7a2b6b5b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processTrackType</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol17_processTrackTypeEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol26_processValidateCVResponseEv">
+<span id="_CPPv3N13DCCEXProtocol26_processValidateCVResponseEv"></span><span id="_CPPv2N13DCCEXProtocol26_processValidateCVResponseEv"></span><span id="DCCEXProtocol::_processValidateCVResponse"></span><span class="target" id="classDCCEXProtocol_1af031368c92ff2de9ebc64b4a776f83a9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processValidateCVResponse</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol26_processValidateCVResponseEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv">
+<span id="_CPPv3N13DCCEXProtocol29_processValidateCVBitResponseEv"></span><span id="_CPPv2N13DCCEXProtocol29_processValidateCVBitResponseEv"></span><span id="DCCEXProtocol::_processValidateCVBitResponse"></span><span class="target" id="classDCCEXProtocol_1adcc79239f34e0cbbe3fb61f2622930f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processValidateCVBitResponse</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv">
+<span id="_CPPv3N13DCCEXProtocol25_processWriteLocoResponseEv"></span><span id="_CPPv2N13DCCEXProtocol25_processWriteLocoResponseEv"></span><span id="DCCEXProtocol::_processWriteLocoResponse"></span><span class="target" id="classDCCEXProtocol_1a16989e14b78ecf26ef232e873ec3b339"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processWriteLocoResponse</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv">
+<span id="_CPPv3N13DCCEXProtocol23_processWriteCVResponseEv"></span><span id="_CPPv2N13DCCEXProtocol23_processWriteCVResponseEv"></span><span id="DCCEXProtocol::_processWriteCVResponse"></span><span class="target" id="classDCCEXProtocol_1a6ee158147edc24607d25576e3921c064"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processWriteCVResponse</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -2282,6 +2444,60 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>address</strong> – DCC address read from the programming track, or -1 for a failure to read </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate18receivedValidateCVEii">
+<span id="_CPPv3N21DCCEXProtocolDelegate18receivedValidateCVEii"></span><span id="_CPPv2N21DCCEXProtocolDelegate18receivedValidateCVEii"></span><span id="DCCEXProtocolDelegate::receivedValidateCV__i.i"></span><span class="target" id="classDCCEXProtocolDelegate_1a469ef7853e3c2b69b7ac318d5ec26378"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedValidateCV</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate18receivedValidateCVEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a CV is read or validated from the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV the value has been read from </p></li>
+<li><p><strong>value</strong> – Value read from the CV, or -1 for a failure to read </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate21receivedValidateCVBitEiii">
+<span id="_CPPv3N21DCCEXProtocolDelegate21receivedValidateCVBitEiii"></span><span id="_CPPv2N21DCCEXProtocolDelegate21receivedValidateCVBitEiii"></span><span id="DCCEXProtocolDelegate::receivedValidateCVBit__i.i.i"></span><span class="target" id="classDCCEXProtocolDelegate_1af12b6c7e96dd073ec242fa28456cd241"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedValidateCVBit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bit</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate21receivedValidateCVBitEiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a CV bit is validated from the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV the bit is being validated in </p></li>
+<li><p><strong>bit</strong> – Bit of the CV being validated </p></li>
+<li><p><strong>value</strong> – Value validated from the bit, or -1 if not valid </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi">
+<span id="_CPPv3N21DCCEXProtocolDelegate17receivedWriteLocoEi"></span><span id="_CPPv2N21DCCEXProtocolDelegate17receivedWriteLocoEi"></span><span id="DCCEXProtocolDelegate::receivedWriteLoco__i"></span><span class="target" id="classDCCEXProtocolDelegate_1a3ab9090a619e6046ee4a9988436c6665"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedWriteLoco</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> address has been written on the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>address</strong> – DCC address written to the loco, or -1 for a failure to write </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii">
+<span id="_CPPv3N21DCCEXProtocolDelegate15receivedWriteCVEii"></span><span id="_CPPv2N21DCCEXProtocolDelegate15receivedWriteCVEii"></span><span id="DCCEXProtocolDelegate::receivedWriteCV__i.i"></span><span class="target" id="classDCCEXProtocolDelegate_1a9708fea8657a7deff7ffcf76729cd60f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">receivedWriteCV</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii" title="Link to this definition"></a><br /></dt>
+<dd><p>Notify when a CV is written on the programming track. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cv</strong> – CV being written to </p></li>
+<li><p><strong>value</strong> – Value written, or -1 for failure </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

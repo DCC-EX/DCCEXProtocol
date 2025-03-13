@@ -235,6 +235,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>refreshTurnoutList</b
 <tr class="memitem:a2eb5af3978769d2eeae126af0e2bfcda" id="r_a2eb5af3978769d2eeae126af0e2bfcda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a2eb5af3978769d2eeae126af0e2bfcda">startRoute</a> (int routeId)</td></tr>
 <tr class="memdesc:a2eb5af3978769d2eeae126af0e2bfcda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start a route/automation.  <br /></td></tr>
 <tr class="separator:a2eb5af3978769d2eeae126af0e2bfcda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d6dd7b2081c1db0a0cc16ef0f779bc3" id="r_a7d6dd7b2081c1db0a0cc16ef0f779bc3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a7d6dd7b2081c1db0a0cc16ef0f779bc3">handOffLoco</a> (int locoAddress, int automationId)</td></tr>
+<tr class="memdesc:a7d6dd7b2081c1db0a0cc16ef0f779bc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hand off a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> to an Automation - note you must retrieve the ROUTE list to use this.  <br /></td></tr>
+<tr class="separator:a7d6dd7b2081c1db0a0cc16ef0f779bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfeca0e05b8aaa1fcb18c6e61d917de9" id="r_abfeca0e05b8aaa1fcb18c6e61d917de9"><td class="memItemLeft" align="right" valign="top"><a id="abfeca0e05b8aaa1fcb18c6e61d917de9" name="abfeca0e05b8aaa1fcb18c6e61d917de9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>pauseRoutes</b> ()</td></tr>
 <tr class="memdesc:abfeca0e05b8aaa1fcb18c6e61d917de9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pause all routes/automations. <br /></td></tr>
@@ -324,6 +327,30 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>joinProg</b> ()</td><
 void&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberSupportedLocos</b> ()</td></tr>
 <tr class="memdesc:a642d6c2f1ff8424bf12021a8eaa23599"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the number of supported cabs(locos) <br /></td></tr>
 <tr class="separator:a642d6c2f1ff8424bf12021a8eaa23599"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee95c31806048fbb4b5adcb069b75e7f" id="r_aee95c31806048fbb4b5adcb069b75e7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aee95c31806048fbb4b5adcb069b75e7f">readCV</a> (int cv)</td></tr>
+<tr class="memdesc:aee95c31806048fbb4b5adcb069b75e7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the value of the provided CV from the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> on the programming track.  <br /></td></tr>
+<tr class="separator:aee95c31806048fbb4b5adcb069b75e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae181d4404131978ea397f3c1ddaae8c7" id="r_ae181d4404131978ea397f3c1ddaae8c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ae181d4404131978ea397f3c1ddaae8c7">validateCV</a> (int cv, int value)</td></tr>
+<tr class="memdesc:ae181d4404131978ea397f3c1ddaae8c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate the provided value is stored in the provided CV.  <br /></td></tr>
+<tr class="separator:ae181d4404131978ea397f3c1ddaae8c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abea07c17f6479bdaac0d82fe2d4cac8e" id="r_abea07c17f6479bdaac0d82fe2d4cac8e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#abea07c17f6479bdaac0d82fe2d4cac8e">validateCVBit</a> (int cv, int bit, int value)</td></tr>
+<tr class="memdesc:abea07c17f6479bdaac0d82fe2d4cac8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate the provided bit is set to the specified value for the provided CV.  <br /></td></tr>
+<tr class="separator:abea07c17f6479bdaac0d82fe2d4cac8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9534dfaaa14f64b4ac832dbe0ed14f79" id="r_a9534dfaaa14f64b4ac832dbe0ed14f79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a9534dfaaa14f64b4ac832dbe0ed14f79">writeLocoAddress</a> (int address)</td></tr>
+<tr class="memdesc:a9534dfaaa14f64b4ac832dbe0ed14f79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> address to the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> on the programming track.  <br /></td></tr>
+<tr class="separator:a9534dfaaa14f64b4ac832dbe0ed14f79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae40fb3875237cd2115391bdc5bf72c9c" id="r_ae40fb3875237cd2115391bdc5bf72c9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ae40fb3875237cd2115391bdc5bf72c9c">writeCV</a> (int cv, int value)</td></tr>
+<tr class="memdesc:ae40fb3875237cd2115391bdc5bf72c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the provided value to the specified CV on the programming track.  <br /></td></tr>
+<tr class="separator:ae40fb3875237cd2115391bdc5bf72c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa2744541cd4db839300c13dbe156ddd" id="r_aaa2744541cd4db839300c13dbe156ddd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aaa2744541cd4db839300c13dbe156ddd">writeCVBit</a> (int cv, int bit, int value)</td></tr>
+<tr class="memdesc:aaa2744541cd4db839300c13dbe156ddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the provided value to the specified bit and CV on the programming track. Note that the response is in legacy DCC++ formatting and is not supported by the <a class="el" href="classDCCEXInbound.html" title="Inbound DCC-EX command parser class to parse commands and provide interpreted parameters.">DCCEXInbound</a> parser. Therefore, the throttle will not receive a response. We suggest writing full CVs.  <br /></td></tr>
+<tr class="separator:aaa2744541cd4db839300c13dbe156ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3074891cc02577138734bc3d55fce304" id="r_a3074891cc02577138734bc3d55fce304"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a3074891cc02577138734bc3d55fce304">writeCVOnMain</a> (int address, int cv, int value)</td></tr>
+<tr class="memdesc:a3074891cc02577138734bc3d55fce304"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the provided value to the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> address and CV on the main track.  <br /></td></tr>
+<tr class="separator:a3074891cc02577138734bc3d55fce304"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bed8a312bb199a571686d5a8bdc1fe9" id="r_a3bed8a312bb199a571686d5a8bdc1fe9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a3bed8a312bb199a571686d5a8bdc1fe9">writeCVBitOnMain</a> (int address, int cv, int bit, int value)</td></tr>
+<tr class="memdesc:a3bed8a312bb199a571686d5a8bdc1fe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the provided value to the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>, CV, and bit on the main track.  <br /></td></tr>
+<tr class="separator:a3bed8a312bb199a571686d5a8bdc1fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -1029,6 +1056,43 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a7d6dd7b2081c1db0a0cc16ef0f779bc3" name="a7d6dd7b2081c1db0a0cc16ef0f779bc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d6dd7b2081c1db0a0cc16ef0f779bc3">&#9670;&#160;</a></span>handOffLoco()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::handOffLoco </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>locoAddress</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>automationId</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Hand off a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> to an Automation - note you must retrieve the ROUTE list to use this. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">locoAddress</td><td>DCC address of the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> to hand off </td></tr>
+    <tr><td class="paramname">automationId</td><td>ID of the automation to start, must be RouteType::RouteTypeAutomation </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a340c6a37042f0494c4aab4480454644f" name="a340c6a37042f0494c4aab4480454644f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a340c6a37042f0494c4aab4480454644f">&#9670;&#160;</a></span>isFunctionOn() <span class="overload">[1/2]</span></h2>
 
@@ -1151,6 +1215,32 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">track</td><td>Track name (A - H) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aee95c31806048fbb4b5adcb069b75e7f" name="aee95c31806048fbb4b5adcb069b75e7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee95c31806048fbb4b5adcb069b75e7f">&#9670;&#160;</a></span>readCV()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::readCV </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read the value of the provided CV from the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> on the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV number to read the value of </td></tr>
   </table>
   </dd>
 </dl>
@@ -1629,6 +1719,289 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">turnoutId</td><td>ID of the turnout/point </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae181d4404131978ea397f3c1ddaae8c7" name="ae181d4404131978ea397f3c1ddaae8c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae181d4404131978ea397f3c1ddaae8c7">&#9670;&#160;</a></span>validateCV()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::validateCV </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Validate the provided value is stored in the provided CV. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV number to validate the value of </td></tr>
+    <tr><td class="paramname">value</td><td>Value to validate </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abea07c17f6479bdaac0d82fe2d4cac8e" name="abea07c17f6479bdaac0d82fe2d4cac8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abea07c17f6479bdaac0d82fe2d4cac8e">&#9670;&#160;</a></span>validateCVBit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::validateCVBit </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>bit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Validate the provided bit is set to the specified value for the provided CV. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV number to validate the bit of </td></tr>
+    <tr><td class="paramname">bit</td><td>Bit for the CV to validate </td></tr>
+    <tr><td class="paramname">value</td><td>Value to validate (0|1) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae40fb3875237cd2115391bdc5bf72c9c" name="ae40fb3875237cd2115391bdc5bf72c9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae40fb3875237cd2115391bdc5bf72c9c">&#9670;&#160;</a></span>writeCV()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::writeCV </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Write the provided value to the specified CV on the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV number to write to </td></tr>
+    <tr><td class="paramname">value</td><td>Value to write to the CV </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaa2744541cd4db839300c13dbe156ddd" name="aaa2744541cd4db839300c13dbe156ddd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa2744541cd4db839300c13dbe156ddd">&#9670;&#160;</a></span>writeCVBit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::writeCVBit </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>bit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Write the provided value to the specified bit and CV on the programming track. Note that the response is in legacy DCC++ formatting and is not supported by the <a class="el" href="classDCCEXInbound.html" title="Inbound DCC-EX command parser class to parse commands and provide interpreted parameters.">DCCEXInbound</a> parser. Therefore, the throttle will not receive a response. We suggest writing full CVs. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cv</td><td>CV number to write to </td></tr>
+    <tr><td class="paramname">bit</td><td>Bit for the CV to write </td></tr>
+    <tr><td class="paramname">value</td><td>Value to write (0|1) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3bed8a312bb199a571686d5a8bdc1fe9" name="a3bed8a312bb199a571686d5a8bdc1fe9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bed8a312bb199a571686d5a8bdc1fe9">&#9670;&#160;</a></span>writeCVBitOnMain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::writeCVBitOnMain </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>bit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Write the provided value to the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>, CV, and bit on the main track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> </td></tr>
+    <tr><td class="paramname">cv</td><td>CV number to write to </td></tr>
+    <tr><td class="paramname">bit</td><td>Bit for the CV to write </td></tr>
+    <tr><td class="paramname">value</td><td>Value to write (0|1) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3074891cc02577138734bc3d55fce304" name="a3074891cc02577138734bc3d55fce304"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3074891cc02577138734bc3d55fce304">&#9670;&#160;</a></span>writeCVOnMain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::writeCVOnMain </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Write the provided value to the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> address and CV on the main track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> </td></tr>
+    <tr><td class="paramname">cv</td><td>CV number to write to </td></tr>
+    <tr><td class="paramname">value</td><td>Value to write to the CV </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9534dfaaa14f64b4ac832dbe0ed14f79" name="a9534dfaaa14f64b4ac832dbe0ed14f79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9534dfaaa14f64b4ac832dbe0ed14f79">&#9670;&#160;</a></span>writeLocoAddress()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::writeLocoAddress </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Write <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> address to the <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> on the programming track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address to write </td></tr>
   </table>
   </dd>
 </dl>
