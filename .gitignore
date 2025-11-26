@@ -32,3 +32,4 @@ venv
 docs/html
 docs/latex
 _build
+/.cache

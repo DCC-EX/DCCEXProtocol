@@ -1,0 +1,15 @@
+version: 0.1.0
+name: DCCEXProtocol
+description: "DCCEXProtocol library for ESP-IDF"
+# dependencies:
+  # Add ESP-IDF components your library depends on, for example:
+  # idf: "driver"
+  # idf: "esp_timer"
+  # idf: "freertos"
+  # idf: "cxx"
+  # Uncomment and add as needed
+targets:
+  - esp32
+  - esp32s2
+  - esp32s3
+  - esp32c3
