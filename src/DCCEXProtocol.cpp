@@ -41,6 +41,9 @@ Function/method prefixes
 
 #include "DCCEXProtocol.h"
 
+// REMOVE THIS BEFORE DONE
+#define sprintf(...)
+
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
 
@@ -979,8 +982,11 @@ void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
 void DCCEXProtocol::_getRoster() {
   // console->println(F("getRoster()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JR>");
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JR>");
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('R');
+    _cmdSend();
     _rosterRequested = true;
   }
   // console->println(F("getRoster() end"));
@@ -1010,8 +1016,13 @@ void DCCEXProtocol::_processRosterList() {
 void DCCEXProtocol::_requestRosterEntry(int address) {
   // console->println(F("sendRosterEntryRequest()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JR %d>", address);
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JR %d>", address);
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('R');
+    _cmdAppendSpace();
+    _cmdAppend(address);
+    _cmdSend();
   }
   // console->println(F("sendRosterEntryRequest(): end"));
 }
@@ -1051,8 +1062,11 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
 void DCCEXProtocol::_getTurnouts() {
   // console->println(F("getTurnouts()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JT>");
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JT>");
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('T');
+    _cmdSend();
     _turnoutListRequested = true;
   }
   // console->println(F("getTurnouts() end"));
@@ -1083,8 +1097,13 @@ void DCCEXProtocol::_processTurnoutList() {
 void DCCEXProtocol::_requestTurnoutEntry(int id) {
   // console->println(F("sendTurnoutEntryRequest()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JT %d>", id);
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JT %d>", id);
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('T');
+    _cmdAppendSpace();
+    _cmdAppend(id);
+    _cmdSend();
   }
   // console->println(F("sendTurnoutEntryRequest() end"));
 }
@@ -1140,8 +1159,11 @@ void DCCEXProtocol::_processTurnoutBroadcast() { //<H id state>
 void DCCEXProtocol::_getRoutes() {
   // console->println(F("getRoutes()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JA>");
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JA>");
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('A');
+    _cmdSend();
     _routeListRequested = true;
   }
   // console->println(F("getRoutes() end"));
@@ -1171,8 +1193,13 @@ void DCCEXProtocol::_processRouteList() {
 void DCCEXProtocol::_requestRouteEntry(int id) {
   // console->println(F("sendRouteEntryRequest()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JA %d>", id);
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JA %d>", id);
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('A');
+    _cmdAppendSpace();
+    _cmdAppend(id);
+    _cmdSend();
   }
   // console->println(F("sendRouteEntryRequest() end"));
 }
@@ -1210,8 +1237,11 @@ void DCCEXProtocol::_processRouteEntry() {
 void DCCEXProtocol::_getTurntables() {
   // console->println(F("getTurntables()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JO>");
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JO>");
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('O');
+    _cmdSend();
     _turntableListRequested = true;
   }
   // console->println(F("getTurntables() end"));
@@ -1241,8 +1271,13 @@ void DCCEXProtocol::_processTurntableList() { // <jO [id1 id2 id3 ...]>
 void DCCEXProtocol::_requestTurntableEntry(int id) {
   // console->println(F("sendTurntableEntryRequest()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JO %d>", id);
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JO %d>", id);
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('O');
+    _cmdAppendSpace();
+    _cmdAppend(id);
+    _cmdSend();
   }
   // console->println(F("sendTurntableEntryRequest(): end"));
 }
@@ -1275,8 +1310,13 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
 void DCCEXProtocol::_requestTurntableIndexEntry(int id) {
   // console->println(F("sendTurntableIndexEntryRequest()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "<JP %d>", id);
-    _sendCommand();
+    // sprintf(_outboundCommand, "<JP %d>", id);
+    // _sendCommand();
+    _cmdStart('J');
+    _cmdAppend('P');
+    _cmdAppendSpace();
+    _cmdAppend(id);
+    _cmdSend();
   }
   // console->println(F("sendTurntableIndexEntryRequest() end"));
 }
@@ -1440,7 +1480,7 @@ void DCCEXProtocol::_cmdStart(char opcode) {
 }
 
 void DCCEXProtocol::_cmdAppend(const char *s) {
-  // Must leave room for '>' and null terminator
+  Must leave room for '>' and null terminator
   while (*s && _cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
     _outboundCommand[_cmdIndex++] = *s++;
   }
@@ -1454,7 +1494,7 @@ void DCCEXProtocol::_cmdAppend(int n) {
 }
 
 void DCCEXProtocol::_cmdAppend(char c) {
-  // Must leave room for '>' and null terminator
+  Must leave room for '>' and null terminator
   if (_cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
     _outboundCommand[_cmdIndex++] = c;
     _outboundCommand[_cmdIndex] = '\0';
