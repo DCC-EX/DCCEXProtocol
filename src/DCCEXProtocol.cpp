@@ -1427,3 +1427,44 @@ void DCCEXProtocol::_processWriteCVResponse() { // <r cv value>, value -1 = erro
   int value = DCCEXInbound::getNumber(1);
   _delegate->receivedWriteCV(cv, value);
 }
+
+// Helper methods to build the outbound command
+
+void DCCEXProtocol::_cmdStart(char opcode) {
+  _cmdIndex = 0;
+  _outboundCommand[_cmdIndex++] = '<';
+  if (opcode != '\0') {
+    _outboundCommand[_cmdIndex++] = opcode;
+  }
+  _outboundCommand[_cmdIndex] = '\0';
+}
+
+void DCCEXProtocol::_cmdAppend(const char *s) {
+  // Must leave room for '>' and null terminator
+  while (*s && _cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
+    _outboundCommand[_cmdIndex++] = *s++;
+  }
+  _outboundCommand[_cmdIndex] = '\0';
+}
+
+void DCCEXProtocol::_cmdAppend(int n) {
+  char buf[12]; // Enough for -2147483648
+  itoa(n, buf, 10);
+  _cmdAppend(buf);
+}
+
+void DCCEXProtocol::_cmdAppend(char c) {
+  // Must leave room for '>' and null terminator
+  if (_cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
+    _outboundCommand[_cmdIndex++] = c;
+    _outboundCommand[_cmdIndex] = '\0';
+  }
+}
+
+void DCCEXProtocol::_cmdAppendSpace() { _cmdAppend(' '); }
+
+void DCCEXProtocol::_cmdSend() {
+  _outboundCommand[_cmdIndex++] = '>';
+  _outboundCommand[_cmdIndex] = '\0';
+  _sendCommand();
+}

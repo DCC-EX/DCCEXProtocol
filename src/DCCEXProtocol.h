@@ -34,6 +34,8 @@
 /*
 Version information:
 
+1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
+        - Refactor all DCCEXProtocol outbound commands to remove sprintf
 1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
         - Add readCV(cv) and validateCV(cv, value) methods with associated delegate method:
                 receivedValidateCV(int cv, int value)
@@ -705,6 +707,42 @@ private:
   bool _enableHeartbeat;                              // Flag if heartbeat is enabled
   unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
   unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command
+  int _cmdIndex;                                      // Track the index for the outbound command buffer
+
+  // Helper methods to build the outbound command
+  /**
+   * @brief Start the command with "<" and the OPCODE if required
+   * @param opcode Single character OPCODE to append
+   */
+  void _cmdStart(char opcode = '\0');
+
+  /**
+   * @brief Append a string to the command
+   * @param s String to append
+   */
+  void _cmdAppend(const char *s);
+
+  /**
+   * @brief Append an integer value to the command
+   * @param n Integer to append
+   */
+  void _cmdAppend(int n);
+
+  /**
+   * @brief Append a single char to the command
+   * @param c Char to append
+   */
+  void _cmdAppend(char c);
+
+  /**
+   * @brief Append a space to the command
+   */
+  void _cmdAppendSpace();
+
+  /**
+   * @brief Append the closing ">" and call _sendCommand()
+   */
+  void _cmdSend();
 };
 
 #endif // DCCEXPROTOCOL_H
