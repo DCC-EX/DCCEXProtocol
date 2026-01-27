@@ -735,14 +735,89 @@ private:
   void _cmdAppend(char c);
 
   /**
-   * @brief Append a space to the command
-   */
-  void _cmdAppendSpace();
-
-  /**
    * @brief Append the closing ">" and call _sendCommand()
    */
   void _cmdSend();
+
+  /**
+   * @brief Formatter for opcode only outbound commands
+   * @param opcode OPCODE to send
+   */
+  void _sendOpcode(char opcode);
+
+  /**
+   * @brief Formatter for opcode and one char parameter
+   * @param opcode OPCODE to send
+   * @param param Single char parameter to send
+   */
+  void _sendOneParam(char opcode, char param);
+
+  /**
+   * @brief Formatter for opcode and one char parameter
+   * @param opcode OPCODE to send
+   * @param param Single string parameter to send
+   */
+  void _sendOneParam(char opcode, const char *param);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single int parameter to send
+   */
+  void _sendTwoParams(char opcode, char param1, int param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single int parameter to send
+   */
+  void _sendTwoParams(char opcode, int param1, int param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single string parameter to send
+   * @param param2 Single int parameter to send
+   */
+  void _sendTwoParams(char opcode, const char *param1, int param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single char parameter to send
+   */
+  void _sendTwoParams(char opcode, int param1, char param2);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single string parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, const char *param1, int param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, int param1, int param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and four params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   * @param param4 Single int parameter to send
+   */
+  void _sendFourParams(char opcode, int param1, int param2, int param3, int param4);
 };
 
 #endif // DCCEXPROTOCOL_H
