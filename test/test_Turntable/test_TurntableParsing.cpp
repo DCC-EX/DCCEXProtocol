@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/TurntableTests.h"
+#include "../setup/TurntableTests.h"
 
 TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Received flag should be false to start

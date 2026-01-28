@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/CVTests.h"
+#include "../setup/CVTests.h"
 
 /// @brief Validate calling readLoco() generates the correct command
 TEST_F(CVTests, readLocoAddress) {

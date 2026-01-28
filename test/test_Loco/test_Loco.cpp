@@ -26,7 +26,7 @@
  *
  */
 
-#include "../../setup/LocoTests.h"
+#include "../setup/LocoTests.h"
 
 /// @brief Create a single Loco
 TEST_F(LocoTests, createSingleLoco) {

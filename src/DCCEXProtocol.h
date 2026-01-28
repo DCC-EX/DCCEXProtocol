@@ -799,6 +799,14 @@ private:
   void _sendTwoParams(char opcode, int param1, char param2);
 
   /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single string parameter to send
+   */
+  void _sendTwoParams(char opcode, char param1, const char *param2);
+
+  /**
    * @brief Formatter for opcode and three params
    * @param opcode OPCODE to send
    * @param param1 Single string parameter to send
@@ -815,6 +823,15 @@ private:
    * @param param3 Single int parameter to send
    */
   void _sendThreeParams(char opcode, int param1, int param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single string parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, char param1, const char *param2, int param3);
 
   /**
    * @brief Formatter for opcode and four params

@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/RouteTests.h"
+#include "../setup/RouteTests.h"
 
 TEST_F(RouteTests, parseEmptyRouteList) {
   // Received flag should be false to start

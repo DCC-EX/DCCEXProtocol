@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2025 Peter Cole
  * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *
@@ -26,10 +27,28 @@
  *
  */
 
-#include "../../setup/DCCEXProtocolTests.h"
+#include "../setup/DCCEXProtocolTests.h"
 
-TEST_F(DCCEXProtocolTests, broadcastHelloWorld) {
-  _stream << R"(<m "Hello World">)";
-  EXPECT_CALL(_delegate, receivedMessage(StrEq("Hello World"))).Times(Exactly(1));
+TEST_F(DCCEXProtocolTests, allTracksOff) {
+  _stream << "<p0>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOff)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+TEST_F(DCCEXProtocolTests, allTracksOn) {
+  _stream << "<p1>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+TEST_F(DCCEXProtocolTests, mainTrackOn) {
+  _stream << "<p1 MAIN>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+TEST_F(DCCEXProtocolTests, mainTrackOff) {
+  _stream << "<p0 MAIN>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOff)).Times(Exactly(1));
   _dccexProtocol.check();
 }

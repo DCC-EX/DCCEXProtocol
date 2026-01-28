@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/DCCEXProtocolTests.h"
+#include "../setup/DCCEXProtocolTests.h"
 
 /// @brief Validate that sending powerOn() sends <1>
 TEST_F(DCCEXProtocolTests, powerAllOn) {

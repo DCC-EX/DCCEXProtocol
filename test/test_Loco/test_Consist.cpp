@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/LocoTests.h"
+#include "../setup/LocoTests.h"
 
 /// @brief Create a consist with three Loco objects
 TEST_F(LocoTests, createConsistByLoco) {

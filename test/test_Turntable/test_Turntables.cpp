@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/TurntableTests.h"
+#include "../setup/TurntableTests.h"
 
 /// @brief Test creating a single turntable index
 TEST_F(TurntableTests, createTurntableIndex) {

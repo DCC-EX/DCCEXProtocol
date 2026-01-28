@@ -41,9 +41,6 @@ Function/method prefixes
 
 #include "DCCEXProtocol.h"
 
-// REMOVE THIS BEFORE DONE
-#define sprintf(...)
-
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
 
@@ -557,24 +554,23 @@ void DCCEXProtocol::setTrackType(char track, TrackManagerMode type, int address)
     return;
   switch (type) {
   case MAIN:
-    sprintf(_outboundCommand, "<= %c MAIN>", track);
+    _sendTwoParams('=', track, "MAIN");
     break;
   case PROG:
-    sprintf(_outboundCommand, "<= %c PROG>", track);
+    _sendTwoParams('=', track, "PROG");
     break;
   case DC:
-    sprintf(_outboundCommand, "<= %c DC %d>", track, address);
+    _sendThreeParams('=', track, "DC", address);
     break;
   case DCX:
-    sprintf(_outboundCommand, "<= %c DCX %d>", track, address);
+    _sendThreeParams('=', track, "DCX", address);
     break;
   case NONE:
-    sprintf(_outboundCommand, "<= %c NONE>", track);
+    _sendTwoParams('=', track, "NONE");
     break;
   default:
     return;
   }
-  _sendCommand();
 }
 
 // DCC accessory methods
@@ -1490,6 +1486,15 @@ void DCCEXProtocol::_sendTwoParams(char opcode, int param1, char param2) {
   _cmdSend();
 }
 
+void DCCEXProtocol::_sendTwoParams(char opcode, char param1, const char *param2) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdSend();
+}
+
 void DCCEXProtocol::_sendThreeParams(char opcode, const char *param1, int param2, int param3) {
   _cmdStart(opcode);
   _cmdAppend(' ');
@@ -1502,6 +1507,17 @@ void DCCEXProtocol::_sendThreeParams(char opcode, const char *param1, int param2
 }
 
 void DCCEXProtocol::_sendThreeParams(char opcode, int param1, int param2, int param3) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdAppend(' ');
+  _cmdAppend(param3);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendThreeParams(char opcode, char param1, const char *param2, int param3) {
   _cmdStart(opcode);
   _cmdAppend(' ');
   _cmdAppend(param1);

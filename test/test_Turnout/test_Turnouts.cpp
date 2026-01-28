@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/TurnoutTests.h"
+#include "../setup/TurnoutTests.h"
 
 TEST_F(TurnoutTests, createSingleTurnout) {
   // Create a turnout 100

@@ -26,7 +26,7 @@
  *
  */
 
-#include "../../setup/LocoTests.h"
+#include "../setup/LocoTests.h"
 
 /// @brief Create a small roster and check updates are received
 TEST_F(LocoTests, receiveRosterLocoUpdate) {

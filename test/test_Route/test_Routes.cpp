@@ -25,7 +25,7 @@
  *
  */
 
-#include "../../setup/RouteTests.h"
+#include "../setup/RouteTests.h"
 
 TEST_F(RouteTests, createSingleRoute) {
   // Create a route 200 as a route type

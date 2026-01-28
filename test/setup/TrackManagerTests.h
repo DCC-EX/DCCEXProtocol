@@ -5,8 +5,6 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
- * Copyright © 2025 Peter Cole
- * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
@@ -27,28 +25,12 @@
  *
  */
 
-#include "../../setup/DCCEXProtocolTests.h"
+#ifndef TRACKMANAGERTESTS_H
+#define TRACKMANAGERTESTS_H
 
-TEST_F(DCCEXProtocolTests, allTracksOff) {
-  _stream << "<p0>";
-  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOff)).Times(Exactly(1));
-  _dccexProtocol.check();
-}
+#include "TestHarnessBase.hpp"
 
-TEST_F(DCCEXProtocolTests, allTracksOn) {
-  _stream << "<p1>";
-  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn)).Times(Exactly(1));
-  _dccexProtocol.check();
-}
+/// @brief Test harness for TrackManager tests
+class TrackManagerTests : public TestHarnessBase {};
 
-TEST_F(DCCEXProtocolTests, mainTrackOn) {
-  _stream << "<p1 MAIN>";
-  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn)).Times(Exactly(1));
-  _dccexProtocol.check();
-}
-
-TEST_F(DCCEXProtocolTests, mainTrackOff) {
-  _stream << "<p0 MAIN>";
-  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOff)).Times(Exactly(1));
-  _dccexProtocol.check();
-}
+#endif // TRACKMANAGERTESTS_H

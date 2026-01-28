@@ -26,7 +26,7 @@
  *
  */
 
-#include "../../setup/LocoTests.h"
+#include "../setup/LocoTests.h"
 
 TEST_F(LocoTests, parseEmptyRoster) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());

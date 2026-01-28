@@ -26,7 +26,7 @@
  *
  */
 
-#include "../../setup/DCCEXProtocolTests.h"
+#include "../setup/DCCEXProtocolTests.h"
 
 TEST_F(DCCEXProtocolTests, request) {
   _dccexProtocol.requestServerVersion();
