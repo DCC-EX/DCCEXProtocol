@@ -31,7 +31,7 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  EXPECT_EQ(_stream.getBuffer(), "<JO>\r\n");
+  EXPECT_EQ(_stream.getBuffer(), "<J O>\r\n");
   _stream.clearBuffer();
 
   // Empty turntable list response
@@ -46,7 +46,7 @@ TEST_F(TurntableTests, parseTwoTurntables) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  EXPECT_EQ(_stream.getBuffer(), "<JO>\r\n");
+  EXPECT_EQ(_stream.getBuffer(), "<J O>\r\n");
   _stream.clearBuffer();
 
   // Two turntables in response
@@ -86,7 +86,7 @@ TEST_F(TurntableTests, parseTwoTurntables) {
   _stream << R"(<jP 2 4 3000 "Position 4">)";
   _dccexProtocol.check();
   _stream << R"(<jP 2 5 3300 "Position 5">)";
-  
+
   // Delegate should call back once here
   EXPECT_CALL(_delegate, receivedTurntableList()).Times(Exactly(1));
   _dccexProtocol.check();

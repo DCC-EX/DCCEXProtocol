@@ -30,7 +30,7 @@
 
 TEST_F(DCCEXProtocolTests, clearBufferWhenFull) {
   // Fill buffer with garbage
-  for (auto i{0uz}; i < 500uz; ++i)
+  for (size_t i{0}; i < 500; ++i)
     _stream.write(static_cast<uint8_t>('A' + (random() % 26)));
 
   // Proceed with normal message

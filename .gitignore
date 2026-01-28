@@ -35,3 +35,6 @@ _build
 
 # IDE etc. files
 .pio/
+
+# Coverage info file
+lcov.info
