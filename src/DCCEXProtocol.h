@@ -746,18 +746,25 @@ private:
   void _sendOpcode(char opcode);
 
   /**
-   * @brief Formatter for opcode and one char parameter
+   * @brief Formatter for opcode and one parameter
    * @param opcode OPCODE to send
    * @param param Single char parameter to send
    */
   void _sendOneParam(char opcode, char param);
 
   /**
-   * @brief Formatter for opcode and one char parameter
+   * @brief Formatter for opcode and one parameter
    * @param opcode OPCODE to send
    * @param param Single string parameter to send
    */
   void _sendOneParam(char opcode, const char *param);
+
+  /**
+   * @brief Formatter for opcode and one parameter
+   * @param opcode OPCODE to send
+   * @param param Single int parameter to send
+   */
+  void _sendOneParam(char opcode, int param);
 
   /**
    * @brief Formatter for opcode and two params

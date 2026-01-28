@@ -1435,18 +1435,28 @@ void DCCEXProtocol::_sendOpcode(char opcode) {
 
 void DCCEXProtocol::_sendOneParam(char opcode, char param) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param);
   _cmdSend();
 }
 
 void DCCEXProtocol::_sendOneParam(char opcode, const char *param) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendOneParam(char opcode, int param) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param);
   _cmdSend();
 }
 
 void DCCEXProtocol::_sendTwoParams(char opcode, char param1, int param2) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
@@ -1455,6 +1465,7 @@ void DCCEXProtocol::_sendTwoParams(char opcode, char param1, int param2) {
 
 void DCCEXProtocol::_sendTwoParams(char opcode, int param1, int param2) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
@@ -1463,6 +1474,7 @@ void DCCEXProtocol::_sendTwoParams(char opcode, int param1, int param2) {
 
 void DCCEXProtocol::_sendTwoParams(char opcode, const char *param1, int param2) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
@@ -1471,6 +1483,7 @@ void DCCEXProtocol::_sendTwoParams(char opcode, const char *param1, int param2) 
 
 void DCCEXProtocol::_sendTwoParams(char opcode, int param1, char param2) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
@@ -1479,6 +1492,7 @@ void DCCEXProtocol::_sendTwoParams(char opcode, int param1, char param2) {
 
 void DCCEXProtocol::_sendThreeParams(char opcode, const char *param1, int param2, int param3) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
@@ -1489,6 +1503,7 @@ void DCCEXProtocol::_sendThreeParams(char opcode, const char *param1, int param2
 
 void DCCEXProtocol::_sendThreeParams(char opcode, int param1, int param2, int param3) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
@@ -1499,6 +1514,7 @@ void DCCEXProtocol::_sendThreeParams(char opcode, int param1, int param2, int pa
 
 void DCCEXProtocol::_sendFourParams(char opcode, int param1, int param2, int param3, int param4) {
   _cmdStart(opcode);
+  _cmdAppend(' ');
   _cmdAppend(param1);
   _cmdAppend(' ');
   _cmdAppend(param2);
