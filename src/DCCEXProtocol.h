@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- *
+ * Copyright © 2026 Peter Cole
  * Copyright © 2024 Peter Akers
  * Copyright © 2024 Peter Cole
  * Copyright © 2024 Vincent Hamp
@@ -36,6 +36,10 @@ Version information:
 
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
+        - Add default true to getLists() so users can just call it without parameters to get all lists
+        - Deprecate disconnect() method that does nothing and conflicts with user U command
+        - Additional tests to improve future bug detection/breakages
+        - Other non-functional tidy up changes
 1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
         - Add readCV(cv) and validateCV(cv, value) methods with associated delegate method:
                 receivedValidateCV(int cv, int value)
@@ -277,7 +281,7 @@ public:
   /// @param stream
   void connect(Stream *stream);
 
-  /// @brief Disconnect from DCC-EX
+  /// @brief DEPRECATED - Does nothing, retained for backwards compatibility only
   void disconnect();
 
   /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
@@ -292,7 +296,8 @@ public:
   /// @param turnoutListRequired Request the turnout list (true|false)
   /// @param routeListRequired Request the route list (true|false)
   /// @param turntableListRequired Request the turntable list (true|false)
-  void getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+  void getLists(bool rosterRequired = true, bool turnoutListRequired = true, bool routeListRequired = true,
+                bool turntableListRequired = true);
 
   /// @brief Check if all lists have been received (roster, routes, turnouts, turntables)
   /// @return true|false

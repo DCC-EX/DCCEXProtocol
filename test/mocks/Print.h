@@ -27,16 +27,13 @@ typedef const char *__FlashStringHelper;
 
 class Print {
 public:
-  std::string buffer;
-
   virtual ~Print() {}
 
-  // The core method Arduino uses for raw data
-  virtual size_t write(uint8_t c) {
-    buffer += (char)c;
-    return 1;
-  }
+  // The single "Bottleneck" method.
+  // Every print call must eventually call this.
+  virtual size_t write(uint8_t c) = 0;
 
+  // Multi-byte write helper
   virtual size_t write(const uint8_t *buffer, size_t size) {
     size_t n = 0;
     while (size--) {
@@ -48,42 +45,50 @@ public:
     return n;
   }
 
-  // The logic your code is looking for
-  void print(const std::string &s) { buffer += s; }
+  // --- Print Overloads ---
+
   void print(const char *s) {
     if (s)
-      buffer += s;
+      while (*s)
+        write(*s++);
   }
-  void print(__FlashStringHelper *s) {
-    if (s)
-      buffer += (const char *)s;
-  }
-  void print(int n) { buffer += std::to_string(n); }
-  void print(long n) { buffer += std::to_string(n); }
-  void print(char c) { buffer += c; }
 
-  void println() { buffer += "\r\n"; }
-  void println(const std::string &s) {
-    print(s);
-    println();
+  void print(const std::string &s) { print(s.c_str()); }
+
+  void print(__FlashStringHelper *s) { print((const char *)s); }
+
+  void print(char c) { write(c); }
+
+  void print(int n) { print(std::to_string(n).c_str()); }
+
+  void print(long n) { print(std::to_string(n).c_str()); }
+
+  // --- Println Overloads ---
+
+  void println() {
+    write('\r');
+    write('\n');
   }
+
   void println(const char *s) {
     print(s);
     println();
   }
+
+  void println(const std::string &s) {
+    print(s);
+    println();
+  }
+
   void println(__FlashStringHelper *s) {
     print(s);
     println();
   }
+
   void println(int n) {
     print(n);
     println();
   }
-
-  // helper for your tests
-  void clear() { buffer.clear(); }
-  void clearBuffer() { buffer.clear(); }
-  const std::string &getBuffer() const { return buffer; }
 };
 
 #endif // PRINT_H

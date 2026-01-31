@@ -1,11 +1,7 @@
 /* -*- c++ -*-
  *
- * DCCEXProtocol
- *
- * This package implements a DCCEX native protocol connection,
- * allow a device to communicate with a DCC-EX EX-CommandStation.
- *
  * Copyright © 2026 Peter Cole
+ * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
@@ -26,12 +22,27 @@
  *
  */
 
-#ifndef LOCOTESTS_H
-#define LOCOTESTS_H
+#include "../setup/DCCEXProtocolTests.h"
 
-#include "TestHarnessBase.hpp"
+/**
+ * @brief Ensure the buffer is cleared when full
+ */
+TEST_F(DCCEXProtocolTests, clearBufferWhenFull) {
+  // Fill buffer with garbage
+  for (size_t i{0}; i < 500; ++i)
+    _stream.write(static_cast<uint8_t>('A' + (random() % 26)));
 
-/// @brief Test harness for Loco and associated classes
-class LocoTests : public TestHarnessBase {};
+  // Proceed with normal message
+  _stream << R"(<m "Hello World">)";
+  EXPECT_CALL(_delegate, receivedMessage(StrEq("Hello World"))).Times(Exactly(1));
+  _dccexProtocol.check();
+}
 
-#endif // LOCOTESTS_H
+/**
+ * @brief Test sending a generic command with sendCommand
+ */
+TEST_F(DCCEXProtocolTests, testGenericSendCommand) {
+  _dccexProtocol.sendCommand("Random command");
+  EXPECT_EQ(_stream.getOutput(), "<Random command>\r\n");
+  _stream.clearOutput();
+}

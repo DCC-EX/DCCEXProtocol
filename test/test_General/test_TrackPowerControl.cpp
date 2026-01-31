@@ -35,7 +35,7 @@ TEST_F(DCCEXProtocolTests, powerAllOn) {
   _dccexProtocol.powerOn();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate that sending powerOff() sends <0>
@@ -46,7 +46,7 @@ TEST_F(DCCEXProtocolTests, powerAllOff) {
   _dccexProtocol.powerOff();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate that sending powerMainOn() sends <1 MAIN>
@@ -57,7 +57,7 @@ TEST_F(DCCEXProtocolTests, powerMainOn) {
   _dccexProtocol.powerMainOn();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate that sending powerMainOff() sends <0 MAIN>
@@ -68,7 +68,7 @@ TEST_F(DCCEXProtocolTests, powerMainOff) {
   _dccexProtocol.powerMainOff();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate that sending powerProgOn() sends <1 PROG>
@@ -79,7 +79,7 @@ TEST_F(DCCEXProtocolTests, powerProgOn) {
   _dccexProtocol.powerProgOn();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate that sending powerProgOff() sends <0 PROG>
@@ -90,7 +90,7 @@ TEST_F(DCCEXProtocolTests, powerProgOff) {
   _dccexProtocol.powerProgOff();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate that sending joinProg() sends <1 JOIN>
@@ -101,5 +101,5 @@ TEST_F(DCCEXProtocolTests, joinProg) {
   _dccexProtocol.joinProg();
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }

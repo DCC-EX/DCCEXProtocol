@@ -75,6 +75,9 @@ inline int analogRead(int pin) { return 0; }
 inline void advanceMicros(unsigned long us) { _currentMicros += us; }
 inline void advanceMillis(unsigned long ms) { _currentMillis += ms; }
 
+inline void resetMicros() { _currentMicros = 0; }
+inline void resetMillis() { _currentMillis = 0; }
+
 // Mock itoa: converts integer to string
 inline char *itoa(int value, char *str, int base) {
   if (base == 10) {

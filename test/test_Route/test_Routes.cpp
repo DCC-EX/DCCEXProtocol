@@ -89,5 +89,5 @@ TEST_F(RouteTests, automationHandOff) {
   _dccexProtocol.handOffLoco(1234, 100);
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }

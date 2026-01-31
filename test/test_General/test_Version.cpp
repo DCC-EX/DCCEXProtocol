@@ -30,8 +30,8 @@
 
 TEST_F(DCCEXProtocolTests, request) {
   _dccexProtocol.requestServerVersion();
-  EXPECT_EQ(_stream.getBuffer(), "<s>\r\n");
-  _stream.clearBuffer();
+  EXPECT_EQ(_stream.getOutput(), "<s>\r\n");
+  _stream.clearOutput();
 }
 
 TEST_F(DCCEXProtocolTests, versionJustZeros) {

@@ -5,6 +5,7 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
+ * Copyright © 2026 Peter Cole
  * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike

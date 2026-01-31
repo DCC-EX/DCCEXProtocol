@@ -36,7 +36,7 @@ TEST_F(CVTests, readLocoAddress) {
   _dccexProtocol.readLoco();
 
   // Buffer should contain what we expect
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate calling readCV(cv) generates the correct command
@@ -48,7 +48,7 @@ TEST_F(CVTests, readCV) {
   _dccexProtocol.readCV(19);
 
   // Buffer should contain what we expect
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate calling validateCV(cv, value) generates the correct command
@@ -60,7 +60,7 @@ TEST_F(CVTests, validateCV) {
   _dccexProtocol.validateCV(1, 3);
 
   // Buffer should contain what we expect
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate calling validateCVBit(cv, bit, value) generates the correct command
@@ -72,7 +72,7 @@ TEST_F(CVTests, validateCVBit) {
   _dccexProtocol.validateCVBit(1, 3, 1);
 
   // Buffer should contain what we expect
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate receiving <r value> calls receivedReadLoco()

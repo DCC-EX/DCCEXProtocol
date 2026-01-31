@@ -32,7 +32,7 @@ TEST_F(TrackManagerTests, setTrackTypeMain) {
   _dccexProtocol.setTrackType('A', TrackManagerMode::MAIN, 0);
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /**
@@ -45,7 +45,7 @@ TEST_F(TrackManagerTests, setTrackTypeProg) {
   _dccexProtocol.setTrackType('B', TrackManagerMode::PROG, 0);
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /**
@@ -58,7 +58,7 @@ TEST_F(TrackManagerTests, setTrackTypeDC) {
   _dccexProtocol.setTrackType('C', TrackManagerMode::DC, 1234);
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /**
@@ -71,7 +71,7 @@ TEST_F(TrackManagerTests, setTrackTypeDCX) {
   _dccexProtocol.setTrackType('D', TrackManagerMode::DCX, 2345);
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /**
@@ -84,5 +84,5 @@ TEST_F(TrackManagerTests, setTrackTypeNone) {
   _dccexProtocol.setTrackType('E', TrackManagerMode::NONE, 0);
 
   // Ensure the buffer has what's expected
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }

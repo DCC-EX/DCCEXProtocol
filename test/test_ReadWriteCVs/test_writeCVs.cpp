@@ -36,7 +36,7 @@ TEST_F(CVTests, writeLocoAddress) {
   _dccexProtocol.writeLocoAddress(1234);
 
   // Check the buffer
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate writeCV(cv, value) generates the correct command
@@ -48,7 +48,7 @@ TEST_F(CVTests, writeCV) {
   _dccexProtocol.writeCV(1, 3);
 
   // Check the buffer
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate writeCVBit(cv, bit, value) generates the correct command
@@ -60,7 +60,7 @@ TEST_F(CVTests, writeCVBit) {
   _dccexProtocol.writeCVBit(19, 4, 1);
 
   // Check the buffer
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate writeCVOnMain(address, cv, value) generates the correct command
@@ -72,7 +72,7 @@ TEST_F(CVTests, writeCVOnMain) {
   _dccexProtocol.writeCVOnMain(3, 8, 4);
 
   // Check the buffer
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate writeCVBitOnMain(address, cv, bit, value) generates the correct command
@@ -84,7 +84,7 @@ TEST_F(CVTests, writeCVBitOnMain) {
   _dccexProtocol.writeCVBitOnMain(3, 19, 4, 1);
 
   // Check the buffer
-  ASSERT_EQ(_stream.getBuffer(), expected);
+  ASSERT_EQ(_stream.getOutput(), expected);
 }
 
 /// @brief Validate a resonse to writing a loco address calls the correct delegate method

@@ -92,10 +92,7 @@ void DCCEXProtocol::connect(Stream *stream) {
   this->_stream = stream;
 }
 
-void DCCEXProtocol::disconnect() {
-  _sendOneParam('U', "DISCONNECT");
-  this->_stream = nullptr;
-}
+void DCCEXProtocol::disconnect() { return; }
 
 void DCCEXProtocol::check() {
   if (_stream) {
