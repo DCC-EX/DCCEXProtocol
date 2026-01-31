@@ -133,39 +133,59 @@ void DCCEXProtocol::sendCommand(char *cmd) {
   _cmdSend();
 }
 
-// sequentially request and get the required lists. To avoid overloading the buffer
+// Gated method to get the required lists to avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
                              bool turntableListRequired) {
   // Serial.println(F("getLists()"));
-  if (!_receivedLists) {
-    if (rosterRequired && !_rosterRequested) {
-      _getRoster();
-    } else {
-      if (!rosterRequired || _receivedRoster) {
-        if (turnoutListRequired && !_turnoutListRequested) {
-          _getTurnouts();
-        } else {
-          if (!turnoutListRequired || _receivedTurnoutList) {
-            if (routeListRequired && !_routeListRequested) {
-              _getRoutes();
-            } else {
-              if (!routeListRequired || _receivedRouteList) {
-                if (turntableListRequired && !_turntableListRequested) {
-                  _getTurntables();
-                } else {
-                  if (!turntableListRequired || _receivedTurntableList) {
-                    _receivedLists = true;
-                    // Serial.println(F("Lists Fully Received"));
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  if (_receivedLists)
+    return;
+
+  // Start with roster if it's required and get it, do not continue
+  if (rosterRequired && !_rosterRequested) {
+    _getRoster();
+    return;
   }
-  // Serial.println(F("getLists(): end"));
+
+  // If we're still waiting for the roster, do not continue
+  if (_rosterRequested && !_receivedRoster) {
+    return;
+  }
+
+  // If we get here, get turnouts if required
+  if (turnoutListRequired && !_turnoutListRequested) {
+    _getTurnouts();
+    return;
+  }
+
+  // If we're still waiting for turnouts, do not continue
+  if (_turnoutListRequested && !_receivedTurnoutList) {
+    return;
+  }
+
+  // If we get here, get routes if required
+  if (routeListRequired && !_routeListRequested) {
+    _getRoutes();
+    return;
+  }
+
+  // If we're still waiting for routes, do not continue
+  if (_routeListRequested && !_receivedRouteList) {
+    return;
+  }
+
+  // If we get here, get turntables if required
+  if (turntableListRequired && !_turntableListRequested) {
+    _getTurntables();
+    return;
+  }
+
+  // If we're still waiting for turntables, do not continue
+  if (_turntableListRequested && !_receivedTurntableList) {
+    return;
+  }
+
+  // If we get here, all lists received
+  _receivedLists = true;
 }
 
 bool DCCEXProtocol::receivedLists() { return _receivedLists; }
