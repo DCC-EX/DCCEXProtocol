@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- *
+ * Copyright © 2026 Peter Cole
  * Copyright © 2024 Peter Akers
  * Copyright © 2024 Peter Cole
  * Copyright © 2024 Vincent Hamp
@@ -34,6 +34,12 @@
 /*
 Version information:
 
+1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
+        - Refactor all DCCEXProtocol outbound commands to remove sprintf
+        - Add default true to getLists() so users can just call it without parameters to get all lists
+        - Deprecate disconnect() method that does nothing and conflicts with user U command
+        - Additional tests to improve future bug detection/breakages
+        - Other non-functional tidy up changes
 1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
         - Add readCV(cv) and validateCV(cv, value) methods with associated delegate method:
                 receivedValidateCV(int cv, int value)
@@ -275,7 +281,7 @@ public:
   /// @param stream
   void connect(Stream *stream);
 
-  /// @brief Disconnect from DCC-EX
+  /// @brief DEPRECATED - Does nothing, retained for backwards compatibility only
   void disconnect();
 
   /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
@@ -290,7 +296,8 @@ public:
   /// @param turnoutListRequired Request the turnout list (true|false)
   /// @param routeListRequired Request the route list (true|false)
   /// @param turntableListRequired Request the turntable list (true|false)
-  void getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired);
+  void getLists(bool rosterRequired = true, bool turnoutListRequired = true, bool routeListRequired = true,
+                bool turntableListRequired = true);
 
   /// @brief Check if all lists have been received (roster, routes, turnouts, turntables)
   /// @return true|false
@@ -705,6 +712,141 @@ private:
   bool _enableHeartbeat;                              // Flag if heartbeat is enabled
   unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
   unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command
+  int _cmdIndex;                                      // Track the index for the outbound command buffer
+
+  // Helper methods to build the outbound command
+  /**
+   * @brief Start the command with "<" and the OPCODE if required
+   * @param opcode Single character OPCODE to append
+   */
+  void _cmdStart(char opcode = '\0');
+
+  /**
+   * @brief Append a string to the command
+   * @param s String to append
+   */
+  void _cmdAppend(const char *s);
+
+  /**
+   * @brief Append an integer value to the command
+   * @param n Integer to append
+   */
+  void _cmdAppend(int n);
+
+  /**
+   * @brief Append a single char to the command
+   * @param c Char to append
+   */
+  void _cmdAppend(char c);
+
+  /**
+   * @brief Append the closing ">" and call _sendCommand()
+   */
+  void _cmdSend();
+
+  /**
+   * @brief Formatter for opcode only outbound commands
+   * @param opcode OPCODE to send
+   */
+  void _sendOpcode(char opcode);
+
+  /**
+   * @brief Formatter for opcode and one parameter
+   * @param opcode OPCODE to send
+   * @param param Single char parameter to send
+   */
+  void _sendOneParam(char opcode, char param);
+
+  /**
+   * @brief Formatter for opcode and one parameter
+   * @param opcode OPCODE to send
+   * @param param Single string parameter to send
+   */
+  void _sendOneParam(char opcode, const char *param);
+
+  /**
+   * @brief Formatter for opcode and one parameter
+   * @param opcode OPCODE to send
+   * @param param Single int parameter to send
+   */
+  void _sendOneParam(char opcode, int param);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single int parameter to send
+   */
+  void _sendTwoParams(char opcode, char param1, int param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single int parameter to send
+   */
+  void _sendTwoParams(char opcode, int param1, int param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single string parameter to send
+   * @param param2 Single int parameter to send
+   */
+  void _sendTwoParams(char opcode, const char *param1, int param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single char parameter to send
+   */
+  void _sendTwoParams(char opcode, int param1, char param2);
+
+  /**
+   * @brief Formatter for opcode and two params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single string parameter to send
+   */
+  void _sendTwoParams(char opcode, char param1, const char *param2);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single string parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, const char *param1, int param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, int param1, int param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single string parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, char param1, const char *param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and four params
+   * @param opcode OPCODE to send
+   * @param param1 Single int parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   * @param param4 Single int parameter to send
+   */
+  void _sendFourParams(char opcode, int param1, int param2, int param3, int param4);
 };
 
 #endif // DCCEXPROTOCOL_H

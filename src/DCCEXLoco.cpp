@@ -309,7 +309,7 @@ void Consist::addLoco(int address, Facing facing) {
     if (_name == nullptr) {
       int addressLength = (address == 0) ? 1 : log10(address) + 1;
       char *newName = new char[addressLength + 1];
-      snprintf(newName, addressLength + 1, "%d", address);
+      itoa(address, newName, 10);
       setName(newName);
       delete[] newName;
     }

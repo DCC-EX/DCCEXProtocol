@@ -92,11 +92,7 @@ void DCCEXProtocol::connect(Stream *stream) {
   this->_stream = stream;
 }
 
-void DCCEXProtocol::disconnect() {
-  sprintf(_outboundCommand, "%s", "<U DISCONNECT>");
-  _sendCommand();
-  this->_stream = nullptr;
-}
+void DCCEXProtocol::disconnect() { return; }
 
 void DCCEXProtocol::check() {
   if (_stream) {
@@ -132,43 +128,64 @@ void DCCEXProtocol::check() {
 }
 
 void DCCEXProtocol::sendCommand(char *cmd) {
-  sprintf(_outboundCommand, "<%s>", cmd);
-  _sendCommand();
+  _cmdStart();
+  _cmdAppend(cmd);
+  _cmdSend();
 }
 
-// sequentially request and get the required lists. To avoid overloading the buffer
+// Gated method to get the required lists to avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
                              bool turntableListRequired) {
   // Serial.println(F("getLists()"));
-  if (!_receivedLists) {
-    if (rosterRequired && !_rosterRequested) {
-      _getRoster();
-    } else {
-      if (!rosterRequired || _receivedRoster) {
-        if (turnoutListRequired && !_turnoutListRequested) {
-          _getTurnouts();
-        } else {
-          if (!turnoutListRequired || _receivedTurnoutList) {
-            if (routeListRequired && !_routeListRequested) {
-              _getRoutes();
-            } else {
-              if (!routeListRequired || _receivedRouteList) {
-                if (turntableListRequired && !_turntableListRequested) {
-                  _getTurntables();
-                } else {
-                  if (!turntableListRequired || _receivedTurntableList) {
-                    _receivedLists = true;
-                    // Serial.println(F("Lists Fully Received"));
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  if (_receivedLists)
+    return;
+
+  // Start with roster if it's required and get it, do not continue
+  if (rosterRequired && !_rosterRequested) {
+    _getRoster();
+    return;
   }
-  // Serial.println(F("getLists(): end"));
+
+  // If we're still waiting for the roster, do not continue
+  if (_rosterRequested && !_receivedRoster) {
+    return;
+  }
+
+  // If we get here, get turnouts if required
+  if (turnoutListRequired && !_turnoutListRequested) {
+    _getTurnouts();
+    return;
+  }
+
+  // If we're still waiting for turnouts, do not continue
+  if (_turnoutListRequested && !_receivedTurnoutList) {
+    return;
+  }
+
+  // If we get here, get routes if required
+  if (routeListRequired && !_routeListRequested) {
+    _getRoutes();
+    return;
+  }
+
+  // If we're still waiting for routes, do not continue
+  if (_routeListRequested && !_receivedRouteList) {
+    return;
+  }
+
+  // If we get here, get turntables if required
+  if (turntableListRequired && !_turntableListRequested) {
+    _getTurntables();
+    return;
+  }
+
+  // If we're still waiting for turntables, do not continue
+  if (_turntableListRequested && !_receivedTurntableList) {
+    return;
+  }
+
+  // If we get here, all lists received
+  _receivedLists = true;
 }
 
 bool DCCEXProtocol::receivedLists() { return _receivedLists; }
@@ -176,8 +193,7 @@ bool DCCEXProtocol::receivedLists() { return _receivedLists; }
 void DCCEXProtocol::requestServerVersion() {
   // Serial.println(F("requestServerVersion(): "));
   if (_delegate) {
-    sprintf(_outboundCommand, "<s>");
-    _sendCommand();
+    _sendOpcode('s');
   }
   // Serial.println(F("requestServerVersion(): end"));
 }
@@ -233,24 +249,22 @@ void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction
 
 void DCCEXProtocol::functionOn(Loco *loco, int function) {
   // console->println(F("sendFunction(): "));
-  if (_delegate) {
-    int address = loco->getAddress();
-    if (address >= 0) {
-      sprintf(_outboundCommand, "<F %d %d 1>", address, function);
-      _sendCommand();
-    }
+  if (!_delegate)
+    return;
+  int address = loco->getAddress();
+  if (address >= 0) {
+    _sendThreeParams('F', address, function, 1);
   }
   // console->println(F("sendFunction(): end"));
 }
 
 void DCCEXProtocol::functionOff(Loco *loco, int function) {
   // console->println(F("sendFunction(): "));
-  if (_delegate) {
-    int address = loco->getAddress();
-    if (address >= 0) {
-      sprintf(_outboundCommand, "<F %d %d 0>", address, function);
-      _sendCommand();
-    }
+  if (!_delegate)
+    return;
+  int address = loco->getAddress();
+  if (address >= 0) {
+    _sendThreeParams('F', address, function, 0);
   }
   // console->println(F("sendFunction(): end"));
 }
@@ -292,25 +306,22 @@ bool DCCEXProtocol::isFunctionOn(Consist *consist, int function) {
 
 void DCCEXProtocol::requestLocoUpdate(int address) {
   // console->println(F("sendLocoUpdateRequest()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<t %d>", address);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('t', address);
   // console->println(F("sendLocoUpdateRequest() end"));
 }
 
 void DCCEXProtocol::readLoco() {
   if (_delegate) {
-    sprintf(_outboundCommand, "<R>");
-    _sendCommand();
+    _sendOpcode('R');
   }
 }
 
 void DCCEXProtocol::emergencyStop() {
   // console->println(F("emergencyStop(): "));
   if (_delegate) {
-    sprintf(_outboundCommand, "<!>");
-    _sendCommand();
+    _sendOpcode('!');
   }
   // console->println(F("emergencyStop(): end"));
 }
@@ -363,26 +374,26 @@ Turnout *DCCEXProtocol::getTurnoutById(int turnoutId) {
 }
 
 void DCCEXProtocol::closeTurnout(int turnoutId) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<T %d 0>", turnoutId);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('T', turnoutId, 0);
 }
 
 void DCCEXProtocol::throwTurnout(int turnoutId) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<T %d 1>", turnoutId);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('T', turnoutId, 1);
 }
 
 void DCCEXProtocol::toggleTurnout(int turnoutId) {
+  if (!_delegate)
+    return;
+
   for (Turnout *t = turnouts->getFirst(); t; t = t->getNext()) {
     if (t->getId() == turnoutId) {
       // console->println(t->getThrown());
       bool thrown = t->getThrown() ? 0 : 1;
-      sprintf(_outboundCommand, "<T %d %d>", turnoutId, thrown);
-      _sendCommand();
+      _sendTwoParams('T', turnoutId, thrown);
     }
   }
 }
@@ -409,8 +420,7 @@ bool DCCEXProtocol::receivedRouteList() { return _receivedRouteList; }
 void DCCEXProtocol::startRoute(int routeId) {
   // console->println(F("sendRouteAction()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "</ START %d>", routeId);
-    _sendCommand();
+    _sendTwoParams('/', "START", routeId);
   }
   // console->println(F("sendRouteAction() end"));
 }
@@ -420,16 +430,14 @@ void DCCEXProtocol::handOffLoco(int locoAddress, int automationId) {
     Route *automation = routes->getById(automationId);
     if (!automation || automation->getType() != RouteType::RouteTypeAutomation)
       return;
-    sprintf(_outboundCommand, "</ START %d %d>", locoAddress, automationId);
-    _sendCommand();
+    _sendThreeParams('/', "START", locoAddress, automationId);
   }
 }
 
 void DCCEXProtocol::pauseRoutes() {
   // console->println(F("sendPauseRoutes()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "</PAUSE>");
-    _sendCommand();
+    _sendOneParam('/', "PAUSE");
   }
   // console->println(F("sendPauseRoutes() end"));
 }
@@ -437,8 +445,7 @@ void DCCEXProtocol::pauseRoutes() {
 void DCCEXProtocol::resumeRoutes() {
   // console->println(F("sendResumeRoutes()"));
   if (_delegate) {
-    sprintf(_outboundCommand, "</RESUME>");
-    _sendCommand();
+    _sendOneParam('/', "RESUME");
   }
   // console->println(F("sendResumeRoutes() end"));
 }
@@ -480,9 +487,9 @@ void DCCEXProtocol::rotateTurntable(int turntableId, int position, int activity)
         if (position == 0) {
           activity = 2;
         }
-        sprintf(_outboundCommand, "<I %d %d %d>", turntableId, position, activity);
+        _sendThreeParams('I', turntableId, position, activity);
       } else {
-        sprintf(_outboundCommand, "<I %d %d>", turntableId, position);
+        _sendTwoParams('I', turntableId, position);
       }
     }
     _sendCommand();
@@ -506,90 +513,80 @@ void DCCEXProtocol::refreshTurntableList() {
 // Track management methods
 
 void DCCEXProtocol::powerOn() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<1>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOpcode('1');
 }
 
 void DCCEXProtocol::powerOff() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<0>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOpcode('0');
 }
 
 void DCCEXProtocol::powerMainOn() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<1 MAIN>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('1', "MAIN");
 }
 
 void DCCEXProtocol::powerMainOff() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<0 MAIN>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('0', "MAIN");
 }
 
 void DCCEXProtocol::powerProgOn() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<1 PROG>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('1', "PROG");
 }
 
 void DCCEXProtocol::powerProgOff() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<0 PROG>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('0', "PROG");
 }
 
 void DCCEXProtocol::joinProg() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<1 JOIN>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('1', "JOIN");
 }
 
 void DCCEXProtocol::powerTrackOn(char track) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<1 %c>", track);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('1', track);
 }
 
 void DCCEXProtocol::powerTrackOff(char track) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<0 %c>", track);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('0', track);
 }
 
 void DCCEXProtocol::setTrackType(char track, TrackManagerMode type, int address) {
-  if (_delegate) {
-    switch (type) {
-    case MAIN:
-      sprintf(_outboundCommand, "<= %c MAIN>", track);
-      break;
-    case PROG:
-      sprintf(_outboundCommand, "<= %c PROG>", track);
-      break;
-    case DC:
-      sprintf(_outboundCommand, "<= %c DC %d>", track, address);
-      break;
-    case DCX:
-      sprintf(_outboundCommand, "<= %c DCX %d>", track, address);
-      break;
-    case NONE:
-      sprintf(_outboundCommand, "<= %c NONE>", track);
-      break;
-    default:
-      return;
-    }
-    _sendCommand();
+  if (!_delegate)
+    return;
+  switch (type) {
+  case MAIN:
+    _sendTwoParams('=', track, "MAIN");
+    break;
+  case PROG:
+    _sendTwoParams('=', track, "PROG");
+    break;
+  case DC:
+    _sendThreeParams('=', track, "DC", address);
+    break;
+  case DCX:
+    _sendThreeParams('=', track, "DCX", address);
+    break;
+  case NONE:
+    _sendTwoParams('=', track, "NONE");
+    break;
+  default:
+    return;
   }
 }
 
@@ -597,103 +594,91 @@ void DCCEXProtocol::setTrackType(char track, TrackManagerMode type, int address)
 
 void DCCEXProtocol::activateAccessory(int accessoryAddress, int accessorySubAddr) {
   // console->println(F("sendAccessory()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<a %d %d 1>", accessoryAddress, accessorySubAddr);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendThreeParams('a', accessoryAddress, accessorySubAddr, 1);
+
   // console->println(F("sendAccessory() end"));
 }
 
 void DCCEXProtocol::deactivateAccessory(int accessoryAddress, int accessorySubAddr) {
   // console->println(F("sendAccessory()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<a %d %d 0>", accessoryAddress, accessorySubAddr);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendThreeParams('a', accessoryAddress, accessorySubAddr, 0);
   // console->println(F("sendAccessory() end"));
 }
 
 void DCCEXProtocol::activateLinearAccessory(int linearAddress) {
   // console->println(F("sendAccessory()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<a %d 1>", linearAddress);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('a', linearAddress, 1);
   // console->println(F("sendAccessory() end"));
 }
 
 void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) {
   // console->println(F("sendAccessory()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<a %d 0>", linearAddress);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('a', linearAddress, 0);
   // console->println(F("sendAccessory() end"));
 }
 
 void DCCEXProtocol::getNumberSupportedLocos() {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<#>");
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOpcode('#');
 }
 
 // CV programming methods
 
 void DCCEXProtocol::readCV(int cv) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<R %d>", cv);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('R', cv);
 }
 
 void DCCEXProtocol::validateCV(int cv, int value) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<V %d %d>", cv, value);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('V', cv, value);
 }
 
 void DCCEXProtocol::validateCVBit(int cv, int bit, int value) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<V %d %d %d>", cv, bit, value);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendThreeParams('V', cv, bit, value);
 }
 
 void DCCEXProtocol::writeLocoAddress(int address) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<W %d>", address);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('W', address);
 }
 
 void DCCEXProtocol::writeCV(int cv, int value) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<W %d %d>", cv, value);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('W', cv, value);
 }
 
 void DCCEXProtocol::writeCVBit(int cv, int bit, int value) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<B %d %d %d>", cv, bit, value);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendThreeParams('B', cv, bit, value);
 }
 
 void DCCEXProtocol::writeCVOnMain(int address, int cv, int value) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<w %d %d %d>", address, cv, value);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendThreeParams('w', address, cv, value);
 }
 
 void DCCEXProtocol::writeCVBitOnMain(int address, int cv, int bit, int value) {
-  if (_delegate) {
-    sprintf(_outboundCommand, "<b %d %d %d %d>", address, cv, bit, value);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendFourParams('b', address, cv, bit, value);
 }
 
 // Private methods
@@ -721,136 +706,136 @@ void DCCEXProtocol::_sendCommand() {
 }
 
 void DCCEXProtocol::_processCommand() {
-  if (_delegate) {
-    // last Response time
-    _lastServerResponseTime = millis();
+  if (!_delegate)
+    return;
+  // last Response time
+  _lastServerResponseTime = millis();
 
-    switch (DCCEXInbound::getOpcode()) {
-    case '@': // Screen update
-      if (DCCEXInbound::isTextParameter(2) && DCCEXInbound::getParameterCount() == 3) {
-        _processScreenUpdate();
-      }
-      break;
-
-    case 'i': // iDCC-EX server info
-      if (DCCEXInbound::isTextParameter(0)) {
-        _processServerDescription();
-      }
-      break;
-
-    case 'm': // Broadcast message
-      if (DCCEXInbound::isTextParameter(0)) {
-        _processMessage();
-      }
-      break;
-
-    case 'I': // Turntable broadcast
-      if (DCCEXInbound::getParameterCount() == 3) {
-        _processTurntableBroadcast();
-      }
-      break;
-
-    case 'p': // Power broadcast
-      if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount() > 2)
-        break;
-      _processTrackPower();
-      break;
-
-    case '=': // Track type broadcast
-      if (DCCEXInbound::getParameterCount() < 2)
-        break;
-      _processTrackType();
-      break;
-
-    case 'l': // Loco/cab broadcast
-      if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount() != 4)
-        break;
-      _processLocoBroadcast();
-      break;
-
-    case 'j': // Throttle list response jA|O|P|R|T
-      if (DCCEXInbound::isTextParameter(0))
-        break;
-      if (DCCEXInbound::getNumber(0) == 'A') {        // Receive route/automation info
-        if (DCCEXInbound::getParameterCount() == 0) { // Empty list, no routes/automations
-          _receivedRouteList = true;
-        } else if (DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) { // Receive route entry
-          _processRouteEntry();
-        } else { // Receive route/automation list
-          _processRouteList();
-        }
-      } else if (DCCEXInbound::getNumber(0) == 'O') { // Receive turntable info
-        if (DCCEXInbound::getParameterCount() == 0) { // Empty turntable list
-          _receivedTurntableList = true;
-        } else if (DCCEXInbound::getParameterCount() == 6 && DCCEXInbound::isTextParameter(5)) { // Turntable entry
-          _processTurntableEntry();
-        } else { // Turntable list
-          _processTurntableList();
-        }
-      } else if (DCCEXInbound::getNumber(0) == 'P') { // Receive turntable position info
-        if (DCCEXInbound::getParameterCount() == 5 &&
-            DCCEXInbound::isTextParameter(4)) { // Turntable position index entry
-          _processTurntableIndexEntry();
-        }
-      } else if (DCCEXInbound::getNumber(0) == 'R') { // Receive roster info
-        if (DCCEXInbound::getParameterCount() == 1) { // Empty list, no roster
-          _receivedRoster = true;
-        } else if (DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(2) &&
-                   DCCEXInbound::isTextParameter(3)) { // Roster entry
-          // <jR id "desc" "func1/func2/func3/...">
-          _processRosterEntry();
-        } else { // Roster list
-          // <jR id1 id2 id3 ...>
-          _processRosterList();
-        }
-      } else if (DCCEXInbound::getNumber(0) == 'T') { // Receive turnout info
-        if (DCCEXInbound::getParameterCount() == 1) { // Empty list, no turnouts defined
-          _receivedTurnoutList = true;
-        } else if (DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) { // Turnout entry
-          // <jT id state "desc">
-          _processTurnoutEntry();
-        } else { // Turnout list
-          // <jT id1 id2 id3 ...>
-          _processTurnoutList();
-        }
-      }
-      break;
-
-    case 'H': // Turnout broadcast
-      if (DCCEXInbound::isTextParameter(0))
-        break;
-      _processTurnoutBroadcast();
-      break;
-
-    case 'r': // Read loco response
-      if (DCCEXInbound::isTextParameter(0))
-        break;
-      if (DCCEXInbound::getParameterCount() == 1) {
-        _processReadResponse();
-      } else if (DCCEXInbound::getParameterCount() == 2) {
-        _processWriteCVResponse();
-      }
-      break;
-
-    case 'w': // Write loco response
-      if (DCCEXInbound::isTextParameter(0))
-        break;
-      _processWriteLocoResponse();
-      break;
-
-    case 'v': // Validate CV response
-      if (DCCEXInbound::isTextParameter(0))
-        break;
-      if (DCCEXInbound::getParameterCount() == 2) {
-        _processValidateCVResponse();
-      } else if (DCCEXInbound::getParameterCount() == 3) {
-        _processValidateCVBitResponse();
-      }
-      break;
-
-    default:
-      break;
+  switch (DCCEXInbound::getOpcode()) {
+  case '@': // Screen update
+    if (DCCEXInbound::isTextParameter(2) && DCCEXInbound::getParameterCount() == 3) {
+      _processScreenUpdate();
     }
+    break;
+
+  case 'i': // iDCC-EX server info
+    if (DCCEXInbound::isTextParameter(0)) {
+      _processServerDescription();
+    }
+    break;
+
+  case 'm': // Broadcast message
+    if (DCCEXInbound::isTextParameter(0)) {
+      _processMessage();
+    }
+    break;
+
+  case 'I': // Turntable broadcast
+    if (DCCEXInbound::getParameterCount() == 3) {
+      _processTurntableBroadcast();
+    }
+    break;
+
+  case 'p': // Power broadcast
+    if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount() > 2)
+      break;
+    _processTrackPower();
+    break;
+
+  case '=': // Track type broadcast
+    if (DCCEXInbound::getParameterCount() < 2)
+      break;
+    _processTrackType();
+    break;
+
+  case 'l': // Loco/cab broadcast
+    if (DCCEXInbound::isTextParameter(0) || DCCEXInbound::getParameterCount() != 4)
+      break;
+    _processLocoBroadcast();
+    break;
+
+  case 'j': // Throttle list response jA|O|P|R|T
+    if (DCCEXInbound::isTextParameter(0))
+      break;
+    if (DCCEXInbound::getNumber(0) == 'A') {        // Receive route/automation info
+      if (DCCEXInbound::getParameterCount() == 0) { // Empty list, no routes/automations
+        _receivedRouteList = true;
+      } else if (DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) { // Receive route entry
+        _processRouteEntry();
+      } else { // Receive route/automation list
+        _processRouteList();
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'O') { // Receive turntable info
+      if (DCCEXInbound::getParameterCount() == 0) { // Empty turntable list
+        _receivedTurntableList = true;
+      } else if (DCCEXInbound::getParameterCount() == 6 && DCCEXInbound::isTextParameter(5)) { // Turntable entry
+        _processTurntableEntry();
+      } else { // Turntable list
+        _processTurntableList();
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'P') { // Receive turntable position info
+      if (DCCEXInbound::getParameterCount() == 5 &&
+          DCCEXInbound::isTextParameter(4)) { // Turntable position index entry
+        _processTurntableIndexEntry();
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'R') { // Receive roster info
+      if (DCCEXInbound::getParameterCount() == 1) { // Empty list, no roster
+        _receivedRoster = true;
+      } else if (DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(2) &&
+                 DCCEXInbound::isTextParameter(3)) { // Roster entry
+        // <jR id "desc" "func1/func2/func3/...">
+        _processRosterEntry();
+      } else { // Roster list
+        // <jR id1 id2 id3 ...>
+        _processRosterList();
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'T') { // Receive turnout info
+      if (DCCEXInbound::getParameterCount() == 1) { // Empty list, no turnouts defined
+        _receivedTurnoutList = true;
+      } else if (DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) { // Turnout entry
+        // <jT id state "desc">
+        _processTurnoutEntry();
+      } else { // Turnout list
+        // <jT id1 id2 id3 ...>
+        _processTurnoutList();
+      }
+    }
+    break;
+
+  case 'H': // Turnout broadcast
+    if (DCCEXInbound::isTextParameter(0))
+      break;
+    _processTurnoutBroadcast();
+    break;
+
+  case 'r': // Read loco response
+    if (DCCEXInbound::isTextParameter(0))
+      break;
+    if (DCCEXInbound::getParameterCount() == 1) {
+      _processReadResponse();
+    } else if (DCCEXInbound::getParameterCount() == 2) {
+      _processWriteCVResponse();
+    }
+    break;
+
+  case 'w': // Write loco response
+    if (DCCEXInbound::isTextParameter(0))
+      break;
+    _processWriteLocoResponse();
+    break;
+
+  case 'v': // Validate CV response
+    if (DCCEXInbound::isTextParameter(0))
+      break;
+    if (DCCEXInbound::getParameterCount() == 2) {
+      _processValidateCVResponse();
+    } else if (DCCEXInbound::getParameterCount() == 3) {
+      _processValidateCVBitResponse();
+    }
+    break;
+
+  default:
+    break;
   }
 }
 
@@ -909,8 +894,7 @@ void DCCEXProtocol::_processScreenUpdate() { //<@ screen row "message">
 void DCCEXProtocol::_sendHeartbeat() {
   if (millis() - _lastHeartbeat > _heartbeatDelay) {
     _lastHeartbeat = millis();
-    sprintf(_outboundCommand, "<#>");
-    _sendCommand();
+    _sendOpcode('#');
   }
 }
 
@@ -962,10 +946,9 @@ Direction DCCEXProtocol::_getDirectionFromSpeedByte(int speedByte) { return (spe
 
 void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
   // console->print(F("sendLocoAction(): ")); console->println(address);
-  if (_delegate) {
-    sprintf(_outboundCommand, "<t %d %d %d>", address, speed, direction);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendThreeParams('t', address, speed, direction);
   // console->println(F("sendLocoAction(): end"));
 }
 
@@ -978,11 +961,10 @@ void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
 
 void DCCEXProtocol::_getRoster() {
   // console->println(F("getRoster()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JR>");
-    _sendCommand();
-    _rosterRequested = true;
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('J', 'R');
+  _rosterRequested = true;
   // console->println(F("getRoster() end"));
 }
 
@@ -1009,10 +991,9 @@ void DCCEXProtocol::_processRosterList() {
 
 void DCCEXProtocol::_requestRosterEntry(int address) {
   // console->println(F("sendRosterEntryRequest()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JR %d>", address);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('J', 'R', address);
   // console->println(F("sendRosterEntryRequest(): end"));
 }
 
@@ -1050,11 +1031,10 @@ void DCCEXProtocol::_processRosterEntry() { //<jR id ""|"desc" ""|"funct1/funct2
 
 void DCCEXProtocol::_getTurnouts() {
   // console->println(F("getTurnouts()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JT>");
-    _sendCommand();
-    _turnoutListRequested = true;
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('J', 'T');
+  _turnoutListRequested = true;
   // console->println(F("getTurnouts() end"));
 }
 
@@ -1082,10 +1062,9 @@ void DCCEXProtocol::_processTurnoutList() {
 
 void DCCEXProtocol::_requestTurnoutEntry(int id) {
   // console->println(F("sendTurnoutEntryRequest()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JT %d>", id);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('J', 'T', id);
   // console->println(F("sendTurnoutEntryRequest() end"));
 }
 
@@ -1139,11 +1118,10 @@ void DCCEXProtocol::_processTurnoutBroadcast() { //<H id state>
 
 void DCCEXProtocol::_getRoutes() {
   // console->println(F("getRoutes()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JA>");
-    _sendCommand();
-    _routeListRequested = true;
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('J', 'A');
+  _routeListRequested = true;
   // console->println(F("getRoutes() end"));
 }
 
@@ -1170,10 +1148,9 @@ void DCCEXProtocol::_processRouteList() {
 
 void DCCEXProtocol::_requestRouteEntry(int id) {
   // console->println(F("sendRouteEntryRequest()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JA %d>", id);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('J', 'A', id);
   // console->println(F("sendRouteEntryRequest() end"));
 }
 
@@ -1209,11 +1186,10 @@ void DCCEXProtocol::_processRouteEntry() {
 
 void DCCEXProtocol::_getTurntables() {
   // console->println(F("getTurntables()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JO>");
-    _sendCommand();
-    _turntableListRequested = true;
-  }
+  if (!_delegate)
+    return;
+  _sendOneParam('J', 'O');
+  _turntableListRequested = true;
   // console->println(F("getTurntables() end"));
 }
 
@@ -1240,10 +1216,9 @@ void DCCEXProtocol::_processTurntableList() { // <jO [id1 id2 id3 ...]>
 
 void DCCEXProtocol::_requestTurntableEntry(int id) {
   // console->println(F("sendTurntableEntryRequest()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JO %d>", id);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('J', 'O', id);
   // console->println(F("sendTurntableEntryRequest(): end"));
 }
 
@@ -1274,10 +1249,9 @@ void DCCEXProtocol::_processTurntableEntry() { // <jO id type position position_
 
 void DCCEXProtocol::_requestTurntableIndexEntry(int id) {
   // console->println(F("sendTurntableIndexEntryRequest()"));
-  if (_delegate) {
-    sprintf(_outboundCommand, "<JP %d>", id);
-    _sendCommand();
-  }
+  if (!_delegate)
+    return;
+  _sendTwoParams('J', 'P', id);
   // console->println(F("sendTurntableIndexEntryRequest() end"));
 }
 
@@ -1426,4 +1400,160 @@ void DCCEXProtocol::_processWriteCVResponse() { // <r cv value>, value -1 = erro
   int cv = DCCEXInbound::getNumber(0);
   int value = DCCEXInbound::getNumber(1);
   _delegate->receivedWriteCV(cv, value);
+}
+
+// Helper methods to build the outbound command
+
+void DCCEXProtocol::_cmdStart(char opcode) {
+  _cmdIndex = 0;
+  _outboundCommand[_cmdIndex++] = '<';
+  if (opcode != '\0') {
+    _outboundCommand[_cmdIndex++] = opcode;
+  }
+  _outboundCommand[_cmdIndex] = '\0';
+}
+
+void DCCEXProtocol::_cmdAppend(const char *s) {
+  // Must leave room for '>' and null terminator
+  while (*s && _cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
+    _outboundCommand[_cmdIndex++] = *s++;
+  }
+  _outboundCommand[_cmdIndex] = '\0';
+}
+
+void DCCEXProtocol::_cmdAppend(int n) {
+  char buf[12]; // Enough for -2147483648
+  itoa(n, buf, 10);
+  _cmdAppend(buf);
+}
+
+void DCCEXProtocol::_cmdAppend(char c) {
+  // Must leave room for '>' and null terminator
+  if (_cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
+    _outboundCommand[_cmdIndex++] = c;
+    _outboundCommand[_cmdIndex] = '\0';
+  }
+}
+
+void DCCEXProtocol::_cmdSend() {
+  _outboundCommand[_cmdIndex++] = '>';
+  _outboundCommand[_cmdIndex] = '\0';
+  _sendCommand();
+}
+
+void DCCEXProtocol::_sendOpcode(char opcode) {
+  _cmdStart(opcode);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendOneParam(char opcode, char param) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendOneParam(char opcode, const char *param) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendOneParam(char opcode, int param) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendTwoParams(char opcode, char param1, int param2) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendTwoParams(char opcode, int param1, int param2) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendTwoParams(char opcode, const char *param1, int param2) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendTwoParams(char opcode, int param1, char param2) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendTwoParams(char opcode, char param1, const char *param2) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendThreeParams(char opcode, const char *param1, int param2, int param3) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdAppend(' ');
+  _cmdAppend(param3);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendThreeParams(char opcode, int param1, int param2, int param3) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdAppend(' ');
+  _cmdAppend(param3);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendThreeParams(char opcode, char param1, const char *param2, int param3) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdAppend(' ');
+  _cmdAppend(param3);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendFourParams(char opcode, int param1, int param2, int param3, int param4) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdAppend(' ');
+  _cmdAppend(param3);
+  _cmdAppend(' ');
+  _cmdAppend(param4);
+  _cmdSend();
 }
