@@ -38,4 +38,4 @@ _build
 
 # Coverage info file
 lcov.info
-coverage.*
+test_coverage/
