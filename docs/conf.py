@@ -14,7 +14,7 @@ subprocess.call('doxygen Doxyfile.in', shell=True)
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'DCCEXProtocol'
-copyright = '2023 - Peter Cole, Peter Akers'
+copyright = '2026 - Peter Cole, Peter Akers'
 author = 'Peter Cole, Peter Akers'
 
 # -- General configuration ---------------------------------------------------
