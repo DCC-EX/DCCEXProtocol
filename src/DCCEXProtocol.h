@@ -250,6 +250,9 @@ public:
   /// @param row Row number
   /// @param message Message to display on the screen/row
   virtual void receivedScreenUpdate(int screen, int row, char *message) {}
+
+  /// @brief Default destructor for DCCEXProtocolDelegate
+  virtual ~DCCEXProtocolDelegate() = default;
 };
 
 /// @brief Main class for the DCCEXProtocol library

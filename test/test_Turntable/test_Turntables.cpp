@@ -210,3 +210,27 @@ TEST_F(TurntableTests, operateTurntable) {
   EXPECT_FALSE(turntable1->isMoving());
   EXPECT_STREQ(turntable1->getIndexById(turntable1->getIndex())->getName(), "EX-Turntable Index 3");
 }
+
+/**
+ * @brief Stress test for turntable clean up and destructors
+ */
+TEST_F(TurntableTests, listCleanupStressTest) {
+  for (int i = 0; i < 5; i++) {
+    // Create turntable
+    Turntable *tt = new Turntable(i);
+    tt->setName("Temporary TT");
+    tt->setNumberOfIndexes(2);
+
+    // Add indices
+    tt->addIndex(new TurntableIndex(i, 0, 0, "Home"));
+    tt->addIndex(new TurntableIndex(i, 1, 1800, "Opposite"));
+
+    // Immediately clear the global list
+    // This tests if clearTurntableList() and ~Turntable() work 
+    // together without double-freeing or leaving dangling pointers.
+    Turntable::clearTurntableList();
+    
+    // Validate list is empty
+    EXPECT_EQ(Turntable::getFirst(), nullptr);
+  }
+}

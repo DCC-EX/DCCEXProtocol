@@ -1257,26 +1257,19 @@ void DCCEXProtocol::_requestTurntableIndexEntry(int id) {
 
 void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc]">
   // console->println(F("processTurntableIndexEntry(): "));
-  if (DCCEXInbound::getParameterCount() == 5) {
-    // find the Turntable entry to update
-    int ttId = DCCEXInbound::getNumber(1);
-    int index = DCCEXInbound::getNumber(2);
-    int angle = DCCEXInbound::getNumber(3);
-    char *name = DCCEXInbound::copyTextParameter(4);
-    if (index == 0) { // Index 0 is always home, and never has a label, so set one
-      free(name);
-      name = (char *)malloc(5); // Length of "Home" + null terminator
-      strcpy(name, "Home");
-    }
+  if (DCCEXInbound::getParameterCount() != 5)
+    return;
 
-    Turntable *tt = getTurntableById(ttId);
-    if (!tt)
-      return;
+  // find the Turntable entry to update
+  int ttId = DCCEXInbound::getNumber(1);
+  int index = DCCEXInbound::getNumber(2);
+  int angle = DCCEXInbound::getNumber(3);
+  char *parsedName = DCCEXInbound::copyTextParameter(4);
+  const char *name = (index == 0) ? "Home" : parsedName;
 
-    int numIndexes = tt->getNumberOfIndexes();
-    int idxCount = tt->getIndexCount();
-
-    if (numIndexes != idxCount) {
+  Turntable *tt = getTurntableById(ttId);
+  if (tt) {
+    if (tt->getNumberOfIndexes() != tt->getIndexCount()) {
       TurntableIndex *newIndex = new TurntableIndex(ttId, index, angle, name);
       tt->addIndex(newIndex);
     }
@@ -1290,14 +1283,14 @@ void DCCEXProtocol::_processTurntableIndexEntry() { // <jP id index angle "[desc
         receivedAll = false;
     }
 
-    free(name);
-
     if (receivedAll) {
       _receivedTurntableList = true;
       // console->println(F("processTurntableIndexEntry(): received all"));
       _delegate->receivedTurntableList();
     }
   }
+
+  free(parsedName);
   // console->println(F("processTurntableIndexEntry(): end"));
 }
 

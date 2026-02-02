@@ -94,3 +94,23 @@ TEST_F(TurntableTests, parseTwoTurntables) {
   // Now the flag should be true
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
 }
+
+/**
+ * @brief Test that malformed/orphaned index entries don't leak memory
+ */
+TEST_F(TurntableTests, orphanedIndexEntryLeak) {
+  // Create one valid turntable so getFirst() isn't null
+  new Turntable(1);
+  
+  // Simulate an index entry for ID 99 (which DOES NOT EXIST)
+  _stream << R"(<jP 99 0 0 "Orphaned Index">)";
+  _dccexProtocol.check();
+  
+  // Simulate an entry with wrong parameter count
+  // This triggers the first 'if (DCCEXInbound::getParameterCount() != 5) return;'
+  _stream << R"(<jP 1 0 0>)"; // Missing the name parameter
+  _dccexProtocol.check();
+  
+  // Cleanup
+  Turntable::clearTurntableList();
+}
