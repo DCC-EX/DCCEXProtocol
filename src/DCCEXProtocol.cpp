@@ -69,6 +69,9 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams) {
 }
 
 DCCEXProtocol::~DCCEXProtocol() {
+  // Clean up all lists
+  clearAllLists();
+
   // Free memory for command buffer
   delete[] (_cmdBuffer);
 
