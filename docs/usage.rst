@@ -144,3 +144,23 @@ All objects are contained within linked lists and can be access via for loops:
   }
 
 Refer to the `DCCEXProtocol_Roster_etc` example for an idea of how this may be implemented.
+
+Object ownership
+----------------
+
+All objects created by the `getLists()` method are owned by the DCCEXProtocol instance, so if, for example, you wish to "forget" a Loco and disassociate from some form of throttle software, **do not delete** the Loco object as this will break the roster linked list.
+
+Each object type has a clear method to delete the list of retrieved objects:
+
+- Loco: `clearRoster()`
+- Route: `clearRouteList()`
+- Turnout: `clearTurnoutList()`
+- Turntable: `clearTurntableList()`
+
+You can also clear all lists with `dccexProtocol->clearAllLists()`.
+
+**Note there is one exception to this rule** which is Loco objects that are created with the `LocoSource::LocoSourceEntry` type set, as these do not get added to the roster list.
+
+If you create a Loco object using this type, you must delete the object when you are finished with it in order to prevent memory leaks.
+
+This also means if you are creating a local roster in your software that you wish to be a part of the roster list, you must use the `LocoSource::LocoSourceRoster` type when creating the Loco object.
