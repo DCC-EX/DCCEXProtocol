@@ -64,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="usage.html#setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#control-and-inputs">Control and Inputs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#retrieving-and-referring-to-object-lists">Retrieving and referring to object lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#object-ownership">Object ownership</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
@@ -267,6 +268,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVBitResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteLocoResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteCVResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol9_cmdStartEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdStart()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10_cmdAppendEPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdAppend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10_cmdAppendEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdAppend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol10_cmdAppendEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdAppend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol8_cmdSendEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdSend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_sendOpcodeEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendOpcode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_sendOneParamEcc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendOneParam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_sendOneParamEcPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendOneParam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_sendOneParamEci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendOneParam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendTwoParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendTwoParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcPKci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendTwoParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcic"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendTwoParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEccPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendTwoParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_sendThreeParamsEcPKcii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_sendThreeParamsEciii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_sendThreeParamsEccPKci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_sendFourParamsEciiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendFourParams()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol11_routeCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_routeCount</span></code></a></li>
@@ -296,6 +315,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol16_enableHeartbeatE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_enableHeartbeat</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol15_heartbeatDelayE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_heartbeatDelay</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol14_lastHeartbeatE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_lastHeartbeat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N13DCCEXProtocol9_cmdIndexE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdIndex</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv421DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate</span></code></a><ul>
@@ -318,6 +338,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteLoco()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteCV()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedScreenUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N21DCCEXProtocolDelegateD0Ev"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::~DCCEXProtocolDelegate()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#_CPPv44Loco"><code class="docutils literal notranslate"><span class="pre">Loco</span></code></a><ul>
@@ -518,7 +539,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs-requests.html">Bugs and Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Library Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Library Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#test-coverage">Test Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#legacy-cmake-tests">Legacy cmake Tests</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#library-maintenance">Library Maintenance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#documentation">Documentation</a></li>
@@ -1115,7 +1140,7 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10disconnectEv">
 <span id="_CPPv3N13DCCEXProtocol10disconnectEv"></span><span id="_CPPv2N13DCCEXProtocol10disconnectEv"></span><span id="DCCEXProtocol::disconnect"></span><span class="target" id="classDCCEXProtocol_1a1aacce50f688521e9738e284207d6fc9"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">disconnect</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10disconnectEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Disconnect from DCC-EX. </p>
+<dd><p>DEPRECATED - Does nothing, retained for backwards compatibility only. </p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -1137,7 +1162,7 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol8getListsEbbbb">
-<span id="_CPPv3N13DCCEXProtocol8getListsEbbbb"></span><span id="_CPPv2N13DCCEXProtocol8getListsEbbbb"></span><span id="DCCEXProtocol::getLists__b.b.b.b"></span><span class="target" id="classDCCEXProtocol_1a9687b51b6471b91e74d80237132eb308"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLists</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rosterRequired</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">turnoutListRequired</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">routeListRequired</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">turntableListRequired</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol8getListsEbbbb" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N13DCCEXProtocol8getListsEbbbb"></span><span id="_CPPv2N13DCCEXProtocol8getListsEbbbb"></span><span id="DCCEXProtocol::getLists__b.b.b.b"></span><span class="target" id="classDCCEXProtocol_1a59fc848bdf2a907afe9a7d4c1ecabf27"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLists</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rosterRequired</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">turnoutListRequired</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">routeListRequired</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">turntableListRequired</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol8getListsEbbbb" title="Link to this definition"></a><br /></dt>
 <dd><p>Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables) </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2132,6 +2157,249 @@
 <span id="_CPPv3N13DCCEXProtocol23_processWriteCVResponseEv"></span><span id="_CPPv2N13DCCEXProtocol23_processWriteCVResponseEv"></span><span id="DCCEXProtocol::_processWriteCVResponse"></span><span class="target" id="classDCCEXProtocol_1a6ee158147edc24607d25576e3921c064"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_processWriteCVResponse</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol9_cmdStartEc">
+<span id="_CPPv3N13DCCEXProtocol9_cmdStartEc"></span><span id="_CPPv2N13DCCEXProtocol9_cmdStartEc"></span><span id="DCCEXProtocol::_cmdStart__c"></span><span class="target" id="classDCCEXProtocol_1af698256f52e510de74af317fc9e33ec8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cmdStart</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'\0'</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol9_cmdStartEc" title="Link to this definition"></a><br /></dt>
+<dd><p>Start the command with “&lt;” and the OPCODE if required. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>opcode</strong> – Single character OPCODE to append </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10_cmdAppendEPKc">
+<span id="_CPPv3N13DCCEXProtocol10_cmdAppendEPKc"></span><span id="_CPPv2N13DCCEXProtocol10_cmdAppendEPKc"></span><span id="DCCEXProtocol::_cmdAppend__cCP"></span><span class="target" id="classDCCEXProtocol_1a50726a20db4ccdac8655d2f91e14adc2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cmdAppend</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10_cmdAppendEPKc" title="Link to this definition"></a><br /></dt>
+<dd><p>Append a string to the command. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – String to append </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10_cmdAppendEi">
+<span id="_CPPv3N13DCCEXProtocol10_cmdAppendEi"></span><span id="_CPPv2N13DCCEXProtocol10_cmdAppendEi"></span><span id="DCCEXProtocol::_cmdAppend__i"></span><span class="target" id="classDCCEXProtocol_1a6c62d65731b5d3c19bec9ca309227402"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cmdAppend</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10_cmdAppendEi" title="Link to this definition"></a><br /></dt>
+<dd><p>Append an integer value to the command. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> – Integer to append </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol10_cmdAppendEc">
+<span id="_CPPv3N13DCCEXProtocol10_cmdAppendEc"></span><span id="_CPPv2N13DCCEXProtocol10_cmdAppendEc"></span><span id="DCCEXProtocol::_cmdAppend__c"></span><span class="target" id="classDCCEXProtocol_1a4e33b55324f6ba0c8bf3d225f09ed31f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cmdAppend</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol10_cmdAppendEc" title="Link to this definition"></a><br /></dt>
+<dd><p>Append a single char to the command. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>c</strong> – Char to append </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol8_cmdSendEv">
+<span id="_CPPv3N13DCCEXProtocol8_cmdSendEv"></span><span id="_CPPv2N13DCCEXProtocol8_cmdSendEv"></span><span id="DCCEXProtocol::_cmdSend"></span><span class="target" id="classDCCEXProtocol_1af43ad9117e9b3c452b4dd7ca65a0ebe6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cmdSend</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol8_cmdSendEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Append the closing “&gt;” and call _sendCommand() </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol11_sendOpcodeEc">
+<span id="_CPPv3N13DCCEXProtocol11_sendOpcodeEc"></span><span id="_CPPv2N13DCCEXProtocol11_sendOpcodeEc"></span><span id="DCCEXProtocol::_sendOpcode__c"></span><span class="target" id="classDCCEXProtocol_1a87206254e6d1a6584da30130e1ed3b1a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendOpcode</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol11_sendOpcodeEc" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode only outbound commands. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>opcode</strong> – OPCODE to send </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13_sendOneParamEcc">
+<span id="_CPPv3N13DCCEXProtocol13_sendOneParamEcc"></span><span id="_CPPv2N13DCCEXProtocol13_sendOneParamEcc"></span><span id="DCCEXProtocol::_sendOneParam__c.c"></span><span class="target" id="classDCCEXProtocol_1ab3fed85eeb0c53f997dd4c381b301b90"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendOneParam</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13_sendOneParamEcc" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and one parameter. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param</strong> – Single char parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13_sendOneParamEcPKc">
+<span id="_CPPv3N13DCCEXProtocol13_sendOneParamEcPKc"></span><span id="_CPPv2N13DCCEXProtocol13_sendOneParamEcPKc"></span><span id="DCCEXProtocol::_sendOneParam__c.cCP"></span><span class="target" id="classDCCEXProtocol_1a4d8e957fd70fc83455a7f7413fe8fd59"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendOneParam</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">param</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13_sendOneParamEcPKc" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and one parameter. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param</strong> – Single string parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol13_sendOneParamEci">
+<span id="_CPPv3N13DCCEXProtocol13_sendOneParamEci"></span><span id="_CPPv2N13DCCEXProtocol13_sendOneParamEci"></span><span id="DCCEXProtocol::_sendOneParam__c.i"></span><span class="target" id="classDCCEXProtocol_1ae0fd313bcec7c83cf5d742f96b201b62"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendOneParam</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol13_sendOneParamEci" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and one parameter. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol14_sendTwoParamsEcci">
+<span id="_CPPv3N13DCCEXProtocol14_sendTwoParamsEcci"></span><span id="_CPPv2N13DCCEXProtocol14_sendTwoParamsEcci"></span><span id="DCCEXProtocol::_sendTwoParams__c.c.i"></span><span class="target" id="classDCCEXProtocol_1a7bbf2e867e4cec9901b9bd469303b094"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendTwoParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcci" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and two params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single char parameter to send </p></li>
+<li><p><strong>param2</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol14_sendTwoParamsEcii">
+<span id="_CPPv3N13DCCEXProtocol14_sendTwoParamsEcii"></span><span id="_CPPv2N13DCCEXProtocol14_sendTwoParamsEcii"></span><span id="DCCEXProtocol::_sendTwoParams__c.i.i"></span><span class="target" id="classDCCEXProtocol_1a04e57540f65556081467428613065320"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendTwoParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcii" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and two params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single int parameter to send </p></li>
+<li><p><strong>param2</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol14_sendTwoParamsEcPKci">
+<span id="_CPPv3N13DCCEXProtocol14_sendTwoParamsEcPKci"></span><span id="_CPPv2N13DCCEXProtocol14_sendTwoParamsEcPKci"></span><span id="DCCEXProtocol::_sendTwoParams__c.cCP.i"></span><span class="target" id="classDCCEXProtocol_1a16f23f7df48a7d6885c36efa677a746f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendTwoParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcPKci" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and two params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single string parameter to send </p></li>
+<li><p><strong>param2</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol14_sendTwoParamsEcic">
+<span id="_CPPv3N13DCCEXProtocol14_sendTwoParamsEcic"></span><span id="_CPPv2N13DCCEXProtocol14_sendTwoParamsEcic"></span><span id="DCCEXProtocol::_sendTwoParams__c.i.c"></span><span class="target" id="classDCCEXProtocol_1aa9c38f7f291adf92d99fa76014f33ab7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendTwoParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEcic" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and two params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single int parameter to send </p></li>
+<li><p><strong>param2</strong> – Single char parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol14_sendTwoParamsEccPKc">
+<span id="_CPPv3N13DCCEXProtocol14_sendTwoParamsEccPKc"></span><span id="_CPPv2N13DCCEXProtocol14_sendTwoParamsEccPKc"></span><span id="DCCEXProtocol::_sendTwoParams__c.c.cCP"></span><span class="target" id="classDCCEXProtocol_1a60edddec2604d55fc933e6f80834ed35"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendTwoParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">param2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol14_sendTwoParamsEccPKc" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and two params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single char parameter to send </p></li>
+<li><p><strong>param2</strong> – Single string parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol16_sendThreeParamsEcPKcii">
+<span id="_CPPv3N13DCCEXProtocol16_sendThreeParamsEcPKcii"></span><span id="_CPPv2N13DCCEXProtocol16_sendThreeParamsEcPKcii"></span><span id="DCCEXProtocol::_sendThreeParams__c.cCP.i.i"></span><span class="target" id="classDCCEXProtocol_1aed79ee34545a1a60e103f1baf8c911a5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendThreeParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param3</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol16_sendThreeParamsEcPKcii" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and three params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single string parameter to send </p></li>
+<li><p><strong>param2</strong> – Single int parameter to send </p></li>
+<li><p><strong>param3</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol16_sendThreeParamsEciii">
+<span id="_CPPv3N13DCCEXProtocol16_sendThreeParamsEciii"></span><span id="_CPPv2N13DCCEXProtocol16_sendThreeParamsEciii"></span><span id="DCCEXProtocol::_sendThreeParams__c.i.i.i"></span><span class="target" id="classDCCEXProtocol_1a81c372260cb16cbe572d82d50a2812a6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendThreeParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param3</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol16_sendThreeParamsEciii" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and three params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single int parameter to send </p></li>
+<li><p><strong>param2</strong> – Single int parameter to send </p></li>
+<li><p><strong>param3</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol16_sendThreeParamsEccPKci">
+<span id="_CPPv3N13DCCEXProtocol16_sendThreeParamsEccPKci"></span><span id="_CPPv2N13DCCEXProtocol16_sendThreeParamsEccPKci"></span><span id="DCCEXProtocol::_sendThreeParams__c.c.cCP.i"></span><span class="target" id="classDCCEXProtocol_1abfe9905b12b294c77bb64e2fe3e42fb7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendThreeParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">param2</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param3</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol16_sendThreeParamsEccPKci" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and three params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single char parameter to send </p></li>
+<li><p><strong>param2</strong> – Single string parameter to send </p></li>
+<li><p><strong>param3</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol15_sendFourParamsEciiii">
+<span id="_CPPv3N13DCCEXProtocol15_sendFourParamsEciiii"></span><span id="_CPPv2N13DCCEXProtocol15_sendFourParamsEciiii"></span><span id="DCCEXProtocol::_sendFourParams__c.i.i.i.i"></span><span class="target" id="classDCCEXProtocol_1af937869d251a3cc6e109e3f473d0b386"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_sendFourParams</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">opcode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param1</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param2</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param3</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">param4</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol15_sendFourParamsEciiii" title="Link to this definition"></a><br /></dt>
+<dd><p>Formatter for opcode and four params. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opcode</strong> – OPCODE to send </p></li>
+<li><p><strong>param1</strong> – Single int parameter to send </p></li>
+<li><p><strong>param2</strong> – Single int parameter to send </p></li>
+<li><p><strong>param3</strong> – Single int parameter to send </p></li>
+<li><p><strong>param4</strong> – Single int parameter to send </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
@@ -2278,6 +2546,11 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol14_lastHeartbeatE">
 <span id="_CPPv3N13DCCEXProtocol14_lastHeartbeatE"></span><span id="_CPPv2N13DCCEXProtocol14_lastHeartbeatE"></span><span id="DCCEXProtocol::_lastHeartbeat__unsigned-l"></span><span class="target" id="classDCCEXProtocol_1a2d28c3f9cbab6cf47ac114a4001cc0a2"></span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_lastHeartbeat</span></span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol14_lastHeartbeatE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13DCCEXProtocol9_cmdIndexE">
+<span id="_CPPv3N13DCCEXProtocol9_cmdIndexE"></span><span id="_CPPv2N13DCCEXProtocol9_cmdIndexE"></span><span id="DCCEXProtocol::_cmdIndex__i"></span><span class="target" id="classDCCEXProtocol_1a8100cbb8b2d52498c6d7cf6fe25d324d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cmdIndex</span></span></span><a class="headerlink" href="#_CPPv4N13DCCEXProtocol9_cmdIndexE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -2515,6 +2788,12 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N21DCCEXProtocolDelegateD0Ev">
+<span id="_CPPv3N21DCCEXProtocolDelegateD0Ev"></span><span id="_CPPv2N21DCCEXProtocolDelegateD0Ev"></span><span id="DCCEXProtocolDelegate::~DCCEXProtocolDelegate"></span><span class="target" id="classDCCEXProtocolDelegate_1a8bad08946495cf7bfa54472d43a469fe"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~DCCEXProtocolDelegate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N21DCCEXProtocolDelegateD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Default destructor for <a class="reference internal" href="#classDCCEXProtocolDelegate"><span class="std std-ref">DCCEXProtocolDelegate</span></a>. </p>
 </dd></dl>
 
 </div>
@@ -4119,7 +4398,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023 - Peter Cole, Peter Akers.</p>
+    <p>&#169; Copyright 2026 - Peter Cole, Peter Akers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

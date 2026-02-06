@@ -63,6 +63,18 @@ An example using STM32F103C8 Bluepill with hardware serial port 1 connecting to 
     // other code here
   }
 
+.. Warning::
+
+  When using hardware serial interfaces, be aware of the default Rx and Tx buffer sizes. When using the STM32 Bluepill in particular, the default buffer size is 64KB for each. This means only small lists (roster, turnouts, etc.) can successfully be retrieved before the buffer fills, especially when updating other physical devices such as displays needs to be performed within the main loop.
+
+  The resolution to this issue is to increase the buffer size, which can be accomplished by adding the appropriate build flags to PlatformIO:
+
+  .. code-block::
+
+    build_flags = 
+		  -DSERIAL_RX_BUFFER_SIZE=256
+	    -DSERIAL_TX_BUFFER_SIZE=256
+
 As covered in the design principles above, you must include the `check()` method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom `DCCEXProtocolDelegate` class.
 
 Refer to the :doc:`examples` to see how this may be implemented.
@@ -86,6 +98,17 @@ Retrieving and referring to object lists
 ----------------------------------------
 
 To retrieve the various objects lists from |EX-CS|, use the `getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)` method within your `loop()` function to ensure these are retrieved successfully.
+
+As of version 1.2.1 of this library, the method defaults to all lists true, meaning you can simply call it without parameters.
+
+.. code-block:: cpp
+
+  // Explicitly retrieve all lists
+  dccexProtocol.getLists(true, true, true, true);
+  // Default retreives all lists as of 1.2.1
+  dccexProtocol.getLists();
+  // Only retrieve the roster
+  dccexProtocol.getLists(true, false, false, false);
 
 If you have a lot of defined objects in your |EX-CS| (eg. 50+ turnouts or 50+ roster entries), you will likely need to increase the maximum number of parameters allowed when defining the DCCEXProtocol instance which is now a configurable parameter as of version 1.0.0 of the library.
 
@@ -121,3 +144,23 @@ All objects are contained within linked lists and can be access via for loops:
   }
 
 Refer to the `DCCEXProtocol_Roster_etc` example for an idea of how this may be implemented.
+
+Object ownership
+----------------
+
+All objects created by the `getLists()` method are owned by the DCCEXProtocol instance, so if, for example, you wish to "forget" a Loco and disassociate from some form of throttle software, **do not delete** the Loco object as this will break the roster linked list.
+
+Each object type has a clear method to delete the list of retrieved objects:
+
+- Loco: `clearRoster()`
+- Route: `clearRouteList()`
+- Turnout: `clearTurnoutList()`
+- Turntable: `clearTurntableList()`
+
+You can also clear all lists with `dccexProtocol->clearAllLists()`.
+
+**Note there is one exception to this rule** which is Loco objects that are created with the `LocoSource::LocoSourceEntry` type set, as these do not get added to the roster list.
+
+If you create a Loco object using this type, you must delete the object when you are finished with it in order to prevent memory leaks.
+
+This also means if you are creating a local roster in your software that you wish to be a part of the roster list, you must use the `LocoSource::LocoSourceRoster` type when creating the Loco object.

@@ -15,7 +15,7 @@ var searchData=
   ['getindexbyid_12',['getIndexById',['../classTurntable.html#a74ab5cb7ef989cfbf87928678e40cda7',1,'Turntable']]],
   ['getindexcount_13',['getIndexCount',['../classTurntable.html#a086860cd8b4074252a1ae5e135a64d09',1,'Turntable']]],
   ['getlastserverresponsetime_14',['getLastServerResponseTime',['../classDCCEXProtocol.html#a3fbbe20688623c974e2ef39c8dfd632c',1,'DCCEXProtocol']]],
-  ['getlists_15',['getLists',['../classDCCEXProtocol.html#a9687b51b6471b91e74d80237132eb308',1,'DCCEXProtocol']]],
+  ['getlists_15',['getLists',['../classDCCEXProtocol.html#a59fc848bdf2a907afe9a7d4c1ecabf27',1,'DCCEXProtocol']]],
   ['getloco_16',['getLoco',['../classConsistLoco.html#a2b22ec62fc2897ed02280c25e8dbcc35',1,'ConsistLoco']]],
   ['getlococount_17',['getLocoCount',['../classConsist.html#aac343f324170543a427cc0d323d1b154',1,'Consist']]],
   ['getmajorversion_18',['getMajorVersion',['../classDCCEXProtocol.html#a90064e323b3be265ec9fa9a6075cfc02',1,'DCCEXProtocol']]],

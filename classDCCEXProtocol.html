@@ -106,7 +106,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a25d1ec19646d6f7b89c8302c21c67f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1aacce50f688521e9738e284207d6fc9" id="r_a1aacce50f688521e9738e284207d6fc9"><td class="memItemLeft" align="right" valign="top"><a id="a1aacce50f688521e9738e284207d6fc9" name="a1aacce50f688521e9738e284207d6fc9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>disconnect</b> ()</td></tr>
-<tr class="memdesc:a1aacce50f688521e9738e284207d6fc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnect from DCC-EX. <br /></td></tr>
+<tr class="memdesc:a1aacce50f688521e9738e284207d6fc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED - Does nothing, retained for backwards compatibility only. <br /></td></tr>
 <tr class="separator:a1aacce50f688521e9738e284207d6fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afda94b0a2530af11d5416c4036ef27dd" id="r_afda94b0a2530af11d5416c4036ef27dd"><td class="memItemLeft" align="right" valign="top"><a id="afda94b0a2530af11d5416c4036ef27dd" name="afda94b0a2530af11d5416c4036ef27dd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> ()</td></tr>
@@ -115,9 +115,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> ()</td></tr
 <tr class="memitem:a929399a017991deb4fae1f4a138f62bb" id="r_a929399a017991deb4fae1f4a138f62bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a929399a017991deb4fae1f4a138f62bb">sendCommand</a> (char *cmd)</td></tr>
 <tr class="memdesc:a929399a017991deb4fae1f4a138f62bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">allows sending of an arbitray command  <br /></td></tr>
 <tr class="separator:a929399a017991deb4fae1f4a138f62bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9687b51b6471b91e74d80237132eb308" id="r_a9687b51b6471b91e74d80237132eb308"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a9687b51b6471b91e74d80237132eb308">getLists</a> (bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)</td></tr>
-<tr class="memdesc:a9687b51b6471b91e74d80237132eb308"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)  <br /></td></tr>
-<tr class="separator:a9687b51b6471b91e74d80237132eb308"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59fc848bdf2a907afe9a7d4c1ecabf27" id="r_a59fc848bdf2a907afe9a7d4c1ecabf27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a59fc848bdf2a907afe9a7d4c1ecabf27">getLists</a> (bool rosterRequired=true, bool turnoutListRequired=true, bool routeListRequired=true, bool turntableListRequired=true)</td></tr>
+<tr class="memdesc:a59fc848bdf2a907afe9a7d4c1ecabf27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)  <br /></td></tr>
+<tr class="separator:a59fc848bdf2a907afe9a7d4c1ecabf27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8da43ea704d5443d99ee80ba80eda997" id="r_a8da43ea704d5443d99ee80ba80eda997"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a8da43ea704d5443d99ee80ba80eda997">receivedLists</a> ()</td></tr>
 <tr class="memdesc:a8da43ea704d5443d99ee80ba80eda997"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if all lists have been received (roster, routes, turnouts, turntables)  <br /></td></tr>
 <tr class="separator:a8da43ea704d5443d99ee80ba80eda997"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -811,8 +811,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a9687b51b6471b91e74d80237132eb308" name="a9687b51b6471b91e74d80237132eb308"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9687b51b6471b91e74d80237132eb308">&#9670;&#160;</a></span>getLists()</h2>
+<a id="a59fc848bdf2a907afe9a7d4c1ecabf27" name="a59fc848bdf2a907afe9a7d4c1ecabf27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59fc848bdf2a907afe9a7d4c1ecabf27">&#9670;&#160;</a></span>getLists()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -821,25 +821,25 @@ Public Attributes</h2></td></tr>
           <td class="memname">void DCCEXProtocol::getLists </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>rosterRequired</em>, </td>
+          <td class="paramname"><em>rosterRequired</em> = <code>true</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>turnoutListRequired</em>, </td>
+          <td class="paramname"><em>turnoutListRequired</em> = <code>true</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>routeListRequired</em>, </td>
+          <td class="paramname"><em>routeListRequired</em> = <code>true</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>turntableListRequired</em>&#160;</td>
+          <td class="paramname"><em>turntableListRequired</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
