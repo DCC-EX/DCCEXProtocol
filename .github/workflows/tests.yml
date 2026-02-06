@@ -1,4 +1,4 @@
-name: Run GoogleTest
+name: PlatformIO Testing
 
 on:
   push:
@@ -13,9 +13,13 @@ jobs:
       - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0
-      - name: Prepare build directory
-        run: cmake -Bbuild
-      - name: Compile tests
-        run: cmake --build build --parallel --target DCCEXProtocolTests
-      - name: Run tests
-        run: ./build/tests/DCCEXProtocolTests --gtest_shuffle --gtest_repeat=5 --gtest_recreate_environments_when_repeating
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Intall PlatformIO
+        run: pip install -U platformio
+      - name: Run PlatformIO tests
+        run: pio test -e native_test
+        env:
+          PLATFORMIO_TEST_FLAGS: "--gtest-shuffle --gtest_repeat=5 --gtest_recreate_environments_when_repeating"

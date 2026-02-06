@@ -3,14 +3,14 @@
 
 For the full documentation, please refer to the [DCC-EX website](https://dcc-ex.com/DCCEXProtocol/index.html).
 
-# Credits
+## Credits
 
 The delegate and connection code in this library is taken directly from the WiThrottle library by **Copyright © 2018-2019 Blue Knobby Systems Inc.**
 The rest of the code has been developed by Peter Akers (Flash62au), Peter Cole (peteGSX), and Chris Harlow (UKBloke).
 
 ----
 
-# DCC-EX Native command protocol library
+## DCC-EX Native command protocol library
 
 This library implements the DCC-EX Native command protocol (as used in EX-CommandStation ONLY), allowing a device to connect to the server and act as a client (such as a hardware based throttle).
 
@@ -47,9 +47,9 @@ The DCCEXProtocolDelegate class enables the client software to respond to variou
 
 The events able to be managed via this class are over and above those managed by the DCCEXProtocol class and are entirely customisable by the client software to provide dynamic user experience updates such as displaying status changes to objects as they are broadcast from the DCC-EX EX-CommandStation.
 
-# Documentation
+## Documentation
 
-Documentation of the DCCEXProtocol library is available via the [DCC-EX website](file:///C:/Code/DCCEXProtocol/docs/_build/html/index.html).
+Documentation of the DCCEXProtocol library is available via the [DCC-EX website](https://dcc-ex.com/DCCEXProtocol/index.html).
 
 For contributors wishing to build local copies of the documentation while updating the library, here is the very high level process of the requirements to make this work on Windows:
 
@@ -63,7 +63,7 @@ For contributors wishing to build local copies of the documentation while updati
 
 ----
 
-# License
+## License
 
 Creative Commons [CC-BY-SA 4.0][CCBYSA]   ![CCBYSA](https://i.creativecommons.org/l/by-sa/4.0/88x31.png)
 
