@@ -138,20 +138,59 @@ public:
   /// @brief Clear all Locos from the roster
   static void clearRoster();
 
+  /**
+   * @brief Set the requested user speed and flag pending
+   * @param speed Requested speed
+   */
+  void setUserSpeed(int speed);
+
+  /**
+   * @brief Get the current requested user speed
+   * @return int Requested speed
+   */
+  int getUserSpeed();
+
+  /**
+   * @brief Set the requested user direction and flag pending
+   * @param direction Requested Direction
+   */
+  void setUserDirection(Direction direction);
+
+  /**
+   * @brief Get the current requested user direction
+   * @return Direction Requested Direction
+   */
+  Direction getUserDirection();
+
+  /**
+   * @brief Reset the user change pending flag
+   */
+  void resetUserChangePending();
+
+  /**
+   * @brief Get the user change pending flag
+   * @return true If a speed or direction change is pending
+   * @return false If no changes are pending
+   */
+  bool getUserChangePending();
+
   /// @brief Destructor for the Loco object
   ~Loco();
 
 private:
-  int _address;
-  char *_name;
-  int _speed;
-  Direction _direction;
-  LocoSource _source;
-  char *_functionNames[MAX_FUNCTIONS];
-  int32_t _functionStates;
-  int32_t _momentaryFlags;
-  static Loco *_first;
-  Loco *_next;
+  int _address;                        // DCC address
+  char *_name;                         // Name
+  int _speed;                          // Authoritative speed
+  Direction _direction;                // Authoritative direction
+  LocoSource _source;                  // Roster or manually entered Loco
+  char *_functionNames[MAX_FUNCTIONS]; // Static array of function names
+  int32_t _functionStates;             // State of each function
+  int32_t _momentaryFlags;             // Flag if functions are momentary
+  static Loco *_first;                 // Pointer to the first Loco object in the roster
+  Loco *_next;                         // Pointer to the next Loco in the roster
+  int _userSpeed;                      // Track user speed request
+  Direction _userDirection;            // Track user direction request
+  bool _userChangePending;             // Flag if user has speed/direction pending
 
   /// @brief Method to remove this loco from the roster list
   /// @param loco Pointer to the Loco to remove

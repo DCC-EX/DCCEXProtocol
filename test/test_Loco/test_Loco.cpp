@@ -107,3 +107,118 @@ TEST_F(LocoTests, createRoster) {
   EXPECT_EQ(thirdLoco->getNext(), nullptr)
       << "Unexpected fourth Loco at address: " << thirdLoco->getNext()->getAddress();
 }
+
+/**
+ * @brief Test setting the user speed sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserSpeed) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+
+  // Set the user speed and check pending flag and speed
+  loco42->setUserSpeed(10);
+  EXPECT_EQ(loco42->getUserSpeed(), 10);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user direction sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserDirection) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user direction and check pending flag and direction
+  loco42->setUserDirection(Reverse);
+  EXPECT_EQ(loco42->getUserDirection(), Reverse);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user speed to the current speed does not set pending flag
+ */
+TEST_F(LocoTests, TestSetUserSpeedNoPendingFlag) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+
+  // Set the user speed and check pending flag and speed
+  loco42->setUserSpeed(0);
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_FALSE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user direction to the current direction does not set pending flag
+ */
+TEST_F(LocoTests, TestSetUserDirectionNoPendingFlag) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user direction and check pending flag and direction
+  loco42->setUserDirection(Forward);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+  EXPECT_FALSE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user speed but direction with no change sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserSpeedSameDirection) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user speed but direction same as default and check
+  loco42->setUserSpeed(10);
+  loco42->setUserDirection(Forward);
+  EXPECT_EQ(loco42->getUserSpeed(), 10);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user direction but speed with no change sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserDirectionSameSpeed) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user direction but speed same as default and check
+  loco42->setUserDirection(Reverse);
+  loco42->setUserSpeed(0);
+  EXPECT_EQ(loco42->getUserDirection(), Reverse);
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test resetting the pending flag does so
+ */
+TEST_F(LocoTests, TestResetUserChangePending) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+
+  // Set the user speed and check pending flag and speed
+  loco42->setUserSpeed(10);
+  EXPECT_EQ(loco42->getUserSpeed(), 10);
+  ASSERT_TRUE(loco42->getUserChangePending());
+
+  // Now call reset and check
+  loco42->resetUserChangePending();
+  EXPECT_FALSE(loco42->getUserChangePending());
+}

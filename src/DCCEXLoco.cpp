@@ -45,6 +45,9 @@ Loco::Loco(int address, LocoSource source) : _address(address), _source(source) 
   _functionStates = 0;
   _momentaryFlags = 0;
   _next = nullptr;
+  _userSpeed = 0;
+  _userDirection = Forward;
+  _userChangePending = false;
   if (_source == LocoSource::LocoSourceRoster) {
     if (!_first) {
       _first = this;
@@ -195,6 +198,26 @@ void Loco::clearRoster() {
   // Reset first pointer
   Loco::_first = nullptr;
 }
+
+void Loco::setUserSpeed(int speed) {
+  _userSpeed = speed;
+  if (_userSpeed != _speed)
+    _userChangePending = true;
+}
+
+int Loco::getUserSpeed() { return _userSpeed; }
+
+void Loco::setUserDirection(Direction direction) {
+  _userDirection = direction;
+  if (_userDirection != _direction)
+    _userChangePending = true;
+}
+
+Direction Loco::getUserDirection() { return _userDirection; }
+
+void Loco::resetUserChangePending() { _userChangePending = false; }
+
+bool Loco::getUserChangePending() { return _userChangePending; }
 
 Loco::~Loco() {
   _removeFromList(this);
