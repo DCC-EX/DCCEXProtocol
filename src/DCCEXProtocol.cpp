@@ -219,6 +219,7 @@ unsigned long DCCEXProtocol::getLastServerResponseTime() { return _lastServerRes
 
 void DCCEXProtocol::clearAllLists() {
   clearRoster();
+  clearLocalLocos();
   clearTurnoutList();
   clearTurntableList();
   clearRouteList();
@@ -349,6 +350,8 @@ void DCCEXProtocol::clearRoster() {
   roster = nullptr;
   _rosterCount = 0;
 }
+
+void DCCEXProtocol::clearLocalLocos() { Loco::clearLocalLocos(); }
 
 void DCCEXProtocol::refreshRoster() {
   clearRoster();
@@ -909,7 +912,7 @@ void DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
 
   // Iterate through locos to update the appropriate one, send speedByte to cater for EStop
   _updateLocos(Loco::getFirst(), address, speedByte, direction, functionMap);
-  // _updateLocos(Loco::getFirstLocalLoco(), address, speed, direction, functionMap);
+  _updateLocos(Loco::getFirstLocalLoco(), address, speedByte, direction, functionMap);
 
   // Send a broadcast as well in case it's a local Loco not in the roster
   if (_delegate)
@@ -980,7 +983,7 @@ void DCCEXProtocol::_processPendingUserChanges() {
   if (millis() - _lastUserChange > _userChangeDelay) {
     _lastUserChange = millis();
     _setLocos(Loco::getFirst());
-    // _setLocos(Loco::getFirstLocalLoco());
+    _setLocos(Loco::getFirstLocalLoco());
   }
 }
 

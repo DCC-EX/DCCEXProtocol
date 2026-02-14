@@ -412,6 +412,9 @@ public:
   /// @brief Clear the roster
   void clearRoster();
 
+  /// @brief Clear the list of local locos
+  void clearLocalLocos();
+
   /// @brief Clear the roster and request again
   void refreshRoster();
 

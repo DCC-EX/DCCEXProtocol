@@ -174,6 +174,17 @@ public:
    */
   bool getUserChangePending();
 
+  /**
+   * @brief Get the First Local Loco object
+   * @return Loco* Pointer to the first loco with LocoSourceEntry type
+   */
+  static Loco *getFirstLocalLoco();
+
+  /**
+   * @brief Clear all local locos
+   */
+  static void clearLocalLocos();
+
   /// @brief Destructor for the Loco object
   ~Loco();
 
@@ -191,10 +202,33 @@ private:
   int _userSpeed;                      // Track user speed request
   Direction _userDirection;            // Track user direction request
   bool _userChangePending;             // Flag if user has speed/direction pending
+  static Loco *_firstLocalLoco;        // Pointer to the first local loco object
+
+  /**
+   * @brief Add the loco to a list
+   * @param listHead Pointer to the list entry point to add it to
+   * @param loco Pointer to the Loco to add
+   */
+  static void _addToList(Loco **listHead, Loco *loco);
+
+  /**
+   * @brief Helper method to find the Loco associated with the specified address in a list
+   * @param listHead Pointer to the list entry point to look for the address
+   * @param address DCC address to look for
+   * @return Loco*
+   */
+  static Loco *_findAddressInList(Loco **listHead, int address);
 
   /// @brief Method to remove this loco from the roster list
+  /// @param listHead Pointer to the list entry point to remove it from
   /// @param loco Pointer to the Loco to remove
-  static void _removeFromList(Loco *loco);
+  static void _removeFromList(Loco **listHead, Loco *loco);
+
+  /**
+   * @brief Helper method to clear all locos from the provided list
+   * @param listHead Pointer to the first loco in the list
+   */
+  static void _clearList(Loco **listHead);
 
   friend class Consist;
 };

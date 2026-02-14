@@ -53,9 +53,6 @@ TEST_F(LocoTests, createSingleLoco) {
   // Make sure this is not in the roster
   EXPECT_EQ(Loco::getFirst(), nullptr);
 
-  // Make sure we can't find it by address either
-  EXPECT_EQ(Loco::getByAddress(1), nullptr);
-
   // Ensure next is nullptr as this is the only loco
   EXPECT_EQ(loco1->getNext(), nullptr);
 
@@ -217,4 +214,61 @@ TEST_F(LocoTests, TestResetUserChangePending) {
   // Now call reset and check
   loco42->resetUserChangePending();
   EXPECT_FALSE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test creating local loco instances create the linked list
+ */
+TEST_F(LocoTests, TestLocalLocosAddToList) {
+  // Create three local locos
+  Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSource::LocoSourceEntry);
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+
+  // Assert that Loco::getFirstLocalLoco() is now loco1 and list is as expected
+  ASSERT_NE(Loco::getFirstLocalLoco(), nullptr);
+  EXPECT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+}
+
+/**
+ * @brief Test deleting a local loco updates the list correctly
+ */
+TEST_F(LocoTests, TestDeleteLocalLoco) {
+  // Create three local locos
+  Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSource::LocoSourceEntry);
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+
+  // Assert that Loco::getFirstLocalLoco() is now loco1 and list is as expected
+  ASSERT_NE(Loco::getFirstLocalLoco(), nullptr);
+  EXPECT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Delete loco2 and check the list structure
+  delete loco2;
+  ASSERT_EQ(loco1->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Delete loco1 and make sure loco3 is now the first
+  delete loco1;
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+}
+
+/**
+ * @brief Test static method getByAddress works for both roster and local locos
+ */
+TEST_F(LocoTests, TestGetByAddress) {
+  // Create a roster and local loco
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+
+  // Assert both are now available
+  ASSERT_NE(Loco::getByAddress(42), nullptr);
+  ASSERT_NE(Loco::getByAddress(3), nullptr);
 }
