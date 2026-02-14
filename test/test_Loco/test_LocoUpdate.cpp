@@ -87,7 +87,7 @@ TEST_F(LocoTests, receiveNonRosterLocoUpdate) {
   // Expect to receive the delegate call at the next check()
   EXPECT_CALL(_delegate, receivedLocoBroadcast(355, 31, Direction::Forward, 0)).Times(Exactly(1));
   // We should not receive a Loco object delegate call
-  EXPECT_CALL(_delegate, receivedLocoUpdate(::testing::_)).Times(0);
+  EXPECT_CALL(_delegate, receivedLocoUpdate(_)).Times(0);
   _dccexProtocol.check();
 
   // Set a loco update for an unknown loco in the stream:

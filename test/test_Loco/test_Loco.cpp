@@ -1,10 +1,6 @@
 /* -*- c++ -*-
  *
- * DCCEXProtocol
- *
- * This package implements a DCCEX native protocol connection,
- * allow a device to communicate with a DCC-EX EX-CommandStation.
- *
+ * Copyright © 2026 Peter Cole
  * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *
@@ -57,9 +53,6 @@ TEST_F(LocoTests, createSingleLoco) {
   // Make sure this is not in the roster
   EXPECT_EQ(Loco::getFirst(), nullptr);
 
-  // Make sure we can't find it by address either
-  EXPECT_EQ(Loco::getByAddress(1), nullptr);
-
   // Ensure next is nullptr as this is the only loco
   EXPECT_EQ(loco1->getNext(), nullptr);
 
@@ -106,4 +99,176 @@ TEST_F(LocoTests, createRoster) {
   // Verify end of linked list and fail fatally if next is not nullptr
   EXPECT_EQ(thirdLoco->getNext(), nullptr)
       << "Unexpected fourth Loco at address: " << thirdLoco->getNext()->getAddress();
+}
+
+/**
+ * @brief Test setting the user speed sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserSpeed) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+
+  // Set the user speed and check pending flag and speed
+  loco42->setUserSpeed(10);
+  EXPECT_EQ(loco42->getUserSpeed(), 10);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user direction sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserDirection) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user direction and check pending flag and direction
+  loco42->setUserDirection(Reverse);
+  EXPECT_EQ(loco42->getUserDirection(), Reverse);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user speed to the current speed does not set pending flag
+ */
+TEST_F(LocoTests, TestSetUserSpeedNoPendingFlag) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+
+  // Set the user speed and check pending flag and speed
+  loco42->setUserSpeed(0);
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_FALSE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user direction to the current direction does not set pending flag
+ */
+TEST_F(LocoTests, TestSetUserDirectionNoPendingFlag) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user direction and check pending flag and direction
+  loco42->setUserDirection(Forward);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+  EXPECT_FALSE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user speed but direction with no change sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserSpeedSameDirection) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user speed but direction same as default and check
+  loco42->setUserSpeed(10);
+  loco42->setUserDirection(Forward);
+  EXPECT_EQ(loco42->getUserSpeed(), 10);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test setting the user direction but speed with no change sets the pending flag
+ */
+TEST_F(LocoTests, TestSetUserDirectionSameSpeed) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_EQ(loco42->getUserDirection(), Forward);
+
+  // Set the user direction but speed same as default and check
+  loco42->setUserDirection(Reverse);
+  loco42->setUserSpeed(0);
+  EXPECT_EQ(loco42->getUserDirection(), Reverse);
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+  EXPECT_TRUE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test resetting the pending flag does so
+ */
+TEST_F(LocoTests, TestResetUserChangePending) {
+  // Create new loco and ensure initial states as expected
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  ASSERT_FALSE(loco42->getUserChangePending());
+  EXPECT_EQ(loco42->getUserSpeed(), 0);
+
+  // Set the user speed and check pending flag and speed
+  loco42->setUserSpeed(10);
+  EXPECT_EQ(loco42->getUserSpeed(), 10);
+  ASSERT_TRUE(loco42->getUserChangePending());
+
+  // Now call reset and check
+  loco42->resetUserChangePending();
+  EXPECT_FALSE(loco42->getUserChangePending());
+}
+
+/**
+ * @brief Test creating local loco instances create the linked list
+ */
+TEST_F(LocoTests, TestLocalLocosAddToList) {
+  // Create three local locos
+  Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSource::LocoSourceEntry);
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+
+  // Assert that Loco::getFirstLocalLoco() is now loco1 and list is as expected
+  ASSERT_NE(Loco::getFirstLocalLoco(), nullptr);
+  EXPECT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+}
+
+/**
+ * @brief Test deleting a local loco updates the list correctly
+ */
+TEST_F(LocoTests, TestDeleteLocalLoco) {
+  // Create three local locos
+  Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSource::LocoSourceEntry);
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+
+  // Assert that Loco::getFirstLocalLoco() is now loco1 and list is as expected
+  ASSERT_NE(Loco::getFirstLocalLoco(), nullptr);
+  EXPECT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Delete loco2 and check the list structure
+  delete loco2;
+  ASSERT_EQ(loco1->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Delete loco1 and make sure loco3 is now the first
+  delete loco1;
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+}
+
+/**
+ * @brief Test static method getByAddress works for both roster and local locos
+ */
+TEST_F(LocoTests, TestGetByAddress) {
+  // Create a roster and local loco
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+
+  // Assert both are now available
+  ASSERT_NE(Loco::getByAddress(42), nullptr);
+  ASSERT_NE(Loco::getByAddress(3), nullptr);
 }

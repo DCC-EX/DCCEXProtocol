@@ -34,6 +34,8 @@
 /*
 Version information:
 
+1.3.0   - Introduce queued throttle updates to prevent buffer overloads and broadcast storms
+        - Additional constructor attribute "userChangeDelay" enables user configuration of the queue time
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists
@@ -263,7 +265,8 @@ public:
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
   /// @param maxCommandParams Optional - maximum number of parameters to parse via the DCCEXInbound parser (default 50)
-  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50);
+  /// @param userChangeDelay Optional - time in ms between sending throttle changes (default 100)
+  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50, unsigned long userChangeDelay = 100);
 
   /// @brief Destructor for the DCCEXProtocol object
   ~DCCEXProtocol();
@@ -408,6 +411,9 @@ public:
 
   /// @brief Clear the roster
   void clearRoster();
+
+  /// @brief Clear the list of local locos
+  void clearLocalLocos();
 
   /// @brief Clear the roster and request again
   void refreshRoster();
@@ -640,8 +646,10 @@ private:
   int _getValidFunctionMap(int functionMap);
   int _getSpeedFromSpeedByte(int speedByte);
   Direction _getDirectionFromSpeedByte(int speedByte);
-  void _setLoco(int address, int speed, Direction direction);
+  void _setLocos(Loco *firstLoco);
+  void _updateLocos(Loco *firstLoco, int address, int speedByte, Direction direction, int functionMap);
   void _processReadResponse();
+  void _processPendingUserChanges();
 
   // Roster methods
   void _getRoster();
@@ -716,6 +724,8 @@ private:
   unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
   unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command
   int _cmdIndex;                                      // Track the index for the outbound command buffer
+  unsigned long _userChangeDelay;                     // Delay in ms between sending throttle commands
+  unsigned long _lastUserChange;                      // Time in ms of the last throttle command
 
   // Helper methods to build the outbound command
   /**

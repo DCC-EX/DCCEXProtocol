@@ -44,10 +44,10 @@
 typedef uint8_t byte;
 
 // Declare micros so it can be mocked/returned
-static unsigned long _currentMicros = 0;
+inline unsigned long _currentMicros = 0;
 
 // Declare millis so it can be mocked/returned
-static unsigned long _currentMillis = 0;
+inline unsigned long _currentMillis = 0;
 
 // Define a mock class to enable EXPECT_CALL tests against these
 class MockArduino {

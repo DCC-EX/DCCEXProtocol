@@ -51,7 +51,12 @@ protected:
     _dccexProtocol.clearRoster();
   }
 
-  void TearDown() override { _dccexProtocol.clearAllLists(); }
+  void TearDown() override {
+    resetMillis();
+    _stream.clearInput();
+    _stream.clearOutput();
+    _dccexProtocol.clearAllLists();
+  }
 
   DCCEXProtocol _dccexProtocol;
   MockDCCEXProtocolDelegate _delegate;
