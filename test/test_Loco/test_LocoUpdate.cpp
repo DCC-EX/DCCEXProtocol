@@ -102,3 +102,19 @@ TEST_F(LocoTests, receiveNonRosterLocoUpdate) {
   EXPECT_CALL(_delegate, receivedLocoUpdate(::testing::_)).Times(0);
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test receiving an update for Loco address 0 does not update
+ */
+TEST_F(LocoTests, TestReceiveUpdateLoco0DoesNotUpdate) {
+  // Set a loco update for loco address 0 in the stream
+  // address 0, speed byte forward 31, functions off
+  _stream << "<l 0 0 160 0>";
+
+  // Expect no calls should be made
+  EXPECT_CALL(_delegate, receivedLocoUpdate(_)).Times(0);
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(_, _, _, _)).Times(0);
+
+  // Check
+  _dccexProtocol.check();
+}

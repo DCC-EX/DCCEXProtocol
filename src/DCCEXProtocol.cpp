@@ -912,6 +912,10 @@ void DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
   int speed = _getSpeedFromSpeedByte(speedByte);
   Direction direction = _getDirectionFromSpeedByte(speedByte);
 
+  // Loco address 0 is invalid and should never do anything
+  if (address == 0)
+    return;
+
   // Iterate through locos to update the appropriate one, send speedByte to cater for EStop
   _updateLocos(Loco::getFirst(), address, speedByte, direction, functionMap);
   _updateLocos(Loco::getFirstLocalLoco(), address, speedByte, direction, functionMap);
