@@ -29,7 +29,7 @@
 
 /// @brief Validate that sending powerOn() sends <1>
 TEST_F(DCCEXProtocolTests, powerAllOn) {
-  const char *expected = "<1>\r\n";
+  const char *expected = "<1>";
 
   // Call power on
   _dccexProtocol.powerOn();
@@ -40,7 +40,7 @@ TEST_F(DCCEXProtocolTests, powerAllOn) {
 
 /// @brief Validate that sending powerOff() sends <0>
 TEST_F(DCCEXProtocolTests, powerAllOff) {
-  const char *expected = "<0>\r\n";
+  const char *expected = "<0>";
 
   // Call power off
   _dccexProtocol.powerOff();
@@ -51,7 +51,7 @@ TEST_F(DCCEXProtocolTests, powerAllOff) {
 
 /// @brief Validate that sending powerMainOn() sends <1 MAIN>
 TEST_F(DCCEXProtocolTests, powerMainOn) {
-  const char *expected = "<1 MAIN>\r\n";
+  const char *expected = "<1 MAIN>";
 
   // Call power on
   _dccexProtocol.powerMainOn();
@@ -62,7 +62,7 @@ TEST_F(DCCEXProtocolTests, powerMainOn) {
 
 /// @brief Validate that sending powerMainOff() sends <0 MAIN>
 TEST_F(DCCEXProtocolTests, powerMainOff) {
-  const char *expected = "<0 MAIN>\r\n";
+  const char *expected = "<0 MAIN>";
 
   // Call power off
   _dccexProtocol.powerMainOff();
@@ -73,7 +73,7 @@ TEST_F(DCCEXProtocolTests, powerMainOff) {
 
 /// @brief Validate that sending powerProgOn() sends <1 PROG>
 TEST_F(DCCEXProtocolTests, powerProgOn) {
-  const char *expected = "<1 PROG>\r\n";
+  const char *expected = "<1 PROG>";
 
   // Call power on
   _dccexProtocol.powerProgOn();
@@ -84,7 +84,7 @@ TEST_F(DCCEXProtocolTests, powerProgOn) {
 
 /// @brief Validate that sending powerProgOff() sends <0 PROG>
 TEST_F(DCCEXProtocolTests, powerProgOff) {
-  const char *expected = "<0 PROG>\r\n";
+  const char *expected = "<0 PROG>";
 
   // Call power off
   _dccexProtocol.powerProgOff();
@@ -95,7 +95,7 @@ TEST_F(DCCEXProtocolTests, powerProgOff) {
 
 /// @brief Validate that sending joinProg() sends <1 JOIN>
 TEST_F(DCCEXProtocolTests, joinProg) {
-  const char *expected = "<1 JOIN>\r\n";
+  const char *expected = "<1 JOIN>";
 
   // Call join
   _dccexProtocol.joinProg();

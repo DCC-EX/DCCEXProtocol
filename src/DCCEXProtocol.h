@@ -36,6 +36,7 @@ Version information:
 
 1.3.0   - Introduce queued throttle updates to prevent buffer overloads and broadcast storms
         - Additional constructor attribute "userChangeDelay" enables user configuration of the queue time
+        - Bug fix GitHub issue #39 sending unnecessary CRLF using println instead of print
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

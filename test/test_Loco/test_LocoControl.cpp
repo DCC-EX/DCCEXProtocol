@@ -193,7 +193,7 @@ TEST_F(LocoTests, TestQueuedSetThrottleExpiredTimer) {
   ASSERT_FALSE(loco42->getUserChangePending());
   EXPECT_EQ(loco42->getUserSpeed(), 10);
   EXPECT_EQ(loco42->getUserDirection(), Reverse);
-  EXPECT_THAT(_stream.getOutput(), StartsWith("<t 42 10 0>"));
+  EXPECT_EQ(_stream.getOutput(), "<t 42 10 0>");
 }
 
 /**
@@ -223,7 +223,7 @@ TEST_F(LocoTests, TestMultipleSpeedChanges) {
   advanceMillis(101);
   _dccexProtocol.check();
   ASSERT_FALSE(loco42->getUserChangePending());
-  ASSERT_THAT(_stream.getOutput(), StartsWith("<t 42 10 0>"));
+  ASSERT_EQ(_stream.getOutput(), "<t 42 10 0>");
   _stream.clearOutput();
 
   // Make several changes at intervals
@@ -255,7 +255,7 @@ TEST_F(LocoTests, TestMultipleSpeedChanges) {
   advanceMillis(40);
   _dccexProtocol.check();
   ASSERT_FALSE(loco42->getUserChangePending());
-  ASSERT_THAT(_stream.getOutput(), StartsWith("<t 42 50 0>"));
+  ASSERT_EQ(_stream.getOutput(), "<t 42 50 0>");
   _stream.clearOutput();
 }
 
@@ -390,7 +390,7 @@ TEST_F(LocoTests, TestDifferentLocoBroadcastAllowsCommand) {
   _dccexProtocol.check();
 
   // This should trigger a <t ...>
-  EXPECT_THAT(_stream.getOutput(), StartsWith("<t 42 10 0"));
+  EXPECT_EQ(_stream.getOutput(), "<t 42 10 0>");
 }
 
 /**
@@ -562,7 +562,7 @@ TEST_F(LocoTests, TestLocalQueuedSetThrottleExpiredTimer) {
   ASSERT_FALSE(loco42->getUserChangePending());
   EXPECT_EQ(loco42->getUserSpeed(), 10);
   EXPECT_EQ(loco42->getUserDirection(), Reverse);
-  EXPECT_THAT(_stream.getOutput(), StartsWith("<t 42 10 0>"));
+  EXPECT_EQ(_stream.getOutput(), "<t 42 10 0>");
 }
 
 /**
@@ -592,7 +592,7 @@ TEST_F(LocoTests, TestMultipleLocalSpeedChanges) {
   advanceMillis(101);
   _dccexProtocol.check();
   ASSERT_FALSE(loco42->getUserChangePending());
-  ASSERT_THAT(_stream.getOutput(), StartsWith("<t 42 10 0>"));
+  ASSERT_EQ(_stream.getOutput(), "<t 42 10 0>");
   _stream.clearOutput();
 
   // Make several changes at intervals
@@ -624,7 +624,7 @@ TEST_F(LocoTests, TestMultipleLocalSpeedChanges) {
   advanceMillis(40);
   _dccexProtocol.check();
   ASSERT_FALSE(loco42->getUserChangePending());
-  ASSERT_THAT(_stream.getOutput(), StartsWith("<t 42 50 0>"));
+  ASSERT_EQ(_stream.getOutput(), "<t 42 50 0>");
   _stream.clearOutput();
 }
 
@@ -759,5 +759,5 @@ TEST_F(LocoTests, TestDifferentLocalLocoBroadcastAllowsCommand) {
   _dccexProtocol.check();
 
   // This should trigger a <t ...>
-  EXPECT_THAT(_stream.getOutput(), StartsWith("<t 42 10 0"));
+  EXPECT_EQ(_stream.getOutput(), "<t 42 10 0>");
 }

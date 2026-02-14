@@ -700,7 +700,7 @@ void DCCEXProtocol::_init() {
 
 void DCCEXProtocol::_sendCommand() {
   if (_stream) {
-    _stream->println(_outboundCommand);
+    _stream->print(_outboundCommand);
     _console->print("==> ");
     _console->println(_outboundCommand);
     *_outboundCommand = 0;     // clear it once it has been sent

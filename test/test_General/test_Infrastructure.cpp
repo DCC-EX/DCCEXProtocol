@@ -43,6 +43,6 @@ TEST_F(DCCEXProtocolTests, clearBufferWhenFull) {
  */
 TEST_F(DCCEXProtocolTests, testGenericSendCommand) {
   _dccexProtocol.sendCommand("Random command");
-  EXPECT_EQ(_stream.getOutput(), "<Random command>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<Random command>");
   _stream.clearOutput();
 }

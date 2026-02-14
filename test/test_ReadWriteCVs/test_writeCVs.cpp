@@ -30,7 +30,7 @@
 /// @brief Validate writeLocoAddress(address) generates the correct command
 TEST_F(CVTests, writeLocoAddress) {
   // Expect write address to generate <W 1234>
-  const char *expected = "<W 1234>\r\n";
+  const char *expected = "<W 1234>";
 
   // Call writeLocoAddress()
   _dccexProtocol.writeLocoAddress(1234);
@@ -42,7 +42,7 @@ TEST_F(CVTests, writeLocoAddress) {
 /// @brief Validate writeCV(cv, value) generates the correct command
 TEST_F(CVTests, writeCV) {
   // Expect write address to generate <W 1 3>
-  const char *expected = "<W 1 3>\r\n";
+  const char *expected = "<W 1 3>";
 
   // Call writeCV()
   _dccexProtocol.writeCV(1, 3);
@@ -54,7 +54,7 @@ TEST_F(CVTests, writeCV) {
 /// @brief Validate writeCVBit(cv, bit, value) generates the correct command
 TEST_F(CVTests, writeCVBit) {
   // Expect write address to generate <B 19 4 1>
-  const char *expected = "<B 19 4 1>\r\n";
+  const char *expected = "<B 19 4 1>";
 
   // Call writeCV()
   _dccexProtocol.writeCVBit(19, 4, 1);
@@ -66,7 +66,7 @@ TEST_F(CVTests, writeCVBit) {
 /// @brief Validate writeCVOnMain(address, cv, value) generates the correct command
 TEST_F(CVTests, writeCVOnMain) {
   // Expect write CV on main to generate <W 3 8 4>
-  const char *expected = "<w 3 8 4>\r\n";
+  const char *expected = "<w 3 8 4>";
 
   // Call writeCVOnMain()
   _dccexProtocol.writeCVOnMain(3, 8, 4);
@@ -78,7 +78,7 @@ TEST_F(CVTests, writeCVOnMain) {
 /// @brief Validate writeCVBitOnMain(address, cv, bit, value) generates the correct command
 TEST_F(CVTests, writeCVBitOnMain) {
   // Expect write CV bit on main to generate <W 3 19 4 1>
-  const char *expected = "<b 3 19 4 1>\r\n";
+  const char *expected = "<b 3 19 4 1>";
 
   // Call writeCVBitOnMain()
   _dccexProtocol.writeCVBitOnMain(3, 19, 4, 1);
