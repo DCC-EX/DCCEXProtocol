@@ -215,6 +215,8 @@ int DCCEXProtocol::getMinorVersion() { return _version[1]; }
 
 int DCCEXProtocol::getPatchVersion() { return _version[2]; }
 
+const char *DCCEXProtocol::getLibraryVersion() { return DCCEX_PROTOCOL_VERSION; }
+
 unsigned long DCCEXProtocol::getLastServerResponseTime() { return _lastServerResponseTime; }
 
 void DCCEXProtocol::clearAllLists() {
