@@ -1,10 +1,6 @@
 /* -*- c++ -*-
  *
- * DCCEXProtocol
- *
- * This package implements a DCCEX native protocol connection,
- * allow a device to communicate with a DCC-EX EX-CommandStation.
- *
+ * Copyright © 2026 Peter Cole
  * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *

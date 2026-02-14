@@ -48,7 +48,7 @@ static const int MAX_SPEED = 126;
 // Public methods
 // Protocol and server methods
 
-DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams) {
+DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams, unsigned long userChangeDelay) {
   // Init streams
   _stream = &_nullStream;
   _console = &_nullStream;
@@ -61,6 +61,10 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams) {
   DCCEXInbound::setup(maxCommandParams);
   _cmdBuffer[0] = 0;
   _bufflen = 0;
+
+  // Set user change delay
+  _userChangeDelay = userChangeDelay;
+  _lastUserChange = 0;
 
   // Set heartbeat defaults
   _enableHeartbeat = 0;
@@ -127,6 +131,8 @@ void DCCEXProtocol::check() {
     if (_enableHeartbeat) {
       _sendHeartbeat();
     }
+
+    _processPendingUserChanges();
   }
 }
 
@@ -228,25 +234,16 @@ void DCCEXProtocol::refreshAllLists() {
 // Consist/loco methods
 
 void DCCEXProtocol::setThrottle(Loco *loco, int speed, Direction direction) {
-  if (_delegate) {
-    int address = loco->getAddress();
-    _setLoco(address, speed, direction);
-  }
+  loco->setUserSpeed(speed);
+  loco->setUserDirection(direction);
 }
 
 void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction) {
-  if (_delegate) {
-    for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
-      int address = cl->getLoco()->getAddress();
-      if (cl->getFacing() == FacingReversed) {
-        if (direction == Forward) {
-          direction = Reverse;
-        } else {
-          direction = Forward;
-        }
-      }
-      _setLoco(address, speed, direction);
-    }
+  for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
+    Direction effectiveDir =
+        (cl->getFacing() == FacingReversed) ? (direction == Forward ? Reverse : Forward) : direction;
+    cl->getLoco()->setUserSpeed(speed);
+    cl->getLoco()->setUserDirection(effectiveDir);
   }
 }
 
@@ -906,22 +903,17 @@ void DCCEXProtocol::_sendHeartbeat() {
 void DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
   int address = DCCEXInbound::getNumber(0);
   int speedByte = DCCEXInbound::getNumber(2);
-  int functMap = _getValidFunctionMap(DCCEXInbound::getNumber(3));
+  int functionMap = _getValidFunctionMap(DCCEXInbound::getNumber(3));
   int speed = _getSpeedFromSpeedByte(speedByte);
-  Direction dir = _getDirectionFromSpeedByte(speedByte);
+  Direction direction = _getDirectionFromSpeedByte(speedByte);
 
-  // Set a known Loco with the received info and call the delegate
-  for (Loco *l = Loco::getFirst(); l; l = l->getNext()) {
-    if (l->getAddress() == address) {
-      l->setSpeed(speed);
-      l->setDirection(dir);
-      l->setFunctionStates(functMap);
-      _delegate->receivedLocoUpdate(l);
-    }
-  }
+  // Iterate through locos to update the appropriate one, send speedByte to cater for EStop
+  _updateLocos(Loco::getFirst(), address, speedByte, direction, functionMap);
+  // _updateLocos(Loco::getFirstLocalLoco(), address, speed, direction, functionMap);
 
-  // Send a broadcast for unknown as well in case it's a local Loco not in the roster
-  _delegate->receivedLocoBroadcast(address, speed, dir, functMap);
+  // Send a broadcast as well in case it's a local Loco not in the roster
+  if (_delegate)
+    _delegate->receivedLocoBroadcast(address, speed, direction, functionMap);
 }
 
 int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
@@ -947,17 +939,49 @@ int DCCEXProtocol::_getSpeedFromSpeedByte(int speedByte) {
 
 Direction DCCEXProtocol::_getDirectionFromSpeedByte(int speedByte) { return (speedByte >= 128) ? Forward : Reverse; }
 
-void DCCEXProtocol::_setLoco(int address, int speed, Direction direction) {
-  // console->print(F("sendLocoAction(): ")); console->println(address);
-  if (!_delegate)
-    return;
-  _sendThreeParams('t', address, speed, direction);
-  // console->println(F("sendLocoAction(): end"));
+void DCCEXProtocol::_setLocos(Loco *firstLoco) {
+  for (Loco *loco = firstLoco; loco; loco = loco->getNext()) {
+    if (!loco->getUserChangePending())
+      continue;
+
+    loco->resetUserChangePending();
+    _sendThreeParams('t', loco->getAddress(), loco->getUserSpeed(), loco->getUserDirection());
+  }
+}
+
+void DCCEXProtocol::_updateLocos(Loco *firstLoco, int address, int speedByte, Direction direction, int functionMap) {
+  bool eStop = (speedByte == 1 || speedByte == 129) ? true : false;
+  int speed = _getSpeedFromSpeedByte(speedByte);
+  for (Loco *loco = firstLoco; loco; loco = loco->getNext()) {
+    if (loco->getAddress() == address) {
+      loco->setSpeed(speed);
+      loco->setDirection(direction);
+      loco->setFunctionStates(functionMap);
+      if (loco->getUserChangePending()) {
+        if (eStop) {
+          loco->resetUserChangePending();
+          loco->setUserSpeed(speed);
+        } else if (speed == loco->getUserSpeed() && direction == loco->getUserDirection()) {
+          loco->resetUserChangePending();
+        }
+      }
+      if (_delegate)
+        _delegate->receivedLocoUpdate(loco);
+    }
+  }
 }
 
 void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
   int address = DCCEXInbound::getNumber(0);
   _delegate->receivedReadLoco(address);
+}
+
+void DCCEXProtocol::_processPendingUserChanges() {
+  if (millis() - _lastUserChange > _userChangeDelay) {
+    _lastUserChange = millis();
+    _setLocos(Loco::getFirst());
+    // _setLocos(Loco::getFirstLocalLoco());
+  }
 }
 
 // Roster methods

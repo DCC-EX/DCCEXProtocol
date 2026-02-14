@@ -26,8 +26,6 @@
  * @brief Test heartbeat # is sent at the required intervals only
  */
 TEST_F(DCCEXProtocolTests, TestHeartbeat) {
-  // Reset millis from previous tests
-  resetMillis();
   // Enable heartbeat with default time of 60 seconds
   _dccexProtocol.enableHeartbeat();
   _dccexProtocol.check();
@@ -52,8 +50,6 @@ TEST_F(DCCEXProtocolTests, TestHeartbeat) {
  * @brief Test heartbeat # is sent at custom intervals only
  */
 TEST_F(DCCEXProtocolTests, TestCustomHeartbeat) {
-  // Reset timer from previous tests
-  resetMillis();
   // Enable heartbeat with custom time of 30 seconds
   _dccexProtocol.enableHeartbeat(30000);
   _dccexProtocol.check();
