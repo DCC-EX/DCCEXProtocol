@@ -70,7 +70,8 @@ TEST_F(CSConsistTests, TestCreateConsistMemberNotReversed) {
 TEST_F(CSConsistTests, TestCreateConsistRosterLoco) {
   // Create a loco and the consist
   Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
 
   // First CS consist should now be set
   ASSERT_NE(CSConsist::getFirst(), nullptr);
@@ -80,6 +81,10 @@ TEST_F(CSConsistTests, TestCreateConsistRosterLoco) {
 
   // Lead loco should be correct
   EXPECT_EQ(csConsist->getLeadLoco(), loco42);
+
+  // Created in CS and pending deletion flags should be false
+  EXPECT_FALSE(csConsist->isCreatedInCS());
+  EXPECT_FALSE(csConsist->isDeleteCSPending());
 
   // Clean up
   delete csConsist;
@@ -91,7 +96,8 @@ TEST_F(CSConsistTests, TestCreateConsistRosterLoco) {
 TEST_F(CSConsistTests, TestCreateConsistLocalLoco) {
   // Create a loco and the consist
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
-  CSConsist *csConsist = new CSConsist(loco3);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco3, false);
 
   // First CS consist should now be set
   ASSERT_NE(CSConsist::getFirst(), nullptr);
@@ -111,7 +117,8 @@ TEST_F(CSConsistTests, TestCreateConsistLocalLoco) {
  */
 TEST_F(CSConsistTests, TestCreateConsistWithAddress) {
   // Create the consist
-  CSConsist *csConsist = new CSConsist(3);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
 
   // First CS consist should now be set
   ASSERT_NE(CSConsist::getFirst(), nullptr);
@@ -138,7 +145,8 @@ TEST_F(CSConsistTests, TestBuildConsistWithLocos) {
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
 
   // Now create the consist and validate
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
   ASSERT_NE(CSConsist::getFirst(), nullptr);
   ASSERT_EQ(csConsist->getLeadLoco(), loco42);
 
@@ -173,7 +181,8 @@ TEST_F(CSConsistTests, TestBuildConsistWithLocos) {
  */
 TEST_F(CSConsistTests, TestBuildConsistWithAddresses) {
   // Create the consist and validate
-  CSConsist *csConsist = new CSConsist(42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
   ASSERT_NE(CSConsist::getFirst(), nullptr);
   ASSERT_EQ(csConsist->getLeadLoco()->getAddress(), 42);
 
@@ -212,7 +221,8 @@ TEST_F(CSConsistTests, TestBuildMixedConsist) {
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
 
   // Now create the consist and validate
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
   ASSERT_NE(CSConsist::getFirst(), nullptr);
   ASSERT_EQ(csConsist->getLeadLoco(), loco42);
 
@@ -249,7 +259,8 @@ TEST_F(CSConsistTests, TestAccessingInvalidMembers) {
   // Create some locos and a consist
   Loco *loco42 = new Loco(42, LocoSource::LocoSourceEntry);
   Loco *loco999 = new Loco(999, LocoSource::LocoSourceEntry);
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
 
   // Test membership with 999 and addresses returns sane answers
   EXPECT_FALSE(csConsist->isInConsist(loco999));
@@ -269,7 +280,8 @@ TEST_F(CSConsistTests, TestAccessingInvalidMembers) {
 TEST_F(CSConsistTests, TestCallingWithInvalidParams) {
   // Create consist and a loco for testing
   Loco *loco999 = new Loco(999, LocoSource::LocoSourceEntry);
-  CSConsist *csConsist = new CSConsist(42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
 
   // Test adding with invalid values doesn't cause a crash
   csConsist->addMember(nullptr, true);
@@ -288,16 +300,17 @@ TEST_F(CSConsistTests, TestRemoveMemberLoco) {
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
 
   // Now create the consist and add members
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
   csConsist->addMember(loco24, true);
   csConsist->addMember(loco3, false);
-  ASSERT_EQ(csConsist->getFirstMember()->getLoco(), loco24);
+  ASSERT_EQ(csConsist->getFirstMember()->getLoco(), loco42);
 
   // Remove loco24 and validate
   csConsist->removeMember(loco24);
   ASSERT_FALSE(csConsist->isInConsist(loco24));
   EXPECT_EQ(csConsist->getMember(loco24), nullptr);
-  EXPECT_EQ(csConsist->getFirstMember()->getLoco(), loco3);
+  EXPECT_EQ(csConsist->getFirstMember()->getNext()->getLoco(), loco3);
 }
 
 /**
@@ -305,16 +318,17 @@ TEST_F(CSConsistTests, TestRemoveMemberLoco) {
  */
 TEST_F(CSConsistTests, TestRemoveMemberByAddress) {
   // Create the consist and add members
-  CSConsist *csConsist = new CSConsist(42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
   csConsist->addMember(24, true);
   csConsist->addMember(3, false);
-  ASSERT_EQ(csConsist->getFirstMember()->getLoco()->getAddress(), 24);
+  ASSERT_EQ(csConsist->getFirstMember()->getLoco()->getAddress(), 42);
 
   // Remove loco24 and validate
   csConsist->removeMember(24);
   ASSERT_FALSE(csConsist->isInConsist(24));
   EXPECT_EQ(csConsist->getMember(24), nullptr);
-  EXPECT_EQ(csConsist->getFirstMember()->getLoco()->getAddress(), 3);
+  EXPECT_EQ(csConsist->getFirstMember()->getNext()->getLoco()->getAddress(), 3);
 }
 
 /**
@@ -327,21 +341,26 @@ TEST_F(CSConsistTests, TestRemoveAllMembers) {
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
 
   // Now create the consist and add members
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
   csConsist->addMember(loco24, true);
   csConsist->addMember(loco3, false);
-  ASSERT_EQ(csConsist->getFirstMember()->getLoco(), loco24);
+  ASSERT_EQ(csConsist->getFirstMember()->getLoco(), loco42);
 
   // Remove loco24 and validate
   csConsist->removeMember(loco24);
   ASSERT_FALSE(csConsist->isInConsist(loco24));
   EXPECT_EQ(csConsist->getMember(loco24), nullptr);
-  EXPECT_EQ(csConsist->getFirstMember()->getLoco(), loco3);
+  EXPECT_EQ(csConsist->getFirstMember()->getNext()->getLoco(), loco3);
 
   // Remove loco3 and validate
   csConsist->removeMember(loco3);
   ASSERT_FALSE(csConsist->isInConsist(loco3));
   EXPECT_EQ(csConsist->getMember(loco3), nullptr);
+
+  // Remove loco42 and validate
+  csConsist->removeMember(loco42);
+  ASSERT_FALSE(csConsist->isInConsist(loco42));
   EXPECT_EQ(csConsist->getFirstMember(), nullptr);
 }
 
@@ -355,7 +374,8 @@ TEST_F(CSConsistTests, TestAddDuplicates) {
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
 
   // Now create the consist and add members
-  CSConsist *csConsist = new CSConsist(loco42);
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(loco42, false);
   csConsist->addMember(loco24, true);
   csConsist->addMember(loco3, false);
 
@@ -376,5 +396,5 @@ TEST_F(CSConsistTests, TestAddDuplicates) {
   for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->getNext()) {
     memberCount++;
   }
-  EXPECT_EQ(memberCount, 2);
+  EXPECT_EQ(memberCount, 3);
 }

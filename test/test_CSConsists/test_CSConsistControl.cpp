@@ -21,3 +21,13 @@
  */
 
 #include "../setup/CSConsistTests.h"
+
+/**
+ * @brief Test setThrottle the first time will create the consist in the CS
+ */
+TEST_F(CSConsistTests, TestSetThrottleCreatesConsist) {}
+
+/**
+ * @brief Test removing the last member will delete the consist in the CS
+ */
+TEST_F(CSConsistTests, TestRemoveLastMemberDeletesConsist) {}

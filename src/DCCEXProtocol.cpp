@@ -662,6 +662,10 @@ void DCCEXProtocol::_processCommand() {
     }
     break;
 
+  case '^': // Receive CSConsist
+    _processCSConsist();
+    break;
+
   default:
     break;
   }
@@ -820,6 +824,20 @@ void DCCEXProtocol::_processPendingUserChanges() {
     _lastUserChange = millis();
     _setLocos(Loco::getFirst());
     _setLocos(Loco::getFirstLocalLoco());
+  }
+}
+
+void DCCEXProtocol::_processCSConsist() { // <^ leadLoco [-]address [-]address>
+  if (DCCEXInbound::isTextParameter(0))
+    return;
+
+  int locoCount = DCCEXInbound::getParameterCount();
+  CSConsist *csConsist = new CSConsist();
+
+  for (int i = 0; i < locoCount; i++) {
+    unsigned int address = abs(DCCEXInbound::getNumber(i));
+    bool reversed = (DCCEXInbound::getNumber(i) < 0);
+    csConsist->addMember(address, reversed);
   }
 }
 

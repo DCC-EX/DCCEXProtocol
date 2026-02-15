@@ -79,20 +79,15 @@ private:
  * station to accept a CSConsist, at least one additional loco is required. Additional locos are CSConsistMember
  * objects, enabling them to be operated in reverse compared to the lead loco. Each CSConsist instance is in a linked
  * list accessible via CSConsist::getFirst().
+ * It is recommended to always create and delete CSConsist objects using the methods provided in DCCEXProtocol class to
+ * ensure your command station is updated appropriately.
  */
 class CSConsist {
 public:
   /**
    * @brief Construct a new CSConsist object
-   * @param leadLoco Pointer to the lead Loco object
    */
-  CSConsist(Loco *leadLoco);
-
-  /**
-   * @brief Construct a new CSConsist object
-   * @param leadLocoAddress DCC address of the lead loco
-   */
-  CSConsist(int leadLocoAddress);
+  CSConsist();
 
   /**
    * @brief Get the First object
@@ -109,14 +104,14 @@ public:
   /**
    * @brief Add a Loco to the consist
    * @param loco Pointer to the Loco object to be added
-   * @param reversed True if loco is reversed compared to lead loco, otherwise false
+   * @param reversed True if loco is reversed to normal direction of travel
    */
   void addMember(Loco *loco, bool reversed);
 
   /**
    * @brief Add a loco by address to the consist
    * @param address DCC address of the loco to be added
-   * @param reversed True if loco is reversed compared to lead loco, otherwise false
+   * @param reversed True if loco is reversed to normal direction of travel
    */
   void addMember(int address, bool reversed);
 
@@ -191,14 +186,41 @@ public:
   bool isReversed(int address);
 
   /**
+   * @brief Set the flag for this consist's state in the command station
+   * @param created True if it has been created in the command station, otherwise false
+   */
+  void setCreatedInCS(bool created);
+
+  /**
+   * @brief Check if this consist has been created in the command station
+   * @return true If it is created
+   * @return false If it is not
+   */
+  bool isCreatedInCS();
+
+  /**
+   * @brief Set the flag if this consist needs to be deleted in the command station
+   * @param pending True if it needs to be deleted, otherwise false
+   */
+  void setDeleteCSPending(bool pending);
+
+  /**
+   * @brief Check if this consist needs to be deleted in the command station
+   * @return true If it needs to be deleted
+   * @return false If it does not
+   */
+  bool isDeleteCSPending();
+
+  /**
    * @brief Destroy the CSConsist object
    */
   ~CSConsist();
 
 private:
-  Loco *_leadLoco;
   CSConsistMember *_firstMember;
   CSConsist *_next;
+  bool _createdInCS;
+  bool _deleteCSPending;
   static CSConsist *_first;
 
   /**

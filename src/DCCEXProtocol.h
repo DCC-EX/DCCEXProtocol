@@ -593,6 +593,7 @@ private:
   void _updateLocos(Loco *firstLoco, int address, int speedByte, Direction direction, int functionMap);
   void _processReadResponse();
   void _processPendingUserChanges();
+  void _processCSConsist();
 
   // Roster methods
   void _getRoster();
