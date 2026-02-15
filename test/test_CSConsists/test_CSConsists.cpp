@@ -82,9 +82,10 @@ TEST_F(CSConsistTests, TestCreateConsistRosterLoco) {
   // Lead loco should be correct
   EXPECT_EQ(csConsist->getLeadLoco(), loco42);
 
-  // Created in CS and pending deletion flags should be false
+  // Created in CS, pending deletion, and valid flags should be false
   EXPECT_FALSE(csConsist->isCreatedInCS());
   EXPECT_FALSE(csConsist->isDeleteCSPending());
+  EXPECT_FALSE(csConsist->isValid());
 
   // Clean up
   delete csConsist;
@@ -108,6 +109,11 @@ TEST_F(CSConsistTests, TestCreateConsistLocalLoco) {
   // Lead loco should be correct
   EXPECT_EQ(csConsist->getLeadLoco(), loco3);
 
+  // Created in CS, pending deletion, and valid flags should be false
+  EXPECT_FALSE(csConsist->isCreatedInCS());
+  EXPECT_FALSE(csConsist->isDeleteCSPending());
+  EXPECT_FALSE(csConsist->isValid());
+
   // Clean up
   delete csConsist;
 }
@@ -130,6 +136,11 @@ TEST_F(CSConsistTests, TestCreateConsistWithAddress) {
   EXPECT_NE(csConsist->getLeadLoco(), nullptr);
   Loco *loco = csConsist->getLeadLoco();
   EXPECT_EQ(loco->getAddress(), 3);
+
+  // Created in CS, pending deletion, and valid flags should be false
+  EXPECT_FALSE(csConsist->isCreatedInCS());
+  EXPECT_FALSE(csConsist->isDeleteCSPending());
+  EXPECT_FALSE(csConsist->isValid());
 
   // Clean up
   delete csConsist;

@@ -244,6 +244,13 @@ void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction
   }
 }
 
+void DCCEXProtocol::setThrottle(CSConsist *csConsist, int speed, Direction direction) {
+  if (!csConsist) return;
+
+  if (csConsist->isDeleteCSPending()) return;
+
+}
+
 void DCCEXProtocol::functionOn(Loco *loco, int function) {
   int address = loco->getAddress();
   if (address >= 0) {

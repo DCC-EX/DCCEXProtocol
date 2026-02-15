@@ -173,6 +173,8 @@ void CSConsist::setDeleteCSPending(bool pending) { _deleteCSPending = pending; }
 
 bool CSConsist::isDeleteCSPending() { return _deleteCSPending; }
 
+bool CSConsist::isValid() { return false; }
+
 CSConsist::~CSConsist() {
   // Clean up the member list first
   CSConsistMember *current = _firstMember;

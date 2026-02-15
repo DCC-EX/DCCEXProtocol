@@ -295,6 +295,16 @@ public:
   /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
   void setThrottle(Consist *consist, int speed, Direction direction);
 
+  /**
+   * @brief Set the provided command station consist to the specified speed and direction
+   * @details If this consist does not exist, it will be created first, and if it is not valid, this command will be
+   * ignored.
+   * @param csConsist Pointer to the CSConsist object
+   * @param speed Speed (0 - 126)
+   * @param direction Direction (Forward|Reverse)
+   */
+  void setThrottle(CSConsist *csConsist, int speed, Direction direction);
+
   /// @brief Turn the specified function on for the provided loco
   /// @param loco Pointer to a loco object
   /// @param function Function number (0 - 27)

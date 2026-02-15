@@ -75,12 +75,11 @@ private:
 
 /**
  * @brief Class to assist managing command station consists
- * @details You must provide a lead loco object or address when creating a CSConsist instance. In order for the command
- * station to accept a CSConsist, at least one additional loco is required. Additional locos are CSConsistMember
- * objects, enabling them to be operated in reverse compared to the lead loco. Each CSConsist instance is in a linked
- * list accessible via CSConsist::getFirst().
- * It is recommended to always create and delete CSConsist objects using the methods provided in DCCEXProtocol class to
- * ensure your command station is updated appropriately.
+ * @details In order for the command station to accept a CSConsist, at least two locos are required. Each member loco is
+ * a CSConsistMember object, enabling them to be operated in reverse compared to normal direction of travel.
+ * Each CSConsist instance is in a linked list accessible via CSConsist::getFirst(). It is recommended to always create
+ * and delete CSConsist objects using the methods provided in DCCEXProtocol class to ensure your command station is
+ * updated appropriately.
  */
 class CSConsist {
 public:
@@ -210,6 +209,13 @@ public:
    * @return false If it does not
    */
   bool isDeleteCSPending();
+
+  /**
+   * @brief Check if this is a valid consist with more than 1 member
+   * @return true Valid CSConsist
+   * @return false Invalid (less than 2 members)
+   */
+  bool isValid();
 
   /**
    * @brief Destroy the CSConsist object
