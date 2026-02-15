@@ -38,6 +38,7 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #ifndef DCCEXPROTOCOL_H
 #define DCCEXPROTOCOL_H
 
+#include "DCCEXCSConsist.h"
 #include "DCCEXInbound.h"
 #include "DCCEXLoco.h"
 #include "DCCEXProtocolVersion.h"
@@ -288,7 +289,7 @@ public:
   /// @param direction Direction (Forward|Reverse)
   void setThrottle(Loco *loco, int speed, Direction direction);
 
-  /// @brief Set all locos in the provided consist to the specified speed and direction
+  /// @brief DEPRECATED Set all locos in the provided consist to the specified speed and direction
   /// @param consist Pointer to a consist object
   /// @param speed Speed (0 - 126)
   /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
@@ -310,17 +311,17 @@ public:
   /// @return true = on, false = off
   bool isFunctionOn(Loco *loco, int function);
 
-  /// @brief Turn the specified function on for the provided consist
+  /// @brief DEPRECATED Turn the specified function on for the provided consist
   /// @param consist Pointer to a consist object
   /// @param function Function number (0 - 27)
   void functionOn(Consist *consist, int function);
 
-  /// @brief Turn the specified function off for the provided consist
+  /// @brief DEPRECATED Turn the specified function off for the provided consist
   /// @param consist Pointer to a consist object
   /// @param function Function number (0 - 27)
   void functionOff(Consist *consist, int function);
 
-  /// @brief Test if the specified function for the provided consist is on (Checks first loco)
+  /// @brief DEPRECATED Test if the specified function for the provided consist is on (Checks first loco)
   /// @param consist Pointer to a consist object
   /// @param function Function number to test (0 - 27)
   /// @return true = on, false = off

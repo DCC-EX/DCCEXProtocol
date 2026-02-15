@@ -38,6 +38,11 @@ Version information:
         - Additional constructor attribute "userChangeDelay" enables user configuration of the queue time
         - Bug fix GitHub issue #39 sending unnecessary CRLF using println instead of print
         - Move version history to this file and expose via DCCEXProtocol::getLibraryVersion()
+        - Major clean up of irrelevant dependencies on a DCCEXProtocolDelegate instance
+        - Add missing guards when calling DCCEXProtocolDelegate methods if no instance is set
+        - Add support for command station consists in favour of the current in-throttle consists
+        - DEPRECATE existing in-throttle consists, these will be REMOVED in 2.0.0:
+        - ALL current Consist METHODS and CLASSES are now deprecated
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

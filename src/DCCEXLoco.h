@@ -233,35 +233,40 @@ private:
   friend class Consist;
 };
 
-/// @brief Class to add an additional attribute to a Loco object to specify the direction it is facing in a consist
+/**
+ * @brief DEPRECATED! Class to add an additional attribute to a Loco object to specify the direction it is facing in a
+ * consist
+ * @details As of version 1.3.0, all Consist and related classes and methods are being deprecated in favour of the new
+ * command station consists.
+ */
 class ConsistLoco {
 public:
-  /// @brief Constructor
+  /// @brief DEPRECATED Constructor
   /// @param loco Pointer to the Loco object to add
   /// @param facing Direction loco is facing in the consist (FacingForward|FacingReversed)
   ConsistLoco(Loco *loco, Facing facing);
 
-  /// @brief Get the associated Loco object for this consist entry
+  /// @brief DEPRECATED Get the associated Loco object for this consist entry
   /// @return Pointer to the Loco object
   Loco *getLoco();
 
-  /// @brief Set which way the loco is facing in the consist (FacingForward, FacingReversed)
+  /// @brief DEPRECATED Set which way the loco is facing in the consist (FacingForward, FacingReversed)
   /// @param facing FacingForward|FacingReversed
   void setFacing(Facing facing);
 
-  /// @brief Get which way the loco is facing in the consist (FacingForward, FacingReversed)
+  /// @brief DEPRECATED Get which way the loco is facing in the consist (FacingForward, FacingReversed)
   /// @return FacingForward|FacingReversed
   Facing getFacing();
 
-  /// @brief Get the next consist loco object
+  /// @brief DEPRECATED Get the next consist loco object
   /// @return Pointer to the next ConsistLoco object
   ConsistLoco *getNext();
 
-  /// @brief Set the next consist loco object
+  /// @brief DEPRECATED Set the next consist loco object
   /// @param consistLoco Pointer to the ConsistLoco object
   void setNext(ConsistLoco *consistLoco);
 
-  /// @brief Destructor for a ConsistLoco
+  /// @brief DEPRECATED Destructor for a ConsistLoco
   ~ConsistLoco();
 
 private:
@@ -272,74 +277,78 @@ private:
   friend class Consist;
 };
 
-/// @brief Class to create a software consist of one or more ConsistLoco objects
+/**
+ * @brief DEPRECATED! Class to create a software consist of one or more ConsistLoco objects
+ * @details As of version 1.3.0, all Consist and related classes and methods are being deprecated in favour of the new
+ * command station consists.
+ */
 class Consist {
 public:
-  /// @brief Constructor
+  /// @brief DEPRECATED Constructor
   Consist();
 
-  /// @brief Set consist name
+  /// @brief DEPRECATED Set consist name
   /// @param name Name to set for the consist
   void setName(const char *name);
 
-  /// @brief Get consist name
+  /// @brief DEPRECATED Get consist name
   /// @return Current name of the consist
   const char *getName();
 
-  /// @brief Add a loco to the consist using a Loco object
+  /// @brief DEPRECATED Add a loco to the consist using a Loco object
   /// @param loco Pointer to a loco object
   /// @param facing Direction the loco is facing (FacingForward|FacingReversed)
   void addLoco(Loco *loco, Facing facing);
 
-  /// @brief Add a loco to the consist using a DCC address
+  /// @brief DEPRECATED Add a loco to the consist using a DCC address
   /// @param address DCC address of the loco to add
   /// @param facing Direction the loco is facing (FacingForward|FacingReversed)
   void addLoco(int address, Facing facing);
 
-  /// @brief Remove a loco from the consist - Loco objects with LocoSourceEntry will also be deleted
+  /// @brief DEPRECATED Remove a loco from the consist - Loco objects with LocoSourceEntry will also be deleted
   /// @param loco Pointer to a loco object to remove
   void removeLoco(Loco *loco);
 
-  /// @brief Remove all locos from a consist - Loco objects with LocoSourceEntry will also be deleted
+  /// @brief DEPRECATED Remove all locos from a consist - Loco objects with LocoSourceEntry will also be deleted
   void removeAllLocos();
 
-  /// @brief Update the direction of a loco in the consist
+  /// @brief DEPRECATED Update the direction of a loco in the consist
   /// @param loco Pointer to the loco object to update
   /// @param facing Direction to set it to (FacingForward|FacingReversed)
   void setLocoFacing(Loco *loco, Facing facing);
 
-  /// @brief Get the count of locos in the consist
+  /// @brief DEPRECATED Get the count of locos in the consist
   /// @return Count of locos
   int getLocoCount();
 
-  /// @brief Check if the provided loco is in the consist
+  /// @brief DEPRECATED Check if the provided loco is in the consist
   /// @param loco Pointer to the loco object to check
   /// @return true|false
   bool inConsist(Loco *loco);
 
-  /// @brief Check if the loco with the provided address is in the consist
+  /// @brief DEPRECATED Check if the loco with the provided address is in the consist
   /// @param address DCC address of loco to check
   /// @return true|false
   bool inConsist(int address);
 
-  /// @brief Get consist speed - obtained from first linked loco
+  /// @brief DEPRECATED Get consist speed - obtained from first linked loco
   /// @return Current speed (0 - 126)
   int getSpeed();
 
-  /// @brief Get consist direction - obtained from first linked loco
+  /// @brief DEPRECATED Get consist direction - obtained from first linked loco
   /// @return Current direction (Forward|Reverse)
   Direction getDirection();
 
-  /// @brief Get the first loco in the consist
+  /// @brief DEPRECATED Get the first loco in the consist
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco *getFirst();
 
-  /// @brief Get the loco in the consist with the specified address
+  /// @brief DEPRECATED Get the loco in the consist with the specified address
   /// @param address DCC address of loco to retrieve
   /// @return Pointer to the first ConsistLoco object
   ConsistLoco *getByAddress(int address);
 
-  /// @brief Destructor for a Consist
+  /// @brief DEPRECATED Destructor for a Consist
   ~Consist();
 
 private:
