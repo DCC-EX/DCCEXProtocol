@@ -26,6 +26,9 @@
  * @brief Test receiving a consist list creates objects
  */
 TEST_F(CSConsistTests, TestReceivingConsistList) {
+  // Set expectation
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+  
   // Simulate receiving a consist
   _stream << "<^ 42 -24 3>";
   _dccexProtocol.check();
@@ -35,25 +38,29 @@ TEST_F(CSConsistTests, TestReceivingConsistList) {
 
   // Check members and attributes
   CSConsist *csConsist = CSConsist::getFirst();
-  ASSERT_NE(csConsist->getLeadLoco(), nullptr);
-  EXPECT_EQ(csConsist->getLeadLoco()->getAddress(), 42);
-  ASSERT_NE(csConsist->getFirstMember(), nullptr);
+  EXPECT_TRUE(csConsist->isCreatedInCS());
+  EXPECT_FALSE(csConsist->isDeleteCSPending());
+  EXPECT_TRUE(csConsist->isValid());
   CSConsistMember *first = csConsist->getFirstMember();
-  EXPECT_EQ(first->getLoco()->getAddress(), 42);
-  EXPECT_FALSE(first->isReversed());
-  CSConsistMember *second = first->getNext();
+  ASSERT_NE(first, nullptr);
+  EXPECT_EQ(first->address, 42);
+  EXPECT_FALSE(first->reversed);
+  CSConsistMember *second = first->next;
   ASSERT_NE(second, nullptr);
-  EXPECT_EQ(second->getLoco()->getAddress(), 24);
-  EXPECT_TRUE(second->isReversed());
-  ASSERT_NE(second->getNext(), nullptr);
-  EXPECT_EQ(second->getNext()->getLoco()->getAddress(), 3);
-  EXPECT_FALSE(second->getNext()->isReversed());
+  EXPECT_EQ(second->address, 24);
+  EXPECT_TRUE(second->reversed);
+  ASSERT_NE(second->next, nullptr);
+  EXPECT_EQ(second->next->address, 3);
+  EXPECT_FALSE(second->next->reversed);
 }
 
 /**
  * @brief Test receiving a single loco consist doesn't create one
  */
 TEST_F(CSConsistTests, TestReceivingInvalidConsist) {
+  // Set expectation
+  EXPECT_CALL(_delegate, receivedCSConsist(_, _)).Times(0);
+  
   // Simulate receiving a single loco consist
   _stream << "<^ 42>";
   _dccexProtocol.check();
@@ -66,6 +73,9 @@ TEST_F(CSConsistTests, TestReceivingInvalidConsist) {
  * @brief Test a two loco consist
  */
 TEST_F(CSConsistTests, TestTwoLocoConsist) {
+  // Set expectation
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+  
   // Simulate receiving a two loco consist
   _stream << "<^ 42 -24>";
   _dccexProtocol.check();
@@ -75,22 +85,26 @@ TEST_F(CSConsistTests, TestTwoLocoConsist) {
 
   // Check members and attributes
   CSConsist *csConsist = CSConsist::getFirst();
-  ASSERT_NE(csConsist->getLeadLoco(), nullptr);
-  EXPECT_EQ(csConsist->getLeadLoco()->getAddress(), 42);
+  EXPECT_TRUE(csConsist->isCreatedInCS());
+  EXPECT_FALSE(csConsist->isDeleteCSPending());
+  EXPECT_TRUE(csConsist->isValid());
   ASSERT_NE(csConsist->getFirstMember(), nullptr);
   CSConsistMember *first = csConsist->getFirstMember();
-  EXPECT_EQ(first->getLoco()->getAddress(), 42);
-  EXPECT_FALSE(first->isReversed());
-  CSConsistMember *second = first->getNext();
+  EXPECT_EQ(first->address, 42);
+  EXPECT_FALSE(first->reversed);
+  CSConsistMember *second = first->next;
   ASSERT_NE(second, nullptr);
-  EXPECT_EQ(second->getLoco()->getAddress(), 24);
-  EXPECT_TRUE(second->isReversed());
+  EXPECT_EQ(second->address, 24);
+  EXPECT_TRUE(second->reversed);
 }
 
 /**
  * @brief Test consist is built correctly with reversed lead loco
  */
 TEST_F(CSConsistTests, TestReversedLeadLoco) {
+  // Set expectation
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+  
   // Simulate receiving a two loco consist
   _stream << "<^ -42 24>";
   _dccexProtocol.check();
@@ -100,22 +114,28 @@ TEST_F(CSConsistTests, TestReversedLeadLoco) {
 
   // Check members and attributes
   CSConsist *csConsist = CSConsist::getFirst();
-  ASSERT_NE(csConsist->getLeadLoco(), nullptr);
-  EXPECT_EQ(csConsist->getLeadLoco()->getAddress(), 42);
+  EXPECT_TRUE(csConsist->isCreatedInCS());
+  EXPECT_FALSE(csConsist->isDeleteCSPending());
+  EXPECT_TRUE(csConsist->isValid());
   ASSERT_NE(csConsist->getFirstMember(), nullptr);
   CSConsistMember *first = csConsist->getFirstMember();
-  EXPECT_EQ(first->getLoco()->getAddress(), 42);
-  EXPECT_TRUE(first->isReversed());
-  CSConsistMember *second = first->getNext();
+  EXPECT_EQ(first->address, 42);
+  EXPECT_TRUE(first->reversed);
+  CSConsistMember *second = first->next;
   ASSERT_NE(second, nullptr);
-  EXPECT_EQ(second->getLoco()->getAddress(), 24);
-  EXPECT_FALSE(second->isReversed());
+  EXPECT_EQ(second->address, 24);
+  EXPECT_FALSE(second->reversed);
 }
 
 /**
  * @brief Test receiving multiple consists builds them correctly
  */
 TEST_F(CSConsistTests, TestMultipleConsists) {
+  // Set expectation
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+  EXPECT_CALL(_delegate, receivedCSConsist(3, _)).Times(1);
+  EXPECT_CALL(_delegate, receivedCSConsist(21, _)).Times(1);
+  
   // Simulate receiving multiple consists
   _stream << "<^ -42 24><^ 3 -33 99><^ 21 22>";
   _dccexProtocol.check();
@@ -123,9 +143,9 @@ TEST_F(CSConsistTests, TestMultipleConsists) {
   // Validate the CSConsists are created correctly
   ASSERT_NE(CSConsist::getFirst(), nullptr);
   CSConsist *first = CSConsist::getFirst();
-  EXPECT_EQ(first->getLeadLoco()->getAddress(), 42);
-  EXPECT_EQ(first->getNext()->getLeadLoco()->getAddress(), 3);
-  EXPECT_EQ(first->getNext()->getNext()->getLeadLoco()->getAddress(), 21);
+  EXPECT_EQ(first->getFirstMember()->address, 42);
+  EXPECT_EQ(first->getNext()->getFirstMember()->address, 3);
+  EXPECT_EQ(first->getNext()->getNext()->getFirstMember()->address, 21);
 }
 
 /**
@@ -138,6 +158,8 @@ TEST_F(CSConsistTests, TestConflictingLeadLoco) {
   csConsist->addMember(24, true);
   csConsist->addMember(3, false);
 
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+
   // Simulate receiving a consist that contains a conflicting lead loco address
   _stream << "<^ -42 24 -3>";
   _dccexProtocol.check();
@@ -145,17 +167,17 @@ TEST_F(CSConsistTests, TestConflictingLeadLoco) {
   // The existing CSConsist should be updated to reflect the received version
   CSConsistMember *member = csConsist->getFirstMember();
   ASSERT_NE(member, nullptr);
-  EXPECT_EQ(member->getLoco()->getAddress(), 42);
-  EXPECT_TRUE(member->isReversed());
-  member = member->getNext();
+  EXPECT_EQ(member->address, 42);
+  EXPECT_TRUE(member->reversed);
+  member = member->next;
   ASSERT_NE(member, nullptr);
-  EXPECT_EQ(member->getLoco()->getAddress(), 24);
-  EXPECT_FALSE(member->isReversed());
-  member = member->getNext();
+  EXPECT_EQ(member->address, 24);
+  EXPECT_FALSE(member->reversed);
+  member = member->next;
   ASSERT_NE(member, nullptr);
-  EXPECT_EQ(member->getLoco()->getAddress(), 3);
-  EXPECT_TRUE(member->isReversed());
-  EXPECT_EQ(member->getNext(), nullptr);
+  EXPECT_EQ(member->address, 3);
+  EXPECT_TRUE(member->reversed);
+  EXPECT_EQ(member->next, nullptr);
 }
 
 /**
@@ -177,6 +199,8 @@ TEST_F(CSConsistTests, TestConflictingMemberLoco) {
   EXPECT_TRUE(csConsist1->isInConsist(5));
   EXPECT_TRUE(csConsist3->isInConsist(25));
 
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+
   // Simulate receiving a consist with those members
   _stream << "<^ 42 -5 25>";
   _dccexProtocol.check();
@@ -186,17 +210,17 @@ TEST_F(CSConsistTests, TestConflictingMemberLoco) {
   ASSERT_NE(csConsist4, nullptr);
   CSConsistMember *member = csConsist4->getFirstMember();
   ASSERT_NE(member, nullptr);
-  EXPECT_EQ(member->getLoco()->getAddress(), 42);
-  EXPECT_FALSE(member->isReversed());
-  member = member->getNext();
+  EXPECT_EQ(member->address, 42);
+  EXPECT_FALSE(member->reversed);
+  member = member->next;
   ASSERT_NE(member, nullptr);
-  EXPECT_EQ(member->getLoco()->getAddress(), 5);
-  EXPECT_TRUE(member->isReversed());
-  member = member->getNext();
+  EXPECT_EQ(member->address, 5);
+  EXPECT_TRUE(member->reversed);
+  member = member->next;
   ASSERT_NE(member, nullptr);
-  EXPECT_EQ(member->getLoco()->getAddress(), 25);
-  EXPECT_FALSE(member->isReversed());
-  EXPECT_EQ(member->getNext(), nullptr);
+  EXPECT_EQ(member->address, 25);
+  EXPECT_FALSE(member->reversed);
+  EXPECT_EQ(member->next, nullptr);
 
   // Verify that locos 5 and 25 aren't in the other CSConsists any more
   EXPECT_FALSE(csConsist1->isInConsist(5));
@@ -215,14 +239,22 @@ TEST_F(CSConsistTests, TestMemberShuffles) {
   csConsist2->addMember(30, false);
   csConsist2->addMember(40, true);
 
+  EXPECT_CALL(_delegate, receivedCSConsist(10, _)).Times(1);
+
   // Simulate receiving a consist with those members
   _stream << "<^ 10 -20 30>";
   _dccexProtocol.check();
 
   // Verify there are still only two CSConsists with correct members
   ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_TRUE(csConsist1->isCreatedInCS());
+  EXPECT_FALSE(csConsist1->isDeleteCSPending());
+  EXPECT_TRUE(csConsist1->isValid());
   EXPECT_EQ(CSConsist::getFirst()->getNext(), csConsist2);
   EXPECT_EQ(csConsist2->getNext(), nullptr);
+  EXPECT_FALSE(csConsist2->isCreatedInCS());
+  EXPECT_TRUE(csConsist2->isDeleteCSPending());
+  EXPECT_FALSE(csConsist2->isValid());
   EXPECT_EQ(CSConsist::getLeadLocoCSConsist(10), csConsist1);
   EXPECT_EQ(CSConsist::getLeadLocoCSConsist(40), csConsist2);
   EXPECT_EQ(CSConsist::getMemberCSConsist(20), csConsist1);

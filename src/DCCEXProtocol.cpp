@@ -324,6 +324,48 @@ void DCCEXProtocol::refreshRoster() {
   _rosterRequested = false;
 }
 
+// CSConsist methods
+
+void DCCEXProtocol::requestCSConsists() { _sendOpcode('^'); }
+
+CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed) {
+  if (leadLoco < 1 || leadLoco > 10239)
+    return nullptr;
+
+  // First check if one already exists
+  CSConsist *csConsist = CSConsist::getLeadLocoCSConsist(leadLoco);
+  if (csConsist == nullptr) {
+    // Ensure the lead loco isn't in any other consists
+    while (CSConsist *checkCSConsist = CSConsist::getMemberCSConsist(leadLoco)) {
+      checkCSConsist->removeMember(leadLoco);
+    }
+    csConsist = new CSConsist();
+    csConsist->addMember(leadLoco, reversed);
+  }
+
+  return csConsist;
+}
+
+void DCCEXProtocol::addCSConsistMember(CSConsist *csConsist, int address, bool reversed) {
+  if (csConsist == nullptr || address < 1 || address > 10239)
+    return;
+
+  csConsist->addMember(address, reversed);
+  if (csConsist->isValid()) {
+    for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->next) {
+      // building command here
+    }
+  }
+}
+
+void DCCEXProtocol::removeCSConsistMember(CSConsist *csConsist, int address) {}
+
+void DCCEXProtocol::deleteCSConsist(int leadLoco) {}
+
+void DCCEXProtocol::deleteCSConsist(CSConsist *csConsist) {}
+
+void DCCEXProtocol::clearCSConsists() {}
+
 // Turnout methods
 
 int DCCEXProtocol::getTurnoutCount() { return _turnoutCount; }
@@ -856,6 +898,12 @@ void DCCEXProtocol::_processCSConsist() { // <^ leadLoco [-]address [-]address>
     csConsist = new CSConsist();
   }
   _buildCSConsist(csConsist, locoCount);
+  if (csConsist->isValid()) {
+    csConsist->setCreatedInCS(true);
+    csConsist->setDeleteCSPending(false);
+  }
+  if (_delegate)
+    _delegate->receivedCSConsist(leadLoco, csConsist);
 }
 
 void DCCEXProtocol::_buildCSConsist(CSConsist *csConsist, int memberCount) {

@@ -190,6 +190,13 @@ public:
   /// @param message Message to display on the screen/row
   virtual void receivedScreenUpdate(int screen, int row, char *message) {}
 
+  /**
+   * @brief Notify when a CS consist has been received
+   * @param leadLoco DCC address of the lead loco for the consist
+   * @param csConsist Pointer to the CSConsist object controlled by the lead loco
+   */
+  virtual void receivedCSConsist(int leadLoco, CSConsist *csConsist) {}
+
   /// @brief Default destructor for DCCEXProtocolDelegate
   virtual ~DCCEXProtocolDelegate() = default;
 };
@@ -370,6 +377,51 @@ public:
 
   /// @brief Clear the roster and request again
   void refreshRoster();
+
+  // CSConsist methods
+
+  /**
+   * @brief
+   */
+  void requestCSConsists();
+
+  /**
+   * @brief 
+   * @param leadLoco 
+   * @param reversed 
+   * @return CSConsist* 
+   */
+  CSConsist *createCSConsist(int leadLoco, bool reversed);
+
+  /**
+   * @brief
+   * @param address
+   * @param reversed
+   */
+  void addCSConsistMember(CSConsist *csConsist, int address, bool reversed);
+
+  /**
+   * @brief
+   * @param address
+   */
+  void removeCSConsistMember(CSConsist *csConsist, int address);
+
+  /**
+   * @brief
+   * @param address
+   */
+  void deleteCSConsist(int leadLoco);
+
+  /**
+   * @brief
+   * @param csConsist
+   */
+  void deleteCSConsist(CSConsist *csConsist);
+
+  /**
+   * @brief 
+   */
+  void clearCSConsists();
 
   // Turnout methods
 
@@ -582,6 +634,11 @@ public:
 
   /// @brief Linked list of Turntable objects to form the list of turntables
   Turntable *turntables = nullptr;
+
+  /**
+   * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class
+   */
+  CSConsist *csConsists = nullptr;
 
 private:
   // Methods

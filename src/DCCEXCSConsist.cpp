@@ -22,76 +22,79 @@
 
 #include "DCCEXCSConsist.h"
 
-// CSConsistMember public methods
-
-CSConsistMember::CSConsistMember(Loco *loco, bool reversed) : _loco(loco), _reversed(reversed), _next(nullptr) {}
-
-Loco *CSConsistMember::getLoco() { return _loco; }
-
-bool CSConsistMember::isReversed() { return _reversed; }
-
-void CSConsistMember::setNext(CSConsistMember *next) { _next = next; }
-
-CSConsistMember *CSConsistMember::getNext() { return _next; }
-
-CSConsistMember::~CSConsistMember() {}
-
 // CSConsist public methods
 
 CSConsist *CSConsist::_first = nullptr;
 
 CSConsist::CSConsist()
     : _firstMember(nullptr), _next(nullptr), _createdInCS(false), _deleteCSPending(false), _memberCount(0) {
-  _addToConsistList(this);
+  if (!_first) {
+    _first = this;
+  } else {
+    CSConsist *current = _first;
+    while (current->_next != nullptr) {
+      current = current->_next;
+    }
+    current->_next = this;
+  }
 }
 
 CSConsist *CSConsist::getFirst() { return _first; }
 
 CSConsist *CSConsist::getNext() { return _next; }
 
-void CSConsist::addMember(Loco *loco, bool reversed) {
-  if (!loco)
-    return;
-
-  if (isInConsist(loco))
-    return;
-
-  CSConsistMember *member = new CSConsistMember(loco, reversed);
-  _addToMemberList(member);
-}
-
 void CSConsist::addMember(int address, bool reversed) {
+  if (address < 0 || address > 10239)
+    return;
+
   if (isInConsist(address))
     return;
 
-  Loco *loco = Loco::getByAddress(address);
-  if (!loco)
-    loco = new Loco(address, LocoSource::LocoSourceEntry);
+  CSConsistMember *member = new CSConsistMember((uint16_t)address, (uint16_t)reversed);
 
-  if (!loco)
-    return;
-
-  CSConsistMember *member = new CSConsistMember(loco, reversed);
-  _addToMemberList(member);
-}
-
-void CSConsist::removeMember(Loco *loco) {
-  if (!loco)
-    return;
-
-  _removeFromMemberList(loco);
+  if (_firstMember == nullptr) {
+    _firstMember = member;
+  } else {
+    CSConsistMember *current = _firstMember;
+    while (current->next != nullptr) {
+      current = current->next;
+    }
+    current->next = member;
+  }
+  _memberCount++;
 }
 
 void CSConsist::removeMember(int address) {
-  CSConsistMember *member = getMember(address);
-  if (member)
-    _removeFromMemberList(member->getLoco());
+  CSConsistMember *previous = nullptr;
+  CSConsistMember *current = _firstMember;
+  while (current) {
+    if (current->address == (uint16_t)address) {
+      CSConsistMember *next = current->next;
+      if (previous) {
+        previous->next = next;
+      } else {
+        _firstMember = next;
+      }
+      delete current;
+      current = next;
+    } else {
+      previous = current;
+      current = current->next;
+    }
+  }
+
+  if (!_firstMember)
+    _firstMember = nullptr;
+
+  _memberCount--;
+  if (_memberCount < 0)
+    _memberCount = 0;
 }
 
 void CSConsist::removeAllMembers() {
   CSConsistMember *current = _firstMember;
   while (current != nullptr) {
-    CSConsistMember *next = current->getNext();
+    CSConsistMember *next = current->next;
     delete current;
     current = next;
   }
@@ -99,68 +102,22 @@ void CSConsist::removeAllMembers() {
   _memberCount = 0;
 }
 
-Loco *CSConsist::getLeadLoco() {
-  if (!_firstMember)
-    return nullptr;
-
-  return _firstMember->getLoco();
-}
-
 CSConsistMember *CSConsist::getFirstMember() { return _firstMember; }
 
-CSConsistMember *CSConsist::getMember(Loco *loco) {
-  if (!loco)
-    return nullptr;
-
-  for (CSConsistMember *member = _firstMember; member; member = member->getNext()) {
-    if (member->getLoco() == loco) {
-      return member;
-    }
-  }
-
-  return nullptr;
-}
-
 CSConsistMember *CSConsist::getMember(int address) {
-  for (CSConsistMember *member = _firstMember; member; member = member->getNext()) {
-    if (member->getLoco()->getAddress() == address) {
+  for (CSConsistMember *member = _firstMember; member; member = member->next) {
+    if (member->address == (uint16_t)address) {
       return member;
     }
   }
 
   return nullptr;
-}
-
-bool CSConsist::isInConsist(Loco *loco) {
-  if (!loco)
-    return false;
-
-  for (CSConsistMember *member = _firstMember; member; member = member->getNext()) {
-    if (member->getLoco() == loco) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 bool CSConsist::isInConsist(int address) {
-  for (CSConsistMember *member = _firstMember; member; member = member->getNext()) {
-    if (member->getLoco()->getAddress() == address) {
+  for (CSConsistMember *member = _firstMember; member; member = member->next) {
+    if (member->address == (uint16_t)address) {
       return true;
-    }
-  }
-
-  return false;
-}
-
-bool CSConsist::isReversed(Loco *loco) {
-  if (!loco)
-    return false;
-
-  for (CSConsistMember *member = _firstMember; member; member = member->getNext()) {
-    if (member->getLoco() == loco) {
-      return member->isReversed();
     }
   }
 
@@ -168,9 +125,9 @@ bool CSConsist::isReversed(Loco *loco) {
 }
 
 bool CSConsist::isReversed(int address) {
-  for (CSConsistMember *member = _firstMember; member; member = member->getNext()) {
-    if (member->getLoco()->getAddress() == address) {
-      return member->isReversed();
+  for (CSConsistMember *member = _firstMember; member; member = member->next) {
+    if (member->address == (uint16_t)address) {
+      return member->reversed;
     }
   }
 
@@ -197,7 +154,8 @@ void CSConsist::clearCSConsists() {
 
 CSConsist *CSConsist::getLeadLocoCSConsist(int address) {
   for (CSConsist *csConsist = _first; csConsist; csConsist = csConsist->getNext()) {
-    if (csConsist->getLeadLoco()->getAddress() == address) {
+    CSConsistMember *first = csConsist->getFirstMember();
+    if (first && first->address == (uint16_t)address) {
       return csConsist;
     }
   }
@@ -206,8 +164,8 @@ CSConsist *CSConsist::getLeadLocoCSConsist(int address) {
 
 CSConsist *CSConsist::getMemberCSConsist(int address) {
   for (CSConsist *csConsist = _first; csConsist; csConsist = csConsist->getNext()) {
-    for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->getNext()) {
-      if (member->getLoco()->getAddress() == address) {
+    for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->next) {
+      if (member->address == (uint16_t)address) {
         return csConsist;
       }
     }
@@ -235,67 +193,4 @@ CSConsist::~CSConsist() {
       current->_next = this->_next;
     }
   }
-}
-
-// CSConsist private methods
-
-void CSConsist::_addToConsistList(CSConsist *csConsist) {
-  if (!csConsist)
-    return;
-
-  if (!_first) {
-    _first = csConsist;
-  } else {
-    CSConsist *current = _first;
-    while (current->_next != nullptr) {
-      current = current->_next;
-    }
-    current->_next = csConsist;
-  }
-}
-
-void CSConsist::_addToMemberList(CSConsistMember *member) {
-  if (!member)
-    return;
-
-  if (_firstMember == nullptr) {
-    _firstMember = member;
-  } else {
-    CSConsistMember *current = _firstMember;
-    while (current->getNext() != nullptr) {
-      current = current->getNext();
-    }
-    current->setNext(member);
-  }
-  _memberCount++;
-}
-
-void CSConsist::_removeFromMemberList(Loco *loco) {
-  if (!loco)
-    return;
-
-  CSConsistMember *previous = nullptr;
-  CSConsistMember *current = _firstMember;
-  while (current) {
-    if (current->getLoco() == loco) {
-      CSConsistMember *next = current->getNext();
-      if (previous) {
-        previous->setNext(next);
-      } else {
-        _firstMember = next;
-      }
-      delete current;
-      current = next;
-    } else {
-      previous = current;
-      current = current->getNext();
-    }
-  }
-
-  if (!_firstMember)
-    _firstMember = nullptr;
-
-  _memberCount--;
-  if (_memberCount < 0)
-    _memberCount = 0;
 }

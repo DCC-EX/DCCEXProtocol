@@ -23,54 +23,22 @@
 #ifndef DCCEXCSCONSIST_H
 #define DCCEXCSCONSIST_H
 
-#include "DCCEXLoco.h"
+#include <Arduino.h>
 
 /**
- * @brief Class for managing members of a command station consist
+ * @brief Structure for a CSConsistMember
  */
-class CSConsistMember {
-public:
+struct CSConsistMember {
+  uint16_t address : 15;
+  uint16_t reversed : 1;
+  CSConsistMember *next;
+
   /**
    * @brief Construct a new CSConsistMember object
-   * @param loco Pointer to a Loco object in the consist
-   * @param reversed True if loco is reversed compared to lead loco, otherwise false
+   * @param address DCC address of the member
+   * @param reversed True if reversed to normal direction of travel
    */
-  CSConsistMember(Loco *loco, bool reversed);
-
-  /**
-   * @brief Get the Loco object associated with this member
-   * @return Loco* Pointer to the Loco object
-   */
-  Loco *getLoco();
-
-  /**
-   * @brief Test if this Loco is reversed compared to the lead loco
-   * @return true True if reversed compared to lead loco
-   * @return false If not reversed
-   */
-  bool isReversed();
-
-  /**
-   * @brief Set the Next object
-   * @param next Pointer to the next CSConsistMember object in the list
-   */
-  void setNext(CSConsistMember *next);
-
-  /**
-   * @brief Get the Next object
-   * @return CSConsistMember* Pointer to the next CSConsistMember object in the list
-   */
-  CSConsistMember *getNext();
-
-  /**
-   * @brief Destroy the CSConsistMember object
-   */
-  ~CSConsistMember();
-
-private:
-  Loco *_loco;
-  bool _reversed;
-  CSConsistMember *_next;
+  CSConsistMember(int address, bool reversed) : address(address), reversed(reversed), next(nullptr) {}
 };
 
 /**
@@ -105,7 +73,7 @@ public:
    * @param loco Pointer to the Loco object to be added
    * @param reversed True if loco is reversed to normal direction of travel
    */
-  void addMember(Loco *loco, bool reversed);
+  // void addMember(Loco *loco, bool reversed);
 
   /**
    * @brief Add a loco by address to the consist
@@ -114,12 +82,6 @@ public:
    * @param reversed True if loco is reversed to normal direction of travel
    */
   void addMember(int address, bool reversed);
-
-  /**
-   * @brief Remove a Loco from the consist
-   * @param loco Pointer to the Loco object to be removed
-   */
-  void removeMember(Loco *loco);
 
   /**
    * @brief Remove a loco by address from the consist
@@ -133,23 +95,10 @@ public:
   void removeAllMembers();
 
   /**
-   * @brief Get the Lead Loco object
-   * @return Loco* Pointer to the lead Loco object
-   */
-  Loco *getLeadLoco();
-
-  /**
    * @brief Get the First Member object
    * @return CSConsistMember* Pointer to the first CSConsistMember object
    */
   CSConsistMember *getFirstMember();
-
-  /**
-   * @brief Get the Member object
-   * @param loco Pointer to the Loco associated with the member
-   * @return CSConsistMember* Pointer to the CSConsistMember object
-   */
-  CSConsistMember *getMember(Loco *loco);
 
   /**
    * @brief Get the Member Loco object
@@ -159,28 +108,12 @@ public:
   CSConsistMember *getMember(int address);
 
   /**
-   * @brief Check if a Loco is in this consist
-   * @param loco Pointer to the Loco object
-   * @return true If Loco in consist
-   * @return false If not
-   */
-  bool isInConsist(Loco *loco);
-
-  /**
    * @brief Check by address if a loco is in this consist
    * @param address DCC address of the loco
    * @return true If loco address is in consist
    * @return false If not
    */
   bool isInConsist(int address);
-
-  /**
-   * @brief Check if the Loco is reversed in this consist
-   * @param loco Pointer to the Loco object
-   * @return true If loco is in consist and reversed
-   * @return false If loco is not in consist or is not reversed
-   */
-  bool isReversed(Loco *loco);
 
   /**
    * @brief Check by address if the loco is reversed in this consist
@@ -254,24 +187,6 @@ private:
   bool _deleteCSPending;
   int _memberCount;
   static CSConsist *_first;
-
-  /**
-   * @brief Helper to add CSConsist to the linked list
-   * @param csConsist Pointer to the CSConsist to add
-   */
-  void _addToConsistList(CSConsist *csConsist);
-
-  /**
-   * @brief Helper to add to the CSConsistMember list
-   * @param member CSConsistMember to add
-   */
-  void _addToMemberList(CSConsistMember *member);
-
-  /**
-   * @brief Helper to remove from the CSConsistMember list
-   * @param member Loco to remove
-   */
-  void _removeFromMemberList(Loco *loco);
 };
 
 #endif // DCCEXCSCONSIST_H
