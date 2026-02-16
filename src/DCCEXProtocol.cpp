@@ -245,10 +245,11 @@ void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction
 }
 
 void DCCEXProtocol::setThrottle(CSConsist *csConsist, int speed, Direction direction) {
-  if (!csConsist) return;
+  if (!csConsist)
+    return;
 
-  if (csConsist->isDeleteCSPending()) return;
-
+  if (csConsist->isDeleteCSPending())
+    return;
 }
 
 void DCCEXProtocol::functionOn(Loco *loco, int function) {
@@ -839,11 +840,33 @@ void DCCEXProtocol::_processCSConsist() { // <^ leadLoco [-]address [-]address>
     return;
 
   int locoCount = DCCEXInbound::getParameterCount();
-  CSConsist *csConsist = new CSConsist();
+  unsigned int leadLoco = abs(DCCEXInbound::getNumber(0));
 
-  for (int i = 0; i < locoCount; i++) {
-    unsigned int address = abs(DCCEXInbound::getNumber(i));
-    bool reversed = (DCCEXInbound::getNumber(i) < 0);
+  // Should never receive less than 2 locos but just in case
+  if (locoCount < 2)
+    return;
+
+  // Check if there is already a consist with this lead loco
+  CSConsist *csConsist = CSConsist::getLeadLocoCSConsist(leadLoco);
+
+  // If there is, clean it up and build with the CS list instead
+  if (csConsist != nullptr) {
+    csConsist->removeAllMembers();
+  } else {
+    csConsist = new CSConsist();
+  }
+  _buildCSConsist(csConsist, locoCount);
+}
+
+void DCCEXProtocol::_buildCSConsist(CSConsist *csConsist, int memberCount) {
+  for (int i = 0; i < memberCount; i++) {
+    int member = DCCEXInbound::getNumber(i);
+    unsigned int address = abs(member);
+    bool reversed = (member < 0);
+    // Ensure members aren't in any other CSConsist objects
+    while (CSConsist *checkCSConsist = CSConsist::getMemberCSConsist(address)) {
+      checkCSConsist->removeMember(address);
+    }
     csConsist->addMember(address, reversed);
   }
 }

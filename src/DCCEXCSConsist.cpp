@@ -40,7 +40,8 @@ CSConsistMember::~CSConsistMember() {}
 
 CSConsist *CSConsist::_first = nullptr;
 
-CSConsist::CSConsist() : _firstMember(nullptr), _next(nullptr), _createdInCS(false), _deleteCSPending(false) {
+CSConsist::CSConsist()
+    : _firstMember(nullptr), _next(nullptr), _createdInCS(false), _deleteCSPending(false), _memberCount(0) {
   _addToConsistList(this);
 }
 
@@ -85,6 +86,17 @@ void CSConsist::removeMember(int address) {
   CSConsistMember *member = getMember(address);
   if (member)
     _removeFromMemberList(member->getLoco());
+}
+
+void CSConsist::removeAllMembers() {
+  CSConsistMember *current = _firstMember;
+  while (current != nullptr) {
+    CSConsistMember *next = current->getNext();
+    delete current;
+    current = next;
+  }
+  _firstMember = nullptr;
+  _memberCount = 0;
 }
 
 Loco *CSConsist::getLeadLoco() {
@@ -173,17 +185,39 @@ void CSConsist::setDeleteCSPending(bool pending) { _deleteCSPending = pending; }
 
 bool CSConsist::isDeleteCSPending() { return _deleteCSPending; }
 
-bool CSConsist::isValid() { return false; }
+bool CSConsist::isValid() { return (_memberCount > 1); }
+
+void CSConsist::clearCSConsists() {
+  if (!_first)
+    return;
+
+  while (_first != nullptr)
+    delete _first;
+}
+
+CSConsist *CSConsist::getLeadLocoCSConsist(int address) {
+  for (CSConsist *csConsist = _first; csConsist; csConsist = csConsist->getNext()) {
+    if (csConsist->getLeadLoco()->getAddress() == address) {
+      return csConsist;
+    }
+  }
+  return nullptr;
+}
+
+CSConsist *CSConsist::getMemberCSConsist(int address) {
+  for (CSConsist *csConsist = _first; csConsist; csConsist = csConsist->getNext()) {
+    for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->getNext()) {
+      if (member->getLoco()->getAddress() == address) {
+        return csConsist;
+      }
+    }
+  }
+  return nullptr;
+}
 
 CSConsist::~CSConsist() {
   // Clean up the member list first
-  CSConsistMember *current = _firstMember;
-  while (current != nullptr) {
-    CSConsistMember *next = current->getNext();
-    delete current;
-    current = next;
-  }
-  _firstMember = nullptr;
+  removeAllMembers();
 
   // If there's no CSConsist list, no need to clean up
   if (!_first)
@@ -233,6 +267,7 @@ void CSConsist::_addToMemberList(CSConsistMember *member) {
     }
     current->setNext(member);
   }
+  _memberCount++;
 }
 
 void CSConsist::_removeFromMemberList(Loco *loco) {
@@ -259,4 +294,8 @@ void CSConsist::_removeFromMemberList(Loco *loco) {
 
   if (!_firstMember)
     _firstMember = nullptr;
+
+  _memberCount--;
+  if (_memberCount < 0)
+    _memberCount = 0;
 }

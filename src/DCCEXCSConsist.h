@@ -109,6 +109,7 @@ public:
 
   /**
    * @brief Add a loco by address to the consist
+   * @details This method attempts to find an existing Loco object and will use that instead of creating a new object.
    * @param address DCC address of the loco to be added
    * @param reversed True if loco is reversed to normal direction of travel
    */
@@ -125,6 +126,11 @@ public:
    * @param address DCC address of the loco to be removed
    */
   void removeMember(int address);
+
+  /**
+   * @brief Remove all CSConsistMember objects from this consist
+   */
+  void removeAllMembers();
 
   /**
    * @brief Get the Lead Loco object
@@ -218,6 +224,25 @@ public:
   bool isValid();
 
   /**
+   * @brief Clear all CSConsists from the list
+   */
+  static void clearCSConsists();
+
+  /**
+   * @brief Get the CSConsist the provided address is lead loco of
+   * @param address DCC address of the lead loco to check for
+   * @return CSConsist* Pointer to the CSConsist object, or nullptr if none found
+   */
+  static CSConsist *getLeadLocoCSConsist(int address);
+
+  /**
+   * @brief Get the CSConsist the provided address is a member of
+   * @param address DCC address of the member loco to check for
+   * @return CSConsist* Pointer to the CSConsist object, or nullptr if none found
+   */
+  static CSConsist *getMemberCSConsist(int address);
+
+  /**
    * @brief Destroy the CSConsist object
    */
   ~CSConsist();
@@ -227,6 +252,7 @@ private:
   CSConsist *_next;
   bool _createdInCS;
   bool _deleteCSPending;
+  int _memberCount;
   static CSConsist *_first;
 
   /**

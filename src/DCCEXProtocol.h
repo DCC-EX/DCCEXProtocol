@@ -604,6 +604,7 @@ private:
   void _processReadResponse();
   void _processPendingUserChanges();
   void _processCSConsist();
+  void _buildCSConsist(CSConsist *csConsist, int memberCount);
 
   // Roster methods
   void _getRoster();
