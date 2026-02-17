@@ -43,6 +43,16 @@ Version information:
         - Add support for command station consists in favour of the current in-throttle consists
         - DEPRECATE existing in-throttle consists, these will be REMOVED in 2.0.0:
         - ALL current Consist METHODS and CLASSES are now deprecated
+        - New CSConsist methods:
+        - Accessible via csConsists->getFirst()
+        - requestCSConsists()
+        - createCSConsist(int leadLoco, bool reversed)
+        - addCSConsistMember(CSConsist *csConsist, int address, bool reversed)
+        - removeCSConsistMember(CSConsist *csConsist, int address)
+        - deleteCSConsist(int leadLoco)
+        - deleteCSConsist(CSConsist *csConsist)
+        - clearCSConsists()
+        - setThrottle(CSConsist *csConsist, int speed, Direction direction)
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

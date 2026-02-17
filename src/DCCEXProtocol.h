@@ -381,45 +381,47 @@ public:
   // CSConsist methods
 
   /**
-   * @brief
+   * @brief Request the list of CSConsists from the command station, will create CSConsist objects
    */
   void requestCSConsists();
 
   /**
-   * @brief 
-   * @param leadLoco 
-   * @param reversed 
-   * @return CSConsist* 
+   * @brief Create a CSConsist
+   * @param leadLoco DCC address of the lead loco
+   * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
+   * @return CSConsist* Pointer to the created CSConsist object
    */
   CSConsist *createCSConsist(int leadLoco, bool reversed);
 
   /**
-   * @brief
-   * @param address
-   * @param reversed
+   * @brief Add a member to the CSConsist
+   * @param address DCC address of the member
+   * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
+   * @return bool True if added successfully, otherwise false
    */
-  void addCSConsistMember(CSConsist *csConsist, int address, bool reversed);
+  bool addCSConsistMember(CSConsist *csConsist, int address, bool reversed);
 
   /**
-   * @brief
-   * @param address
+   * @brief Remove a member from the CSConsist
+   * @param address DCC address of the member
+   * @return bool True if removed successfully, otherwise false
    */
-  void removeCSConsistMember(CSConsist *csConsist, int address);
+  bool removeCSConsistMember(CSConsist *csConsist, int address);
 
   /**
-   * @brief
-   * @param address
+   * @brief Delete the CSConsist using the lead loco address
+   * @param address DCC address of the lead loco
    */
   void deleteCSConsist(int leadLoco);
 
   /**
-   * @brief
-   * @param csConsist
+   * @brief Delete the CSConsist
+   * @param csConsist Pointer to the CSConsist object to delete
    */
   void deleteCSConsist(CSConsist *csConsist);
 
   /**
-   * @brief 
+   * @brief Clears all CSConsist objects
    */
   void clearCSConsists();
 
@@ -623,20 +625,21 @@ public:
 
   // Attributes
 
-  /// @brief Linked list of Loco objects to form the roster
+  /// @brief Linked list of Loco objects to form the roster, call roster->getFirst()
   Loco *roster = nullptr;
 
-  /// @brief Linked list of Turnout objects to form the turnout list
+  /// @brief Linked list of Turnout objects to form the turnout list, call turnouts->getFirst()
   Turnout *turnouts = nullptr;
 
-  /// @brief Linked list of Route objects to form the list of routes and automations
+  /// @brief Linked list of Route objects to form the list of routes and automations, call routes->getFirst()
   Route *routes = nullptr;
 
-  /// @brief Linked list of Turntable objects to form the list of turntables
+  /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
 
   /**
-   * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class
+   * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class, call
+   * csConsists->getFirst()
    */
   CSConsist *csConsists = nullptr;
 
@@ -662,6 +665,8 @@ private:
   void _processPendingUserChanges();
   void _processCSConsist();
   void _buildCSConsist(CSConsist *csConsist, int memberCount);
+  void _sendCreateCSConsist(CSConsist *csConsist);
+  void _sendDeleteCSConsist(CSConsist *csConsist);
 
   // Roster methods
   void _getRoster();

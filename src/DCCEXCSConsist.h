@@ -124,37 +124,17 @@ public:
   bool isReversed(int address);
 
   /**
-   * @brief Set the flag for this consist's state in the command station
-   * @param created True if it has been created in the command station, otherwise false
-   */
-  void setCreatedInCS(bool created);
-
-  /**
-   * @brief Check if this consist has been created in the command station
-   * @return true If it is created
-   * @return false If it is not
-   */
-  bool isCreatedInCS();
-
-  /**
-   * @brief Set the flag if this consist needs to be deleted in the command station
-   * @param pending True if it needs to be deleted, otherwise false
-   */
-  void setDeleteCSPending(bool pending);
-
-  /**
-   * @brief Check if this consist needs to be deleted in the command station
-   * @return true If it needs to be deleted
-   * @return false If it does not
-   */
-  bool isDeleteCSPending();
-
-  /**
    * @brief Check if this is a valid consist with more than 1 member
    * @return true Valid CSConsist
    * @return false Invalid (less than 2 members)
    */
   bool isValid();
+
+  /**
+   * @brief Get the number of members in the CSConsist
+   * @return int Member count
+   */
+  int getMemberCount();
 
   /**
    * @brief Clear all CSConsists from the list
@@ -183,8 +163,6 @@ public:
 private:
   CSConsistMember *_firstMember;
   CSConsist *_next;
-  bool _createdInCS;
-  bool _deleteCSPending;
   int _memberCount;
   static CSConsist *_first;
 };

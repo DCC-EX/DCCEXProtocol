@@ -38,8 +38,6 @@ TEST_F(CSConsistTests, TestReceivingConsistList) {
 
   // Check members and attributes
   CSConsist *csConsist = CSConsist::getFirst();
-  EXPECT_TRUE(csConsist->isCreatedInCS());
-  EXPECT_FALSE(csConsist->isDeleteCSPending());
   EXPECT_TRUE(csConsist->isValid());
   CSConsistMember *first = csConsist->getFirstMember();
   ASSERT_NE(first, nullptr);
@@ -85,8 +83,6 @@ TEST_F(CSConsistTests, TestTwoLocoConsist) {
 
   // Check members and attributes
   CSConsist *csConsist = CSConsist::getFirst();
-  EXPECT_TRUE(csConsist->isCreatedInCS());
-  EXPECT_FALSE(csConsist->isDeleteCSPending());
   EXPECT_TRUE(csConsist->isValid());
   ASSERT_NE(csConsist->getFirstMember(), nullptr);
   CSConsistMember *first = csConsist->getFirstMember();
@@ -114,8 +110,6 @@ TEST_F(CSConsistTests, TestReversedLeadLoco) {
 
   // Check members and attributes
   CSConsist *csConsist = CSConsist::getFirst();
-  EXPECT_TRUE(csConsist->isCreatedInCS());
-  EXPECT_FALSE(csConsist->isDeleteCSPending());
   EXPECT_TRUE(csConsist->isValid());
   ASSERT_NE(csConsist->getFirstMember(), nullptr);
   CSConsistMember *first = csConsist->getFirstMember();
@@ -247,13 +241,9 @@ TEST_F(CSConsistTests, TestMemberShuffles) {
 
   // Verify there are still only two CSConsists with correct members
   ASSERT_EQ(CSConsist::getFirst(), csConsist1);
-  EXPECT_TRUE(csConsist1->isCreatedInCS());
-  EXPECT_FALSE(csConsist1->isDeleteCSPending());
   EXPECT_TRUE(csConsist1->isValid());
   EXPECT_EQ(CSConsist::getFirst()->getNext(), csConsist2);
   EXPECT_EQ(csConsist2->getNext(), nullptr);
-  EXPECT_FALSE(csConsist2->isCreatedInCS());
-  EXPECT_TRUE(csConsist2->isDeleteCSPending());
   EXPECT_FALSE(csConsist2->isValid());
   EXPECT_EQ(CSConsist::getLeadLocoCSConsist(10), csConsist1);
   EXPECT_EQ(CSConsist::getLeadLocoCSConsist(40), csConsist2);

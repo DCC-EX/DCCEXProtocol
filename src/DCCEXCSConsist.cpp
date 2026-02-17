@@ -26,8 +26,7 @@
 
 CSConsist *CSConsist::_first = nullptr;
 
-CSConsist::CSConsist()
-    : _firstMember(nullptr), _next(nullptr), _createdInCS(false), _deleteCSPending(false), _memberCount(0) {
+CSConsist::CSConsist() : _firstMember(nullptr), _next(nullptr), _memberCount(0) {
   if (!_first) {
     _first = this;
   } else {
@@ -134,15 +133,9 @@ bool CSConsist::isReversed(int address) {
   return false;
 }
 
-void CSConsist::setCreatedInCS(bool created) { _createdInCS = created; }
-
-bool CSConsist::isCreatedInCS() { return _createdInCS; }
-
-void CSConsist::setDeleteCSPending(bool pending) { _deleteCSPending = pending; }
-
-bool CSConsist::isDeleteCSPending() { return _deleteCSPending; }
-
 bool CSConsist::isValid() { return (_memberCount > 1); }
+
+int CSConsist::getMemberCount() { return _memberCount; }
 
 void CSConsist::clearCSConsists() {
   if (!_first)

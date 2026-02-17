@@ -63,9 +63,8 @@ TEST_F(CSConsistTests, TestCreateConsistWithAddress) {
   EXPECT_FALSE(csConsist->getFirstMember()->reversed);
 
   // Created in CS, pending deletion, and valid flags should be false
-  EXPECT_FALSE(csConsist->isCreatedInCS());
-  EXPECT_FALSE(csConsist->isDeleteCSPending());
   EXPECT_FALSE(csConsist->isValid());
+  EXPECT_EQ(csConsist->getMemberCount(), 1);
 
   // Clean up
   delete csConsist;
@@ -87,6 +86,7 @@ TEST_F(CSConsistTests, TestBuildConsistWithAddresses) {
   csConsist->addMember(24, true);
   csConsist->addMember(3, false);
   ASSERT_TRUE(csConsist->isValid());
+  EXPECT_EQ(csConsist->getMemberCount(), 3);
 
   // Now validate the expected state
   EXPECT_TRUE(csConsist->isInConsist(42));
@@ -156,6 +156,7 @@ TEST_F(CSConsistTests, TestRemoveMemberByAddress) {
   EXPECT_EQ(csConsist->getMember(24), nullptr);
   EXPECT_EQ(csConsist->getFirstMember()->next->address, 3);
   EXPECT_TRUE(csConsist->isValid());
+  EXPECT_EQ(csConsist->getMemberCount(), 2);
 }
 
 /**
@@ -188,6 +189,7 @@ TEST_F(CSConsistTests, TestRemoveAllMembersManually) {
   ASSERT_FALSE(csConsist->isInConsist(42));
   EXPECT_EQ(csConsist->getFirstMember(), nullptr);
   EXPECT_FALSE(csConsist->isValid());
+  EXPECT_EQ(csConsist->getMemberCount(), 0);
 }
 
 /**
@@ -207,11 +209,7 @@ TEST_F(CSConsistTests, TestAddDuplicates) {
   EXPECT_FALSE(csConsist->isReversed(3));
 
   // Count all members, more than 3 is a fail
-  int memberCount = 0;
-  for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->next) {
-    memberCount++;
-  }
-  EXPECT_EQ(memberCount, 3);
+  EXPECT_EQ(csConsist->getMemberCount(), 3);
 }
 
 /**
@@ -387,4 +385,5 @@ TEST_F(CSConsistTests, TestRemoveAllMembers) {
   csConsist->removeAllMembers();
   ASSERT_FALSE(csConsist->isValid());
   ASSERT_EQ(csConsist->getFirstMember(), nullptr);
+  EXPECT_EQ(csConsist->getMemberCount(), 0);
 }
