@@ -244,6 +244,21 @@ void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction
   }
 }
 
+void DCCEXProtocol::setThrottle(CSConsist *csConsist, int speed, Direction direction) {
+  // Can only proceed if consist provided and is valid
+  if (!csConsist || !csConsist->isValid())
+    return;
+
+  int leadLoco = csConsist->getFirstMember()->address;
+  // Attempt to get an existing Loco for lead address
+  Loco *loco = Loco::getByAddress(leadLoco);
+
+  if (loco == nullptr)
+    loco = new Loco(leadLoco, LocoSource::LocoSourceEntry);
+
+  setThrottle(loco, speed, direction);
+}
+
 void DCCEXProtocol::functionOn(Loco *loco, int function) {
   int address = loco->getAddress();
   if (address >= 0) {
@@ -315,6 +330,98 @@ void DCCEXProtocol::refreshRoster() {
   _receivedRoster = false;
   _rosterRequested = false;
 }
+
+// CSConsist methods
+
+void DCCEXProtocol::requestCSConsists() { _sendOpcode('^'); }
+
+CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed) {
+  if (leadLoco < 1 || leadLoco > 10239)
+    return nullptr;
+
+  // First check if one already exists
+  CSConsist *csConsist = CSConsist::getLeadLocoCSConsist(leadLoco);
+  if (csConsist != nullptr)
+    return csConsist;
+
+  // Ensure the lead loco isn't in any other consists, if it is then fail
+  if (CSConsist::getMemberCSConsist(leadLoco))
+    return nullptr;
+
+  csConsist = new CSConsist();
+  csConsist->addMember(leadLoco, reversed);
+
+  return csConsist;
+}
+
+bool DCCEXProtocol::addCSConsistMember(CSConsist *csConsist, int address, bool reversed) {
+  // Validate provided parameters
+  if (csConsist == nullptr || address < 1 || address > 10239)
+    return false;
+
+  // If address is in any other consist, fail
+  if (CSConsist::getMemberCSConsist(address) != nullptr)
+    return false;
+
+  // Add the new member
+  csConsist->addMember(address, reversed);
+  if (csConsist->isValid()) {
+    // If it's valid, build the command
+    _sendCreateCSConsist(csConsist);
+    return true;
+  } else {
+    // Otherwise fail
+    return false;
+  }
+}
+
+bool DCCEXProtocol::removeCSConsistMember(CSConsist *csConsist, int address) {
+  // Validate parameters
+  if (csConsist == nullptr || address < 1 || address > 10239)
+    return false;
+
+  // If the consist has no members, delete it
+  if (csConsist->getMemberCount() == 0) {
+    delete csConsist;
+    return false;
+  }
+
+  // Don't remove if it's not in there to start with
+  if (!csConsist->isInConsist(address))
+    return false;
+
+  // Remove the member
+  csConsist->removeMember(address);
+
+  if (csConsist->isValid()) {
+    // If valid, send the updated consist
+    _sendCreateCSConsist(csConsist);
+    return true;
+  } else {
+    // Otherwise delete the CSConsist as it is no longer required
+    _sendDeleteCSConsist(csConsist);
+    delete csConsist;
+    return true;
+  }
+}
+
+void DCCEXProtocol::deleteCSConsist(int leadLoco) {
+  CSConsist *csConsist = CSConsist::getLeadLocoCSConsist(leadLoco);
+
+  if (csConsist == nullptr)
+    return;
+
+  delete csConsist;
+}
+
+void DCCEXProtocol::deleteCSConsist(CSConsist *csConsist) {
+  if (!csConsist)
+    return;
+
+  delete csConsist;
+}
+
+void DCCEXProtocol::clearCSConsists() { CSConsist::clearCSConsists(); }
 
 // Turnout methods
 
@@ -662,6 +769,10 @@ void DCCEXProtocol::_processCommand() {
     }
     break;
 
+  case '^': // Receive CSConsist
+    _processCSConsist();
+    break;
+
   default:
     break;
   }
@@ -821,6 +932,68 @@ void DCCEXProtocol::_processPendingUserChanges() {
     _setLocos(Loco::getFirst());
     _setLocos(Loco::getFirstLocalLoco());
   }
+}
+
+void DCCEXProtocol::_processCSConsist() { // <^ leadLoco [-]address [-]address>
+  if (DCCEXInbound::isTextParameter(0))
+    return;
+
+  int locoCount = DCCEXInbound::getParameterCount();
+  unsigned int leadLoco = abs(DCCEXInbound::getNumber(0));
+
+  // Should never receive less than 2 locos but just in case
+  if (locoCount < 2)
+    return;
+
+  // Check if there is already a consist with this lead loco
+  CSConsist *csConsist = CSConsist::getLeadLocoCSConsist(leadLoco);
+
+  // If there is, clean it up and build with the CS list instead
+  if (csConsist != nullptr) {
+    csConsist->removeAllMembers();
+  } else {
+    csConsist = new CSConsist();
+  }
+  _buildCSConsist(csConsist, locoCount);
+  if (_delegate)
+    _delegate->receivedCSConsist(leadLoco, csConsist);
+}
+
+void DCCEXProtocol::_buildCSConsist(CSConsist *csConsist, int memberCount) {
+  for (int i = 0; i < memberCount; i++) {
+    int member = DCCEXInbound::getNumber(i);
+    unsigned int address = abs(member);
+    bool reversed = (member < 0);
+    // Ensure members aren't in any other CSConsist objects
+    while (CSConsist *checkCSConsist = CSConsist::getMemberCSConsist(address)) {
+      checkCSConsist->removeMember(address);
+    }
+    csConsist->addMember(address, reversed);
+  }
+}
+
+void DCCEXProtocol::_sendCreateCSConsist(CSConsist *csConsist) {
+  _cmdStart('^');
+  _cmdAppend(' ');
+  for (CSConsistMember *member = csConsist->getFirstMember(); member; member = member->next) {
+    // Leading - says reversed
+    if (member->reversed)
+      _cmdAppend('-');
+    _cmdAppend(member->address);
+    // If not the last in the least, add a space separator
+    if (member->next != nullptr)
+      _cmdAppend(' ');
+  }
+  // Send it
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendDeleteCSConsist(CSConsist *csConsist) {
+  // Can't delete it if it doesn't have a lead loco
+  if (csConsist->getMemberCount() == 0)
+    return;
+
+  _sendOneParam('^', csConsist->getFirstMember()->address);
 }
 
 // Roster methods

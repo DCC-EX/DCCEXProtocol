@@ -38,6 +38,7 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #ifndef DCCEXPROTOCOL_H
 #define DCCEXPROTOCOL_H
 
+#include "DCCEXCSConsist.h"
 #include "DCCEXInbound.h"
 #include "DCCEXLoco.h"
 #include "DCCEXProtocolVersion.h"
@@ -189,6 +190,13 @@ public:
   /// @param message Message to display on the screen/row
   virtual void receivedScreenUpdate(int screen, int row, char *message) {}
 
+  /**
+   * @brief Notify when a CS consist has been received
+   * @param leadLoco DCC address of the lead loco for the consist
+   * @param csConsist Pointer to the CSConsist object controlled by the lead loco
+   */
+  virtual void receivedCSConsist(int leadLoco, CSConsist *csConsist) {}
+
   /// @brief Default destructor for DCCEXProtocolDelegate
   virtual ~DCCEXProtocolDelegate() = default;
 };
@@ -288,11 +296,21 @@ public:
   /// @param direction Direction (Forward|Reverse)
   void setThrottle(Loco *loco, int speed, Direction direction);
 
-  /// @brief Set all locos in the provided consist to the specified speed and direction
+  /// @brief DEPRECATED Set all locos in the provided consist to the specified speed and direction
   /// @param consist Pointer to a consist object
   /// @param speed Speed (0 - 126)
   /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
   void setThrottle(Consist *consist, int speed, Direction direction);
+
+  /**
+   * @brief Set the provided command station consist to the specified speed and direction
+   * @details If this consist does not exist, it will be created first, and if it is not valid, this command will be
+   * ignored.
+   * @param csConsist Pointer to the CSConsist object
+   * @param speed Speed (0 - 126)
+   * @param direction Direction (Forward|Reverse)
+   */
+  void setThrottle(CSConsist *csConsist, int speed, Direction direction);
 
   /// @brief Turn the specified function on for the provided loco
   /// @param loco Pointer to a loco object
@@ -310,17 +328,17 @@ public:
   /// @return true = on, false = off
   bool isFunctionOn(Loco *loco, int function);
 
-  /// @brief Turn the specified function on for the provided consist
+  /// @brief DEPRECATED Turn the specified function on for the provided consist
   /// @param consist Pointer to a consist object
   /// @param function Function number (0 - 27)
   void functionOn(Consist *consist, int function);
 
-  /// @brief Turn the specified function off for the provided consist
+  /// @brief DEPRECATED Turn the specified function off for the provided consist
   /// @param consist Pointer to a consist object
   /// @param function Function number (0 - 27)
   void functionOff(Consist *consist, int function);
 
-  /// @brief Test if the specified function for the provided consist is on (Checks first loco)
+  /// @brief DEPRECATED Test if the specified function for the provided consist is on (Checks first loco)
   /// @param consist Pointer to a consist object
   /// @param function Function number to test (0 - 27)
   /// @return true = on, false = off
@@ -359,6 +377,53 @@ public:
 
   /// @brief Clear the roster and request again
   void refreshRoster();
+
+  // CSConsist methods
+
+  /**
+   * @brief Request the list of CSConsists from the command station, will create CSConsist objects
+   */
+  void requestCSConsists();
+
+  /**
+   * @brief Create a CSConsist
+   * @param leadLoco DCC address of the lead loco
+   * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
+   * @return CSConsist* Pointer to the created CSConsist object
+   */
+  CSConsist *createCSConsist(int leadLoco, bool reversed);
+
+  /**
+   * @brief Add a member to the CSConsist
+   * @param address DCC address of the member
+   * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
+   * @return bool True if added successfully, otherwise false
+   */
+  bool addCSConsistMember(CSConsist *csConsist, int address, bool reversed);
+
+  /**
+   * @brief Remove a member from the CSConsist
+   * @param address DCC address of the member
+   * @return bool True if removed successfully, otherwise false
+   */
+  bool removeCSConsistMember(CSConsist *csConsist, int address);
+
+  /**
+   * @brief Delete the CSConsist using the lead loco address
+   * @param address DCC address of the lead loco
+   */
+  void deleteCSConsist(int leadLoco);
+
+  /**
+   * @brief Delete the CSConsist
+   * @param csConsist Pointer to the CSConsist object to delete
+   */
+  void deleteCSConsist(CSConsist *csConsist);
+
+  /**
+   * @brief Clears all CSConsist objects
+   */
+  void clearCSConsists();
 
   // Turnout methods
 
@@ -560,17 +625,23 @@ public:
 
   // Attributes
 
-  /// @brief Linked list of Loco objects to form the roster
+  /// @brief Linked list of Loco objects to form the roster, call roster->getFirst()
   Loco *roster = nullptr;
 
-  /// @brief Linked list of Turnout objects to form the turnout list
+  /// @brief Linked list of Turnout objects to form the turnout list, call turnouts->getFirst()
   Turnout *turnouts = nullptr;
 
-  /// @brief Linked list of Route objects to form the list of routes and automations
+  /// @brief Linked list of Route objects to form the list of routes and automations, call routes->getFirst()
   Route *routes = nullptr;
 
-  /// @brief Linked list of Turntable objects to form the list of turntables
+  /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
+
+  /**
+   * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class, call
+   * csConsists->getFirst()
+   */
+  CSConsist *csConsists = nullptr;
 
 private:
   // Methods
@@ -592,6 +663,10 @@ private:
   void _updateLocos(Loco *firstLoco, int address, int speedByte, Direction direction, int functionMap);
   void _processReadResponse();
   void _processPendingUserChanges();
+  void _processCSConsist();
+  void _buildCSConsist(CSConsist *csConsist, int memberCount);
+  void _sendCreateCSConsist(CSConsist *csConsist);
+  void _sendDeleteCSConsist(CSConsist *csConsist);
 
   // Roster methods
   void _getRoster();

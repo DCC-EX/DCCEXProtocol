@@ -53,4 +53,7 @@ public:
 
   // Notify when a loco address is written on the programming track
   MOCK_METHOD(void, receivedWriteLoco, (int), (override));
+
+  // Notify when a CSConsist has been received
+  MOCK_METHOD(void, receivedCSConsist, (int, CSConsist *), (override));
 };
