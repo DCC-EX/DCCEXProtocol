@@ -53,8 +53,9 @@ class CSConsist {
 public:
   /**
    * @brief Construct a new CSConsist object
+   * @param replicateFunctions Replicate function control to all member locos (default false)
    */
-  CSConsist();
+  CSConsist(bool replicateFunctions = false);
 
   /**
    * @brief Get the First object
@@ -156,15 +157,44 @@ public:
   static CSConsist *getMemberCSConsist(int address);
 
   /**
+   * @brief Set the default behaviour for function replication for all new CSConsist objects
+   * @details Call this method once before creating any CSConsist objects to ensure all inherit this behaviour.
+   * @param replicate True if all newly created CSConsist objects should replicate functions
+   */
+  static void setAlwaysReplicateFunctions(bool replicate);
+
+  /**
+   * @brief Get the Always Replicate Functions setting
+   * @return true If static/global flag enabled
+   * @return false If not
+   */
+  bool getAlwaysReplicateFunctions();
+
+  /**
+   * @brief Set the Replicate Functions flag for this CSConsist
+   * @param replicate True if function control should apply to all members
+   */
+  void setReplicateFunctions(bool replicate);
+
+  /**
+   * @brief Get the Replicate Functions flag for this CSConsist
+   * @return true True if function control should apply to all members
+   * @return false False if not
+   */
+  bool getReplicateFunctions();
+
+  /**
    * @brief Destroy the CSConsist object
    */
   ~CSConsist();
 
 private:
+  bool _replicateFunctions;
   CSConsistMember *_firstMember;
   CSConsist *_next;
   int _memberCount;
   static CSConsist *_first;
+  static bool _alwaysReplicateFunctions;
 };
 
 #endif // DCCEXCSCONSIST_H
