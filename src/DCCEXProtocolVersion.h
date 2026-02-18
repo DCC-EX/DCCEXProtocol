@@ -53,6 +53,13 @@ Version information:
         - deleteCSConsist(CSConsist *csConsist)
         - clearCSConsists()
         - setThrottle(CSConsist *csConsist, int speed, Direction direction)
+        - DCCEXProtocolDelegate new method receivedCSConsist(int leadLoco, CSConsist *csConsist)
+        - Add support for momentum, new methods:
+        - setMomentumAlgorithm(MomentumAlgorithm algorithm)
+        - setMomentum(int address, int momentum)
+        - setMomentum(Loco *loco, int momentum)
+        - setMomentum(int address, int accelerating, int braking)
+        - setMomentum(Loco *loco, int accelerating, int braking)
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

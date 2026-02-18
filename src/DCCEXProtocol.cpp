@@ -423,6 +423,46 @@ void DCCEXProtocol::deleteCSConsist(CSConsist *csConsist) {
 
 void DCCEXProtocol::clearCSConsists() { CSConsist::clearCSConsists(); }
 
+// Momentum methods
+
+void DCCEXProtocol::setMomentumAlgorithm(MomentumAlgorithm algorithm) {
+  // Algorithm lookup table
+  static const char *const ALGORITHMS[] = {"LINEAR", "POWER"};
+
+  // Check out of bounds before sending command
+  if (algorithm >= 0 && algorithm < (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]))) {
+    _sendOneParam('m', ALGORITHMS[algorithm]);
+  }
+}
+
+void DCCEXProtocol::setMomentum(int address, int momentum) {
+  if (address < 1 || address > 10239)
+    return;
+
+  _sendTwoParams('m', address, momentum);
+}
+
+void DCCEXProtocol::setMomentum(Loco *loco, int momentum) {
+  if (!loco)
+    return;
+
+  _sendTwoParams('m', loco->getAddress(), momentum);
+}
+
+void DCCEXProtocol::setMomentum(int address, int accelerating, int braking) {
+  if (address < 1 || address > 10239)
+    return;
+
+  _sendThreeParams('m', address, accelerating, braking);
+}
+
+void DCCEXProtocol::setMomentum(Loco *loco, int accelerating, int braking) {
+  if (!loco)
+    return;
+
+  _sendThreeParams('m', loco->getAddress(), accelerating, braking);
+}
+
 // Turnout methods
 
 int DCCEXProtocol::getTurnoutCount() { return _turnoutCount; }
