@@ -118,3 +118,41 @@ TEST_F(LocoTests, TestReceiveUpdateLoco0DoesNotUpdate) {
   // Check
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test various speedbyte values calculate correctly
+ */
+TEST_F(LocoTests, TestSpeedByteCalculation) {
+  // Forward normal stop 128 = 0 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 128 0>";
+  _dccexProtocol.check();
+  // Forward full speed 255 = 126 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 126, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 255 0>";
+  _dccexProtocol.check();
+  // Forward mid speed 191 = 62 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 62, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 191 0>";
+  _dccexProtocol.check();
+  // Forward e stop 129 = 0 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 129 0>";
+  _dccexProtocol.check();
+  // Reverse normal stop 0 = 0 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 0 0>";
+  _dccexProtocol.check();
+  // Reverse full speed 127 = 126 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 126, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 127 0>";
+  _dccexProtocol.check();
+  // Reverse mid speed 63 = 62 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 62, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 63 0>";
+  _dccexProtocol.check();
+  // Reverse e stop 1 = 0 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 1 0>";
+  _dccexProtocol.check();
+}

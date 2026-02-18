@@ -912,10 +912,7 @@ int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
 }
 
 int DCCEXProtocol::_getSpeedFromSpeedByte(int speedByte) {
-  int speed = speedByte;
-  if (speed >= 128) {
-    speed = speed - 128;
-  }
+  int speed = 127 & speedByte;
   if (speed > 1) {
     speed = speed - 1; // get around the idiotic design of the speed command
   } else {
