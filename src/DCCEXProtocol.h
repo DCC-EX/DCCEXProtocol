@@ -65,6 +65,12 @@ enum TrackManagerMode {
   NONE, // Track is unused
 };
 
+// Valid Momentum algorithms
+enum MomentumAlgorithm {
+  Linear, // Linear acceleration
+  Power,  // Speed difference
+};
+
 /// @brief Nullstream class for initial DCCEXProtocol instantiation to direct streams to nothing
 class NullStream : public Stream {
 public:
@@ -424,6 +430,44 @@ public:
    * @brief Clears all CSConsist objects
    */
   void clearCSConsists();
+
+  // Momentum methods
+
+  /**
+   * @brief Set the Momentum Algorithm object
+   * @param algorithm
+   */
+  void setMomentumAlgorithm(MomentumAlgorithm algorithm);
+
+  /**
+   * @brief Set the Momentum object
+   * @param address
+   * @param momentum
+   */
+  void setMomentum(int address, int momentum);
+
+  /**
+   * @brief Set the Momentum object
+   * @param loco
+   * @param momentum
+   */
+  void setMomentum(Loco *loco, int momentum);
+
+  /**
+   * @brief Set the Momentum object
+   * @param address
+   * @param accelerating
+   * @param braking
+   */
+  void setMomentum(int address, int accelerating, int braking);
+
+  /**
+   * @brief Set the Momentum object
+   * @param loco
+   * @param accelerating
+   * @param braking
+   */
+  void setMomentum(Loco *loco, int accelerating, int braking);
 
   // Turnout methods
 
