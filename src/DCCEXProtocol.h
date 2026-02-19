@@ -238,6 +238,7 @@ public:
   void connect(Stream *stream);
 
   /// @brief DEPRECATED - Does nothing, retained for backwards compatibility only
+  /// @details Will be removed in 2.0.0.
   void disconnect();
 
   /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
@@ -303,6 +304,7 @@ public:
   void setThrottle(Loco *loco, int speed, Direction direction);
 
   /// @brief DEPRECATED Set all locos in the provided consist to the specified speed and direction
+  /// @details Will be removed in 2.0.0, use setThrottle(CSConsist *consist, int speed, Direction direction)
   /// @param consist Pointer to a consist object
   /// @param speed Speed (0 - 126)
   /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
@@ -323,10 +325,36 @@ public:
   /// @param function Function number (0 - 27)
   void functionOn(Loco *loco, int function);
 
+  /// @brief DEPRECATED Turn the specified function on for the provided consist
+  /// @details Will be removed in 2.0.0, use functionOn(CSConsist *csConsist, int function)
+  /// @param consist Pointer to a consist object
+  /// @param function Function number (0 - 27)
+  void functionOn(Consist *consist, int function);
+
+  /**
+   * @brief
+   * @param csConsist
+   * @param function
+   */
+  void functionOn(CSConsist *csConsist, int function);
+
   /// @brief Turn the specified function off for the provided loco
   /// @param loco Pointer to a loco object
   /// @param function Function number (0 - 27)
   void functionOff(Loco *loco, int function);
+
+  /// @brief DEPRECATED Turn the specified function off for the provided consist
+  /// @details Will be removed in 2.0.0, use functionOff(CSConsist *csConsist, int function)
+  /// @param consist Pointer to a consist object
+  /// @param function Function number (0 - 27)
+  void functionOff(Consist *consist, int function);
+
+  /**
+   * @brief
+   * @param csConsist
+   * @param function
+   */
+  void functionOff(CSConsist *csConsist, int function);
 
   /// @brief Test if the specified function for the provided loco is on
   /// @param loco Pointer to a loco object
@@ -334,21 +362,21 @@ public:
   /// @return true = on, false = off
   bool isFunctionOn(Loco *loco, int function);
 
-  /// @brief DEPRECATED Turn the specified function on for the provided consist
-  /// @param consist Pointer to a consist object
-  /// @param function Function number (0 - 27)
-  void functionOn(Consist *consist, int function);
-
-  /// @brief DEPRECATED Turn the specified function off for the provided consist
-  /// @param consist Pointer to a consist object
-  /// @param function Function number (0 - 27)
-  void functionOff(Consist *consist, int function);
-
   /// @brief DEPRECATED Test if the specified function for the provided consist is on (Checks first loco)
+  /// @details Will be removed in 2.0.0, use isFunctionOn(CSConsist *csConsist, int function)
   /// @param consist Pointer to a consist object
   /// @param function Function number to test (0 - 27)
   /// @return true = on, false = off
   bool isFunctionOn(Consist *consist, int function);
+
+  /**
+   * @brief
+   * @param csConsist
+   * @param function
+   * @return true
+   * @return false
+   */
+  bool isFunctionOn(CSConsist *csConsist, int function);
 
   /// @brief Explicitly request an update for the specified loco
   /// @param address DCC address of the loco
@@ -397,7 +425,7 @@ public:
    * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
    * @return CSConsist* Pointer to the created CSConsist object
    */
-  CSConsist *createCSConsist(int leadLoco, bool reversed);
+  CSConsist *createCSConsist(int leadLoco, bool reversed, bool replicateFunctions = false);
 
   /**
    * @brief Add a member to the CSConsist
@@ -711,6 +739,7 @@ private:
   void _buildCSConsist(CSConsist *csConsist, int memberCount);
   void _sendCreateCSConsist(CSConsist *csConsist);
   void _sendDeleteCSConsist(CSConsist *csConsist);
+  void _setCSConsistMemberFunction(CSConsistMember *member, int function, bool state);
 
   // Roster methods
   void _getRoster();

@@ -44,22 +44,29 @@ Version information:
         - DEPRECATE existing in-throttle consists, these will be REMOVED in 2.0.0:
         - ALL current Consist METHODS and CLASSES are now deprecated
         - New CSConsist methods:
-        - Accessible via csConsists->getFirst()
-        - requestCSConsists()
-        - createCSConsist(int leadLoco, bool reversed)
-        - addCSConsistMember(CSConsist *csConsist, int address, bool reversed)
-        - removeCSConsistMember(CSConsist *csConsist, int address)
-        - deleteCSConsist(int leadLoco)
-        - deleteCSConsist(CSConsist *csConsist)
-        - clearCSConsists()
-        - setThrottle(CSConsist *csConsist, int speed, Direction direction)
+                - Accessible via csConsists->getFirst()
+                - requestCSConsists()
+                - createCSConsist(int leadLoco, bool reversed)
+                - addCSConsistMember(CSConsist *csConsist, int address, bool reversed)
+                - removeCSConsistMember(CSConsist *csConsist, int address)
+                - deleteCSConsist(int leadLoco)
+                - deleteCSConsist(CSConsist *csConsist)
+                - clearCSConsists()
+                - setThrottle(CSConsist *csConsist, int speed, Direction direction)
+                - functionOn(CSConsist *csConsist, int function)
+                - functionOff(CSConsist *csConsist, int function)
+                - isFunctionOn(CSConsist *csConsist, int function)
         - DCCEXProtocolDelegate new method receivedCSConsist(int leadLoco, CSConsist *csConsist)
+        - Add ability to replicate functions across CSConsist members (does not act like CV19/21/22)
+                - CSConsist *csConsist = new CSConsist(true)
+                - createCSConsist(int leadLoco, bool reversed, bool replicateFunctions)
+                - When enabled, setting a function for the CSConsist sets the same across all members
         - Add support for momentum, new methods:
-        - setMomentumAlgorithm(MomentumAlgorithm algorithm)
-        - setMomentum(int address, int momentum)
-        - setMomentum(Loco *loco, int momentum)
-        - setMomentum(int address, int accelerating, int braking)
-        - setMomentum(Loco *loco, int accelerating, int braking)
+                - setMomentumAlgorithm(MomentumAlgorithm algorithm)
+                - setMomentum(int address, int momentum)
+                - setMomentum(Loco *loco, int momentum)
+                - setMomentum(int address, int accelerating, int braking)
+                - setMomentum(Loco *loco, int accelerating, int braking)
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

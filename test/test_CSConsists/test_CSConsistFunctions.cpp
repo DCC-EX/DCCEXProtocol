@@ -93,19 +93,166 @@ TEST_F(CSConsistTests, TestSetLeadLocoFunctionReplicates) {
   csConsist->addMember(24, true);
   csConsist->addMember(3, false);
 
-  // Locos shouldn't exist yet
+  // Loco shouldn't exist yet
   Loco *loco42 = Loco::getByAddress(42);
   ASSERT_EQ(loco42, nullptr);
-  Loco *loco24 = Loco::getByAddress(24);
-  ASSERT_EQ(loco24, nullptr);
-  Loco *loco3 = Loco::getByAddress(3);
-  ASSERT_EQ(loco3, nullptr);
 
-  // Set function 0 on for lead loco
-  
+  // Set function 0 on for the consist
+  _dccexProtocol.functionOn(csConsist, 0);
+
+  // This should cause a Loco object to be created for the lead loco
+  Loco *first = Loco::getFirstLocalLoco();
+  ASSERT_NE(first, nullptr);
+  EXPECT_EQ(first->getAddress(), 42);
+  EXPECT_EQ(first->getNext(), nullptr);
+
+  // This should also have a function 0 call in the buffer for each loco
+  EXPECT_EQ(_stream.getOutput(), "<F 42 0 1><F 24 0 1><F 3 0 1>");
 }
 
 /**
  * @brief Test setting functions for the lead loco does not replicate when disabled
  */
-TEST_F(CSConsistTests, TestSetLeadLocoFunctionDoesNotReplicate) {}
+TEST_F(CSConsistTests, TestSetLeadLocoFunctionDoesNotReplicate) {
+  // Create the consist
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  csConsist->addMember(24, true);
+  csConsist->addMember(3, false);
+  ASSERT_FALSE(csConsist->getReplicateFunctions());
+
+  // Loco shouldn't exist yet
+  Loco *loco42 = Loco::getByAddress(42);
+  ASSERT_EQ(loco42, nullptr);
+
+  // Set function 0 on for the consist
+  _dccexProtocol.functionOn(csConsist, 0);
+
+  // This should cause a Loco object to be created for the lead loco only
+  Loco *first = Loco::getFirstLocalLoco();
+  ASSERT_NE(first, nullptr);
+  EXPECT_EQ(first->getAddress(), 42);
+  EXPECT_EQ(first->getNext(), nullptr);
+
+  // This should only have a function 0 call for the lead loco in the buffer
+  EXPECT_EQ(_stream.getOutput(), "<F 42 0 1>");
+}
+
+/**
+ * @brief Test turning a function on for an invalid CSConsist fails sanely
+ */
+TEST_F(CSConsistTests, TestSetFunctionOnInvalidCSConsist) {
+  // Create a CSConsist with only one member, invalid
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  _dccexProtocol.functionOn(csConsist, 0);
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Loco::getFirstLocalLoco(), nullptr);
+}
+
+/**
+ * @brief Test setting functions off for the lead loco replicates when enabled
+ */
+TEST_F(CSConsistTests, TestSetLeadLocoFunctionOffReplicates) {
+  // Create the consist
+  CSConsist *csConsist = new CSConsist(true);
+  csConsist->addMember(42, false);
+  csConsist->addMember(24, true);
+  csConsist->addMember(3, false);
+
+  // Loco shouldn't exist yet
+  Loco *loco42 = Loco::getByAddress(42);
+  ASSERT_EQ(loco42, nullptr);
+
+  // Set function 0 off for the consist
+  _dccexProtocol.functionOff(csConsist, 0);
+
+  // This should cause a Loco object to be created for the lead loco
+  Loco *first = Loco::getFirstLocalLoco();
+  ASSERT_NE(first, nullptr);
+  EXPECT_EQ(first->getAddress(), 42);
+  EXPECT_EQ(first->getNext(), nullptr);
+
+  // This should also have a function 0 call in the buffer for each loco
+  EXPECT_EQ(_stream.getOutput(), "<F 42 0 0><F 24 0 0><F 3 0 0>");
+}
+
+/**
+ * @brief Test setting functions off for the lead loco does not replicate when disabled
+ */
+TEST_F(CSConsistTests, TestSetLeadLocoFunctionOffDoesNotReplicate) {
+  // Create the consist
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  csConsist->addMember(24, true);
+  csConsist->addMember(3, false);
+
+  // Locos shouldn't exist yet
+  Loco *loco42 = Loco::getByAddress(42);
+  ASSERT_EQ(loco42, nullptr);
+
+  // Set function 0 on for the consist
+  _dccexProtocol.functionOff(csConsist, 0);
+
+  // This should cause a Loco object to be created for the lead loco only
+  Loco *first = Loco::getFirstLocalLoco();
+  ASSERT_NE(first, nullptr);
+  EXPECT_EQ(first->getAddress(), 42);
+  EXPECT_EQ(first->getNext(), nullptr);
+
+  // This should only have a function 0 call for the lead loco in the buffer
+  EXPECT_EQ(_stream.getOutput(), "<F 42 0 0>");
+}
+
+/**
+ * @brief Test turning a function off for an invalid CSConsist fails sanely
+ */
+TEST_F(CSConsistTests, TestSetFunctionOffInvalidCSConsist) {
+  // Create a CSConsist with only one member, invalid
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  _dccexProtocol.functionOff(csConsist, 0);
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Loco::getFirstLocalLoco(), nullptr);
+}
+
+/**
+ * @brief Test isFunctionOn checks lead loco for function states
+ */
+TEST_F(CSConsistTests, TestIsFunctionOn) {
+  // Create the consist
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  csConsist->addMember(24, true);
+  csConsist->addMember(3, false);
+
+  // Locos shouldn't exist
+  Loco *loco42 = Loco::getByAddress(42);
+  ASSERT_EQ(loco42, nullptr);
+
+  // Check if function 0 is on, should be false due to no Loco
+  bool state = _dccexProtocol.isFunctionOn(csConsist, 0);
+  EXPECT_FALSE(state);
+
+  // Turn it on and check again
+  _dccexProtocol.functionOn(csConsist, 0);
+  state = _dccexProtocol.isFunctionOn(csConsist, 0);
+  EXPECT_FALSE(state);
+
+  // Simulate receiving the broadcast which should turn it on
+  _stream << "<l 42 0 128 1>";
+  _dccexProtocol.check();
+  state = _dccexProtocol.isFunctionOn(csConsist, 0);
+  EXPECT_TRUE(state);
+}
+
+/**
+ * @brief Test isFunctionOn for an invalid CSConsist fails sanely
+ */
+TEST_F(CSConsistTests, TestSetIsFunctionOnInvalidCSConsist) {
+  // Create a CSConsist with only one member, invalid
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  bool state = _dccexProtocol.isFunctionOn(csConsist, 0);
+  EXPECT_FALSE(state);
+}

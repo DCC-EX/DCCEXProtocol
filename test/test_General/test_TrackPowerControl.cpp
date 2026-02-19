@@ -103,3 +103,19 @@ TEST_F(DCCEXProtocolTests, joinProg) {
   // Ensure the buffer has what's expected
   ASSERT_EQ(_stream.getOutput(), expected);
 }
+
+/**
+ * @brief Test turning power on for a specific track
+ */
+TEST_F(DCCEXProtocolTests, TestPowerTrackOn) {
+  _dccexProtocol.powerTrackOn('A');
+  EXPECT_EQ(_stream.getOutput(), "<1 A>");
+}
+
+/**
+ * @brief Test turning power of for a specific track
+ */
+TEST_F(DCCEXProtocolTests, TestPowerTrackOff) {
+  _dccexProtocol.powerTrackOff('B');
+  EXPECT_EQ(_stream.getOutput(), "<0 B>");
+}
