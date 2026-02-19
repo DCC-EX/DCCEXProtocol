@@ -50,6 +50,22 @@ TEST_F(MomentumTests, TestSetInvalidAlgorithm) {
 }
 
 /**
+ * @brief Test setting the default momentum
+ */
+TEST_F(MomentumTests, TestSetDefaultMomentum) {
+  _dccexProtocol.setDefaultMomentum(10);
+  EXPECT_EQ(_stream.getOutput(), "<m 0 10>");
+}
+
+/**
+ * @brief Test setting the default accelerating/braking
+ */
+TEST_F(MomentumTests, TestSetDefaultSeparateMomentums) {
+  _dccexProtocol.setDefaultMomentum(10, 20);
+  EXPECT_EQ(_stream.getOutput(), "<m 0 10 20>");
+}
+
+/**
  * @brief Test setting momentum with an address
  */
 TEST_F(MomentumTests, TestSetLocoAddressMomentum) {

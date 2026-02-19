@@ -63,10 +63,14 @@ Version information:
                 - When enabled, setting a function for the CSConsist sets the same across all members
         - Add support for momentum, new methods:
                 - setMomentumAlgorithm(MomentumAlgorithm algorithm)
+                - setDefaultMomentum(int momentum)
+                - setDefaultMomentum(int accelerating, int braking)
                 - setMomentum(int address, int momentum)
                 - setMomentum(Loco *loco, int momentum)
                 - setMomentum(int address, int accelerating, int braking)
                 - setMomentum(Loco *loco, int accelerating, int braking)
+        - Add method to enable/disable debug output to console, default is off (false)
+                - setDebug(bool debug)
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

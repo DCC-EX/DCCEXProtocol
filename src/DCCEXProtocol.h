@@ -295,6 +295,12 @@ public:
   /// @brief Clear roster, turnout, turntable, and route lists and request new ones
   void refreshAllLists();
 
+  /**
+   * @brief Set the Debug flag
+   * @param debug True to send output commands to the console (defaults to False, no output)
+   */
+  void setDebug(bool debug);
+
   // Consist/Loco methods
 
   /// @brief Set the provided loco to the specified speed and direction
@@ -332,9 +338,9 @@ public:
   void functionOn(Consist *consist, int function);
 
   /**
-   * @brief
-   * @param csConsist
-   * @param function
+   * @brief Turn the specified function on for the provided CSConsist
+   * @param csConsist Pointer to the CSConsist object
+   * @param function Function number (0 - 27)
    */
   void functionOn(CSConsist *csConsist, int function);
 
@@ -350,9 +356,9 @@ public:
   void functionOff(Consist *consist, int function);
 
   /**
-   * @brief
-   * @param csConsist
-   * @param function
+   * @brief Turn the specified function off for the provided CSConsist
+   * @param csConsist Pointer to the CSConsist object
+   * @param function Function number (0 - 27)
    */
   void functionOff(CSConsist *csConsist, int function);
 
@@ -370,11 +376,11 @@ public:
   bool isFunctionOn(Consist *consist, int function);
 
   /**
-   * @brief
-   * @param csConsist
-   * @param function
-   * @return true
-   * @return false
+   * @brief Test if the specified function for the provided CSConsist is on (checks first Loco)
+   * @param csConsist Pointer to the CSConsist object
+   * @param function Function number to test (0 - 27)
+   * @return true Function on
+   * @return false Function off, or CSConsist object is invalid
    */
   bool isFunctionOn(CSConsist *csConsist, int function);
 
@@ -425,7 +431,7 @@ public:
    * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
    * @return CSConsist* Pointer to the created CSConsist object
    */
-  CSConsist *createCSConsist(int leadLoco, bool reversed, bool replicateFunctions = false);
+  CSConsist *createCSConsist(int leadLoco, bool reversed = false, bool replicateFunctions = false);
 
   /**
    * @brief Add a member to the CSConsist
@@ -433,7 +439,7 @@ public:
    * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
    * @return bool True if added successfully, otherwise false
    */
-  bool addCSConsistMember(CSConsist *csConsist, int address, bool reversed);
+  bool addCSConsistMember(CSConsist *csConsist, int address, bool reversed = false);
 
   /**
    * @brief Remove a member from the CSConsist
@@ -462,38 +468,51 @@ public:
   // Momentum methods
 
   /**
-   * @brief Set the Momentum Algorithm object
-   * @param algorithm
+   * @brief Set the Momentum Algorithm
+   * @param algorithm MomentumAlgorithm (Linear, Power)
    */
   void setMomentumAlgorithm(MomentumAlgorithm algorithm);
 
   /**
-   * @brief Set the Momentum object
-   * @param address
-   * @param momentum
+   * @brief Set the Default Momentum for accelerating/braking
+   * @param momentum Momentum value
+   */
+  void setDefaultMomentum(int momentum);
+
+  /**
+   * @brief Set the Default Momentum for separate accelerating/braking
+   * @param accelerating Accelerating momentum value
+   * @param braking Braking momentum value
+   */
+  void setDefaultMomentum(int accelerating, int braking);
+
+  /**
+   * @brief Set momentum for the specified loco/DC track
+   * @param address DCC address
+   * @param momentum Momentum value
    */
   void setMomentum(int address, int momentum);
 
   /**
-   * @brief Set the Momentum object
-   * @param loco
-   * @param momentum
+   * @brief Set the Momentum for the specified Loco
+   * @param loco Pointer to a Loco object
+   * @param momentum Momentum value
    */
   void setMomentum(Loco *loco, int momentum);
 
   /**
-   * @brief Set the Momentum object
-   * @param address
-   * @param accelerating
-   * @param braking
+   * @brief Set the Momentum for separate accelerating/braking
+   * @param address DCC address
+   * @param accelerating Accelerating momentum value
+   * @param braking Braking momentum value
    */
   void setMomentum(int address, int accelerating, int braking);
 
   /**
-   * @brief Set the Momentum object
-   * @param loco
-   * @param accelerating
-   * @param braking
+   * @brief Set the Momentum for separate accelerating/braking
+   * @param loco Pointer to a Loco object
+   * @param accelerating Accelerating momentum value
+   * @param braking Braking momentum value
    */
   void setMomentum(Loco *loco, int accelerating, int braking);
 
@@ -816,6 +835,7 @@ private:
   int _cmdIndex;                                      // Track the index for the outbound command buffer
   unsigned long _userChangeDelay;                     // Delay in ms between sending throttle commands
   unsigned long _lastUserChange;                      // Time in ms of the last throttle command
+  bool _debug = false;                                // Enable output of send/receive commands to console
 
   // Helper methods to build the outbound command
   /**
