@@ -119,8 +119,10 @@ void DCCEXProtocol::check() {
       if (r == '>') {
         if (DCCEXInbound::parse(_cmdBuffer)) {
           // Process stuff here
-          _console->print("<== ");
-          _console->println(_cmdBuffer);
+          if (_debug) {
+            _console->print("<== ");
+            _console->println(_cmdBuffer);
+          }
           _processCommand();
         }
         // Clear buffer after use
@@ -227,6 +229,8 @@ void DCCEXProtocol::refreshAllLists() {
   refreshTurntableList();
   refreshRouteList();
 }
+
+void DCCEXProtocol::setDebug(bool debug) { _debug = debug; }
 
 // Consist/loco methods
 
@@ -347,10 +351,7 @@ void DCCEXProtocol::emergencyStop() { _sendOpcode('!'); }
 
 int DCCEXProtocol::getRosterCount() { return _rosterCount; }
 
-bool DCCEXProtocol::receivedRoster() {
-  // console->println(F("isRosterFullyReceived()"));
-  return _receivedRoster;
-}
+bool DCCEXProtocol::receivedRoster() { return _receivedRoster; }
 
 Loco *DCCEXProtocol::findLocoInRoster(int address) {
   for (Loco *r = roster->getFirst(); r; r = r->getNext()) {
@@ -478,6 +479,12 @@ void DCCEXProtocol::setMomentumAlgorithm(MomentumAlgorithm algorithm) {
   if (algorithm >= 0 && algorithm < (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]))) {
     _sendOneParam('m', ALGORITHMS[algorithm]);
   }
+}
+
+void DCCEXProtocol::setDefaultMomentum(int momentum) { _sendTwoParams('m', 0, momentum); }
+
+void DCCEXProtocol::setDefaultMomentum(int accelerating, int braking) {
+  _sendThreeParams('m', 0, accelerating, braking);
 }
 
 void DCCEXProtocol::setMomentum(int address, int momentum) {
@@ -708,20 +715,20 @@ void DCCEXProtocol::writeCVBitOnMain(int address, int cv, int bit, int value) {
 
 // init the DCCEXProtocol instance after connection to the server
 void DCCEXProtocol::_init() {
-  // console->println(F("init()"));
   // allocate input buffer and init position variable
   memset(_inputBuffer, 0, sizeof(_inputBuffer));
   _nextChar = 0;
   // last Response time
   _lastServerResponseTime = millis();
-  // console->println(F("init(): end"));
 }
 
 void DCCEXProtocol::_sendCommand() {
   if (_stream) {
     _stream->print(_outboundCommand);
-    _console->print("==> ");
-    _console->println(_outboundCommand);
+    if (_debug) {
+      _console->print("==> ");
+      _console->println(_outboundCommand);
+    }
     *_outboundCommand = 0;     // clear it once it has been sent
     _lastHeartbeat = millis(); // If we sent a command, a heartbeat isn't necessary
   }

@@ -88,10 +88,11 @@ TEST_F(CSConsistTests, TestGlobalReplicationFromCSConsistList) {
  */
 TEST_F(CSConsistTests, TestSetLeadLocoFunctionReplicates) {
   // Create the consist
-  CSConsist *csConsist = new CSConsist(true);
-  csConsist->addMember(42, false);
-  csConsist->addMember(24, true);
-  csConsist->addMember(3, false);
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(42, false, true);
+  _dccexProtocol.addCSConsistMember(csConsist, 24, true);
+  _dccexProtocol.addCSConsistMember(csConsist, 3);
+  // Clear stream from consist creation
+  _stream.clearOutput();
 
   // Loco shouldn't exist yet
   Loco *loco42 = Loco::getByAddress(42);
@@ -115,11 +116,13 @@ TEST_F(CSConsistTests, TestSetLeadLocoFunctionReplicates) {
  */
 TEST_F(CSConsistTests, TestSetLeadLocoFunctionDoesNotReplicate) {
   // Create the consist
-  CSConsist *csConsist = new CSConsist();
-  csConsist->addMember(42, false);
-  csConsist->addMember(24, true);
-  csConsist->addMember(3, false);
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(42);
+  _dccexProtocol.addCSConsistMember(csConsist, 24, true);
+  _dccexProtocol.addCSConsistMember(csConsist, 3);
   ASSERT_FALSE(csConsist->getReplicateFunctions());
+
+  // Clear stream from consist creation
+  _stream.clearOutput();
 
   // Loco shouldn't exist yet
   Loco *loco42 = Loco::getByAddress(42);
@@ -143,8 +146,7 @@ TEST_F(CSConsistTests, TestSetLeadLocoFunctionDoesNotReplicate) {
  */
 TEST_F(CSConsistTests, TestSetFunctionOnInvalidCSConsist) {
   // Create a CSConsist with only one member, invalid
-  CSConsist *csConsist = new CSConsist();
-  csConsist->addMember(3, false);
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
   _dccexProtocol.functionOn(csConsist, 0);
   EXPECT_EQ(_stream.getOutput(), "");
   EXPECT_EQ(Loco::getFirstLocalLoco(), nullptr);
