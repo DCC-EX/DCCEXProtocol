@@ -25,8 +25,10 @@
 // CSConsist public methods
 
 CSConsist *CSConsist::_first = nullptr;
+bool CSConsist::_alwaysReplicateFunctions = false;
 
-CSConsist::CSConsist() : _firstMember(nullptr), _next(nullptr), _memberCount(0) {
+CSConsist::CSConsist(bool replicateFunctions)
+    : _replicateFunctions(replicateFunctions), _firstMember(nullptr), _next(nullptr), _memberCount(0) {
   if (!_first) {
     _first = this;
   } else {
@@ -36,6 +38,8 @@ CSConsist::CSConsist() : _firstMember(nullptr), _next(nullptr), _memberCount(0) 
     }
     current->_next = this;
   }
+  if (_alwaysReplicateFunctions)
+    _replicateFunctions = true;
 }
 
 CSConsist *CSConsist::getFirst() { return _first; }
@@ -165,6 +169,14 @@ CSConsist *CSConsist::getMemberCSConsist(int address) {
   }
   return nullptr;
 }
+
+void CSConsist::setAlwaysReplicateFunctions(bool replicate) { _alwaysReplicateFunctions = replicate; }
+
+bool CSConsist::getAlwaysReplicateFunctions() { return _alwaysReplicateFunctions; }
+
+void CSConsist::setReplicateFunctions(bool replicate) { _replicateFunctions = replicate; }
+
+bool CSConsist::getReplicateFunctions() { return _replicateFunctions; }
 
 CSConsist::~CSConsist() {
   // Clean up the member list first

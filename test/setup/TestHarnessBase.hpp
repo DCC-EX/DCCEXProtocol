@@ -57,6 +57,7 @@ protected:
     _stream.clearOutput();
     _dccexProtocol.clearAllLists();
     CSConsist::clearCSConsists();
+    CSConsist::setAlwaysReplicateFunctions(false);
   }
 
   DCCEXProtocol _dccexProtocol;

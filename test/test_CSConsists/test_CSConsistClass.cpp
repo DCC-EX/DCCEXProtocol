@@ -62,9 +62,11 @@ TEST_F(CSConsistTests, TestCreateConsistWithAddress) {
   EXPECT_EQ(csConsist->getFirstMember()->address, 3);
   EXPECT_FALSE(csConsist->getFirstMember()->reversed);
 
-  // Created in CS, pending deletion, and valid flags should be false
+  // validate flags and count
   EXPECT_FALSE(csConsist->isValid());
   EXPECT_EQ(csConsist->getMemberCount(), 1);
+  EXPECT_FALSE(csConsist->getReplicateFunctions());
+  EXPECT_FALSE(csConsist->getAlwaysReplicateFunctions());
 
   // Clean up
   delete csConsist;

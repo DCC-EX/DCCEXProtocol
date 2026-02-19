@@ -266,18 +266,32 @@ void DCCEXProtocol::functionOn(Loco *loco, int function) {
   }
 }
 
+void DCCEXProtocol::functionOn(Consist *consist, int function) {
+  for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
+    functionOn(cl->getLoco(), function);
+  }
+}
+
+void DCCEXProtocol::functionOn(CSConsist *csConsist, int function) {
+  if (!csConsist || !csConsist->isValid())
+    return;
+
+  CSConsistMember *first = csConsist->getFirstMember();
+  Loco *loco = Loco::getByAddress(first->address);
+
+  if (loco == nullptr)
+    loco = new Loco(first->address, LocoSource::LocoSourceEntry);
+
+  _sendThreeParams('F', first->address, function, true);
+
+  if (csConsist->getReplicateFunctions())
+    _setCSConsistMemberFunction(first->next, function, true);
+}
+
 void DCCEXProtocol::functionOff(Loco *loco, int function) {
   int address = loco->getAddress();
   if (address >= 0) {
     _sendThreeParams('F', address, function, 0);
-  }
-}
-
-bool DCCEXProtocol::isFunctionOn(Loco *loco, int function) { return loco->isFunctionOn(function); }
-
-void DCCEXProtocol::functionOn(Consist *consist, int function) {
-  for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
-    functionOn(cl->getLoco(), function);
   }
 }
 
@@ -287,9 +301,40 @@ void DCCEXProtocol::functionOff(Consist *consist, int function) {
   }
 }
 
+void DCCEXProtocol::functionOff(CSConsist *csConsist, int function) {
+  if (!csConsist || !csConsist->isValid())
+    return;
+
+  CSConsistMember *first = csConsist->getFirstMember();
+  Loco *loco = Loco::getByAddress(first->address);
+
+  if (loco == nullptr)
+    loco = new Loco(first->address, LocoSource::LocoSourceEntry);
+
+  _sendThreeParams('F', first->address, function, false);
+
+  if (csConsist->getReplicateFunctions())
+    _setCSConsistMemberFunction(first->next, function, false);
+}
+
+bool DCCEXProtocol::isFunctionOn(Loco *loco, int function) { return loco->isFunctionOn(function); }
+
 bool DCCEXProtocol::isFunctionOn(Consist *consist, int function) {
   ConsistLoco *firstCL = consist->getFirst();
   return firstCL->getLoco()->isFunctionOn(function);
+}
+
+bool DCCEXProtocol::isFunctionOn(CSConsist *csConsist, int function) {
+  if (!csConsist || !csConsist->isValid())
+    return false;
+
+  CSConsistMember *first = csConsist->getFirstMember();
+  Loco *loco = Loco::getByAddress(first->address);
+
+  if (loco == nullptr)
+    return false;
+
+  return loco->isFunctionOn(function);
 }
 
 void DCCEXProtocol::requestLocoUpdate(int address) { _sendOneParam('t', address); }
@@ -335,7 +380,7 @@ void DCCEXProtocol::refreshRoster() {
 
 void DCCEXProtocol::requestCSConsists() { _sendOpcode('^'); }
 
-CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed) {
+CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed, bool replicateFunctions) {
   if (leadLoco < 1 || leadLoco > 10239)
     return nullptr;
 
@@ -348,7 +393,7 @@ CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed) {
   if (CSConsist::getMemberCSConsist(leadLoco))
     return nullptr;
 
-  csConsist = new CSConsist();
+  csConsist = new CSConsist(replicateFunctions);
   csConsist->addMember(leadLoco, reversed);
 
   return csConsist;
@@ -1031,6 +1076,12 @@ void DCCEXProtocol::_sendDeleteCSConsist(CSConsist *csConsist) {
     return;
 
   _sendOneParam('^', csConsist->getFirstMember()->address);
+}
+
+void DCCEXProtocol::_setCSConsistMemberFunction(CSConsistMember *member, int function, bool state) {
+  for (member = member; member; member = member->next) {
+    _sendThreeParams('F', member->address, function, state);
+  }
 }
 
 // Roster methods
