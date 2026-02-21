@@ -71,6 +71,19 @@ Version information:
                 - setMomentum(Loco *loco, int accelerating, int braking)
         - Add method to enable/disable debug output to console, default is off (false)
                 - setDebug(bool debug)
+        - Add support for fast clock with new delegate methods:
+                - setFastClock(int minutes, int speedFactor)
+                - requestFastClockTime()
+                - receivedSetFastClock(int minutes, int speedFactor)
+                - receivedFastClockTime(int minutes)
+        - Add support for track gauges (current limits) and track current:
+                - requestTrackCurrentGauges()
+                - requestTrackCurrents()
+                - receivedTrackCurrentGauge(char track, int limit)
+                - receivedTrackCurrent(char track, int current)
+        - Fix compiler warnings by change char * to const char * in these methods:
+                - sendCommand(const char *cmd)
+                - receivedScreenUpdate(int screen, int row, const char *message)
 1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
         - Refactor all DCCEXProtocol outbound commands to remove sprintf
         - Add default true to getLists() so users can just call it without parameters to get all lists

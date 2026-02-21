@@ -225,3 +225,37 @@ TEST_F(TestHarnessNoDelegate, TestTurntableBroadcast) {
   _stream << "<I 1 1 0>";
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test receiving track current gauges does not seg fault
+ */
+TEST_F(TestHarnessNoDelegate, TestReceivingCurrentGauge) {
+  // Simulate receiving track current gauge does not trigger seg fault
+  _stream << "<jG 1499 1499>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving track currents does not seg fault
+ */
+TEST_F(TestHarnessNoDelegate, TestReceivingCurrent) {
+  // Simulate receiving track currents does not trigger seg fault
+  _stream << "<jI 600 200>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving set fast clock does not seg fault
+ */
+TEST_F(TestHarnessNoDelegate, TestReceivingSetFastClock) {
+  _stream << "<jC 60 4>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving fast clock time does not seg fault
+ */
+TEST_F(TestHarnessNoDelegate, TestReceivingFastClockTime) {
+  _stream << "<jC 60>";
+  _dccexProtocol.check();
+}

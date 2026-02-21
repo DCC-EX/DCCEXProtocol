@@ -26,7 +26,7 @@
 /// @brief Create a consist with three Loco objects
 TEST_F(LocoTests, createConsistByLoco) {
   // Create three locos for the consist
-  char *functionList = "Lights/*Horn";
+  const char *functionList = "Lights/*Horn";
   Loco *loco10 = new Loco(10, LocoSourceRoster);
   loco10->setName("Loco 10");
   loco10->setupFunctions(functionList);
