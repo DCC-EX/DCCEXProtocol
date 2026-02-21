@@ -65,7 +65,7 @@ enum TrackManagerMode {
   NONE, // Track is unused
 };
 
-// Valid Momentum algorithms
+// Valid Momentum algorithms - MUST MATCH lookup table in setMomentumAlgorithm()
 enum MomentumAlgorithm {
   Linear, // Linear acceleration
   Power,  // Speed difference
@@ -115,7 +115,7 @@ public:
 
   /// @brief Notify when a broadcast message has been received
   /// @param message message that has been broadcast
-  virtual void receivedMessage(char *message) {}
+  virtual void receivedMessage(const char *message) {}
 
   /// @brief Notify when the roster list is received
   virtual void receivedRosterList() {}
@@ -143,6 +143,20 @@ public:
   /// @brief Notify when the global track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
+
+  /**
+   * @brief Notify when a track current limit value is received
+   * @param track Track (A - H)
+   * @param limit Current limit in mA
+   */
+  virtual void receivedTrackCurrentGauge(char track, int limit) {}
+
+  /**
+   * @brief Notify when a track current value is received
+   * @param track Track (A - H)
+   * @param current Current in mA
+   */
+  virtual void receivedTrackCurrent(char track, int current) {}
 
   /// @brief Notify when an individual track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
@@ -194,7 +208,7 @@ public:
   /// @param screen Screen number
   /// @param row Row number
   /// @param message Message to display on the screen/row
-  virtual void receivedScreenUpdate(int screen, int row, char *message) {}
+  virtual void receivedScreenUpdate(int screen, int row, const char *message) {}
 
   /**
    * @brief Notify when a CS consist has been received
@@ -202,6 +216,19 @@ public:
    * @param csConsist Pointer to the CSConsist object controlled by the lead loco
    */
   virtual void receivedCSConsist(int leadLoco, CSConsist *csConsist) {}
+
+  /**
+   * @brief Notify when a fast clock time has been set
+   * @param minutes Time since midnight in minutes
+   * @param speedFactor Speed factor multiplier
+   */
+  virtual void receivedSetFastClock(int minutes, int speedFactor) {}
+
+  /**
+   * @brief Notify when a fast clock time has been received
+   * @param minutes Time in minutes
+   */
+  virtual void receivedFastClockTime(int minutes) {}
 
   /// @brief Default destructor for DCCEXProtocolDelegate
   virtual ~DCCEXProtocolDelegate() = default;
@@ -246,7 +273,7 @@ public:
 
   /// @brief allows sending of an arbitray command
   /// @param cmd Command to send
-  void sendCommand(char *cmd);
+  void sendCommand(const char *cmd);
 
   /// @brief Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)
   /// @param rosterRequired Request the roster list (true|false)
@@ -644,6 +671,16 @@ public:
   /// @param address dcc address for DC and DCX  (Required, but ignored if not DC or DCX)
   void setTrackType(char track, TrackManagerMode type, int address);
 
+  /**
+   * @brief Request the current limit set for each track
+   */
+  void requestTrackCurrentGauges();
+
+  /**
+   * @brief Request the latest current value for each track
+   */
+  void requestTrackCurrents();
+
   // DCC accessory methods
 
   /// @brief Activate DCC accessory at the specified address and subaddress
@@ -713,6 +750,20 @@ public:
   /// @param bit Bit for the CV to write
   /// @param value Value to write (0|1)
   void writeCVBitOnMain(int address, int cv, int bit, int value);
+
+  // Fast clock methods
+
+  /**
+   * @brief Set the fast clock time and speed factor
+   * @param minutes Time from midnight in minutes (eg. 60 = 1am)
+   * @param speedFactor Speed factor multiplier (eg. 4 = 1 minute every 15 seconds)
+   */
+  void setFastClock(int minutes, int speedFactor);
+
+  /**
+   * @brief Request the current fast clock time
+   */
+  void requestFastClockTime();
 
   // Attributes
 
@@ -795,12 +846,18 @@ private:
   // Track management methods
   void _processTrackPower();
   void _processTrackType();
+  void _processTrackCurrentGauges();
+  void _processTrackCurrents();
 
   // CV programming methods
   void _processValidateCVResponse();
   void _processValidateCVBitResponse();
   void _processWriteLocoResponse();
   void _processWriteCVResponse();
+
+  // Fast clock methods
+  void _processSetFastClock();
+  void _processFastClockTime();
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received
@@ -960,6 +1017,15 @@ private:
    * @param param3 Single int parameter to send
    */
   void _sendThreeParams(char opcode, char param1, const char *param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, char param1, int param2, int param3);
 
   /**
    * @brief Formatter for opcode and four params

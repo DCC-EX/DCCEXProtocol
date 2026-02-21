@@ -138,7 +138,7 @@ void DCCEXProtocol::check() {
   }
 }
 
-void DCCEXProtocol::sendCommand(char *cmd) {
+void DCCEXProtocol::sendCommand(const char *cmd) {
   _cmdStart();
   _cmdAppend(cmd);
   _cmdSend();
@@ -674,6 +674,10 @@ void DCCEXProtocol::setTrackType(char track, TrackManagerMode type, int address)
   }
 }
 
+void DCCEXProtocol::requestTrackCurrentGauges() { _sendOneParam('J', 'G'); }
+
+void DCCEXProtocol::requestTrackCurrents() { _sendOneParam('J', 'I'); }
+
 // DCC accessory methods
 
 void DCCEXProtocol::activateAccessory(int accessoryAddress, int accessorySubAddr) {
@@ -709,6 +713,17 @@ void DCCEXProtocol::writeCVOnMain(int address, int cv, int value) { _sendThreePa
 void DCCEXProtocol::writeCVBitOnMain(int address, int cv, int bit, int value) {
   _sendFourParams('b', address, cv, bit, value);
 }
+
+// Fast clock methods
+
+void DCCEXProtocol::setFastClock(int minutes, int speedFactor) {
+  if (minutes < 0 || minutes > 1440 || speedFactor < 1)
+    return;
+
+  _sendThreeParams('J', 'C', minutes, speedFactor);
+}
+
+void DCCEXProtocol::requestFastClockTime() { _sendOneParam('J', 'C'); }
 
 // Private methods
 // Protocol and server methods
@@ -781,7 +796,7 @@ void DCCEXProtocol::_processCommand() {
     _processLocoBroadcast();
     break;
 
-  case 'j': // Throttle list response jA|O|P|R|T
+  case 'j': // Throttle list response jA|O|P|R|T|G|I
     if (DCCEXInbound::isTextParameter(0))
       break;
     if (DCCEXInbound::getNumber(0) == 'A') {        // Receive route/automation info
@@ -825,6 +840,16 @@ void DCCEXProtocol::_processCommand() {
       } else { // Turnout list
         // <jT id1 id2 id3 ...>
         _processTurnoutList();
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'G') { // Receive track current gauges <jG a b ...>
+      _processTrackCurrentGauges();
+    } else if (DCCEXInbound::getNumber(0) == 'I') { // Receive track currents <jI a b ...>
+      _processTrackCurrents();
+    } else if (DCCEXInbound::getNumber(0) == 'C') { // Receive fast clock info
+      if (DCCEXInbound::getParameterCount() == 2) {
+        _processFastClockTime();
+      } else if (DCCEXInbound::getParameterCount() == 3) {
+        _processSetFastClock();
       }
     }
     break;
@@ -1429,6 +1454,28 @@ void DCCEXProtocol::_processTrackType() {
   _delegate->receivedTrackType(_track, _trackType, _address);
 }
 
+void DCCEXProtocol::_processTrackCurrentGauges() { // <jG a b ...>
+  if (!_delegate)
+    return;
+
+  int trackCount = DCCEXInbound::getParameterCount();
+  for (int track = 1; track < trackCount; track++) { // First param is G, rest are tracks
+    _delegate->receivedTrackCurrentGauge('A' + track - 1, DCCEXInbound::getNumber(track));
+  }
+}
+
+void DCCEXProtocol::_processTrackCurrents() { // <jI a b ...>
+  if (!_delegate)
+    return;
+
+  int trackCount = DCCEXInbound::getParameterCount();
+  for (int track = 1; track < trackCount; track++) { // First param is I, rest are tracks
+    _delegate->receivedTrackCurrent('A' + track - 1, DCCEXInbound::getNumber(track));
+  }
+}
+
+// CV programming methods
+
 void DCCEXProtocol::_processValidateCVResponse() { // <v cv value>, value -1 = error
   if (!_delegate)
     return;
@@ -1463,6 +1510,22 @@ void DCCEXProtocol::_processWriteCVResponse() { // <r cv value>, value -1 = erro
   int cv = DCCEXInbound::getNumber(0);
   int value = DCCEXInbound::getNumber(1);
   _delegate->receivedWriteCV(cv, value);
+}
+
+// Fast clock methods
+
+void DCCEXProtocol::_processSetFastClock() { // <jC minutes speed>
+  if (!_delegate)
+    return;
+
+  _delegate->receivedSetFastClock(DCCEXInbound::getNumber(1), DCCEXInbound::getNumber(2));
+}
+
+void DCCEXProtocol::_processFastClockTime() { // <jC minutes>
+  if (!_delegate)
+    return;
+
+  _delegate->receivedFastClockTime(DCCEXInbound::getNumber(1));
 }
 
 // Helper methods to build the outbound command
@@ -1598,6 +1661,17 @@ void DCCEXProtocol::_sendThreeParams(char opcode, int param1, int param2, int pa
 }
 
 void DCCEXProtocol::_sendThreeParams(char opcode, char param1, const char *param2, int param3) {
+  _cmdStart(opcode);
+  _cmdAppend(' ');
+  _cmdAppend(param1);
+  _cmdAppend(' ');
+  _cmdAppend(param2);
+  _cmdAppend(' ');
+  _cmdAppend(param3);
+  _cmdSend();
+}
+
+void DCCEXProtocol::_sendThreeParams(char opcode, char param1, int param2, int param3) {
   _cmdStart(opcode);
   _cmdAppend(' ');
   _cmdAppend(param1);
