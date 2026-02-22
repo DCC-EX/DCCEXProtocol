@@ -149,6 +149,10 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
 }
 
 /**
@@ -183,6 +187,10 @@ TEST_F(DCCEXProtocolTests, getRosterList) {
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
 }
 
 /**
@@ -217,6 +225,10 @@ TEST_F(DCCEXProtocolTests, getTurnoutList) {
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
 }
 
 /**
@@ -251,6 +263,10 @@ TEST_F(DCCEXProtocolTests, getRouteList) {
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
 }
 
 /**
@@ -303,6 +319,10 @@ TEST_F(DCCEXProtocolTests, getTurntableList) {
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
 }
 
 /**
@@ -380,6 +400,10 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
 }
 
 /**
