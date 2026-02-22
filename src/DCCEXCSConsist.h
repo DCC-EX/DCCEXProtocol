@@ -70,13 +70,6 @@ public:
   CSConsist *getNext();
 
   /**
-   * @brief Add a Loco to the consist
-   * @param loco Pointer to the Loco object to be added
-   * @param reversed True if loco is reversed to normal direction of travel
-   */
-  // void addMember(Loco *loco, bool reversed);
-
-  /**
    * @brief Add a loco by address to the consist
    * @details This method attempts to find an existing Loco object and will use that instead of creating a new object.
    * @param address DCC address of the loco to be added

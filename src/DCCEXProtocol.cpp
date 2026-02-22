@@ -421,6 +421,34 @@ bool DCCEXProtocol::addCSConsistMember(CSConsist *csConsist, int address, bool r
   }
 }
 
+CSConsist *DCCEXProtocol::getCSConsistByLeadLoco(int address) {
+  if (address < 1 || address > 10239)
+    return nullptr;
+
+  return CSConsist::getLeadLocoCSConsist(address);
+}
+
+CSConsist *DCCEXProtocol::getCSConsistByLeadLoco(Loco *loco) {
+  if (!loco)
+    return nullptr;
+
+  return CSConsist::getLeadLocoCSConsist(loco->getAddress());
+}
+
+CSConsist *DCCEXProtocol::getCSConsistByMemberLoco(int address) {
+  if (address < 1 || address > 10239)
+    return nullptr;
+
+  return CSConsist::getMemberCSConsist(address);
+}
+
+CSConsist *DCCEXProtocol::getCSConsistByMemberLoco(Loco *loco) {
+  if (!loco)
+    return nullptr;
+
+  return CSConsist::getMemberCSConsist(loco->getAddress());
+}
+
 bool DCCEXProtocol::removeCSConsistMember(CSConsist *csConsist, int address) {
   // Validate parameters
   if (csConsist == nullptr || address < 1 || address > 10239)

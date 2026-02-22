@@ -72,4 +72,7 @@ TEST_F(TurnoutTests, parseThreeTurnouts) {
 
   // Should be true given turnout list is empty
   EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+
+  // Validate count
+  EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 3);
 }

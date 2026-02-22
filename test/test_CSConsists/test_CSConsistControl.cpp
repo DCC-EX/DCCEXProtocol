@@ -323,3 +323,105 @@ TEST_F(CSConsistTests, TestSetThrottleInvalidConsist) {
   EXPECT_EQ(loco->getUserSpeed(), 0);
   EXPECT_EQ(loco->getUserDirection(), Forward);
 }
+
+/**
+ * @brief Test getting a CSConsist by the lead loco address
+ */
+TEST_F(CSConsistTests, TestGetCSConsistByLeadLocoAddress) {
+  // Create a CSConsist
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
+  _dccexProtocol.addCSConsistMember(csConsist, 5, true);
+
+  // Try to retrieve it
+  CSConsist *getIt = _dccexProtocol.getCSConsistByLeadLoco(3);
+  ASSERT_NE(getIt, nullptr);
+  EXPECT_EQ(getIt, csConsist);
+}
+
+/**
+ * @brief Test getting a CSConsist by the lead loco object
+ */
+TEST_F(CSConsistTests, TestGetCSConsistByLeadLoco) {
+  // Create a CSConsist and a lead Loco
+  Loco *leadLoco = new Loco(3, LocoSource::LocoSourceEntry);
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
+  _dccexProtocol.addCSConsistMember(csConsist, 5, true);
+
+  // Try to retrieve it
+  CSConsist *getIt = _dccexProtocol.getCSConsistByLeadLoco(leadLoco);
+  ASSERT_NE(getIt, nullptr);
+  EXPECT_EQ(getIt, csConsist);
+}
+
+/**
+ * @brief Test getting a CSConsist by a member address
+ */
+TEST_F(CSConsistTests, TestGetCSConsistByMemberAddress) {
+  // Create a CSConsist
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
+  _dccexProtocol.addCSConsistMember(csConsist, 5, true);
+
+  // Try to retrieve it
+  CSConsist *getIt = _dccexProtocol.getCSConsistByMemberLoco(5);
+  ASSERT_NE(getIt, nullptr);
+  EXPECT_EQ(getIt, csConsist);
+}
+
+/**
+ * @brief Test getting a CSConsist by a member Loco object
+ */
+TEST_F(CSConsistTests, TestGetCSConsistByMemberLoco) {
+  // Create a CSConsist and a lead Loco
+  Loco *memberLoco = new Loco(5, LocoSource::LocoSourceEntry);
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
+  _dccexProtocol.addCSConsistMember(csConsist, 5, true);
+
+  // Try to retrieve it
+  CSConsist *getIt = _dccexProtocol.getCSConsistByMemberLoco(memberLoco);
+  ASSERT_NE(getIt, nullptr);
+  EXPECT_EQ(getIt, csConsist);
+}
+
+/**
+ * @brief Test invalid values for getCSConsistByLeadLoco
+ */
+TEST_F(CSConsistTests, TestGetCSConsistByLeadLocoFails) {
+  // Make sure invalid use cases fail sanely
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
+  _dccexProtocol.addCSConsistMember(csConsist, 5, true);
+  Loco *loco = new Loco(20, LocoSource::LocoSourceEntry);
+
+  CSConsist *test = nullptr;
+  test = _dccexProtocol.getCSConsistByLeadLoco(0);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByLeadLoco(10240);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByLeadLoco(20);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByLeadLoco(loco);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByLeadLoco(nullptr);
+  EXPECT_EQ(test, nullptr);
+}
+
+/**
+ * @brief Test invalid values for getCSConsistByMemberLoco
+ */
+TEST_F(CSConsistTests, TestGetCSConsistByMemberLocoFails) {
+  // Make sure invalid use cases fail sanely
+  CSConsist *csConsist = _dccexProtocol.createCSConsist(3);
+  _dccexProtocol.addCSConsistMember(csConsist, 5, true);
+  Loco *loco = new Loco(20, LocoSource::LocoSourceEntry);
+
+  CSConsist *test = nullptr;
+  test = _dccexProtocol.getCSConsistByMemberLoco(0);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByMemberLoco(10240);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByMemberLoco(20);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByMemberLoco(loco);
+  EXPECT_EQ(test, nullptr);
+  test = _dccexProtocol.getCSConsistByMemberLoco(nullptr);
+  EXPECT_EQ(test, nullptr);
+}

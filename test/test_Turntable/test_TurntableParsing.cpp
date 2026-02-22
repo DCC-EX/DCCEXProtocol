@@ -93,6 +93,9 @@ TEST_F(TurntableTests, parseTwoTurntables) {
 
   // Now the flag should be true
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+
+  // Validate count
+  EXPECT_EQ(_dccexProtocol.getTurntableCount(), 2);
 }
 
 /**

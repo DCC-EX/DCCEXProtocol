@@ -39,6 +39,7 @@ public:
 // for random speed changes
 int speed = 0;
 int up = 1;
+bool lights = false;
 unsigned long lastTime = 0;
 
 // define our CSConsist object
@@ -101,7 +102,7 @@ void loop() {
     csConsist = dccexProtocol.createCSConsist(11, false, true);
 
     // Add loco 12 to the consist, reverse to the normal direction of travel
-    dccexProtocol.addCSConsistMember(12, true);
+    dccexProtocol.addCSConsistMember(csConsist, 12, true);
 
     // turn track power on or the loco won't move
     dccexProtocol.powerOn();
@@ -117,14 +118,12 @@ void loop() {
       speed = speed + up;
       dccexProtocol.setThrottle(csConsist, speed, Direction::Forward);
 
-      int fn = random(0, 27);
-      int fns = random(0, 100);
-      bool fnState = (fns < 50) ? false : true;
+      lights = !lights;
 
-      if (fnState) {
-        dccexProtocol.functionOn(csConsist, fn);
+      if (lights) {
+        dccexProtocol.functionOn(csConsist, 0);
       } else {
-        dccexProtocol.functionOff(csConsist, fn);
+        dccexProtocol.functionOff(csConsist, 0);
       }
 
       lastTime = millis();

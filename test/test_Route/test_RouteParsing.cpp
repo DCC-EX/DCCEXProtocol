@@ -72,4 +72,7 @@ TEST_F(RouteTests, parseThreeRoutes) {
 
   // Flag should now be true when all routes received
   EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+
+  // Validate count
+  EXPECT_EQ(_dccexProtocol.getRouteCount(), 3);
 }

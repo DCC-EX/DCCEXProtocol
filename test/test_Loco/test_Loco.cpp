@@ -231,6 +231,9 @@ TEST_F(LocoTests, TestLocalLocosAddToList) {
   EXPECT_EQ(loco1->getNext(), loco2);
   EXPECT_EQ(loco2->getNext(), loco3);
   EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Test list is available via DCCEXProtocol attribute localLocos
+  EXPECT_EQ(_dccexProtocol.roster->getFirstLocalLoco(), loco1);
 }
 
 /**

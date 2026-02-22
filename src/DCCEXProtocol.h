@@ -469,6 +469,34 @@ public:
   bool addCSConsistMember(CSConsist *csConsist, int address, bool reversed = false);
 
   /**
+   * @brief Get a CSConsist by the lead loco DCC address
+   * @param address DCC address of the lead loco
+   * @return CSConsist* Pointer to the CSConsist object the loco is lead for, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByLeadLoco(int address);
+
+  /**
+   * @brief Get a CSConsist by the lead Loco object
+   * @param address Pointer to the lead Loco object
+   * @return CSConsist* Pointer to the CSConsist object the loco is lead for, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByLeadLoco(Loco *loco);
+
+  /**
+   * @brief Get a CSConsist by a member DCC address
+   * @param address DCC address of the member
+   * @return CSConsist* Pointer to the CSConsist object the loco is a member of, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByMemberLoco(int address);
+
+  /**
+   * @brief Get a CSConsist by a member Loco object
+   * @param address Pointer to the member Loco object
+   * @return CSConsist* Pointer to the CSConsist object the loco is a member of, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByMemberLoco(Loco *loco);
+
+  /**
    * @brief Remove a member from the CSConsist
    * @param address DCC address of the member
    * @return bool True if removed successfully, otherwise false
