@@ -1,10 +1,6 @@
 /* -*- c++ -*-
  *
- * DCCEXProtocol
- *
- * This package implements a DCCEX native protocol connection,
- * allow a device to communicate with a DCC-EX EX-CommandStation.
- *
+ * Copyright © 2026 Peter Cole
  * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
@@ -30,7 +26,7 @@
 /// @brief Create a consist with three Loco objects
 TEST_F(LocoTests, createConsistByLoco) {
   // Create three locos for the consist
-  char *functionList = "Lights/*Horn";
+  const char *functionList = "Lights/*Horn";
   Loco *loco10 = new Loco(10, LocoSourceRoster);
   loco10->setName("Loco 10");
   loco10->setupFunctions(functionList);
@@ -161,5 +157,69 @@ TEST_F(LocoTests, createConsistByAddress) {
   EXPECT_EQ(consist->getDirection(), Direction::Forward);
 
   // Clean up the consist
+  delete consist;
+}
+
+/**
+ * @brief Test creating a consist using local locos
+ */
+TEST_F(LocoTests, CreateConsistWithLocalLocos) {
+  // Create three local locos for the consist
+  Loco *loco10 = new Loco(10, LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSourceEntry);
+  Loco *loco10000 = new Loco(10000, LocoSourceEntry);
+
+  // Add locos to the consist, with 2 reversed
+  Consist *consist = new Consist();
+  consist->addLoco(loco10, Facing::FacingForward);
+  consist->addLoco(loco2, Facing::FacingReversed);
+  consist->addLoco(loco10000, Facing::FacingForward);
+
+  // Validate consist makeup by object and address
+  EXPECT_EQ(consist->getLocoCount(), 3);
+  EXPECT_TRUE(consist->inConsist(loco10));
+  EXPECT_TRUE(consist->inConsist(loco2));
+  EXPECT_TRUE(consist->inConsist(loco10000));
+  EXPECT_TRUE(consist->inConsist(10));
+  EXPECT_TRUE(consist->inConsist(2));
+  EXPECT_TRUE(consist->inConsist(10000));
+
+  // Validate the first loco is 10
+  EXPECT_EQ(consist->getFirst()->getLoco(), loco10);
+
+  // Validate the consist speed and direction comes from the first loco
+  EXPECT_EQ(consist->getSpeed(), 0);
+  EXPECT_EQ(consist->getDirection(), Direction::Forward);
+  loco2->setSpeed(35);
+  loco10000->setDirection(Direction::Reverse);
+  EXPECT_EQ(consist->getSpeed(), 0);
+  EXPECT_EQ(consist->getDirection(), Direction::Forward);
+  loco10->setSpeed(21);
+  loco10->setDirection(Direction::Reverse);
+  EXPECT_EQ(consist->getSpeed(), 21);
+  EXPECT_EQ(consist->getDirection(), Direction::Reverse);
+
+  // Validate removal of middle loco is as expected
+  consist->removeLoco(loco2);
+  EXPECT_EQ(consist->getLocoCount(), 2);
+  EXPECT_EQ(consist->getFirst()->getLoco(), loco10);
+  EXPECT_EQ(consist->getSpeed(), 21);
+  EXPECT_EQ(consist->getDirection(), Direction::Reverse);
+
+  // Validate removal of first loco is as expected
+  consist->removeLoco(loco10);
+  EXPECT_EQ(consist->getLocoCount(), 1);
+  EXPECT_EQ(consist->getFirst()->getLoco(), loco10000);
+  EXPECT_EQ(consist->getSpeed(), 0);
+  EXPECT_EQ(consist->getDirection(), Direction::Reverse);
+
+  // Validate removal of all locos
+  consist->removeAllLocos();
+  EXPECT_EQ(consist->getLocoCount(), 0);
+  EXPECT_EQ(consist->getFirst(), nullptr);
+  EXPECT_EQ(consist->getSpeed(), 0);
+  EXPECT_EQ(consist->getDirection(), Direction::Forward);
+
+  // Clean up
   delete consist;
 }

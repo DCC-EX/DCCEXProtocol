@@ -87,7 +87,7 @@ TEST_F(LocoTests, receiveNonRosterLocoUpdate) {
   // Expect to receive the delegate call at the next check()
   EXPECT_CALL(_delegate, receivedLocoBroadcast(355, 31, Direction::Forward, 0)).Times(Exactly(1));
   // We should not receive a Loco object delegate call
-  EXPECT_CALL(_delegate, receivedLocoUpdate(::testing::_)).Times(0);
+  EXPECT_CALL(_delegate, receivedLocoUpdate(_)).Times(0);
   _dccexProtocol.check();
 
   // Set a loco update for an unknown loco in the stream:
@@ -100,5 +100,59 @@ TEST_F(LocoTests, receiveNonRosterLocoUpdate) {
   EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 11, Direction::Reverse, 2)).Times(Exactly(1));
   // We should not receive a Loco object delegate call
   EXPECT_CALL(_delegate, receivedLocoUpdate(::testing::_)).Times(0);
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving an update for Loco address 0 does not update
+ */
+TEST_F(LocoTests, TestReceiveUpdateLoco0DoesNotUpdate) {
+  // Set a loco update for loco address 0 in the stream
+  // address 0, speed byte forward 31, functions off
+  _stream << "<l 0 0 160 0>";
+
+  // Expect no calls should be made
+  EXPECT_CALL(_delegate, receivedLocoUpdate(_)).Times(0);
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(_, _, _, _)).Times(0);
+
+  // Check
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test various speedbyte values calculate correctly
+ */
+TEST_F(LocoTests, TestSpeedByteCalculation) {
+  // Forward normal stop 128 = 0 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 128 0>";
+  _dccexProtocol.check();
+  // Forward full speed 255 = 126 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 126, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 255 0>";
+  _dccexProtocol.check();
+  // Forward mid speed 191 = 62 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 62, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 191 0>";
+  _dccexProtocol.check();
+  // Forward e stop 129 = 0 1
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Forward, 0)).Times(1);
+  _stream << "<l 42 0 129 0>";
+  _dccexProtocol.check();
+  // Reverse normal stop 0 = 0 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 0 0>";
+  _dccexProtocol.check();
+  // Reverse full speed 127 = 126 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 126, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 127 0>";
+  _dccexProtocol.check();
+  // Reverse mid speed 63 = 62 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 62, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 63 0>";
+  _dccexProtocol.check();
+  // Reverse e stop 1 = 0 0
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 0, Direction::Reverse, 0)).Times(1);
+  _stream << "<l 42 0 1 0>";
   _dccexProtocol.check();
 }

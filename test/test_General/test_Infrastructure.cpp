@@ -43,6 +43,11 @@ TEST_F(DCCEXProtocolTests, clearBufferWhenFull) {
  */
 TEST_F(DCCEXProtocolTests, testGenericSendCommand) {
   _dccexProtocol.sendCommand("Random command");
-  EXPECT_EQ(_stream.getOutput(), "<Random command>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<Random command>");
   _stream.clearOutput();
 }
+
+/**
+ * @brief Test the library version can be retrieved via the static method
+ */
+TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.3.0"); }

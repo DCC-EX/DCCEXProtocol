@@ -26,25 +26,23 @@
  * @brief Test heartbeat # is sent at the required intervals only
  */
 TEST_F(DCCEXProtocolTests, TestHeartbeat) {
-  // Reset millis from previous tests
-  resetMillis();
   // Enable heartbeat with default time of 60 seconds
   _dccexProtocol.enableHeartbeat();
   _dccexProtocol.check();
   // Should not have heartbeat in first call
-  EXPECT_NE(_stream.getOutput(), "<#>\r\n");
+  EXPECT_NE(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 
   // Advance timer 30s and still should not have heartbeat
   advanceMillis(30000);
   _dccexProtocol.check();
-  EXPECT_NE(_stream.getOutput(), "<#>\r\n");
+  EXPECT_NE(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 
   // Now go past 60s and should have heartbeat
   advanceMillis(30001);
   _dccexProtocol.check();
-  EXPECT_EQ(_stream.getOutput(), "<#>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 }
 
@@ -52,30 +50,28 @@ TEST_F(DCCEXProtocolTests, TestHeartbeat) {
  * @brief Test heartbeat # is sent at custom intervals only
  */
 TEST_F(DCCEXProtocolTests, TestCustomHeartbeat) {
-  // Reset timer from previous tests
-  resetMillis();
   // Enable heartbeat with custom time of 30 seconds
   _dccexProtocol.enableHeartbeat(30000);
   _dccexProtocol.check();
   // Should not have heartbeat in first call
-  EXPECT_NE(_stream.getOutput(), "<#>\r\n");
+  EXPECT_NE(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 
   // Advance timer 20s and still should not have heartbeat
   advanceMillis(20000);
   _dccexProtocol.check();
-  EXPECT_NE(_stream.getOutput(), "<#>\r\n");
+  EXPECT_NE(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 
   // Now go past 30s and should have heartbeat
   advanceMillis(30001);
   _dccexProtocol.check();
-  EXPECT_EQ(_stream.getOutput(), "<#>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 
   // Past 60s should also generate another heartbeat
   advanceMillis(30001);
   _dccexProtocol.check();
-  EXPECT_EQ(_stream.getOutput(), "<#>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<#>");
   _stream.clearOutput();
 }

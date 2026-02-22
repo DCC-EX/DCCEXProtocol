@@ -79,7 +79,7 @@ TEST_F(RouteTests, createThreeRoutes) {
 /// @brief Validate that sending handOffLoco(int locoAddress, int automationId) sends </ locoAddress automationId>
 TEST_F(RouteTests, automationHandOff) {
   // Start automation ID 100 using loco address 1234
-  const char *expected = "</ START 1234 100>\r\n";
+  const char *expected = "</ START 1234 100>";
 
   // An automation 100 must exist
   Route *automation100 = new Route(100);

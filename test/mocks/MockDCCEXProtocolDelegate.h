@@ -7,7 +7,7 @@ public:
   MOCK_METHOD(void, receivedServerVersion, (int, int, int), (override));
 
   // Notify when a broadcast message has been received
-  MOCK_METHOD(void, receivedMessage, (char *), (override));
+  MOCK_METHOD(void, receivedMessage, (const char *), (override));
 
   // Notify when the roster list is received
   MOCK_METHOD(void, receivedRosterList, (), (override));
@@ -29,6 +29,12 @@ public:
 
   // Notify when a track power state change is received
   MOCK_METHOD(void, receivedTrackPower, (TrackPower), (override));
+
+  // Notify when a track current gauge is received
+  MOCK_METHOD(void, receivedTrackCurrentGauge, (char track, int limit), (override));
+
+  // Notify when a track current is received
+  MOCK_METHOD(void, receivedTrackCurrent, (char track, int current), (override));
 
   // Notify when a track type change is received
   MOCK_METHOD(void, receivedTrackType, (char, TrackManagerMode, int), (override));
@@ -53,4 +59,16 @@ public:
 
   // Notify when a loco address is written on the programming track
   MOCK_METHOD(void, receivedWriteLoco, (int), (override));
+
+  // Notify when a screen update has been received
+  MOCK_METHOD(void, receivedScreenUpdate, (int screen, int row, const char *message), (override));
+
+  // Notify when a CSConsist has been received
+  MOCK_METHOD(void, receivedCSConsist, (int, CSConsist *), (override));
+
+  // Notify when set fast clock has been received
+  MOCK_METHOD(void, receivedSetFastClock, (int minutes, int speedFactor), (override));
+
+  // Notify when a fast clock time has been received
+  MOCK_METHOD(void, receivedFastClockTime, (int minutes), (override));
 };

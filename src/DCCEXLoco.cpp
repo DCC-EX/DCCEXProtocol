@@ -34,6 +34,7 @@
 // Public methods
 
 Loco *Loco::_first = nullptr;
+Loco *Loco::_firstLocalLoco = nullptr;
 
 Loco::Loco(int address, LocoSource source) : _address(address), _source(source) {
   for (int i = 0; i < MAX_FUNCTIONS; i++) {
@@ -45,16 +46,13 @@ Loco::Loco(int address, LocoSource source) : _address(address), _source(source) 
   _functionStates = 0;
   _momentaryFlags = 0;
   _next = nullptr;
+  _userSpeed = 0;
+  _userDirection = Forward;
+  _userChangePending = false;
   if (_source == LocoSource::LocoSourceRoster) {
-    if (!_first) {
-      _first = this;
-    } else {
-      Loco *current = _first;
-      while (current->_next != nullptr) {
-        current = current->_next;
-      }
-      current->_next = this;
-    }
+    _addToList(&_first, this);
+  } else {
+    _addToList(&_firstLocalLoco, this);
   }
 }
 
@@ -159,45 +157,43 @@ void Loco::setNext(Loco *loco) { _next = loco; }
 Loco *Loco::getNext() { return _next; }
 
 Loco *Loco::getByAddress(int address) {
-  for (Loco *l = getFirst(); l; l = l->getNext()) {
-    if (l->getAddress() == address) {
-      return l;
-    }
-  }
-  return nullptr;
+  Loco *loco = _findAddressInList(&_first, address);
+  if (loco != nullptr)
+    return loco;
+
+  loco = _findAddressInList(&_firstLocalLoco, address);
+  return loco;
 }
 
-void Loco::clearRoster() {
-  // Count Locos in roster
-  int locoCount = 0;
-  Loco *currentLoco = Loco::getFirst();
-  while (currentLoco != nullptr) {
-    locoCount++;
-    currentLoco = currentLoco->getNext();
-  }
+void Loco::clearRoster() { _clearList(&_first); }
 
-  // Store Loco pointers in an array for clean up
-  Loco **deleteLocos = new Loco *[locoCount];
-  currentLoco = Loco::getFirst();
-  for (int i = 0; i < locoCount; i++) {
-    deleteLocos[i] = currentLoco;
-    currentLoco = currentLoco->getNext();
-  }
-
-  // Delete each Loco
-  for (int i = 0; i < locoCount; i++) {
-    delete deleteLocos[i];
-  }
-
-  // Clean up the array of pointers
-  delete[] deleteLocos;
-
-  // Reset first pointer
-  Loco::_first = nullptr;
+void Loco::setUserSpeed(int speed) {
+  _userSpeed = speed;
+  if (_userSpeed != _speed)
+    _userChangePending = true;
 }
+
+int Loco::getUserSpeed() { return _userSpeed; }
+
+void Loco::setUserDirection(Direction direction) {
+  _userDirection = direction;
+  if (_userDirection != _direction)
+    _userChangePending = true;
+}
+
+Direction Loco::getUserDirection() { return _userDirection; }
+
+void Loco::resetUserChangePending() { _userChangePending = false; }
+
+bool Loco::getUserChangePending() { return _userChangePending; }
+
+Loco *Loco::getFirstLocalLoco() { return _firstLocalLoco; }
+
+void Loco::clearLocalLocos() { _clearList(&_firstLocalLoco); }
 
 Loco::~Loco() {
-  _removeFromList(this);
+  _removeFromList(&_first, this);
+  _removeFromList(&_firstLocalLoco, this);
 
   if (_name) {
     delete[] _name;
@@ -216,21 +212,51 @@ Loco::~Loco() {
 
 // Private methods
 
-void Loco::_removeFromList(Loco *loco) {
-  if (!loco) {
+void Loco::_addToList(Loco **listHead, Loco *loco) {
+  if (!*listHead) {
+    *listHead = loco;
+  } else {
+    Loco *current = *listHead;
+    while (current->_next != nullptr) {
+      current = current->_next;
+    }
+    current->_next = loco;
+  }
+}
+
+Loco *Loco::_findAddressInList(Loco **listHead, int address) {
+  for (Loco *loco = *listHead; loco; loco = loco->getNext()) {
+    if (loco->getAddress() == address) {
+      return loco;
+    }
+  }
+  return nullptr;
+}
+
+void Loco::_removeFromList(Loco **listHead, Loco *loco) {
+  if (!listHead || !*listHead || !loco) {
     return;
   }
 
-  if (getFirst() == loco) {
-    _first = loco->getNext();
+  if (*listHead == loco) {
+    *listHead = loco->getNext();
   } else {
-    Loco *currentLoco = _first;
+    Loco *currentLoco = *listHead;
     while (currentLoco && currentLoco->getNext() != loco) {
       currentLoco = currentLoco->getNext();
     }
     if (currentLoco) {
       currentLoco->setNext(loco->getNext());
     }
+  }
+}
+
+void Loco::_clearList(Loco **listHead) {
+  if (!listHead)
+    return;
+
+  while (*listHead != nullptr) {
+    delete *listHead;
   }
 }
 

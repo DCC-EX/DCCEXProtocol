@@ -88,3 +88,72 @@ TEST_F(TurnoutTests, operateTurnout) {
   turnout100->setThrown(false);
   EXPECT_FALSE(turnout100->getThrown());
 }
+
+/**
+ * @brief Test closing a turnout updates objects and CS
+ */
+TEST_F(TurnoutTests, TestCloseTurnout) {
+  // Create a turnout to update
+  Turnout *turnout100 = new Turnout(100, false);
+  ASSERT_FALSE(turnout100->getThrown());
+
+  // Test close command
+  _dccexProtocol.throwTurnout(100);
+  EXPECT_EQ(_stream.getOutput(), "<T 100 1>");
+
+  // Simulate receiving a throw broadcast and validate
+  EXPECT_CALL(_delegate, receivedTurnoutAction(100, 1));
+  _stream << "<H 100 1>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(turnout100->getThrown());
+}
+
+/**
+ * @brief Test throwing a turnout updates objects and CS
+ */
+TEST_F(TurnoutTests, TestThrowTurnout) {
+  // Create a turnout to update
+  Turnout *turnout100 = new Turnout(100, true);
+  ASSERT_TRUE(turnout100->getThrown());
+
+  // Test throw command
+  _dccexProtocol.closeTurnout(100);
+  EXPECT_EQ(_stream.getOutput(), "<T 100 0>");
+
+  // Simulate receiving a close broadcast and validate
+  EXPECT_CALL(_delegate, receivedTurnoutAction(100, 0));
+  _stream << "<H 100 0>";
+  _dccexProtocol.check();
+  EXPECT_FALSE(turnout100->getThrown());
+}
+
+/**
+ * @brief Test toggling a turnout updates objects and CS
+ */
+TEST_F(TurnoutTests, TestToggleTurnout) {
+  // Create a turnout to update
+  Turnout *turnout100 = new Turnout(100, false);
+  ASSERT_FALSE(turnout100->getThrown());
+
+  // Test toggle command sends throw
+  _dccexProtocol.toggleTurnout(100);
+  EXPECT_EQ(_stream.getOutput(), "<T 100 1>");
+  _stream.clearOutput();
+
+  // Simulate receiving a throw broadcast and validate
+  EXPECT_CALL(_delegate, receivedTurnoutAction(100, 1));
+  _stream << "<H 100 1>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(turnout100->getThrown());
+
+  // Toggle again should now close
+  _dccexProtocol.toggleTurnout(100);
+  EXPECT_EQ(_stream.getOutput(), "<T 100 0>");
+  _stream.clearOutput();
+
+  // Simulate receiving a close broadcast and validate
+  EXPECT_CALL(_delegate, receivedTurnoutAction(100, 0));
+  _stream << "<H 100 0>";
+  _dccexProtocol.check();
+  EXPECT_FALSE(turnout100->getThrown());
+}

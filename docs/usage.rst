@@ -79,6 +79,17 @@ As covered in the design principles above, you must include the `check()` method
 
 Refer to the :doc:`examples` to see how this may be implemented.
 
+A Note on DCCEXProtocolDelegate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*New in DCCEXProtocol 1.3.0*
+
+In previous versions of the library, it was necessary to create a DCCEXProtocolDelegate instance and associate it with your DCCEXProtocol instance to be able to send any commands to a command station, even if there was no reliance on any DCCEXProtocolDelegate methods.
+
+This has now been corrected, and the library can be utilised without a DCCEXProtocolDelegate instance. The `dccexProtocol.check()` method is responsible for managing and maintaining the state of the various objects, and the DCCEXProtocolDelegate methods simply notify when broadcasts or responses are received.
+
+However, in case it's not obvious, if your software needs to respond to a response or broadcast (eg. changing a display when a turnout is thrown), then you should still utilise the DCCEXProtocolDelegate to be notified when these events occur, rather than having to manually poll any objects for changes.
+
 Control and Inputs
 ------------------
 
@@ -120,7 +131,7 @@ You can set the command buffer size and parameter count:
   DCCEXProtocol dccexProtocol; // Use default 500 byte buffer, 50 parameters
   DCCEXProtocol dccexProtocol(500, 100); // Use default 500 byte buffer, 100 parameters
 
-All objects are contained within linked lists and can be access via for loops:
+All objects are contained within linked lists and can be accessed via for loops:
 
 .. code-block:: cpp
 
@@ -145,6 +156,50 @@ All objects are contained within linked lists and can be access via for loops:
 
 Refer to the `DCCEXProtocol_Roster_etc` example for an idea of how this may be implemented.
 
+Command Station Consist (CSConsist) list
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*New in DCCEXProtocol 1.3.0*
+
+With the introduction of the Command Station Consist (CSConsist) in EX-CommandStation, there is now also a list of CSConsists available. However, this list is dynamic and is updated each time a CSConsist is created, modified, or deleted, and therefore should not be treated the same as the roster, turnout, route, or turntable lists.
+
+**Note that this new CSConsist support deprecates the existing Consist object and all associated methods, and these will be removed in a future release.**
+
+To get the current list of CSConsists use this method:
+
+.. code-block:: cpp
+
+  dccexProtocol.requestCSConsists();
+
+The command station will respond and create a list of CSConsist objects on the next call to `dccexProtocol.check()`.
+
+Similar to the lists above, this can be navigated like so:
+
+.. code-block:: cpp
+
+  for (CSConsist *csConsist = dccexProtocol.csConsists->getFirst(); csConsist; csConsist = csConsist->getNext()) {
+    // CSConsist methods are available here
+  }
+
+Refer to the library method documentation for the various methods available to create, update, and delete these new CSConsists.
+
+Speed Update Queuing and Throttling
+-----------------------------------
+
+*New in DCCEXProtocol 1.3.0*
+
+To prevent excessive throttle speed adjustments from saturating WiFi/serial buffers and causing excessive broadcasts to other throttles, buffering of loco speed and direction (`setThrottle(...)`) commands are now throttled using a timed queue. By default, this timer is set at 100 milliseconds, which is typically not noticeable by a throttle user.
+
+If you wish to adjust this interval, it can be done so when creating a DCCEXProtocol instance by passing an additional parameter to the command buffer and parameters outlined above:
+
+.. code-block:: cpp
+
+  // dccexProtocol(maxCmdBuffer, maxCommandParams, userChangeDelay);
+  DCCEXProtocol dccexProtocol; // Use default 500 byte buffer, 50 parameters, and 100ms user change delay
+  DCCEXProtocol dccexProtocol(500, 100, 50); // Use default 500 byte buffer, 100 parameters, and decrease delay to 50ms
+
+No other commands are processed through this mechanism, meaning every other command is still sent instantly.
+
 Object ownership
 ----------------
 
@@ -161,6 +216,8 @@ You can also clear all lists with `dccexProtocol->clearAllLists()`.
 
 **Note there is one exception to this rule** which is Loco objects that are created with the `LocoSource::LocoSourceEntry` type set, as these do not get added to the roster list.
 
-If you create a Loco object using this type, you must delete the object when you are finished with it in order to prevent memory leaks.
+*Updated in DCCEXProtocol 1.3.0*
+
+If you create a Loco object using this type, you may delete the object when you are finished with it in order to prevent memory leaks, but this is no longer strictly necessary as they are added to a list of LocoSourceEntry Locos, which is accessible via `dccexProtocol.roster->getFirstLocalLoco()`. This can also be cleared with `clearLocalLocos()`, and it is also cleared along with the other lists when calling `clearAllLists()`.
 
 This also means if you are creating a local roster in your software that you wish to be a part of the roster list, you must use the `LocoSource::LocoSourceRoster` type when creating the Loco object.

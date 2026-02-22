@@ -30,7 +30,7 @@
 /// @brief Validate calling readLoco() generates the correct command
 TEST_F(CVTests, readLocoAddress) {
   // Reading should generate <R>
-  const char *expected = "<R>\r\n";
+  const char *expected = "<R>";
 
   // Call readLoco()
   _dccexProtocol.readLoco();
@@ -42,7 +42,7 @@ TEST_F(CVTests, readLocoAddress) {
 /// @brief Validate calling readCV(cv) generates the correct command
 TEST_F(CVTests, readCV) {
   // Reading CV 19 should generate <R 19>
-  const char *expected = "<R 19>\r\n";
+  const char *expected = "<R 19>";
 
   // Call readLoco()
   _dccexProtocol.readCV(19);
@@ -54,7 +54,7 @@ TEST_F(CVTests, readCV) {
 /// @brief Validate calling validateCV(cv, value) generates the correct command
 TEST_F(CVTests, validateCV) {
   // Validating CV 1 with value 3 should generate <V 1 3>
-  const char *expected = "<V 1 3>\r\n";
+  const char *expected = "<V 1 3>";
 
   // Call validateCV()
   _dccexProtocol.validateCV(1, 3);
@@ -66,7 +66,7 @@ TEST_F(CVTests, validateCV) {
 /// @brief Validate calling validateCVBit(cv, bit, value) generates the correct command
 TEST_F(CVTests, validateCVBit) {
   // Validating CV 1 bit 3 with value 1 should generate <V 1 3 1>
-  const char *expected = "<V 1 3 1>\r\n";
+  const char *expected = "<V 1 3 1>";
 
   // Call validateCVBit()
   _dccexProtocol.validateCVBit(1, 3, 1);

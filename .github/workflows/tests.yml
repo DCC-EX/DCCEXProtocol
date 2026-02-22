@@ -1,11 +1,22 @@
+# Workflow to ensure tests are run on every push and PRs to main/devel
 name: PlatformIO Testing
 
+# Always run tests when pushing
 on:
   push:
-    branches: [main, devel]
+    branches:
+      - "**"
   pull_request:
-    branches: [main, devel]
+    branches:
+      - main
+      - devel
 
+# Cancel in progress tests if a new push/PR occurs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Run tests
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -16,7 +27,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Intall PlatformIO
         run: pip install -U platformio
       - name: Run PlatformIO tests

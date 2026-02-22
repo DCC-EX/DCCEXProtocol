@@ -32,77 +32,16 @@
  */
 
 /*
-Version information:
-
-1.2.1   - Refactor Consist::addLoco to use itoa instead of snprintf for Flash savings
-        - Refactor all DCCEXProtocol outbound commands to remove sprintf
-        - Add default true to getLists() so users can just call it without parameters to get all lists
-        - Deprecate disconnect() method that does nothing and conflicts with user U command
-        - Additional tests to improve future bug detection/breakages
-        - Other non-functional tidy up changes
-1.2.0   - Add loco hand off method handOffLoco(locoAddress, automationId)
-        - Add readCV(cv) and validateCV(cv, value) methods with associated delegate method:
-                receivedValidateCV(int cv, int value)
-        - Add write loco address writeLocoAddress(address) with associated delegate method:
-                receivedWriteLoco(int address)
-        - Add validateCVBit(cv, bit, value) method with associated delegate method:
-                receivedValidateCVBit(int cv, int bit, int value)
-        - Add writeCV(cv, value) with delegate method receivedWriteCV(int cv, int value)
-        - Add writeCVBit(cv, bit, value) - note there is no response for this due to parser limitations
-        - Add writeCVOnMain(address, cv, value)
-        - Add writeCVBitOnMain(address, cv, bit, value)
-1.1.0   - Add new track power methods:
-        - powerMainOn()/powerMainOff() - Control track power for MAIN track only
-        - powerProgOn()/powerProgOff() - Control track power for PROG track only
-        - joinProg() - Join PROG to MAIN
-1.0.2   - No functional changes, updated examples to use receivedLocoBroadcast() for non-roster Loco objects
-1.0.1   - Add additional receivedLocoBroadcast() delegate method to cater for non-roster updates
-1.0.0   - First Production release
-        - Add methods to clear and refresh the various lists
-        - Various memory leak bugfixes
-        - Fix bug where any Loco created was added to the roster, despite LocoSourceEntry being set
-        - Fix bug where getById() for Turnout, Route, and Turntable was not a static method, causing runtime errors
-        - Removed redundant count on Turnout, Route, and Turntable as these are available from getRosterCount,
-                getTurnoutCount, getRouteCount, getTurntableCount
-        - Updated all public methods setting and getting names from char * to const char * to remove compiler warnings
-        - Enable configuring the max parameters parsed by DCCEXInbound via the DCCEXProtocol constructor
-        - Implemented many new tests
-0.0.17  - Fix typo in turntable example
-        - Fix bug where the turntable isMoving() method always returned true
-        - Add enableHeartbeat(heartbeatDelay) to send a heartbeat every x ms if a command is not sent
-0.0.16  - add public sendCommand method
-0.0.15  - any acquired loco is now retained in the roster
-0.0.14  - add getNumberSupportedLocos()   used for the fake heartbeat
-0.0.13  - Fix bug to allow compilation on AVR platforms, change ssize_t to int
-        - Add serial connectivity example
-        - Add support for SCREEN updates to delegate
-        - Enhance buffer management to clear command buffer if full
-0.0.12  - Improved memory management
-0.0.11  - support for individual track power   receivedIndividualTrackPower(TrackPower state, int track)
-        - improved logic for overall track power
-0.0.10  - Add support for broadcast messages
-0.0.9   - if loco is selected by address and that loco is in the roster (with the same DCC Address), updated and send
-          speed commands for both
-0.0.8   - No functional changes, add cross-platform and unit testing capabilities (credit to
-          higaski)
-0.0.7   - Add isFunctionMomentary(int function);
-0.0.6   - Add getFunctionName(int function);
-0.0.5   - Increase MAX_FUNCTIONS to 32.
-        - Also add check to make sure the incoming does not exceed MAX_FUNCTIONS
-0.0.4   - No functional changes, update author/maintainer and URL library properties
-0.0.3   - Add getByAddress method to ConsistLoco
-        - Fix bug when removing locos from a consist
-        - Tidy setTrackType() method
-0.0.2   - Add TrackManager configuration method and broadcast processing
-        - Add TrackManager, SSID, and mDNS examples
-0.0.1   - Initial library release via the Arduino Library Manager
+Version information: MOVED TO DCCEXProtocolVersion.h
 */
 
 #ifndef DCCEXPROTOCOL_H
 #define DCCEXPROTOCOL_H
 
+#include "DCCEXCSConsist.h"
 #include "DCCEXInbound.h"
 #include "DCCEXLoco.h"
+#include "DCCEXProtocolVersion.h"
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
@@ -124,6 +63,12 @@ enum TrackManagerMode {
   DC,   // DC mode
   DCX,  // Reverse polarity DC mode
   NONE, // Track is unused
+};
+
+// Valid Momentum algorithms - MUST MATCH lookup table in setMomentumAlgorithm()
+enum MomentumAlgorithm {
+  Linear, // Linear acceleration
+  Power,  // Speed difference
 };
 
 /// @brief Nullstream class for initial DCCEXProtocol instantiation to direct streams to nothing
@@ -170,7 +115,7 @@ public:
 
   /// @brief Notify when a broadcast message has been received
   /// @param message message that has been broadcast
-  virtual void receivedMessage(char *message) {}
+  virtual void receivedMessage(const char *message) {}
 
   /// @brief Notify when the roster list is received
   virtual void receivedRosterList() {}
@@ -198,6 +143,20 @@ public:
   /// @brief Notify when the global track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
   virtual void receivedTrackPower(TrackPower state) {}
+
+  /**
+   * @brief Notify when a track current limit value is received
+   * @param track Track (A - H)
+   * @param limit Current limit in mA
+   */
+  virtual void receivedTrackCurrentGauge(char track, int limit) {}
+
+  /**
+   * @brief Notify when a track current value is received
+   * @param track Track (A - H)
+   * @param current Current in mA
+   */
+  virtual void receivedTrackCurrent(char track, int current) {}
 
   /// @brief Notify when an individual track power state change is received
   /// @param state Power state received (PowerOff|PowerOn|PowerUnknown)
@@ -249,7 +208,27 @@ public:
   /// @param screen Screen number
   /// @param row Row number
   /// @param message Message to display on the screen/row
-  virtual void receivedScreenUpdate(int screen, int row, char *message) {}
+  virtual void receivedScreenUpdate(int screen, int row, const char *message) {}
+
+  /**
+   * @brief Notify when a CS consist has been received
+   * @param leadLoco DCC address of the lead loco for the consist
+   * @param csConsist Pointer to the CSConsist object controlled by the lead loco
+   */
+  virtual void receivedCSConsist(int leadLoco, CSConsist *csConsist) {}
+
+  /**
+   * @brief Notify when a fast clock time has been set
+   * @param minutes Time since midnight in minutes
+   * @param speedFactor Speed factor multiplier
+   */
+  virtual void receivedSetFastClock(int minutes, int speedFactor) {}
+
+  /**
+   * @brief Notify when a fast clock time has been received
+   * @param minutes Time in minutes
+   */
+  virtual void receivedFastClockTime(int minutes) {}
 
   /// @brief Default destructor for DCCEXProtocolDelegate
   virtual ~DCCEXProtocolDelegate() = default;
@@ -263,7 +242,8 @@ public:
   /// @brief Constructor for the DCCEXProtocol object
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
   /// @param maxCommandParams Optional - maximum number of parameters to parse via the DCCEXInbound parser (default 50)
-  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50);
+  /// @param userChangeDelay Optional - time in ms between sending throttle changes (default 100)
+  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50, unsigned long userChangeDelay = 100);
 
   /// @brief Destructor for the DCCEXProtocol object
   ~DCCEXProtocol();
@@ -285,6 +265,7 @@ public:
   void connect(Stream *stream);
 
   /// @brief DEPRECATED - Does nothing, retained for backwards compatibility only
+  /// @details Will be removed in 2.0.0.
   void disconnect();
 
   /// @brief Check for incoming DCC-EX broadcasts/responses and parse them
@@ -292,7 +273,7 @@ public:
 
   /// @brief allows sending of an arbitray command
   /// @param cmd Command to send
-  void sendCommand(char *cmd);
+  void sendCommand(const char *cmd);
 
   /// @brief Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)
   /// @param rosterRequired Request the roster list (true|false)
@@ -325,6 +306,12 @@ public:
   /// @return Patch version number eg. x.y.7
   int getPatchVersion();
 
+  /**
+   * @brief Get the current DCCEXProtocol library version
+   * @return const char* Version string
+   */
+  static const char *getLibraryVersion();
+
   /// @brief Retrieve the last time the server responded
   /// @return Last response time in milliseconds (from millis())
   unsigned long getLastServerResponseTime(); // seconds since Arduino start
@@ -335,6 +322,12 @@ public:
   /// @brief Clear roster, turnout, turntable, and route lists and request new ones
   void refreshAllLists();
 
+  /**
+   * @brief Set the Debug flag
+   * @param debug True to send output commands to the console (defaults to False, no output)
+   */
+  void setDebug(bool debug);
+
   // Consist/Loco methods
 
   /// @brief Set the provided loco to the specified speed and direction
@@ -343,21 +336,58 @@ public:
   /// @param direction Direction (Forward|Reverse)
   void setThrottle(Loco *loco, int speed, Direction direction);
 
-  /// @brief Set all locos in the provided consist to the specified speed and direction
+  /// @brief DEPRECATED Set all locos in the provided consist to the specified speed and direction
+  /// @details Will be removed in 2.0.0, use setThrottle(CSConsist *consist, int speed, Direction direction)
   /// @param consist Pointer to a consist object
   /// @param speed Speed (0 - 126)
   /// @param direction Direction (Forward|Reverse) - reverse facing locos will be adjusted automatically
   void setThrottle(Consist *consist, int speed, Direction direction);
+
+  /**
+   * @brief Set the provided command station consist to the specified speed and direction
+   * @details If this consist does not exist, it will be created first, and if it is not valid, this command will be
+   * ignored.
+   * @param csConsist Pointer to the CSConsist object
+   * @param speed Speed (0 - 126)
+   * @param direction Direction (Forward|Reverse)
+   */
+  void setThrottle(CSConsist *csConsist, int speed, Direction direction);
 
   /// @brief Turn the specified function on for the provided loco
   /// @param loco Pointer to a loco object
   /// @param function Function number (0 - 27)
   void functionOn(Loco *loco, int function);
 
+  /// @brief DEPRECATED Turn the specified function on for the provided consist
+  /// @details Will be removed in 2.0.0, use functionOn(CSConsist *csConsist, int function)
+  /// @param consist Pointer to a consist object
+  /// @param function Function number (0 - 27)
+  void functionOn(Consist *consist, int function);
+
+  /**
+   * @brief Turn the specified function on for the provided CSConsist
+   * @param csConsist Pointer to the CSConsist object
+   * @param function Function number (0 - 27)
+   */
+  void functionOn(CSConsist *csConsist, int function);
+
   /// @brief Turn the specified function off for the provided loco
   /// @param loco Pointer to a loco object
   /// @param function Function number (0 - 27)
   void functionOff(Loco *loco, int function);
+
+  /// @brief DEPRECATED Turn the specified function off for the provided consist
+  /// @details Will be removed in 2.0.0, use functionOff(CSConsist *csConsist, int function)
+  /// @param consist Pointer to a consist object
+  /// @param function Function number (0 - 27)
+  void functionOff(Consist *consist, int function);
+
+  /**
+   * @brief Turn the specified function off for the provided CSConsist
+   * @param csConsist Pointer to the CSConsist object
+   * @param function Function number (0 - 27)
+   */
+  void functionOff(CSConsist *csConsist, int function);
 
   /// @brief Test if the specified function for the provided loco is on
   /// @param loco Pointer to a loco object
@@ -365,21 +395,21 @@ public:
   /// @return true = on, false = off
   bool isFunctionOn(Loco *loco, int function);
 
-  /// @brief Turn the specified function on for the provided consist
-  /// @param consist Pointer to a consist object
-  /// @param function Function number (0 - 27)
-  void functionOn(Consist *consist, int function);
-
-  /// @brief Turn the specified function off for the provided consist
-  /// @param consist Pointer to a consist object
-  /// @param function Function number (0 - 27)
-  void functionOff(Consist *consist, int function);
-
-  /// @brief Test if the specified function for the provided consist is on (Checks first loco)
+  /// @brief DEPRECATED Test if the specified function for the provided consist is on (Checks first loco)
+  /// @details Will be removed in 2.0.0, use isFunctionOn(CSConsist *csConsist, int function)
   /// @param consist Pointer to a consist object
   /// @param function Function number to test (0 - 27)
   /// @return true = on, false = off
   bool isFunctionOn(Consist *consist, int function);
+
+  /**
+   * @brief Test if the specified function for the provided CSConsist is on (checks first Loco)
+   * @param csConsist Pointer to the CSConsist object
+   * @param function Function number to test (0 - 27)
+   * @return true Function on
+   * @return false Function off, or CSConsist object is invalid
+   */
+  bool isFunctionOn(CSConsist *csConsist, int function);
 
   /// @brief Explicitly request an update for the specified loco
   /// @param address DCC address of the loco
@@ -409,8 +439,137 @@ public:
   /// @brief Clear the roster
   void clearRoster();
 
+  /// @brief Clear the list of local locos
+  void clearLocalLocos();
+
   /// @brief Clear the roster and request again
   void refreshRoster();
+
+  // CSConsist methods
+
+  /**
+   * @brief Request the list of CSConsists from the command station, will create CSConsist objects
+   */
+  void requestCSConsists();
+
+  /**
+   * @brief Create a CSConsist
+   * @param leadLoco DCC address of the lead loco
+   * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
+   * @return CSConsist* Pointer to the created CSConsist object
+   */
+  CSConsist *createCSConsist(int leadLoco, bool reversed = false, bool replicateFunctions = false);
+
+  /**
+   * @brief Add a member to the CSConsist
+   * @param address DCC address of the member
+   * @param reversed True if loco reversed to normal direction of travel (sending Forward will cause it to reverse)
+   * @return bool True if added successfully, otherwise false
+   */
+  bool addCSConsistMember(CSConsist *csConsist, int address, bool reversed = false);
+
+  /**
+   * @brief Get a CSConsist by the lead loco DCC address
+   * @param address DCC address of the lead loco
+   * @return CSConsist* Pointer to the CSConsist object the loco is lead for, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByLeadLoco(int address);
+
+  /**
+   * @brief Get a CSConsist by the lead Loco object
+   * @param address Pointer to the lead Loco object
+   * @return CSConsist* Pointer to the CSConsist object the loco is lead for, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByLeadLoco(Loco *loco);
+
+  /**
+   * @brief Get a CSConsist by a member DCC address
+   * @param address DCC address of the member
+   * @return CSConsist* Pointer to the CSConsist object the loco is a member of, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByMemberLoco(int address);
+
+  /**
+   * @brief Get a CSConsist by a member Loco object
+   * @param address Pointer to the member Loco object
+   * @return CSConsist* Pointer to the CSConsist object the loco is a member of, or nullptr if none exist
+   */
+  CSConsist *getCSConsistByMemberLoco(Loco *loco);
+
+  /**
+   * @brief Remove a member from the CSConsist
+   * @param address DCC address of the member
+   * @return bool True if removed successfully, otherwise false
+   */
+  bool removeCSConsistMember(CSConsist *csConsist, int address);
+
+  /**
+   * @brief Delete the CSConsist using the lead loco address
+   * @param address DCC address of the lead loco
+   */
+  void deleteCSConsist(int leadLoco);
+
+  /**
+   * @brief Delete the CSConsist
+   * @param csConsist Pointer to the CSConsist object to delete
+   */
+  void deleteCSConsist(CSConsist *csConsist);
+
+  /**
+   * @brief Clears all CSConsist objects
+   */
+  void clearCSConsists();
+
+  // Momentum methods
+
+  /**
+   * @brief Set the Momentum Algorithm
+   * @param algorithm MomentumAlgorithm (Linear, Power)
+   */
+  void setMomentumAlgorithm(MomentumAlgorithm algorithm);
+
+  /**
+   * @brief Set the Default Momentum for accelerating/braking
+   * @param momentum Momentum value
+   */
+  void setDefaultMomentum(int momentum);
+
+  /**
+   * @brief Set the Default Momentum for separate accelerating/braking
+   * @param accelerating Accelerating momentum value
+   * @param braking Braking momentum value
+   */
+  void setDefaultMomentum(int accelerating, int braking);
+
+  /**
+   * @brief Set momentum for the specified loco/DC track
+   * @param address DCC address
+   * @param momentum Momentum value
+   */
+  void setMomentum(int address, int momentum);
+
+  /**
+   * @brief Set the Momentum for the specified Loco
+   * @param loco Pointer to a Loco object
+   * @param momentum Momentum value
+   */
+  void setMomentum(Loco *loco, int momentum);
+
+  /**
+   * @brief Set the Momentum for separate accelerating/braking
+   * @param address DCC address
+   * @param accelerating Accelerating momentum value
+   * @param braking Braking momentum value
+   */
+  void setMomentum(int address, int accelerating, int braking);
+
+  /**
+   * @brief Set the Momentum for separate accelerating/braking
+   * @param loco Pointer to a Loco object
+   * @param accelerating Accelerating momentum value
+   * @param braking Braking momentum value
+   */
+  void setMomentum(Loco *loco, int accelerating, int braking);
 
   // Turnout methods
 
@@ -540,6 +699,16 @@ public:
   /// @param address dcc address for DC and DCX  (Required, but ignored if not DC or DCX)
   void setTrackType(char track, TrackManagerMode type, int address);
 
+  /**
+   * @brief Request the current limit set for each track
+   */
+  void requestTrackCurrentGauges();
+
+  /**
+   * @brief Request the latest current value for each track
+   */
+  void requestTrackCurrents();
+
   // DCC accessory methods
 
   /// @brief Activate DCC accessory at the specified address and subaddress
@@ -610,19 +779,39 @@ public:
   /// @param value Value to write (0|1)
   void writeCVBitOnMain(int address, int cv, int bit, int value);
 
+  // Fast clock methods
+
+  /**
+   * @brief Set the fast clock time and speed factor
+   * @param minutes Time from midnight in minutes (eg. 60 = 1am)
+   * @param speedFactor Speed factor multiplier (eg. 4 = 1 minute every 15 seconds)
+   */
+  void setFastClock(int minutes, int speedFactor);
+
+  /**
+   * @brief Request the current fast clock time
+   */
+  void requestFastClockTime();
+
   // Attributes
 
-  /// @brief Linked list of Loco objects to form the roster
+  /// @brief Linked list of Loco objects to form the roster, call roster->getFirst()
   Loco *roster = nullptr;
 
-  /// @brief Linked list of Turnout objects to form the turnout list
+  /// @brief Linked list of Turnout objects to form the turnout list, call turnouts->getFirst()
   Turnout *turnouts = nullptr;
 
-  /// @brief Linked list of Route objects to form the list of routes and automations
+  /// @brief Linked list of Route objects to form the list of routes and automations, call routes->getFirst()
   Route *routes = nullptr;
 
-  /// @brief Linked list of Turntable objects to form the list of turntables
+  /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
+
+  /**
+   * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class, call
+   * csConsists->getFirst()
+   */
+  CSConsist *csConsists = nullptr;
 
 private:
   // Methods
@@ -640,8 +829,15 @@ private:
   int _getValidFunctionMap(int functionMap);
   int _getSpeedFromSpeedByte(int speedByte);
   Direction _getDirectionFromSpeedByte(int speedByte);
-  void _setLoco(int address, int speed, Direction direction);
+  void _setLocos(Loco *firstLoco);
+  void _updateLocos(Loco *firstLoco, int address, int speedByte, Direction direction, int functionMap);
   void _processReadResponse();
+  void _processPendingUserChanges();
+  void _processCSConsist();
+  void _buildCSConsist(CSConsist *csConsist, int memberCount);
+  void _sendCreateCSConsist(CSConsist *csConsist);
+  void _sendDeleteCSConsist(CSConsist *csConsist);
+  void _setCSConsistMemberFunction(CSConsistMember *member, int function, bool state);
 
   // Roster methods
   void _getRoster();
@@ -678,12 +874,18 @@ private:
   // Track management methods
   void _processTrackPower();
   void _processTrackType();
+  void _processTrackCurrentGauges();
+  void _processTrackCurrents();
 
   // CV programming methods
   void _processValidateCVResponse();
   void _processValidateCVBitResponse();
   void _processWriteLocoResponse();
   void _processWriteCVResponse();
+
+  // Fast clock methods
+  void _processSetFastClock();
+  void _processFastClockTime();
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received
@@ -716,6 +918,9 @@ private:
   unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
   unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command
   int _cmdIndex;                                      // Track the index for the outbound command buffer
+  unsigned long _userChangeDelay;                     // Delay in ms between sending throttle commands
+  unsigned long _lastUserChange;                      // Time in ms of the last throttle command
+  bool _debug = false;                                // Enable output of send/receive commands to console
 
   // Helper methods to build the outbound command
   /**
@@ -840,6 +1045,15 @@ private:
    * @param param3 Single int parameter to send
    */
   void _sendThreeParams(char opcode, char param1, const char *param2, int param3);
+
+  /**
+   * @brief Formatter for opcode and three params
+   * @param opcode OPCODE to send
+   * @param param1 Single char parameter to send
+   * @param param2 Single int parameter to send
+   * @param param3 Single int parameter to send
+   */
+  void _sendThreeParams(char opcode, char param1, int param2, int param3);
 
   /**
    * @brief Formatter for opcode and four params

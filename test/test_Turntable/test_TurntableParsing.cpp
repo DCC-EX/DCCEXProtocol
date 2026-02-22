@@ -31,7 +31,7 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  EXPECT_EQ(_stream.getOutput(), "<J O>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
   // Empty turntable list response
@@ -46,7 +46,7 @@ TEST_F(TurntableTests, parseTwoTurntables) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  EXPECT_EQ(_stream.getOutput(), "<J O>\r\n");
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
   // Two turntables in response
@@ -93,6 +93,9 @@ TEST_F(TurntableTests, parseTwoTurntables) {
 
   // Now the flag should be true
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+
+  // Validate count
+  EXPECT_EQ(_dccexProtocol.getTurntableCount(), 2);
 }
 
 /**

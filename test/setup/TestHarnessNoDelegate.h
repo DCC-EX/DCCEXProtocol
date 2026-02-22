@@ -1,13 +1,6 @@
 /* -*- c++ -*-
  *
- * DCCEXProtocol
- *
- * This package implements a DCCEX native protocol connection,
- * allow a device to communicate with a DCC-EX EX-CommandStation.
- *
  * Copyright © 2026 Peter Cole
- * Copyright © 2024 Vincent Hamp
- * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * 4.0 International License. To view a copy of this license, visit
@@ -27,28 +20,25 @@
  *
  */
 
-#ifndef TESTHARNESSBASE_HPP
-#define TESTHARNESSBASE_HPP
+#ifndef TESTHARNESSNODELEGATE_H
+#define TESTHARNESSNODELEGATE_H
 
 #include "../mocks/Arduino.h"
-#include "../mocks/MockDCCEXProtocolDelegate.h"
 #include <DCCEXProtocol.h>
 
 using namespace testing;
 
 /// @brief Test fixture to setup and tear down tests
-class TestHarnessBase : public Test {
+class TestHarnessNoDelegate : public Test {
 public:
-  TestHarnessBase() {}
-  virtual ~TestHarnessBase() {}
+  TestHarnessNoDelegate() {}
+  virtual ~TestHarnessNoDelegate() {}
 
 protected:
   void SetUp() override {
     millis();
-    _dccexProtocol.setDelegate(&_delegate);
     _dccexProtocol.setLogStream(&_console);
     _dccexProtocol.connect(&_stream);
-    _dccexProtocol.clearRoster();
   }
 
   void TearDown() override {
@@ -56,14 +46,11 @@ protected:
     _stream.clearInput();
     _stream.clearOutput();
     _dccexProtocol.clearAllLists();
-    CSConsist::clearCSConsists();
-    CSConsist::setAlwaysReplicateFunctions(false);
   }
 
   DCCEXProtocol _dccexProtocol;
-  MockDCCEXProtocolDelegate _delegate;
   Stream _console;
   Stream _stream;
 };
 
-#endif // TESTHARNESSBASE_HPP
+#endif // TESTHARNESSNODELEGATE_H

@@ -1,4 +1,15 @@
-// WiThrottleProtocol library: Consist control example
+/*
+IN-THROTTLE CONSISTS DEPRECATED!!!!
+
+As of version 1.3.0, these consists (referred to as in-throttle consists) have been deprecated for the DCCEXProtocol
+library.
+
+Going forwards, we highly recommend utilising the new Command Station Consists (CSConsists) instead, as they are fully
+supported in the command station, enabling hand off to automations unlike these in-throttle consists which support
+manual operation only.
+*/
+
+// DCCEXProtocol library: Consist control example
 //
 // Shows how to create and control a consist
 // Tested with ESP32-WROOM board
@@ -8,7 +19,6 @@
 
 #include <DCCEXProtocol.h>
 #include <WiFi.h>
-
 
 // If we haven't got a custom config.h, use the example
 #if __has_include("config.h")
@@ -76,7 +86,9 @@ MyDelegate myDelegate;
 void setup() {
 
   Serial.begin(115200);
-  Serial.println("DCCEXProtocol Loco Control Demo");
+  Serial.println("WARNING!! In-throttle consists are DEPRECATED as of version 1.3.0");
+  Serial.println("We recommanded using the new CSConsists instead");
+  Serial.println("DCCEXProtocol Consist Control Demo");
   Serial.println();
 
   // Connect to WiFi network

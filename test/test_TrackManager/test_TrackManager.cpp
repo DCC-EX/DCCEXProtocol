@@ -26,7 +26,7 @@
  * @brief Test setting track A to MAIN
  */
 TEST_F(TrackManagerTests, setTrackTypeMain) {
-  const char *expected = "<= A MAIN>\r\n";
+  const char *expected = "<= A MAIN>";
 
   // Call power on
   _dccexProtocol.setTrackType('A', TrackManagerMode::MAIN, 0);
@@ -39,7 +39,7 @@ TEST_F(TrackManagerTests, setTrackTypeMain) {
  * @brief Test setting track B to MAIN
  */
 TEST_F(TrackManagerTests, setTrackTypeProg) {
-  const char *expected = "<= B PROG>\r\n";
+  const char *expected = "<= B PROG>";
 
   // Call power off
   _dccexProtocol.setTrackType('B', TrackManagerMode::PROG, 0);
@@ -52,7 +52,7 @@ TEST_F(TrackManagerTests, setTrackTypeProg) {
  * @brief Test setting track C to DC address 1234
  */
 TEST_F(TrackManagerTests, setTrackTypeDC) {
-  const char *expected = "<= C DC 1234>\r\n";
+  const char *expected = "<= C DC 1234>";
 
   // Call power off
   _dccexProtocol.setTrackType('C', TrackManagerMode::DC, 1234);
@@ -65,7 +65,7 @@ TEST_F(TrackManagerTests, setTrackTypeDC) {
  * @brief Test setting track D to DCX address 2345
  */
 TEST_F(TrackManagerTests, setTrackTypeDCX) {
-  const char *expected = "<= D DCX 2345>\r\n";
+  const char *expected = "<= D DCX 2345>";
 
   // Call power off
   _dccexProtocol.setTrackType('D', TrackManagerMode::DCX, 2345);
@@ -78,7 +78,7 @@ TEST_F(TrackManagerTests, setTrackTypeDCX) {
  * @brief Test setting track E to NONE
  */
 TEST_F(TrackManagerTests, setTrackTypeNone) {
-  const char *expected = "<= E NONE>\r\n";
+  const char *expected = "<= E NONE>";
 
   // Call power off
   _dccexProtocol.setTrackType('E', TrackManagerMode::NONE, 0);
