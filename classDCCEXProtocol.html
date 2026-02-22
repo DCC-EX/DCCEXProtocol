@@ -72,6 +72,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classDCCEXProtocol-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">DCCEXProtocol Class Reference</div></div>
@@ -85,9 +86,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7234aeda0b721fec886b0a6402ddd903" id="r_a7234aeda0b721fec886b0a6402ddd903"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a7234aeda0b721fec886b0a6402ddd903">DCCEXProtocol</a> (int maxCmdBuffer=500, int maxCommandParams=50)</td></tr>
-<tr class="memdesc:a7234aeda0b721fec886b0a6402ddd903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> object.  <br /></td></tr>
-<tr class="separator:a7234aeda0b721fec886b0a6402ddd903"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6b20d8157f1f97f8c5b3015279c6740" id="r_af6b20d8157f1f97f8c5b3015279c6740"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#af6b20d8157f1f97f8c5b3015279c6740">DCCEXProtocol</a> (int maxCmdBuffer=500, int maxCommandParams=50, unsigned long userChangeDelay=100)</td></tr>
+<tr class="memdesc:af6b20d8157f1f97f8c5b3015279c6740"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> object.  <br /></td></tr>
+<tr class="separator:af6b20d8157f1f97f8c5b3015279c6740"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51422bbae9c0d2a8da6326d8183511dc" id="r_a51422bbae9c0d2a8da6326d8183511dc"><td class="memItemLeft" align="right" valign="top"><a id="a51422bbae9c0d2a8da6326d8183511dc" name="a51422bbae9c0d2a8da6326d8183511dc"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>~DCCEXProtocol</b> ()</td></tr>
 <tr class="memdesc:a51422bbae9c0d2a8da6326d8183511dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> object. <br /></td></tr>
@@ -104,17 +105,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25d1ec19646d6f7b89c8302c21c67f3f" id="r_a25d1ec19646d6f7b89c8302c21c67f3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a25d1ec19646d6f7b89c8302c21c67f3f">connect</a> (Stream *stream)</td></tr>
 <tr class="memdesc:a25d1ec19646d6f7b89c8302c21c67f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect the stream object to interact with DCC-EX.  <br /></td></tr>
 <tr class="separator:a25d1ec19646d6f7b89c8302c21c67f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1aacce50f688521e9738e284207d6fc9" id="r_a1aacce50f688521e9738e284207d6fc9"><td class="memItemLeft" align="right" valign="top"><a id="a1aacce50f688521e9738e284207d6fc9" name="a1aacce50f688521e9738e284207d6fc9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>disconnect</b> ()</td></tr>
-<tr class="memdesc:a1aacce50f688521e9738e284207d6fc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED - Does nothing, retained for backwards compatibility only. <br /></td></tr>
+<tr class="memitem:a1aacce50f688521e9738e284207d6fc9" id="r_a1aacce50f688521e9738e284207d6fc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a1aacce50f688521e9738e284207d6fc9">disconnect</a> ()</td></tr>
+<tr class="memdesc:a1aacce50f688521e9738e284207d6fc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED - Does nothing, retained for backwards compatibility only.  <br /></td></tr>
 <tr class="separator:a1aacce50f688521e9738e284207d6fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afda94b0a2530af11d5416c4036ef27dd" id="r_afda94b0a2530af11d5416c4036ef27dd"><td class="memItemLeft" align="right" valign="top"><a id="afda94b0a2530af11d5416c4036ef27dd" name="afda94b0a2530af11d5416c4036ef27dd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> ()</td></tr>
 <tr class="memdesc:afda94b0a2530af11d5416c4036ef27dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for incoming DCC-EX broadcasts/responses and parse them. <br /></td></tr>
 <tr class="separator:afda94b0a2530af11d5416c4036ef27dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a929399a017991deb4fae1f4a138f62bb" id="r_a929399a017991deb4fae1f4a138f62bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a929399a017991deb4fae1f4a138f62bb">sendCommand</a> (char *cmd)</td></tr>
-<tr class="memdesc:a929399a017991deb4fae1f4a138f62bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">allows sending of an arbitray command  <br /></td></tr>
-<tr class="separator:a929399a017991deb4fae1f4a138f62bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5b3dbcb2565326de6e5bc50bea5bde7" id="r_aa5b3dbcb2565326de6e5bc50bea5bde7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aa5b3dbcb2565326de6e5bc50bea5bde7">sendCommand</a> (const char *cmd)</td></tr>
+<tr class="memdesc:aa5b3dbcb2565326de6e5bc50bea5bde7"><td class="mdescLeft">&#160;</td><td class="mdescRight">allows sending of an arbitray command  <br /></td></tr>
+<tr class="separator:aa5b3dbcb2565326de6e5bc50bea5bde7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59fc848bdf2a907afe9a7d4c1ecabf27" id="r_a59fc848bdf2a907afe9a7d4c1ecabf27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a59fc848bdf2a907afe9a7d4c1ecabf27">getLists</a> (bool rosterRequired=true, bool turnoutListRequired=true, bool routeListRequired=true, bool turntableListRequired=true)</td></tr>
 <tr class="memdesc:a59fc848bdf2a907afe9a7d4c1ecabf27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request DCC-EX object lists (Roster, Turnouts, Routes, Turntables)  <br /></td></tr>
 <tr class="separator:a59fc848bdf2a907afe9a7d4c1ecabf27"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,30 +148,45 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>clearAllLists</b> ()<
 void&#160;</td><td class="memItemRight" valign="bottom"><b>refreshAllLists</b> ()</td></tr>
 <tr class="memdesc:a7bb0fca6ed46e2d6edb026ef664b53f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear roster, turnout, turntable, and route lists and request new ones. <br /></td></tr>
 <tr class="separator:a7bb0fca6ed46e2d6edb026ef664b53f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9defca8fd4ae58bdc1969ea2cd544e4" id="r_af9defca8fd4ae58bdc1969ea2cd544e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#af9defca8fd4ae58bdc1969ea2cd544e4">setDebug</a> (bool debug)</td></tr>
+<tr class="memdesc:af9defca8fd4ae58bdc1969ea2cd544e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Debug flag.  <br /></td></tr>
+<tr class="separator:af9defca8fd4ae58bdc1969ea2cd544e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07a92343c911df89fba072c3b4a07b4a" id="r_a07a92343c911df89fba072c3b4a07b4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a07a92343c911df89fba072c3b4a07b4a">setThrottle</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int speed, Direction direction)</td></tr>
 <tr class="memdesc:a07a92343c911df89fba072c3b4a07b4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the provided loco to the specified speed and direction.  <br /></td></tr>
 <tr class="separator:a07a92343c911df89fba072c3b4a07b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbd98a3888c7d203c5ac83440aeefd45" id="r_afbd98a3888c7d203c5ac83440aeefd45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#afbd98a3888c7d203c5ac83440aeefd45">setThrottle</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int speed, Direction direction)</td></tr>
-<tr class="memdesc:afbd98a3888c7d203c5ac83440aeefd45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set all locos in the provided consist to the specified speed and direction.  <br /></td></tr>
+<tr class="memdesc:afbd98a3888c7d203c5ac83440aeefd45"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED Set all locos in the provided consist to the specified speed and direction.  <br /></td></tr>
 <tr class="separator:afbd98a3888c7d203c5ac83440aeefd45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec649d9275c162c70d0eaa009fd0cb64" id="r_aec649d9275c162c70d0eaa009fd0cb64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aec649d9275c162c70d0eaa009fd0cb64">setThrottle</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist, int speed, Direction direction)</td></tr>
+<tr class="memdesc:aec649d9275c162c70d0eaa009fd0cb64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the provided command station consist to the specified speed and direction.  <br /></td></tr>
+<tr class="separator:aec649d9275c162c70d0eaa009fd0cb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ab8652f4de1b84fab409d6fb2c3ca4f" id="r_a6ab8652f4de1b84fab409d6fb2c3ca4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a6ab8652f4de1b84fab409d6fb2c3ca4f">functionOn</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int function)</td></tr>
 <tr class="memdesc:a6ab8652f4de1b84fab409d6fb2c3ca4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function on for the provided loco.  <br /></td></tr>
 <tr class="separator:a6ab8652f4de1b84fab409d6fb2c3ca4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece7109300a5f2df20958a18c54eed51" id="r_aece7109300a5f2df20958a18c54eed51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aece7109300a5f2df20958a18c54eed51">functionOn</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
+<tr class="memdesc:aece7109300a5f2df20958a18c54eed51"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED Turn the specified function on for the provided consist.  <br /></td></tr>
+<tr class="separator:aece7109300a5f2df20958a18c54eed51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae350cd5f946927cd7f597f9ce087c606" id="r_ae350cd5f946927cd7f597f9ce087c606"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ae350cd5f946927cd7f597f9ce087c606">functionOn</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist, int function)</td></tr>
+<tr class="memdesc:ae350cd5f946927cd7f597f9ce087c606"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function on for the provided <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>.  <br /></td></tr>
+<tr class="separator:ae350cd5f946927cd7f597f9ce087c606"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e72e184856d4dce4e98a7d739cc4a4f" id="r_a0e72e184856d4dce4e98a7d739cc4a4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a0e72e184856d4dce4e98a7d739cc4a4f">functionOff</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int function)</td></tr>
 <tr class="memdesc:a0e72e184856d4dce4e98a7d739cc4a4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function off for the provided loco.  <br /></td></tr>
 <tr class="separator:a0e72e184856d4dce4e98a7d739cc4a4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10378574a441f3a798bc17bdb2e049ee" id="r_a10378574a441f3a798bc17bdb2e049ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a10378574a441f3a798bc17bdb2e049ee">functionOff</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
+<tr class="memdesc:a10378574a441f3a798bc17bdb2e049ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED Turn the specified function off for the provided consist.  <br /></td></tr>
+<tr class="separator:a10378574a441f3a798bc17bdb2e049ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbf593ede2cce0445d8e2dadbf163316" id="r_acbf593ede2cce0445d8e2dadbf163316"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#acbf593ede2cce0445d8e2dadbf163316">functionOff</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist, int function)</td></tr>
+<tr class="memdesc:acbf593ede2cce0445d8e2dadbf163316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function off for the provided <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>.  <br /></td></tr>
+<tr class="separator:acbf593ede2cce0445d8e2dadbf163316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab28d2d9ba6338d731d5955b395b904da" id="r_ab28d2d9ba6338d731d5955b395b904da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ab28d2d9ba6338d731d5955b395b904da">isFunctionOn</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int function)</td></tr>
 <tr class="memdesc:ab28d2d9ba6338d731d5955b395b904da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if the specified function for the provided loco is on.  <br /></td></tr>
 <tr class="separator:ab28d2d9ba6338d731d5955b395b904da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aece7109300a5f2df20958a18c54eed51" id="r_aece7109300a5f2df20958a18c54eed51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aece7109300a5f2df20958a18c54eed51">functionOn</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
-<tr class="memdesc:aece7109300a5f2df20958a18c54eed51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function on for the provided consist.  <br /></td></tr>
-<tr class="separator:aece7109300a5f2df20958a18c54eed51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10378574a441f3a798bc17bdb2e049ee" id="r_a10378574a441f3a798bc17bdb2e049ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a10378574a441f3a798bc17bdb2e049ee">functionOff</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
-<tr class="memdesc:a10378574a441f3a798bc17bdb2e049ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn the specified function off for the provided consist.  <br /></td></tr>
-<tr class="separator:a10378574a441f3a798bc17bdb2e049ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a340c6a37042f0494c4aab4480454644f" id="r_a340c6a37042f0494c4aab4480454644f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a340c6a37042f0494c4aab4480454644f">isFunctionOn</a> (<a class="el" href="classConsist.html">Consist</a> *consist, int function)</td></tr>
-<tr class="memdesc:a340c6a37042f0494c4aab4480454644f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if the specified function for the provided consist is on (Checks first loco)  <br /></td></tr>
+<tr class="memdesc:a340c6a37042f0494c4aab4480454644f"><td class="mdescLeft">&#160;</td><td class="mdescRight">DEPRECATED Test if the specified function for the provided consist is on (Checks first loco)  <br /></td></tr>
 <tr class="separator:a340c6a37042f0494c4aab4480454644f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a3860d73c97fd5d9577201a3409b2be" id="r_a8a3860d73c97fd5d9577201a3409b2be"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a8a3860d73c97fd5d9577201a3409b2be">isFunctionOn</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist, int function)</td></tr>
+<tr class="memdesc:a8a3860d73c97fd5d9577201a3409b2be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test if the specified function for the provided <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> is on (checks first <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>)  <br /></td></tr>
+<tr class="separator:a8a3860d73c97fd5d9577201a3409b2be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8043f7e570585636124f40455a1d5a5" id="r_af8043f7e570585636124f40455a1d5a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#af8043f7e570585636124f40455a1d5a5">requestLocoUpdate</a> (int address)</td></tr>
 <tr class="memdesc:af8043f7e570585636124f40455a1d5a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Explicitly request an update for the specified loco.  <br /></td></tr>
 <tr class="separator:af8043f7e570585636124f40455a1d5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -196,10 +211,70 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>emergencyStop</b> ()<
 void&#160;</td><td class="memItemRight" valign="bottom"><b>clearRoster</b> ()</td></tr>
 <tr class="memdesc:acb4a3c993039d99eacdc19da2f793875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the roster. <br /></td></tr>
 <tr class="separator:acb4a3c993039d99eacdc19da2f793875"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea994f84c13e8733ebac2c61457ee8b4" id="r_aea994f84c13e8733ebac2c61457ee8b4"><td class="memItemLeft" align="right" valign="top"><a id="aea994f84c13e8733ebac2c61457ee8b4" name="aea994f84c13e8733ebac2c61457ee8b4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clearLocalLocos</b> ()</td></tr>
+<tr class="memdesc:aea994f84c13e8733ebac2c61457ee8b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the list of local locos. <br /></td></tr>
+<tr class="separator:aea994f84c13e8733ebac2c61457ee8b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26ffdd56dbb57647fc4740c36e8e64e3" id="r_a26ffdd56dbb57647fc4740c36e8e64e3"><td class="memItemLeft" align="right" valign="top"><a id="a26ffdd56dbb57647fc4740c36e8e64e3" name="a26ffdd56dbb57647fc4740c36e8e64e3"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>refreshRoster</b> ()</td></tr>
 <tr class="memdesc:a26ffdd56dbb57647fc4740c36e8e64e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the roster and request again. <br /></td></tr>
 <tr class="separator:a26ffdd56dbb57647fc4740c36e8e64e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46f95a25435a212741a227672670a988" id="r_a46f95a25435a212741a227672670a988"><td class="memItemLeft" align="right" valign="top"><a id="a46f95a25435a212741a227672670a988" name="a46f95a25435a212741a227672670a988"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestCSConsists</b> ()</td></tr>
+<tr class="memdesc:a46f95a25435a212741a227672670a988"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the list of CSConsists from the command station, will create <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> objects. <br /></td></tr>
+<tr class="separator:a46f95a25435a212741a227672670a988"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ff8351a14b16ca7dd5e2dbe40fa0896" id="r_a6ff8351a14b16ca7dd5e2dbe40fa0896"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a6ff8351a14b16ca7dd5e2dbe40fa0896">createCSConsist</a> (int leadLoco, bool reversed=false, bool replicateFunctions=false)</td></tr>
+<tr class="memdesc:a6ff8351a14b16ca7dd5e2dbe40fa0896"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>.  <br /></td></tr>
+<tr class="separator:a6ff8351a14b16ca7dd5e2dbe40fa0896"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0060645fd46a235d27534f1f4173a41d" id="r_a0060645fd46a235d27534f1f4173a41d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a0060645fd46a235d27534f1f4173a41d">addCSConsistMember</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist, int address, bool reversed=false)</td></tr>
+<tr class="memdesc:a0060645fd46a235d27534f1f4173a41d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a member to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>.  <br /></td></tr>
+<tr class="separator:a0060645fd46a235d27534f1f4173a41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4f0f91a1d79382c45aa4c14b4bf9752" id="r_ab4f0f91a1d79382c45aa4c14b4bf9752"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ab4f0f91a1d79382c45aa4c14b4bf9752">getCSConsistByLeadLoco</a> (int address)</td></tr>
+<tr class="memdesc:ab4f0f91a1d79382c45aa4c14b4bf9752"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by the lead loco DCC address.  <br /></td></tr>
+<tr class="separator:ab4f0f91a1d79382c45aa4c14b4bf9752"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b3c1f04e1a715690288a0f45fac6613" id="r_a2b3c1f04e1a715690288a0f45fac6613"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a2b3c1f04e1a715690288a0f45fac6613">getCSConsistByLeadLoco</a> (<a class="el" href="classLoco.html">Loco</a> *loco)</td></tr>
+<tr class="memdesc:a2b3c1f04e1a715690288a0f45fac6613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by the lead <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object.  <br /></td></tr>
+<tr class="separator:a2b3c1f04e1a715690288a0f45fac6613"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28bcd6b18dc9e4e6c9c9a98ca558d6ea" id="r_a28bcd6b18dc9e4e6c9c9a98ca558d6ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a28bcd6b18dc9e4e6c9c9a98ca558d6ea">getCSConsistByMemberLoco</a> (int address)</td></tr>
+<tr class="memdesc:a28bcd6b18dc9e4e6c9c9a98ca558d6ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by a member DCC address.  <br /></td></tr>
+<tr class="separator:a28bcd6b18dc9e4e6c9c9a98ca558d6ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a458790c0ad973eb67d0f7f8d68171a57" id="r_a458790c0ad973eb67d0f7f8d68171a57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a458790c0ad973eb67d0f7f8d68171a57">getCSConsistByMemberLoco</a> (<a class="el" href="classLoco.html">Loco</a> *loco)</td></tr>
+<tr class="memdesc:a458790c0ad973eb67d0f7f8d68171a57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by a member <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object.  <br /></td></tr>
+<tr class="separator:a458790c0ad973eb67d0f7f8d68171a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc3b0eb286badc102fff057975c61faf" id="r_abc3b0eb286badc102fff057975c61faf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#abc3b0eb286badc102fff057975c61faf">removeCSConsistMember</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist, int address)</td></tr>
+<tr class="memdesc:abc3b0eb286badc102fff057975c61faf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a member from the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>.  <br /></td></tr>
+<tr class="separator:abc3b0eb286badc102fff057975c61faf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6dea348733386e13f614d6b4386b8e5" id="r_ae6dea348733386e13f614d6b4386b8e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ae6dea348733386e13f614d6b4386b8e5">deleteCSConsist</a> (int leadLoco)</td></tr>
+<tr class="memdesc:ae6dea348733386e13f614d6b4386b8e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> using the lead loco address.  <br /></td></tr>
+<tr class="separator:ae6dea348733386e13f614d6b4386b8e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a112ef1deb22bf5121a6cbda2d677efa6" id="r_a112ef1deb22bf5121a6cbda2d677efa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a112ef1deb22bf5121a6cbda2d677efa6">deleteCSConsist</a> (<a class="el" href="classCSConsist.html">CSConsist</a> *csConsist)</td></tr>
+<tr class="memdesc:a112ef1deb22bf5121a6cbda2d677efa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>.  <br /></td></tr>
+<tr class="separator:a112ef1deb22bf5121a6cbda2d677efa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b36c58c1c3b2693d610b7bc2c8350e2" id="r_a8b36c58c1c3b2693d610b7bc2c8350e2"><td class="memItemLeft" align="right" valign="top"><a id="a8b36c58c1c3b2693d610b7bc2c8350e2" name="a8b36c58c1c3b2693d610b7bc2c8350e2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clearCSConsists</b> ()</td></tr>
+<tr class="memdesc:a8b36c58c1c3b2693d610b7bc2c8350e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> objects. <br /></td></tr>
+<tr class="separator:a8b36c58c1c3b2693d610b7bc2c8350e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5c899338a1aa44f256c242b02e97632" id="r_aa5c899338a1aa44f256c242b02e97632"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aa5c899338a1aa44f256c242b02e97632">setMomentumAlgorithm</a> (MomentumAlgorithm algorithm)</td></tr>
+<tr class="memdesc:aa5c899338a1aa44f256c242b02e97632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Momentum Algorithm.  <br /></td></tr>
+<tr class="separator:aa5c899338a1aa44f256c242b02e97632"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8efc98565bf24a2250f26e46ae3a2dd7" id="r_a8efc98565bf24a2250f26e46ae3a2dd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a8efc98565bf24a2250f26e46ae3a2dd7">setDefaultMomentum</a> (int momentum)</td></tr>
+<tr class="memdesc:a8efc98565bf24a2250f26e46ae3a2dd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Default Momentum for accelerating/braking.  <br /></td></tr>
+<tr class="separator:a8efc98565bf24a2250f26e46ae3a2dd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b4b6f0ebf22681b20197b4940da7804" id="r_a7b4b6f0ebf22681b20197b4940da7804"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a7b4b6f0ebf22681b20197b4940da7804">setDefaultMomentum</a> (int accelerating, int braking)</td></tr>
+<tr class="memdesc:a7b4b6f0ebf22681b20197b4940da7804"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Default Momentum for separate accelerating/braking.  <br /></td></tr>
+<tr class="separator:a7b4b6f0ebf22681b20197b4940da7804"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1398edc814a0e1b014d5b0a04339a1b3" id="r_a1398edc814a0e1b014d5b0a04339a1b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a1398edc814a0e1b014d5b0a04339a1b3">setMomentum</a> (int address, int momentum)</td></tr>
+<tr class="memdesc:a1398edc814a0e1b014d5b0a04339a1b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set momentum for the specified loco/DC track.  <br /></td></tr>
+<tr class="separator:a1398edc814a0e1b014d5b0a04339a1b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4980b5df468298cf63aba785d3f2b155" id="r_a4980b5df468298cf63aba785d3f2b155"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a4980b5df468298cf63aba785d3f2b155">setMomentum</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int momentum)</td></tr>
+<tr class="memdesc:a4980b5df468298cf63aba785d3f2b155"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Momentum for the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>.  <br /></td></tr>
+<tr class="separator:a4980b5df468298cf63aba785d3f2b155"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf76b2eae5020c6d1c9a5aceb47ec370" id="r_abf76b2eae5020c6d1c9a5aceb47ec370"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#abf76b2eae5020c6d1c9a5aceb47ec370">setMomentum</a> (int address, int accelerating, int braking)</td></tr>
+<tr class="memdesc:abf76b2eae5020c6d1c9a5aceb47ec370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Momentum for separate accelerating/braking.  <br /></td></tr>
+<tr class="separator:abf76b2eae5020c6d1c9a5aceb47ec370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7032b11f381cd27433a4a581c9d1011f" id="r_a7032b11f381cd27433a4a581c9d1011f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a7032b11f381cd27433a4a581c9d1011f">setMomentum</a> (<a class="el" href="classLoco.html">Loco</a> *loco, int accelerating, int braking)</td></tr>
+<tr class="memdesc:a7032b11f381cd27433a4a581c9d1011f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Momentum for separate accelerating/braking.  <br /></td></tr>
+<tr class="separator:a7032b11f381cd27433a4a581c9d1011f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac518f747599f703888000e07059a66a3" id="r_ac518f747599f703888000e07059a66a3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#ac518f747599f703888000e07059a66a3">getTurnoutCount</a> ()</td></tr>
 <tr class="memdesc:ac518f747599f703888000e07059a66a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of turnouts.  <br /></td></tr>
 <tr class="separator:ac518f747599f703888000e07059a66a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -311,6 +386,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>joinProg</b> ()</td><
 <tr class="memitem:a71d4fb46a06466e7555eede709ecda2e" id="r_a71d4fb46a06466e7555eede709ecda2e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a71d4fb46a06466e7555eede709ecda2e">setTrackType</a> (char track, TrackManagerMode type, int address)</td></tr>
 <tr class="memdesc:a71d4fb46a06466e7555eede709ecda2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set track type for the specified track  <br /></td></tr>
 <tr class="separator:a71d4fb46a06466e7555eede709ecda2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a230df740d644bb5f9f733b7599c211ea" id="r_a230df740d644bb5f9f733b7599c211ea"><td class="memItemLeft" align="right" valign="top"><a id="a230df740d644bb5f9f733b7599c211ea" name="a230df740d644bb5f9f733b7599c211ea"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestTrackCurrentGauges</b> ()</td></tr>
+<tr class="memdesc:a230df740d644bb5f9f733b7599c211ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the current limit set for each track. <br /></td></tr>
+<tr class="separator:a230df740d644bb5f9f733b7599c211ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38533aa7947e791d1ed87517a3aa54fd" id="r_a38533aa7947e791d1ed87517a3aa54fd"><td class="memItemLeft" align="right" valign="top"><a id="a38533aa7947e791d1ed87517a3aa54fd" name="a38533aa7947e791d1ed87517a3aa54fd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestTrackCurrents</b> ()</td></tr>
+<tr class="memdesc:a38533aa7947e791d1ed87517a3aa54fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the latest current value for each track. <br /></td></tr>
+<tr class="separator:a38533aa7947e791d1ed87517a3aa54fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87f6450a0186a92aacb46c961f2eb28e" id="r_a87f6450a0186a92aacb46c961f2eb28e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a87f6450a0186a92aacb46c961f2eb28e">activateAccessory</a> (int accessoryAddress, int accessorySubAddr)</td></tr>
 <tr class="memdesc:a87f6450a0186a92aacb46c961f2eb28e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activate DCC accessory at the specified address and subaddress.  <br /></td></tr>
 <tr class="separator:a87f6450a0186a92aacb46c961f2eb28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -351,31 +434,48 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>getNumberSupportedLoc
 <tr class="memitem:a3bed8a312bb199a571686d5a8bdc1fe9" id="r_a3bed8a312bb199a571686d5a8bdc1fe9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a3bed8a312bb199a571686d5a8bdc1fe9">writeCVBitOnMain</a> (int address, int cv, int bit, int value)</td></tr>
 <tr class="memdesc:a3bed8a312bb199a571686d5a8bdc1fe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the provided value to the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>, CV, and bit on the main track.  <br /></td></tr>
 <tr class="separator:a3bed8a312bb199a571686d5a8bdc1fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aede69f8e4c5ad83a248007a17b85ab07" id="r_aede69f8e4c5ad83a248007a17b85ab07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#aede69f8e4c5ad83a248007a17b85ab07">setFastClock</a> (int minutes, int speedFactor)</td></tr>
+<tr class="memdesc:aede69f8e4c5ad83a248007a17b85ab07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the fast clock time and speed factor.  <br /></td></tr>
+<tr class="separator:aede69f8e4c5ad83a248007a17b85ab07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e7d255d16b9885a21b5fa8041ba508b" id="r_a4e7d255d16b9885a21b5fa8041ba508b"><td class="memItemLeft" align="right" valign="top"><a id="a4e7d255d16b9885a21b5fa8041ba508b" name="a4e7d255d16b9885a21b5fa8041ba508b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>requestFastClockTime</b> ()</td></tr>
+<tr class="memdesc:a4e7d255d16b9885a21b5fa8041ba508b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the current fast clock time. <br /></td></tr>
+<tr class="separator:a4e7d255d16b9885a21b5fa8041ba508b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a81b778440d991dc0ffccbb0fed30b2d4" id="r_a81b778440d991dc0ffccbb0fed30b2d4"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocol.html#a81b778440d991dc0ffccbb0fed30b2d4">getLibraryVersion</a> ()</td></tr>
+<tr class="memdesc:a81b778440d991dc0ffccbb0fed30b2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> library version.  <br /></td></tr>
+<tr class="separator:a81b778440d991dc0ffccbb0fed30b2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a5252dd767c313c8c0dbecd4ffb1d0a25" id="r_a5252dd767c313c8c0dbecd4ffb1d0a25"><td class="memItemLeft" align="right" valign="top"><a id="a5252dd767c313c8c0dbecd4ffb1d0a25" name="a5252dd767c313c8c0dbecd4ffb1d0a25"></a>
 <a class="el" href="classLoco.html">Loco</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>roster</b> = nullptr</td></tr>
-<tr class="memdesc:a5252dd767c313c8c0dbecd4ffb1d0a25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> objects to form the roster. <br /></td></tr>
+<tr class="memdesc:a5252dd767c313c8c0dbecd4ffb1d0a25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> objects to form the roster, call roster-&gt;getFirst() <br /></td></tr>
 <tr class="separator:a5252dd767c313c8c0dbecd4ffb1d0a25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd524a7995c9fe3c54ab0481b94e0720" id="r_abd524a7995c9fe3c54ab0481b94e0720"><td class="memItemLeft" align="right" valign="top"><a id="abd524a7995c9fe3c54ab0481b94e0720" name="abd524a7995c9fe3c54ab0481b94e0720"></a>
 <a class="el" href="classTurnout.html">Turnout</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>turnouts</b> = nullptr</td></tr>
-<tr class="memdesc:abd524a7995c9fe3c54ab0481b94e0720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classTurnout.html" title="Class to contain and maintain the various Turnout/Point attributes and methods.">Turnout</a> objects to form the turnout list. <br /></td></tr>
+<tr class="memdesc:abd524a7995c9fe3c54ab0481b94e0720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classTurnout.html" title="Class to contain and maintain the various Turnout/Point attributes and methods.">Turnout</a> objects to form the turnout list, call turnouts-&gt;getFirst() <br /></td></tr>
 <tr class="separator:abd524a7995c9fe3c54ab0481b94e0720"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41ed928c9eb8324c70eaa259efbdb988" id="r_a41ed928c9eb8324c70eaa259efbdb988"><td class="memItemLeft" align="right" valign="top"><a id="a41ed928c9eb8324c70eaa259efbdb988" name="a41ed928c9eb8324c70eaa259efbdb988"></a>
 <a class="el" href="classRoute.html">Route</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>routes</b> = nullptr</td></tr>
-<tr class="memdesc:a41ed928c9eb8324c70eaa259efbdb988"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classRoute.html" title="Class to contain and maintain the various Route attributes and methods.">Route</a> objects to form the list of routes and automations. <br /></td></tr>
+<tr class="memdesc:a41ed928c9eb8324c70eaa259efbdb988"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classRoute.html" title="Class to contain and maintain the various Route attributes and methods.">Route</a> objects to form the list of routes and automations, call routes-&gt;getFirst() <br /></td></tr>
 <tr class="separator:a41ed928c9eb8324c70eaa259efbdb988"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67084ec5de1a1b031797ed7c8c514e35" id="r_a67084ec5de1a1b031797ed7c8c514e35"><td class="memItemLeft" align="right" valign="top"><a id="a67084ec5de1a1b031797ed7c8c514e35" name="a67084ec5de1a1b031797ed7c8c514e35"></a>
 <a class="el" href="classTurntable.html">Turntable</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>turntables</b> = nullptr</td></tr>
-<tr class="memdesc:a67084ec5de1a1b031797ed7c8c514e35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classTurntable.html" title="Class to contain and maintain the various Turntable attributes and methods.">Turntable</a> objects to form the list of turntables. <br /></td></tr>
+<tr class="memdesc:a67084ec5de1a1b031797ed7c8c514e35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classTurntable.html" title="Class to contain and maintain the various Turntable attributes and methods.">Turntable</a> objects to form the list of turntables, call turntables-&gt;getFirst() <br /></td></tr>
 <tr class="separator:a67084ec5de1a1b031797ed7c8c514e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd1e3d9fd7b3d60d5cfc7c521edd4073" id="r_abd1e3d9fd7b3d60d5cfc7c521edd4073"><td class="memItemLeft" align="right" valign="top"><a id="abd1e3d9fd7b3d60d5cfc7c521edd4073" name="abd1e3d9fd7b3d60d5cfc7c521edd4073"></a>
+<a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>csConsists</b> = nullptr</td></tr>
+<tr class="memdesc:abd1e3d9fd7b3d60d5cfc7c521edd4073"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> objects to make these accessible via the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> class, call csConsists-&gt;getFirst() <br /></td></tr>
+<tr class="separator:abd1e3d9fd7b3d60d5cfc7c521edd4073"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main class for the <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> library. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7234aeda0b721fec886b0a6402ddd903" name="a7234aeda0b721fec886b0a6402ddd903"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7234aeda0b721fec886b0a6402ddd903">&#9670;&#160;</a></span>DCCEXProtocol()</h2>
+<a id="af6b20d8157f1f97f8c5b3015279c6740" name="af6b20d8157f1f97f8c5b3015279c6740"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6b20d8157f1f97f8c5b3015279c6740">&#9670;&#160;</a></span>DCCEXProtocol()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -390,7 +490,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>maxCommandParams</em> = <code>50</code>&#160;</td>
+          <td class="paramname"><em>maxCommandParams</em> = <code>50</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>userChangeDelay</em> = <code>100</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -405,6 +511,7 @@ Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">maxCmdBuffer</td><td>Optional - maximum number of bytes for the command buffer (default 500) </td></tr>
     <tr><td class="paramname">maxCommandParams</td><td>Optional - maximum number of parameters to parse via the <a class="el" href="classDCCEXInbound.html" title="Inbound DCC-EX command parser class to parse commands and provide interpreted parameters.">DCCEXInbound</a> parser (default 50) </td></tr>
+    <tr><td class="paramname">userChangeDelay</td><td>Optional - time in ms between sending throttle changes (default 100) </td></tr>
   </table>
   </dd>
 </dl>
@@ -475,6 +582,50 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a0060645fd46a235d27534f1f4173a41d" name="a0060645fd46a235d27534f1f4173a41d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0060645fd46a235d27534f1f4173a41d">&#9670;&#160;</a></span>addCSConsistMember()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DCCEXProtocol::addCSConsistMember </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>reversed</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a member to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the member </td></tr>
+    <tr><td class="paramname">reversed</td><td>True if loco reversed to normal direction of travel (sending Forward will cause it to reverse) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool True if added successfully, otherwise false </dd></dl>
+
+</div>
+</div>
 <a id="aac151a241073813846f5de33b22f4c29" name="aac151a241073813846f5de33b22f4c29"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac151a241073813846f5de33b22f4c29">&#9670;&#160;</a></span>closeTurnout()</h2>
 
@@ -524,6 +675,50 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a6ff8351a14b16ca7dd5e2dbe40fa0896" name="a6ff8351a14b16ca7dd5e2dbe40fa0896"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ff8351a14b16ca7dd5e2dbe40fa0896">&#9670;&#160;</a></span>createCSConsist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSConsist.html">CSConsist</a> * DCCEXProtocol::createCSConsist </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>leadLoco</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>reversed</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>replicateFunctions</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">leadLoco</td><td>DCC address of the lead loco </td></tr>
+    <tr><td class="paramname">reversed</td><td>True if loco reversed to normal direction of travel (sending Forward will cause it to reverse) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CSConsist* Pointer to the created <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object </dd></dl>
 
 </div>
 </div>
@@ -590,6 +785,78 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a112ef1deb22bf5121a6cbda2d677efa6" name="a112ef1deb22bf5121a6cbda2d677efa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a112ef1deb22bf5121a6cbda2d677efa6">&#9670;&#160;</a></span>deleteCSConsist() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::deleteCSConsist </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Delete the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">csConsist</td><td>Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object to delete </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae6dea348733386e13f614d6b4386b8e5" name="ae6dea348733386e13f614d6b4386b8e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6dea348733386e13f614d6b4386b8e5">&#9670;&#160;</a></span>deleteCSConsist() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::deleteCSConsist </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>leadLoco</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Delete the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> using the lead loco address. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the lead loco </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1aacce50f688521e9738e284207d6fc9" name="a1aacce50f688521e9738e284207d6fc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1aacce50f688521e9738e284207d6fc9">&#9670;&#160;</a></span>disconnect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::disconnect </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>DEPRECATED - Does nothing, retained for backwards compatibility only. </p>
+<p>Will be removed in 2.0.0. </p>
+
+</div>
+</div>
 <a id="a87c5a0c92b5b33c4be830dec864dcf66" name="a87c5a0c92b5b33c4be830dec864dcf66"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87c5a0c92b5b33c4be830dec864dcf66">&#9670;&#160;</a></span>enableHeartbeat()</h2>
 
@@ -644,7 +911,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <a id="a10378574a441f3a798bc17bdb2e049ee" name="a10378574a441f3a798bc17bdb2e049ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10378574a441f3a798bc17bdb2e049ee">&#9670;&#160;</a></span>functionOff() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a10378574a441f3a798bc17bdb2e049ee">&#9670;&#160;</a></span>functionOff() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -669,8 +936,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Turn the specified function off for the provided consist. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>DEPRECATED Turn the specified function off for the provided consist. </p>
+<p>Will be removed in 2.0.0, use <a class="el" href="classDCCEXProtocol.html#acbf593ede2cce0445d8e2dadbf163316" title="Turn the specified function off for the provided CSConsist.">functionOff(CSConsist *csConsist, int function)</a> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">consist</td><td>Pointer to a consist object </td></tr>
     <tr><td class="paramname">function</td><td>Function number (0 - 27) </td></tr>
@@ -680,8 +947,45 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="acbf593ede2cce0445d8e2dadbf163316" name="acbf593ede2cce0445d8e2dadbf163316"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbf593ede2cce0445d8e2dadbf163316">&#9670;&#160;</a></span>functionOff() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::functionOff </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Turn the specified function off for the provided <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">csConsist</td><td>Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object </td></tr>
+    <tr><td class="paramname">function</td><td>Function number (0 - 27) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a0e72e184856d4dce4e98a7d739cc4a4f" name="a0e72e184856d4dce4e98a7d739cc4a4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e72e184856d4dce4e98a7d739cc4a4f">&#9670;&#160;</a></span>functionOff() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e72e184856d4dce4e98a7d739cc4a4f">&#9670;&#160;</a></span>functionOff() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -718,7 +1022,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <a id="aece7109300a5f2df20958a18c54eed51" name="aece7109300a5f2df20958a18c54eed51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aece7109300a5f2df20958a18c54eed51">&#9670;&#160;</a></span>functionOn() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aece7109300a5f2df20958a18c54eed51">&#9670;&#160;</a></span>functionOn() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -743,8 +1047,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Turn the specified function on for the provided consist. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>DEPRECATED Turn the specified function on for the provided consist. </p>
+<p>Will be removed in 2.0.0, use <a class="el" href="classDCCEXProtocol.html#ae350cd5f946927cd7f597f9ce087c606" title="Turn the specified function on for the provided CSConsist.">functionOn(CSConsist *csConsist, int function)</a> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">consist</td><td>Pointer to a consist object </td></tr>
     <tr><td class="paramname">function</td><td>Function number (0 - 27) </td></tr>
@@ -754,8 +1058,45 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ae350cd5f946927cd7f597f9ce087c606" name="ae350cd5f946927cd7f597f9ce087c606"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae350cd5f946927cd7f597f9ce087c606">&#9670;&#160;</a></span>functionOn() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::functionOn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Turn the specified function on for the provided <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">csConsist</td><td>Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object </td></tr>
+    <tr><td class="paramname">function</td><td>Function number (0 - 27) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a6ab8652f4de1b84fab409d6fb2c3ca4f" name="a6ab8652f4de1b84fab409d6fb2c3ca4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ab8652f4de1b84fab409d6fb2c3ca4f">&#9670;&#160;</a></span>functionOn() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ab8652f4de1b84fab409d6fb2c3ca4f">&#9670;&#160;</a></span>functionOn() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -791,6 +1132,114 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ab4f0f91a1d79382c45aa4c14b4bf9752" name="ab4f0f91a1d79382c45aa4c14b4bf9752"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4f0f91a1d79382c45aa4c14b4bf9752">&#9670;&#160;</a></span>getCSConsistByLeadLoco() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSConsist.html">CSConsist</a> * DCCEXProtocol::getCSConsistByLeadLoco </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by the lead loco DCC address. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the lead loco </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CSConsist* Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object the loco is lead for, or nullptr if none exist </dd></dl>
+
+</div>
+</div>
+<a id="a2b3c1f04e1a715690288a0f45fac6613" name="a2b3c1f04e1a715690288a0f45fac6613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b3c1f04e1a715690288a0f45fac6613">&#9670;&#160;</a></span>getCSConsistByLeadLoco() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSConsist.html">CSConsist</a> * DCCEXProtocol::getCSConsistByLeadLoco </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLoco.html">Loco</a> *&#160;</td>
+          <td class="paramname"><em>loco</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by the lead <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>Pointer to the lead <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CSConsist* Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object the loco is lead for, or nullptr if none exist </dd></dl>
+
+</div>
+</div>
+<a id="a28bcd6b18dc9e4e6c9c9a98ca558d6ea" name="a28bcd6b18dc9e4e6c9c9a98ca558d6ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28bcd6b18dc9e4e6c9c9a98ca558d6ea">&#9670;&#160;</a></span>getCSConsistByMemberLoco() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSConsist.html">CSConsist</a> * DCCEXProtocol::getCSConsistByMemberLoco </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by a member DCC address. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the member </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CSConsist* Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object the loco is a member of, or nullptr if none exist </dd></dl>
+
+</div>
+</div>
+<a id="a458790c0ad973eb67d0f7f8d68171a57" name="a458790c0ad973eb67d0f7f8d68171a57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a458790c0ad973eb67d0f7f8d68171a57">&#9670;&#160;</a></span>getCSConsistByMemberLoco() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSConsist.html">CSConsist</a> * DCCEXProtocol::getCSConsistByMemberLoco </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLoco.html">Loco</a> *&#160;</td>
+          <td class="paramname"><em>loco</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> by a member <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>Pointer to the member <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CSConsist* Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object the loco is a member of, or nullptr if none exist </dd></dl>
+
+</div>
+</div>
 <a id="a3fbbe20688623c974e2ef39c8dfd632c" name="a3fbbe20688623c974e2ef39c8dfd632c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3fbbe20688623c974e2ef39c8dfd632c">&#9670;&#160;</a></span>getLastServerResponseTime()</h2>
 
@@ -808,6 +1257,34 @@ Public Attributes</h2></td></tr>
 
 <p>Retrieve the last time the server responded. </p>
 <dl class="section return"><dt>Returns</dt><dd>Last response time in milliseconds (from millis()) </dd></dl>
+
+</div>
+</div>
+<a id="a81b778440d991dc0ffccbb0fed30b2d4" name="a81b778440d991dc0ffccbb0fed30b2d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81b778440d991dc0ffccbb0fed30b2d4">&#9670;&#160;</a></span>getLibraryVersion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * DCCEXProtocol::getLibraryVersion </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the current <a class="el" href="classDCCEXProtocol.html" title="Main class for the DCCEXProtocol library.">DCCEXProtocol</a> library version. </p>
+<dl class="section return"><dt>Returns</dt><dd>const char* Version string </dd></dl>
 
 </div>
 </div>
@@ -1094,7 +1571,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <a id="a340c6a37042f0494c4aab4480454644f" name="a340c6a37042f0494c4aab4480454644f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a340c6a37042f0494c4aab4480454644f">&#9670;&#160;</a></span>isFunctionOn() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a340c6a37042f0494c4aab4480454644f">&#9670;&#160;</a></span>isFunctionOn() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1119,8 +1596,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Test if the specified function for the provided consist is on (Checks first loco) </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>DEPRECATED Test if the specified function for the provided consist is on (Checks first loco) </p>
+<p>Will be removed in 2.0.0, use <a class="el" href="classDCCEXProtocol.html#a8a3860d73c97fd5d9577201a3409b2be" title="Test if the specified function for the provided CSConsist is on (checks first Loco)">isFunctionOn(CSConsist *csConsist, int function)</a> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">consist</td><td>Pointer to a consist object </td></tr>
     <tr><td class="paramname">function</td><td>Function number to test (0 - 27) </td></tr>
@@ -1131,8 +1608,48 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a8a3860d73c97fd5d9577201a3409b2be" name="a8a3860d73c97fd5d9577201a3409b2be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a3860d73c97fd5d9577201a3409b2be">&#9670;&#160;</a></span>isFunctionOn() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DCCEXProtocol::isFunctionOn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test if the specified function for the provided <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> is on (checks first <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">csConsist</td><td>Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object </td></tr>
+    <tr><td class="paramname">function</td><td>Function number to test (0 - 27) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true Function on </dd>
+<dd>
+false Function off, or <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object is invalid </dd></dl>
+
+</div>
+</div>
 <a id="ab28d2d9ba6338d731d5955b395b904da" name="ab28d2d9ba6338d731d5955b395b904da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab28d2d9ba6338d731d5955b395b904da">&#9670;&#160;</a></span>isFunctionOn() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab28d2d9ba6338d731d5955b395b904da">&#9670;&#160;</a></span>isFunctionOn() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1367,6 +1884,43 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="abc3b0eb286badc102fff057975c61faf" name="abc3b0eb286badc102fff057975c61faf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc3b0eb286badc102fff057975c61faf">&#9670;&#160;</a></span>removeCSConsistMember()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DCCEXProtocol::removeCSConsistMember </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remove a member from the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address of the member </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool True if removed successfully, otherwise false </dd></dl>
+
+</div>
+</div>
 <a id="af8043f7e570585636124f40455a1d5a5" name="af8043f7e570585636124f40455a1d5a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8043f7e570585636124f40455a1d5a5">&#9670;&#160;</a></span>requestLocoUpdate()</h2>
 
@@ -1437,8 +1991,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a929399a017991deb4fae1f4a138f62bb" name="a929399a017991deb4fae1f4a138f62bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a929399a017991deb4fae1f4a138f62bb">&#9670;&#160;</a></span>sendCommand()</h2>
+<a id="aa5b3dbcb2565326de6e5bc50bea5bde7" name="aa5b3dbcb2565326de6e5bc50bea5bde7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5b3dbcb2565326de6e5bc50bea5bde7">&#9670;&#160;</a></span>sendCommand()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1446,7 +2000,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void DCCEXProtocol::sendCommand </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>cmd</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1457,6 +2011,95 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cmd</td><td>Command to send </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af9defca8fd4ae58bdc1969ea2cd544e4" name="af9defca8fd4ae58bdc1969ea2cd544e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9defca8fd4ae58bdc1969ea2cd544e4">&#9670;&#160;</a></span>setDebug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setDebug </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>debug</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Debug flag. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debug</td><td>True to send output commands to the console (defaults to False, no output) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7b4b6f0ebf22681b20197b4940da7804" name="a7b4b6f0ebf22681b20197b4940da7804"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b4b6f0ebf22681b20197b4940da7804">&#9670;&#160;</a></span>setDefaultMomentum() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setDefaultMomentum </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>accelerating</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>braking</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Default Momentum for separate accelerating/braking. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">accelerating</td><td>Accelerating momentum value </td></tr>
+    <tr><td class="paramname">braking</td><td>Braking momentum value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8efc98565bf24a2250f26e46ae3a2dd7" name="a8efc98565bf24a2250f26e46ae3a2dd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8efc98565bf24a2250f26e46ae3a2dd7">&#9670;&#160;</a></span>setDefaultMomentum() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setDefaultMomentum </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>momentum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Default Momentum for accelerating/braking. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">momentum</td><td>Momentum value </td></tr>
   </table>
   </dd>
 </dl>
@@ -1489,6 +2132,43 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aede69f8e4c5ad83a248007a17b85ab07" name="aede69f8e4c5ad83a248007a17b85ab07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aede69f8e4c5ad83a248007a17b85ab07">&#9670;&#160;</a></span>setFastClock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setFastClock </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>minutes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>speedFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the fast clock time and speed factor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">minutes</td><td>Time from midnight in minutes (eg. 60 = 1am) </td></tr>
+    <tr><td class="paramname">speedFactor</td><td>Speed factor multiplier (eg. 4 = 1 minute every 15 seconds) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="acb1582dc81a360b503948981daa64214" name="acb1582dc81a360b503948981daa64214"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb1582dc81a360b503948981daa64214">&#9670;&#160;</a></span>setLogStream()</h2>
 
@@ -1515,8 +2195,196 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="abf76b2eae5020c6d1c9a5aceb47ec370" name="abf76b2eae5020c6d1c9a5aceb47ec370"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf76b2eae5020c6d1c9a5aceb47ec370">&#9670;&#160;</a></span>setMomentum() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setMomentum </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>accelerating</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>braking</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Momentum for separate accelerating/braking. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address </td></tr>
+    <tr><td class="paramname">accelerating</td><td>Accelerating momentum value </td></tr>
+    <tr><td class="paramname">braking</td><td>Braking momentum value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1398edc814a0e1b014d5b0a04339a1b3" name="a1398edc814a0e1b014d5b0a04339a1b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1398edc814a0e1b014d5b0a04339a1b3">&#9670;&#160;</a></span>setMomentum() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setMomentum </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>momentum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set momentum for the specified loco/DC track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>DCC address </td></tr>
+    <tr><td class="paramname">momentum</td><td>Momentum value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7032b11f381cd27433a4a581c9d1011f" name="a7032b11f381cd27433a4a581c9d1011f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7032b11f381cd27433a4a581c9d1011f">&#9670;&#160;</a></span>setMomentum() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setMomentum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLoco.html">Loco</a> *&#160;</td>
+          <td class="paramname"><em>loco</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>accelerating</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>braking</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Momentum for separate accelerating/braking. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loco</td><td>Pointer to a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object </td></tr>
+    <tr><td class="paramname">accelerating</td><td>Accelerating momentum value </td></tr>
+    <tr><td class="paramname">braking</td><td>Braking momentum value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4980b5df468298cf63aba785d3f2b155" name="a4980b5df468298cf63aba785d3f2b155"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4980b5df468298cf63aba785d3f2b155">&#9670;&#160;</a></span>setMomentum() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setMomentum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLoco.html">Loco</a> *&#160;</td>
+          <td class="paramname"><em>loco</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>momentum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Momentum for the specified <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loco</td><td>Pointer to a <a class="el" href="classLoco.html" title="Class for a Loco object representing a DCC addressed locomotive.">Loco</a> object </td></tr>
+    <tr><td class="paramname">momentum</td><td>Momentum value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa5c899338a1aa44f256c242b02e97632" name="aa5c899338a1aa44f256c242b02e97632"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5c899338a1aa44f256c242b02e97632">&#9670;&#160;</a></span>setMomentumAlgorithm()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setMomentumAlgorithm </td>
+          <td>(</td>
+          <td class="paramtype">MomentumAlgorithm&#160;</td>
+          <td class="paramname"><em>algorithm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the Momentum Algorithm. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">algorithm</td><td>MomentumAlgorithm (Linear, Power) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="afbd98a3888c7d203c5ac83440aeefd45" name="afbd98a3888c7d203c5ac83440aeefd45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afbd98a3888c7d203c5ac83440aeefd45">&#9670;&#160;</a></span>setThrottle() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afbd98a3888c7d203c5ac83440aeefd45">&#9670;&#160;</a></span>setThrottle() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1547,8 +2415,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set all locos in the provided consist to the specified speed and direction. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>DEPRECATED Set all locos in the provided consist to the specified speed and direction. </p>
+<p>Will be removed in 2.0.0, use <a class="el" href="classDCCEXProtocol.html#aec649d9275c162c70d0eaa009fd0cb64" title="Set the provided command station consist to the specified speed and direction.">setThrottle(CSConsist *consist, int speed, Direction direction)</a> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">consist</td><td>Pointer to a consist object </td></tr>
     <tr><td class="paramname">speed</td><td>Speed (0 - 126) </td></tr>
@@ -1559,8 +2427,52 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aec649d9275c162c70d0eaa009fd0cb64" name="aec649d9275c162c70d0eaa009fd0cb64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec649d9275c162c70d0eaa009fd0cb64">&#9670;&#160;</a></span>setThrottle() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DCCEXProtocol::setThrottle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCSConsist.html">CSConsist</a> *&#160;</td>
+          <td class="paramname"><em>csConsist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>speed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Direction&#160;</td>
+          <td class="paramname"><em>direction</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the provided command station consist to the specified speed and direction. </p>
+<p>If this consist does not exist, it will be created first, and if it is not valid, this command will be ignored. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">csConsist</td><td>Pointer to the <a class="el" href="classCSConsist.html" title="Class to assist managing command station consists.">CSConsist</a> object </td></tr>
+    <tr><td class="paramname">speed</td><td>Speed (0 - 126) </td></tr>
+    <tr><td class="paramname">direction</td><td>Direction (Forward|Reverse) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a07a92343c911df89fba072c3b4a07b4a" name="a07a92343c911df89fba072c3b4a07b4a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07a92343c911df89fba072c3b4a07b4a">&#9670;&#160;</a></span>setThrottle() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a07a92343c911df89fba072c3b4a07b4a">&#9670;&#160;</a></span>setThrottle() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

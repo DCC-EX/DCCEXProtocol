@@ -62,9 +62,16 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-note-on-dccexprotocoldelegate">A Note on DCCEXProtocolDelegate</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#control-and-inputs">Control and Inputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#retrieving-and-referring-to-object-lists">Retrieving and referring to object lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retrieving-and-referring-to-object-lists">Retrieving and referring to object lists</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-station-consist-csconsist-list">Command Station Consist (CSConsist) list</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#speed-update-queuing-and-throttling">Speed Update Queuing and Throttling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#object-ownership">Object ownership</a></li>
 </ul>
 </li>
@@ -73,7 +80,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-delegate">DCCEXProtocol_Delegate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-roster-etc">DCCEXProtocol_Roster_etc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-loco-control">DCCEXProtocol_Loco_Control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-consist-control">DCCEXProtocol_Consist_Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-csconsist-control">DCCEXProtocol_CSConsist_Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-consist-control-deprecated">DCCEXProtocol_Consist_Control - DEPRECATED</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-turnout-control">DCCEXProtocol_Turnout_control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-multi-throttle-control">DCCEXProtocol_Multi_Throttle_Control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#dccexprotocol-track-type">DCCEXProtocol_Track_type</a></li>
@@ -122,6 +130,42 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N11ConsistLoco5_nextE"><code class="docutils literal notranslate"><span class="pre">ConsistLoco::_next</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv49CSConsist"><code class="docutils literal notranslate"><span class="pre">CSConsist</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist9CSConsistEb"><code class="docutils literal notranslate"><span class="pre">CSConsist::CSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist7getNextEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist9addMemberEib"><code class="docutils literal notranslate"><span class="pre">CSConsist::addMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist12removeMemberEi"><code class="docutils literal notranslate"><span class="pre">CSConsist::removeMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist16removeAllMembersEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::removeAllMembers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist14getFirstMemberEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getFirstMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist9getMemberEi"><code class="docutils literal notranslate"><span class="pre">CSConsist::getMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist11isInConsistEi"><code class="docutils literal notranslate"><span class="pre">CSConsist::isInConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist10isReversedEi"><code class="docutils literal notranslate"><span class="pre">CSConsist::isReversed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist7isValidEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::isValid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist14getMemberCountEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getMemberCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist27getAlwaysReplicateFunctionsEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getAlwaysReplicateFunctions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist21setReplicateFunctionsEb"><code class="docutils literal notranslate"><span class="pre">CSConsist::setReplicateFunctions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist21getReplicateFunctionsEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getReplicateFunctions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsistD0Ev"><code class="docutils literal notranslate"><span class="pre">CSConsist::~CSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist8getFirstEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getFirst()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist15clearCSConsistsEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::clearCSConsists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist20getLeadLocoCSConsistEi"><code class="docutils literal notranslate"><span class="pre">CSConsist::getLeadLocoCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist18getMemberCSConsistEi"><code class="docutils literal notranslate"><span class="pre">CSConsist::getMemberCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist27setAlwaysReplicateFunctionsEb"><code class="docutils literal notranslate"><span class="pre">CSConsist::setAlwaysReplicateFunctions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist19_replicateFunctionsE"><code class="docutils literal notranslate"><span class="pre">CSConsist::_replicateFunctions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist12_firstMemberE"><code class="docutils literal notranslate"><span class="pre">CSConsist::_firstMember</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist5_nextE"><code class="docutils literal notranslate"><span class="pre">CSConsist::_next</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist12_memberCountE"><code class="docutils literal notranslate"><span class="pre">CSConsist::_memberCount</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist6_firstE"><code class="docutils literal notranslate"><span class="pre">CSConsist::_first</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9CSConsist25_alwaysReplicateFunctionsE"><code class="docutils literal notranslate"><span class="pre">CSConsist::_alwaysReplicateFunctions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv415CSConsistMember"><code class="docutils literal notranslate"><span class="pre">CSConsistMember</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N15CSConsistMember15CSConsistMemberEib"><code class="docutils literal notranslate"><span class="pre">CSConsistMember::CSConsistMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N15CSConsistMember7addressE"><code class="docutils literal notranslate"><span class="pre">CSConsistMember::address</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N15CSConsistMember8reversedE"><code class="docutils literal notranslate"><span class="pre">CSConsistMember::reversed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N15CSConsistMember4nextE"><code class="docutils literal notranslate"><span class="pre">CSConsistMember::next</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv412DCCEXInbound"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N12DCCEXInbound5setupE7int16_t"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::setup()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N12DCCEXInbound7cleanupEv"><code class="docutils literal notranslate"><span class="pre">DCCEXInbound::cleanup()</span></code></a></li>
@@ -142,7 +186,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv413DCCEXProtocol"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13DCCEXProtocolEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::DCCEXProtocol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13DCCEXProtocolEiim"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::DCCEXProtocol()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocolD0Ev"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::~DCCEXProtocol()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setDelegateEP21DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setDelegate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12setLogStreamEP6Stream"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setLogStream()</span></code></a></li>
@@ -150,7 +194,7 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol7connectEP6Stream"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::connect()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10disconnectEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::disconnect()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol5checkEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::check()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11sendCommandEPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::sendCommand()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11sendCommandEPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::sendCommand()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8getListsEbbbb"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getLists()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13receivedListsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedLists()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20requestServerVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestServerVersion()</span></code></a></li>
@@ -161,14 +205,19 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol25getLastServerResponseTimeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getLastServerResponseTime()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13clearAllListsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::clearAllLists()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15refreshAllListsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::refreshAllLists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8setDebugEb"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setDebug()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setThrottleEP4Locoi9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setThrottle()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setThrottleEP7Consisti9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setThrottle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setThrottleEP9CSConsisti9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setThrottle()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10functionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11functionOffEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12isFunctionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10functionOnEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10functionOnEP9CSConsisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11functionOffEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11functionOffEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11functionOffEP9CSConsisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::functionOff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12isFunctionOnEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12isFunctionOnEP7Consisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12isFunctionOnEP9CSConsisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::isFunctionOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17requestLocoUpdateEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestLocoUpdate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8readLocoEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::readLoco()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13emergencyStopEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::emergencyStop()</span></code></a></li>
@@ -176,7 +225,26 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol14receivedRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedRoster()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16findLocoInRosterEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::findLocoInRoster()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11clearRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::clearRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15clearLocalLocosEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::clearLocalLocos()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13refreshRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::refreshRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17requestCSConsistsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestCSConsists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15createCSConsistEibb"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::createCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18addCSConsistMemberEP9CSConsistib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::addCSConsistMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol22getCSConsistByLeadLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getCSConsistByLeadLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol22getCSConsistByLeadLocoEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getCSConsistByLeadLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol24getCSConsistByMemberLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getCSConsistByMemberLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol24getCSConsistByMemberLocoEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getCSConsistByMemberLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol21removeCSConsistMemberEP9CSConsisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::removeCSConsistMember()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15deleteCSConsistEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deleteCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15deleteCSConsistEP9CSConsist"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deleteCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15clearCSConsistsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::clearCSConsists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20setMomentumAlgorithmE17MomentumAlgorithm"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setMomentumAlgorithm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18setDefaultMomentumEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setDefaultMomentum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18setDefaultMomentumEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setDefaultMomentum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setMomentumEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setMomentum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setMomentumEP4Locoi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setMomentum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setMomentumEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setMomentum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol11setMomentumEP4Locoii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setMomentum()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15getTurnoutCountEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getTurnoutCount()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol19receivedTurnoutListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::receivedTurnoutList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol14getTurnoutByIdEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getTurnoutById()</span></code></a></li>
@@ -209,6 +277,8 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12powerTrackOnEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13powerTrackOffEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::powerTrackOff()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12setTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setTrackType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol25requestTrackCurrentGaugesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestTrackCurrentGauges()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20requestTrackCurrentsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestTrackCurrents()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17activateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol19deactivateAccessoryEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::deactivateAccessory()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol23activateLinearAccessoryEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::activateLinearAccessory()</span></code></a></li>
@@ -222,10 +292,14 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10writeCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVBit()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13writeCVOnMainEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVOnMain()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16writeCVBitOnMainEiiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::writeCVBitOnMain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12setFastClockEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::setFastClock()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20requestFastClockTimeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::requestFastClockTime()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol6rosterE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::roster</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8turnoutsE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::turnouts</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol6routesE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::routes</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10turntablesE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::turntables</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10csConsistsE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::csConsists</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17getLibraryVersionEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::getLibraryVersion()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol5_initEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_init()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12_sendCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendCommand()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15_processCommandEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processCommand()</span></code></a></li>
@@ -237,8 +311,15 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20_getValidFunctionMapEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getValidFunctionMap()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol22_getSpeedFromSpeedByteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getSpeedFromSpeedByte()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_getDirectionFromSpeedByteEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getDirectionFromSpeedByte()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol8_setLocoEii9Direction"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_setLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol9_setLocosEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_setLocos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12_updateLocosEP4Locoii9Directioni"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_updateLocos()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20_processReadResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processReadResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processPendingUserChangesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processPendingUserChanges()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17_processCSConsistEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15_buildCSConsistEP9CSConsisti"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_buildCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20_sendCreateCSConsistEP9CSConsist"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendCreateCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20_sendDeleteCSConsistEP9CSConsist"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendDeleteCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol27_setCSConsistMemberFunctionEP15CSConsistMemberib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_setCSConsistMemberFunction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10_getRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_getRoster()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16_requestedRosterEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_requestedRoster()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18_processRosterListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processRosterList()</span></code></a></li>
@@ -265,10 +346,14 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processTurntableBroadcastEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTurntableBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol18_processTrackPowerEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol17_processTrackTypeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processTrackCurrentGaugesEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackCurrentGauges()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol21_processTrackCurrentsEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processTrackCurrents()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol26_processValidateCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol29_processValidateCVBitResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processValidateCVBitResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol25_processWriteLocoResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteLocoResponse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol23_processWriteCVResponseEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processWriteCVResponse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol20_processSetFastClockEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processSetFastClock()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol21_processFastClockTimeEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_processFastClockTime()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol9_cmdStartEc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdStart()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10_cmdAppendEPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdAppend()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol10_cmdAppendEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdAppend()</span></code></a></li>
@@ -286,6 +371,7 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16_sendThreeParamsEcPKcii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16_sendThreeParamsEciii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16_sendThreeParamsEccPKci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16_sendThreeParamsEccii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendThreeParams()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15_sendFourParamsEciiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_sendFourParams()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol12_rosterCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_rosterCount</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol13_turnoutCountE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_turnoutCount</span></code></a></li>
@@ -317,11 +403,14 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15_heartbeatDelayE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_heartbeatDelay</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol14_lastHeartbeatE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_lastHeartbeat</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol9_cmdIndexE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_cmdIndex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol16_userChangeDelayE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_userChangeDelay</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol15_lastUserChangeE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_lastUserChange</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N13DCCEXProtocol6_debugE"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocol::_debug</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv421DCCEXProtocolDelegate"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedServerVersionEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedServerVersion()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate15receivedMessageEPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedMessage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate15receivedMessageEPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedMessage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedRosterListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRosterList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate19receivedTurnoutListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedRouteListEv"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedRouteList()</span></code></a></li>
@@ -329,6 +418,8 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedLocoUpdateEP4Loco"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoUpdate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedLocoBroadcastEii9Directioni"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedLocoBroadcast()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate18receivedTrackPowerE10TrackPower"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackPower()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate25receivedTrackCurrentGaugeEci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackCurrentGauge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate20receivedTrackCurrentEci"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackCurrent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate28receivedIndividualTrackPowerE10TrackPoweri"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedIndividualTrackPower()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedTrackTypeEc16TrackManagerModei"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTrackType()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedTurnoutActionEib"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedTurnoutAction()</span></code></a></li>
@@ -338,7 +429,10 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedValidateCVBitEiii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedValidateCVBit()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedWriteLocoEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteLoco()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate15receivedWriteCVEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedWriteCV()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedScreenUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate20receivedScreenUpdateEiiPKc"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedScreenUpdate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate17receivedCSConsistEiP9CSConsist"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedCSConsist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate20receivedSetFastClockEii"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedSetFastClock()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegate21receivedFastClockTimeEi"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::receivedFastClockTime()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N21DCCEXProtocolDelegateD0Ev"><code class="docutils literal notranslate"><span class="pre">DCCEXProtocolDelegate::~DCCEXProtocolDelegate()</span></code></a></li>
 </ul>
 </li>
@@ -360,10 +454,18 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco19isFunctionMomentaryEi"><code class="docutils literal notranslate"><span class="pre">Loco::isFunctionMomentary()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco7setNextEP4Loco"><code class="docutils literal notranslate"><span class="pre">Loco::setNext()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco7getNextEv"><code class="docutils literal notranslate"><span class="pre">Loco::getNext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco12setUserSpeedEi"><code class="docutils literal notranslate"><span class="pre">Loco::setUserSpeed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco12getUserSpeedEv"><code class="docutils literal notranslate"><span class="pre">Loco::getUserSpeed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco16setUserDirectionE9Direction"><code class="docutils literal notranslate"><span class="pre">Loco::setUserDirection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco16getUserDirectionEv"><code class="docutils literal notranslate"><span class="pre">Loco::getUserDirection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco22resetUserChangePendingEv"><code class="docutils literal notranslate"><span class="pre">Loco::resetUserChangePending()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco20getUserChangePendingEv"><code class="docutils literal notranslate"><span class="pre">Loco::getUserChangePending()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4LocoD0Ev"><code class="docutils literal notranslate"><span class="pre">Loco::~Loco()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco8getFirstEv"><code class="docutils literal notranslate"><span class="pre">Loco::getFirst()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco12getByAddressEi"><code class="docutils literal notranslate"><span class="pre">Loco::getByAddress()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco11clearRosterEv"><code class="docutils literal notranslate"><span class="pre">Loco::clearRoster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco17getFirstLocalLocoEv"><code class="docutils literal notranslate"><span class="pre">Loco::getFirstLocalLoco()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco15clearLocalLocosEv"><code class="docutils literal notranslate"><span class="pre">Loco::clearLocalLocos()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco8_addressE"><code class="docutils literal notranslate"><span class="pre">Loco::_address</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco5_nameE"><code class="docutils literal notranslate"><span class="pre">Loco::_name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco6_speedE"><code class="docutils literal notranslate"><span class="pre">Loco::_speed</span></code></a></li>
@@ -373,8 +475,15 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco15_functionStatesE"><code class="docutils literal notranslate"><span class="pre">Loco::_functionStates</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco15_momentaryFlagsE"><code class="docutils literal notranslate"><span class="pre">Loco::_momentaryFlags</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco5_nextE"><code class="docutils literal notranslate"><span class="pre">Loco::_next</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco15_removeFromListEP4Loco"><code class="docutils literal notranslate"><span class="pre">Loco::_removeFromList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco10_userSpeedE"><code class="docutils literal notranslate"><span class="pre">Loco::_userSpeed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco14_userDirectionE"><code class="docutils literal notranslate"><span class="pre">Loco::_userDirection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco18_userChangePendingE"><code class="docutils literal notranslate"><span class="pre">Loco::_userChangePending</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco10_addToListEPP4LocoP4Loco"><code class="docutils literal notranslate"><span class="pre">Loco::_addToList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco18_findAddressInListEPP4Locoi"><code class="docutils literal notranslate"><span class="pre">Loco::_findAddressInList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco15_removeFromListEPP4LocoP4Loco"><code class="docutils literal notranslate"><span class="pre">Loco::_removeFromList()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco10_clearListEPP4Loco"><code class="docutils literal notranslate"><span class="pre">Loco::_clearList()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco6_firstE"><code class="docutils literal notranslate"><span class="pre">Loco::_first</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N4Loco15_firstLocalLocoE"><code class="docutils literal notranslate"><span class="pre">Loco::_firstLocalLoco</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv410NullStream"><code class="docutils literal notranslate"><span class="pre">NullStream</span></code></a><ul>
@@ -525,6 +634,11 @@
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N16TrackManagerMode4NONEE"><code class="docutils literal notranslate"><span class="pre">TrackManagerMode::NONE</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv417MomentumAlgorithm"><code class="docutils literal notranslate"><span class="pre">MomentumAlgorithm</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N17MomentumAlgorithm6LinearE"><code class="docutils literal notranslate"><span class="pre">MomentumAlgorithm::Linear</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N17MomentumAlgorithm5PowerE"><code class="docutils literal notranslate"><span class="pre">MomentumAlgorithm::Power</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv427MAX_OUTBOUND_COMMAND_LENGTH"><code class="docutils literal notranslate"><span class="pre">MAX_OUTBOUND_COMMAND_LENGTH</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#_CPPv49RouteType"><code class="docutils literal notranslate"><span class="pre">RouteType</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="library.html#_CPPv4N9RouteType14RouteTypeRouteE"><code class="docutils literal notranslate"><span class="pre">RouteType::RouteTypeRoute</span></code></a></li>
@@ -583,10 +697,19 @@
 <nav class="contents local" id="on-this-page">
 <p class="topic-title">On this page</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#setup" id="id1">Setup</a></p></li>
-<li><p><a class="reference internal" href="#control-and-inputs" id="id2">Control and Inputs</a></p></li>
-<li><p><a class="reference internal" href="#retrieving-and-referring-to-object-lists" id="id3">Retrieving and referring to object lists</a></p></li>
-<li><p><a class="reference internal" href="#object-ownership" id="id4">Object ownership</a></p></li>
+<li><p><a class="reference internal" href="#setup" id="id1">Setup</a></p>
+<ul>
+<li><p><a class="reference internal" href="#a-note-on-dccexprotocoldelegate" id="id2">A Note on DCCEXProtocolDelegate</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#control-and-inputs" id="id3">Control and Inputs</a></p></li>
+<li><p><a class="reference internal" href="#retrieving-and-referring-to-object-lists" id="id4">Retrieving and referring to object lists</a></p>
+<ul>
+<li><p><a class="reference internal" href="#command-station-consist-csconsist-list" id="id5">Command Station Consist (CSConsist) list</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#speed-update-queuing-and-throttling" id="id6">Speed Update Queuing and Throttling</a></p></li>
+<li><p><a class="reference internal" href="#object-ownership" id="id7">Object ownership</a></p></li>
 </ul>
 </nav>
 </aside>
@@ -646,9 +769,16 @@
 </div>
 <p>As covered in the design principles above, you must include the <cite>check()</cite> method as often as possible to receive command responses and broadcasts and have these processed by the library and any event handlers defined in your custom <cite>DCCEXProtocolDelegate</cite> class.</p>
 <p>Refer to the <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> to see how this may be implemented.</p>
+<section id="a-note-on-dccexprotocoldelegate">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">A Note on DCCEXProtocolDelegate</a><a class="headerlink" href="#a-note-on-dccexprotocoldelegate" title="Link to this heading"></a></h3>
+<p><em>New in DCCEXProtocol 1.3.0</em></p>
+<p>In previous versions of the library, it was necessary to create a DCCEXProtocolDelegate instance and associate it with your DCCEXProtocol instance to be able to send any commands to a command station, even if there was no reliance on any DCCEXProtocolDelegate methods.</p>
+<p>This has now been corrected, and the library can be utilised without a DCCEXProtocolDelegate instance. The <cite>dccexProtocol.check()</cite> method is responsible for managing and maintaining the state of the various objects, and the DCCEXProtocolDelegate methods simply notify when broadcasts or responses are received.</p>
+<p>However, in case it’s not obvious, if your software needs to respond to a response or broadcast (eg. changing a display when a turnout is thrown), then you should still utilise the DCCEXProtocolDelegate to be notified when these events occur, rather than having to manually poll any objects for changes.</p>
+</section>
 </section>
 <section id="control-and-inputs">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Control and Inputs</a><a class="headerlink" href="#control-and-inputs" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Control and Inputs</a><a class="headerlink" href="#control-and-inputs" title="Link to this heading"></a></h2>
 <p>It is up to the client software utilising this library to manage control and input methods to provide input into the protocol functions such as setting locomotive speed and direction, turning functions on and off, and controlling the various other objects and methods available.</p>
 <p>For example, multiple rotary encoders may be used to simultaneously control multiple locomotives or consists.</p>
 <p>There is, however, no need to instantiate more than one <cite>DCCEXProtocol</cite> or <cite>DCCEXProtocolDelegate</cite> object providing the client software is written appropriately, and we recommend creating a custom class that can take the <cite>DCCEXProtocol</cite> object as a parameter to enable this.</p>
@@ -657,7 +787,7 @@
 <p>In this manner, the user of the throttle/client software will see the true results of their inputs which will reflect what EX-CommandStation is doing in response to those inputs.</p>
 </section>
 <section id="retrieving-and-referring-to-object-lists">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Retrieving and referring to object lists</a><a class="headerlink" href="#retrieving-and-referring-to-object-lists" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Retrieving and referring to object lists</a><a class="headerlink" href="#retrieving-and-referring-to-object-lists" title="Link to this heading"></a></h2>
 <p>To retrieve the various objects lists from <a href="https://dcc-ex.com/"><span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span></a>, use the <cite>getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired, bool turntableListRequired)</cite> method within your <cite>loop()</cite> function to ensure these are retrieved successfully.</p>
 <p>As of version 1.2.1 of this library, the method defaults to all lists true, meaning you can simply call it without parameters.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Explicitly retrieve all lists</span>
@@ -675,7 +805,7 @@
 <span class="n">DCCEXProtocol</span><span class="w"> </span><span class="nf">dccexProtocol</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"> </span><span class="c1">// Use default 500 byte buffer, 100 parameters</span>
 </pre></div>
 </div>
-<p>All objects are contained within linked lists and can be access via for loops:</p>
+<p>All objects are contained within linked lists and can be accessed via for loops:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Loco</span><span class="o">*</span><span class="w"> </span><span class="n">loco</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">roster</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">loco</span><span class="p">;</span><span class="w"> </span><span class="n">loco</span><span class="o">=</span><span class="n">loco</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// loco methods are available here</span>
 <span class="p">}</span>
@@ -697,9 +827,39 @@
 </pre></div>
 </div>
 <p>Refer to the <cite>DCCEXProtocol_Roster_etc</cite> example for an idea of how this may be implemented.</p>
+<section id="command-station-consist-csconsist-list">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Command Station Consist (CSConsist) list</a><a class="headerlink" href="#command-station-consist-csconsist-list" title="Link to this heading"></a></h3>
+<p><em>New in DCCEXProtocol 1.3.0</em></p>
+<p>With the introduction of the Command Station Consist (CSConsist) in EX-CommandStation, there is now also a list of CSConsists available. However, this list is dynamic and is updated each time a CSConsist is created, modified, or deleted, and therefore should not be treated the same as the roster, turnout, route, or turntable lists.</p>
+<p><strong>Note that this new CSConsist support deprecates the existing Consist object and all associated methods, and these will be removed in a future release.</strong></p>
+<p>To get the current list of CSConsists use this method:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">requestCSConsists</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The command station will respond and create a list of CSConsist objects on the next call to <cite>dccexProtocol.check()</cite>.</p>
+<p>Similar to the lists above, this can be navigated like so:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">CSConsist</span><span class="w"> </span><span class="o">*</span><span class="n">csConsist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">csConsists</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">csConsist</span><span class="p">;</span><span class="w"> </span><span class="n">csConsist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">csConsist</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// CSConsist methods are available here</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Refer to the library method documentation for the various methods available to create, update, and delete these new CSConsists.</p>
+</section>
+</section>
+<section id="speed-update-queuing-and-throttling">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Speed Update Queuing and Throttling</a><a class="headerlink" href="#speed-update-queuing-and-throttling" title="Link to this heading"></a></h2>
+<p><em>New in DCCEXProtocol 1.3.0</em></p>
+<p>To prevent excessive throttle speed adjustments from saturating WiFi/serial buffers and causing excessive broadcasts to other throttles, buffering of loco speed and direction (<cite>setThrottle(…)</cite>) commands are now throttled using a timed queue. By default, this timer is set at 100 milliseconds, which is typically not noticeable by a throttle user.</p>
+<p>If you wish to adjust this interval, it can be done so when creating a DCCEXProtocol instance by passing an additional parameter to the command buffer and parameters outlined above:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// dccexProtocol(maxCmdBuffer, maxCommandParams, userChangeDelay);</span>
+<span class="n">DCCEXProtocol</span><span class="w"> </span><span class="n">dccexProtocol</span><span class="p">;</span><span class="w"> </span><span class="c1">// Use default 500 byte buffer, 50 parameters, and 100ms user change delay</span>
+<span class="n">DCCEXProtocol</span><span class="w"> </span><span class="nf">dccexProtocol</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">);</span><span class="w"> </span><span class="c1">// Use default 500 byte buffer, 100 parameters, and decrease delay to 50ms</span>
+</pre></div>
+</div>
+<p>No other commands are processed through this mechanism, meaning every other command is still sent instantly.</p>
 </section>
 <section id="object-ownership">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">Object ownership</a><a class="headerlink" href="#object-ownership" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Object ownership</a><a class="headerlink" href="#object-ownership" title="Link to this heading"></a></h2>
 <p>All objects created by the <cite>getLists()</cite> method are owned by the DCCEXProtocol instance, so if, for example, you wish to “forget” a Loco and disassociate from some form of throttle software, <strong>do not delete</strong> the Loco object as this will break the roster linked list.</p>
 <p>Each object type has a clear method to delete the list of retrieved objects:</p>
 <ul class="simple">
@@ -710,7 +870,8 @@
 </ul>
 <p>You can also clear all lists with <cite>dccexProtocol-&gt;clearAllLists()</cite>.</p>
 <p><strong>Note there is one exception to this rule</strong> which is Loco objects that are created with the <cite>LocoSource::LocoSourceEntry</cite> type set, as these do not get added to the roster list.</p>
-<p>If you create a Loco object using this type, you must delete the object when you are finished with it in order to prevent memory leaks.</p>
+<p><em>Updated in DCCEXProtocol 1.3.0</em></p>
+<p>If you create a Loco object using this type, you may delete the object when you are finished with it in order to prevent memory leaks, but this is no longer strictly necessary as they are added to a list of LocoSourceEntry Locos, which is accessible via <cite>dccexProtocol.roster-&gt;getFirstLocalLoco()</cite>. This can also be cleared with <cite>clearLocalLocos()</cite>, and it is also cleared along with the other lists when calling <cite>clearAllLists()</cite>.</p>
 <p>This also means if you are creating a local roster in your software that you wish to be a part of the roster list, you must use the <cite>LocoSource::LocoSourceRoster</cite> type when creating the Loco object.</p>
 </section>
 </section>

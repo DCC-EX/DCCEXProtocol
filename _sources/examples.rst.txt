@@ -42,10 +42,21 @@ DCCEXProtocol_Loco_Control
 
 This example demonstrates basic locomotive speed and function control using dummy DCC addresses, in addition to controlling track power and further use of the delegate to notify when updates to the locomotive have been received.
 
-DCCEXProtocol_Consist_Control
------------------------------
+DCCEXProtocol_CSConsist_Control
+-------------------------------
+
+This example demonstrates how to make use of the Command Station Consist feature introduced into EX-CommandStation, allowing control of a consist by a single DCC address similar to how a CV19 decoder consist is controlled.
+
+*It is recommended to use the new CSConsist method rather than the in-throttle consists below*.
+
+DCCEXProtocol_Consist_Control - DEPRECATED
+------------------------------------------
+
+**In-throttle consists are now DEPRECATED, please use the new Command Station Consist (CSConsist) instead.**
 
 This example demonstrates how to setup a software based consist (similar to how this is accomplished in Engine Driver), with basic speed and function control of the configured dummy locomotives. The delegate is also used to notify when updates to the configured locomotives have been received.
+
+*These in-throttle consists will be removed in a future version of the DCCEXProtocol library.*
 
 DCCEXProtocol_Turnout_control
 -----------------------------
