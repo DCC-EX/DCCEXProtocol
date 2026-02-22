@@ -1,21 +1,9 @@
-/*
-IN-THROTTLE CONSISTS DEPRECATED!!!!
-
-As of version 1.3.0, these consists (referred to as in-throttle consists) have been deprecated for the DCCEXProtocol
-library.
-
-Going forwards, we highly recommend utilising the new Command Station Consists (CSConsists) instead, as they are fully
-supported in the command station, enabling hand off to automations unlike these in-throttle consists which support
-manual operation only.
-*/
-
-// DCCEXProtocol library: Consist control example
+// DCCEXProtocol library: CSConsist control example
 //
-// Shows how to create and control a consist
+// Shows how to create and control a command station consist
 // Tested with ESP32-WROOM board
 //
-// Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
-// Luca Dentella, 2020
+// Peter Cole (PeteGSX), 2026
 
 #include <DCCEXProtocol.h>
 #include <WiFi.h>
@@ -32,28 +20,6 @@ manual operation only.
 class MyDelegate : public DCCEXProtocolDelegate {
 
 public:
-  void receivedServerVersion(int major, int minor, int patch) override {
-    Serial.print("\n\nReceived version: ");
-    Serial.print(major);
-    Serial.print(".");
-    Serial.print(minor);
-    Serial.print(".");
-    Serial.println(patch);
-  }
-
-  void receivedTrackPower(TrackPower state) override {
-    Serial.print("\n\nReceived Track Power: ");
-    Serial.println(state);
-    Serial.println("\n\n");
-  }
-
-  // Use for roster Locos (LocoSource::LocoSourceRoster)
-  void receivedLocoUpdate(Loco *loco) override {
-    Serial.print("Received Loco update for DCC address: ");
-    Serial.println(loco->getAddress());
-  }
-
-  // Use for locally created Locos (LocoSource::LocoSourceEntry)
   void receivedLocoBroadcast(int address, int speed, Direction direction, int functionMap) override {
     Serial.print("\n\nReceived Loco broadcast: address|speed|direction|functionMap: ");
     Serial.print(address);
@@ -75,8 +41,8 @@ int speed = 0;
 int up = 1;
 unsigned long lastTime = 0;
 
-// define our consist object
-Consist *consist = nullptr;
+// define our CSConsist object
+CSConsist *csConsist = nullptr;
 
 // Global objects
 WiFiClient client;
@@ -86,9 +52,7 @@ MyDelegate myDelegate;
 void setup() {
 
   Serial.begin(115200);
-  Serial.println("WARNING!! In-throttle consists are DEPRECATED as of version 1.3.0");
-  Serial.println("We recommanded using the new CSConsists instead");
-  Serial.println("DCCEXProtocol Consist Control Demo");
+  Serial.println("DCCEXProtocol CSConsist Control Demo");
   Serial.println();
 
   // Connect to WiFi network
@@ -120,8 +84,6 @@ void setup() {
   dccexProtocol.connect(&client);
   Serial.println("DCC-EX connected");
 
-  dccexProtocol.requestServerVersion();
-
   // Turn track power on for locos to move
   dccexProtocol.powerOn();
 
@@ -133,29 +95,19 @@ void loop() {
   dccexProtocol.check();
 
   if (!consist) {
-    consist = new Consist();
+    // Create a new CSConsist for loco address 11 in the normal direction of travel, and replicate functions across the
+    // consist.
+    // By default, functions will only affect the lead loco
+    csConsist = dccexProtocol.createCSConsist(11, false, true);
 
-    // create a loco with DCC address 11 - LocoSourceEntry means it's not from the roster
-    Loco *loco1 = new Loco(11, LocoSource::LocoSourceEntry);
-    Serial.print("Created loco: ");
-    Serial.println(loco1->getAddress());
-
-    // add this loco to the consist
-    consist->addLoco(loco1, Facing::FacingForward);
-
-    // create a second loco with DCC address 12 - LocoSourceEntry means it's not from the roster
-    Loco *loco2 = new Loco(12, LocoSource::LocoSourceEntry);
-    Serial.print("Created loco: ");
-    Serial.println(loco2->getAddress());
-
-    // add this loco to the consist, and it will be running in reverse direction
-    consist->addLoco(loco2, Facing::FacingReversed);
+    // Add loco 12 to the consist, reverse to the normal direction of travel
+    dccexProtocol.addCSConsistMember(12, true);
 
     // turn track power on or the loco won't move
     dccexProtocol.powerOn();
   }
 
-  if (consist) {
+  if (csConsist) {
     // every 10 seconds change speed and set a random function on or off
     if ((millis() - lastTime) >= 10000) {
       if (speed >= 100)
@@ -163,16 +115,16 @@ void loop() {
       if (speed <= 0)
         up = 1;
       speed = speed + up;
-      dccexProtocol.setThrottle(consist, speed, Direction::Forward);
+      dccexProtocol.setThrottle(csConsist, speed, Direction::Forward);
 
       int fn = random(0, 27);
       int fns = random(0, 100);
       bool fnState = (fns < 50) ? false : true;
 
       if (fnState) {
-        dccexProtocol.functionOn(consist, fn);
+        dccexProtocol.functionOn(csConsist, fn);
       } else {
-        dccexProtocol.functionOff(consist, fn);
+        dccexProtocol.functionOff(csConsist, fn);
       }
 
       lastTime = millis();
