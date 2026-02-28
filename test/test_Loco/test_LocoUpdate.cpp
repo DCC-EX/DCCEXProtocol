@@ -156,3 +156,59 @@ TEST_F(LocoTests, TestSpeedByteCalculation) {
   _stream << "<l 42 0 1 0>";
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test F28 is updated correctly
+ */
+TEST_F(LocoTests, TestReceiveF28) {
+  // Setup the Loco
+  ASSERT_EQ(_dccexProtocol.roster->getFirst(), nullptr);
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  loco42->setName("Loco42");
+
+  // Set a loco update for 42 in the stream:
+  // - Speed byte = forward, speed 21
+  // - Function 28 on
+  _stream << "<l 42 0 150 268435456>";
+
+  // Expect to receive the delegate call at the next check()
+  EXPECT_CALL(_delegate, receivedLocoUpdate(loco42)).Times(Exactly(1));
+  // We should also expect an update with the details
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 21, Direction::Forward, 268435456)).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Validate expected result
+  EXPECT_EQ(loco42->getSpeed(), 21);
+  EXPECT_EQ(loco42->getDirection(), Direction::Forward);
+  EXPECT_EQ(loco42->getFunctionStates(), 268435456);
+  EXPECT_TRUE(loco42->isFunctionOn(28));
+}
+
+/**
+ * @brief Test all functions on is updated correctly
+ */
+TEST_F(LocoTests, TestReceiveAllFunctionsOn) {
+  // Setup the Loco
+  ASSERT_EQ(_dccexProtocol.roster->getFirst(), nullptr);
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  loco42->setName("Loco42");
+
+  // Set a loco update for 42 in the stream:
+  // - Speed byte = forward, speed 21
+  // - Function 28 on
+  _stream << "<l 42 0 150 536870911>";
+
+  // Expect to receive the delegate call at the next check()
+  EXPECT_CALL(_delegate, receivedLocoUpdate(loco42)).Times(Exactly(1));
+  // We should also expect an update with the details
+  EXPECT_CALL(_delegate, receivedLocoBroadcast(42, 21, Direction::Forward, 536870911)).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Validate expected result
+  EXPECT_EQ(loco42->getSpeed(), 21);
+  EXPECT_EQ(loco42->getDirection(), Direction::Forward);
+  EXPECT_EQ(loco42->getFunctionStates(), 536870911);
+  for (int function = 0; function < 29; function++) {
+    EXPECT_TRUE(loco42->isFunctionOn(function));
+  }
+}

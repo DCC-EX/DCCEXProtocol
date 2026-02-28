@@ -1009,9 +1009,9 @@ void DCCEXProtocol::_processLocoBroadcast() { //<l cab reg speedByte functMap>
 }
 
 int DCCEXProtocol::_getValidFunctionMap(int functionMap) {
-  // Mask off anything above 28 bits/28 functions
-  if (functionMap > 0xFFFFFFF) {
-    functionMap &= 0xFFFFFFF;
+  // Mask off anything above 29 bits/28 functions
+  if (functionMap > 0x1FFFFFFF) {
+    functionMap &= 0x1FFFFFFF;
   }
   return functionMap;
 }

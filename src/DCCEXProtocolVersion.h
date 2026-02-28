@@ -29,11 +29,12 @@
 #ifndef DCCEXPROTOCOLVERSION_H
 #define DCCEXPROTOCOLVERSION_H
 
-#define DCCEX_PROTOCOL_VERSION "1.3.0"
+#define DCCEX_PROTOCOL_VERSION "1.3.1"
 
 /*
 Version information:
 
+1.3.1   - Fix bug where function 28 is masked off incorrectly and not received in Loco updates
 1.3.0   - Introduce queued throttle updates to prevent buffer overloads and broadcast storms
         - Additional constructor attribute "userChangeDelay" enables user configuration of the queue time
         - Bug fix GitHub issue #39 sending unnecessary CRLF using println instead of print
