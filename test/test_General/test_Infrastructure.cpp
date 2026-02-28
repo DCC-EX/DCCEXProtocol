@@ -50,4 +50,4 @@ TEST_F(DCCEXProtocolTests, testGenericSendCommand) {
 /**
  * @brief Test the library version can be retrieved via the static method
  */
-TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.3.0"); }
+TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.3.1"); }
