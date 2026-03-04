@@ -144,6 +144,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist27getAlwaysReplicateFunctionsEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getAlwaysReplicateFunctions()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist21setReplicateFunctionsEb"><code class="docutils literal notranslate"><span class="pre">CSConsist::setReplicateFunctions()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist21getReplicateFunctionsEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getReplicateFunctions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist8getSpeedEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getSpeed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist12getDirectionEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getDirection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsistD0Ev"><code class="docutils literal notranslate"><span class="pre">CSConsist::~CSConsist()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist8getFirstEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::getFirst()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N9CSConsist15clearCSConsistsEv"><code class="docutils literal notranslate"><span class="pre">CSConsist::clearCSConsists()</span></code></a></li>
@@ -1204,6 +1206,28 @@
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>false False if not </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9CSConsist8getSpeedEv">
+<span id="_CPPv3N9CSConsist8getSpeedEv"></span><span id="_CPPv2N9CSConsist8getSpeedEv"></span><span id="CSConsist::getSpeed"></span><span class="target" id="classCSConsist_1ac20fc311551ae5e8b1bfffc03f482de6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSpeed</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9CSConsist8getSpeedEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the speed from the lead <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int Speed of the lead <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a>, 0 always if no <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> object matches </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N9CSConsist12getDirectionEv">
+<span id="_CPPv3N9CSConsist12getDirectionEv"></span><span id="_CPPv2N9CSConsist12getDirectionEv"></span><span id="CSConsist::getDirection"></span><span class="target" id="classCSConsist_1a4967bce7a765ec58464e5626de07627f"></span><a class="reference internal" href="#_CPPv49Direction" title="Direction"><span class="n"><span class="pre">Direction</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDirection</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9CSConsist12getDirectionEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the direction from the lead <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Direction Direction of the lead <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a>, Forward always if no <a class="reference internal" href="#classLoco"><span class="std std-ref">Loco</span></a> object matches </p>
 </dd>
 </dl>
 </dd></dl>
@@ -5159,6 +5183,8 @@
 <dt class="sig sig-object cpp">
 <span class="target" id="DCCEXCSConsist_8h"></span><em><span class="pre">file</span></em> <span class="sig-name descname"><span class="pre">DCCEXCSConsist.h</span></span></dt>
 <dd><div class="docutils container">
+<em>#include “<a class="reference internal" href="#DCCEXLoco_8h"><span class="std std-ref">DCCEXLoco.h</span></a>”</em></div>
+<div class="docutils container">
 <em>#include &lt;Arduino.h&gt;</em></div>
 </dd></dl>
 
