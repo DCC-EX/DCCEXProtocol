@@ -32,4 +32,11 @@ venv
 docs/html
 docs/latex
 _build
-/.cache
+
+# IDE etc. files
+.pio/
+
+# Coverage info file
+lcov.info
+test_coverage/
+
