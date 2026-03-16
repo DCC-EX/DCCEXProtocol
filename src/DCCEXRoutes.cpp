@@ -32,6 +32,7 @@
 
 // Public methods
 namespace DCCExController {
+  
 Route *Route::_first = nullptr;
 
 Route::Route(int id) {

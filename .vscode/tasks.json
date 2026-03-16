@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake Configure Tests (Debug)",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S",
+        ".",
+        "-B",
+        "build-cmake-tests-debug",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DDCCEX_BUILD_TESTS=ON"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "CMake Build Tests (Debug)",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build-cmake-tests-debug",
+        "-j"
+      ],
+      "dependsOn": "CMake Configure Tests (Debug)",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "CMake Run Tests (Debug)",
+      "type": "shell",
+      "command": "ctest",
+      "args": [
+        "--test-dir",
+        "build-cmake-tests-debug",
+        "--output-on-failure"
+      ],
+      "dependsOn": "CMake Build Tests (Debug)",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ]
+}

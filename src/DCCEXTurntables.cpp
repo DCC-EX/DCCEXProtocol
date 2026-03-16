@@ -31,6 +31,7 @@
 
 // class TurntableIndex
 namespace DCCExController {
+  
 TurntableIndex::TurntableIndex(int ttId, int id, int angle, const char *name) {
   _ttId = ttId;
   _id = id;

@@ -7,8 +7,11 @@
 // Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
 // Luca Dentella, 2020
 
+#include <Arduino.h>
 #include <DCCEXProtocol.h>
 #include <WiFi.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 
 // If we haven't got a custom config.h, use the example
@@ -19,9 +22,59 @@
 #include "config.example.h"
 #endif
 
+using namespace DCCExController;
+
+class ArduinoDCCMillis : public DCCMillis {
+public:
+  unsigned long millis() const override { return ::millis(); }
+};
+
+class ArduinoDCCStream : public DCCStream {
+public:
+  explicit ArduinoDCCStream(Stream &stream) : _stream(stream) {}
+
+  int available() const override {
+    return const_cast<Stream &>(_stream).available();
+  }
+
+  int read() override { return _stream.read(); }
+
+  size_t write(const uint8_t *buffer, size_t size) override {
+    return _stream.write(buffer, size);
+  }
+
+  void flush() override { _stream.flush(); }
+
+  void println(const char *format, ...) override {
+    char message[160];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+    _stream.println(message);
+  }
+
+  void print(const char *format, ...) override {
+    char message[160];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+    _stream.print(message);
+  }
+
+private:
+  Stream &_stream;
+};
+
+
+
 // Global objects
 WiFiClient client;
-DCCEXProtocol dccexProtocol;
+ArduinoDCCMillis dccMillis;
+ArduinoDCCStream dccTransport(client);
+ArduinoDCCStream dccLog(Serial);
+DCCEXProtocol dccexProtocol(&dccMillis);
 
 void setup() {
 
@@ -46,12 +99,12 @@ void setup() {
   }
   Serial.println("Connected to the server");
 
-  dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&dccLog);
 
   dccexProtocol.enableHeartbeat();
 
   // Pass the communication to wiThrottleProtocol
-  dccexProtocol.connect(&client);
+  dccexProtocol.connect(&dccTransport);
   Serial.println("DCC-EX connected");
 }
 

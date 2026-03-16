@@ -44,12 +44,14 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #include "DCCEXProtocolVersion.h"
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
+#include "DCCMillis.h"
 #include "DCCEXTurntables.h"
 #include "DCCStream.h"
 
 #include <stddef.h>
 
 namespace DCCExController {
+  
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
 
 // Valid track power state values
@@ -249,7 +251,7 @@ public:
   /// @param maxCmdBuffer Optional - maximum number of bytes for the command buffer (default 500)
   /// @param maxCommandParams Optional - maximum number of parameters to parse via the DCCEXInbound parser (default 50)
   /// @param userChangeDelay Optional - time in ms between sending throttle changes (default 100)
-  DCCEXProtocol(int maxCmdBuffer = 500, int maxCommandParams = 50, unsigned long userChangeDelay = 100);
+  DCCEXProtocol(DCCMillis *millisProvider, int maxCmdBuffer = 500, int maxCommandParams = 50, unsigned long userChangeDelay = 100);
 
   /// @brief Destructor for the DCCEXProtocol object
   ~DCCEXProtocol();
@@ -927,6 +929,7 @@ private:
   unsigned long _userChangeDelay;                     // Delay in ms between sending throttle commands
   unsigned long _lastUserChange;                      // Time in ms of the last throttle command
   bool _debug = false;                                // Enable output of send/receive commands to console
+  DCCMillis *_millisProvider;                         // Pointer to a DCCMillis provider for time functions
 
   // Helper methods to build the outbound command
   /**

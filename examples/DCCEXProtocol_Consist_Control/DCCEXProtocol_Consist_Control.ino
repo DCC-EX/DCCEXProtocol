@@ -17,6 +17,7 @@ manual operation only.
 // Peter Akers (Flash62au), Peter Cole (PeteGSX) and Chris Harlow (UKBloke), 2023
 // Luca Dentella, 2020
 
+#include <Arduino.h>
 #include <DCCEXProtocol.h>
 #include <WiFi.h>
 
@@ -27,6 +28,52 @@ manual operation only.
 #warning config.h not found. Using defaults from config.example.h
 #include "config.example.h"
 #endif
+
+using namespace DCCExController;
+
+class ArduinoDCCMillis : public DCCMillis {
+public:
+  unsigned long millis() const override { return ::millis(); }
+};
+
+class ArduinoDCCStream : public DCCStream {
+public:
+  explicit ArduinoDCCStream(Stream &stream) : _stream(stream) {}
+
+  int available() const override {
+    return const_cast<Stream &>(_stream).available();
+  }
+
+  int read() override { return _stream.read(); }
+
+  size_t write(const uint8_t *buffer, size_t size) override {
+    return _stream.write(buffer, size);
+  }
+
+  void flush() override { _stream.flush(); }
+
+  void println(const char *format, ...) override {
+    char message[160];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+    _stream.println(message);
+  }
+
+  void print(const char *format, ...) override {
+    char message[160];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+    _stream.print(message);
+  }
+
+private:
+  Stream &_stream;
+};
+
 
 // Delegate class
 class MyDelegate : public DCCEXProtocolDelegate {
@@ -80,7 +127,11 @@ Consist *consist = nullptr;
 
 // Global objects
 WiFiClient client;
-DCCEXProtocol dccexProtocol;
+ArduinoDCCMillis dccMillis;
+ArduinoDCCStream dccTransport(client);
+ArduinoDCCStream dccLog(Serial);
+DCCEXProtocol dccexProtocol(&dccMillis);
+
 MyDelegate myDelegate;
 
 void setup() {
@@ -109,7 +160,7 @@ void setup() {
   Serial.println("Connected to the server");
 
   // Logging on Serial
-  dccexProtocol.setLogStream(&Serial);
+  dccexProtocol.setLogStream(&dccLog);
 
   // Pass the delegate instance to wiThrottleProtocol
   dccexProtocol.setDelegate(&myDelegate);
@@ -117,7 +168,7 @@ void setup() {
   dccexProtocol.enableHeartbeat();
 
   // Pass the communication to wiThrottleProtocol
-  dccexProtocol.connect(&client);
+  dccexProtocol.connect(&dccTransport);
   Serial.println("DCC-EX connected");
 
   dccexProtocol.requestServerVersion();

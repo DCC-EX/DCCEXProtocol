@@ -41,6 +41,7 @@
   These parameters are ONLY VALID until you next call parse.
 */
 namespace DCCExController {
+  
 /// @brief Inbound DCC-EX command parser class to parse commands and provide interpreted parameters
 class DCCEXInbound {
 public:

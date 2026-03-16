@@ -31,6 +31,7 @@
 #include <string.h>
 
 namespace DCCExController {
+  
 Turnout *Turnout::_first = nullptr;
 
 Turnout::Turnout(int id, bool thrown) {

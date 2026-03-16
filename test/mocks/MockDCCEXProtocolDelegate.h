@@ -1,6 +1,8 @@
 #include <DCCEXProtocol.h>
 #include <gmock/gmock.h>
 
+using namespace DCCExController;
+
 class MockDCCEXProtocolDelegate : public DCCEXProtocolDelegate {
 public:
   // Notify when the server version has been received
@@ -35,6 +37,9 @@ public:
 
   // Notify when a track current is received
   MOCK_METHOD(void, receivedTrackCurrent, (char track, int current), (override));
+
+  // Notify when an individual track power state change is received
+  MOCK_METHOD(void, receivedIndividualTrackPower, (TrackPower, int), (override));
 
   // Notify when a track type change is received
   MOCK_METHOD(void, receivedTrackType, (char, TrackManagerMode, int), (override));
@@ -71,4 +76,5 @@ public:
 
   // Notify when a fast clock time has been received
   MOCK_METHOD(void, receivedFastClockTime, (int minutes), (override));
+
 };

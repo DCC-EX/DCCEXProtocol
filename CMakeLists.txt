@@ -15,6 +15,8 @@ else()
 
     project(DCCEXProtocol LANGUAGES CXX)
 
+  option(DCCEX_BUILD_TESTS "Build native GoogleTest test target" ON)
+
     file(GLOB_RECURSE SRC src/*.cpp)
     add_library(DCCEXProtocol STATIC ${SRC})
     add_library(DCCEX::Protocol ALIAS DCCEXProtocol)
@@ -34,4 +36,33 @@ else()
     endforeach()
 
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC})
+
+    if(DCCEX_BUILD_TESTS)
+      include(CTest)
+      enable_testing()
+
+      FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+      )
+      FetchContent_MakeAvailable(googletest)
+
+      file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS test/*.cpp)
+      add_executable(DCCEXProtocolTests ${TEST_SOURCES})
+
+      target_compile_definitions(DCCEXProtocolTests PRIVATE NATIVE_TESTING)
+      target_include_directories(DCCEXProtocolTests PRIVATE test/mocks test/setup)
+      target_link_libraries(DCCEXProtocolTests PRIVATE DCCEXProtocol GTest::gtest GTest::gmock)
+
+      include(GoogleTest)
+      gtest_discover_tests(DCCEXProtocolTests)
+
+      add_custom_target(check
+        COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+        DEPENDS DCCEXProtocolTests
+        USES_TERMINAL
+      )
+
+      add_custom_target(run-tests DEPENDS check)
+    endif()
 endif()

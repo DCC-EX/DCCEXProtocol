@@ -6,6 +6,7 @@
 //
 // Peter Cole (PeteGSX) 2024
 
+#include <Arduino.h>
 #include <DCCEXProtocol.h>
 
 // If we haven't got a custom config.h, use the example
@@ -23,6 +24,51 @@
 #ifndef CLIENT
 #define CLIENT Serial1    // All DCCEXProtocol commands/responses/broadcasts use this
 #endif
+
+using namespace DCCExController;
+
+class ArduinoDCCMillis : public DCCMillis {
+public:
+  unsigned long millis() const override { return ::millis(); }
+};
+
+class ArduinoDCCStream : public DCCStream {
+public:
+  explicit ArduinoDCCStream(Stream &stream) : _stream(stream) {}
+
+  int available() const override {
+    return const_cast<Stream &>(_stream).available();
+  }
+
+  int read() override { return _stream.read(); }
+
+  size_t write(const uint8_t *buffer, size_t size) override {
+    return _stream.write(buffer, size);
+  }
+
+  void flush() override { _stream.flush(); }
+
+  void println(const char *format, ...) override {
+    char message[160];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+    _stream.println(message);
+  }
+
+  void print(const char *format, ...) override {
+    char message[160];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+    _stream.print(message);
+  }
+
+private:
+  Stream &_stream;
+};
 
 // Declare functions to call from our delegate
 void printRoster();
@@ -68,7 +114,7 @@ public:
     CONSOLE.println("\n\n");
   }
 
-  void receivedScreenUpdate(int screen, int row, char *message) override {
+  void receivedScreenUpdate(int screen, int row, const char *message) override {
     CONSOLE.println("\n\nReceived screen|row|message");
     CONSOLE.print(screen);
     CONSOLE.print("|");
@@ -80,7 +126,10 @@ public:
 };
 
 // Global objects
-DCCEXProtocol dccexProtocol;
+ArduinoDCCMillis dccMillis;
+ArduinoDCCStream dccTransport(CLIENT);
+ArduinoDCCStream dccLog(CONSOLE);
+DCCEXProtocol dccexProtocol(&dccMillis);
 MyDelegate myDelegate;
 
 void printRoster() {
@@ -161,13 +210,13 @@ void setup() {
   CONSOLE.println(F(""));
 
   // Direct logs to CONSOLE
-  dccexProtocol.setLogStream(&CONSOLE);
+  dccexProtocol.setLogStream(&dccLog);
 
   // Set the delegate for broadcasts/responses
   dccexProtocol.setDelegate(&myDelegate);
 
   // Connect to the CS via CLIENT
-  dccexProtocol.connect(&CLIENT);
+  dccexProtocol.connect(&dccTransport);
   CONSOLE.println(F("DCC-EX connected"));
 
   dccexProtocol.requestServerVersion();

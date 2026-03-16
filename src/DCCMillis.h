@@ -5,8 +5,9 @@
  * This package implements a DCCEX native protocol connection,
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
- * Copyright © 2026 Peter Cole
- * Copyright © 2024 Peter Cole
+ * Copyright © 2023 Chris Harlow
+ * Copyright © 2023 Peter Akers
+ * Copyright © 2023 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * 4.0 International License. To view a copy of this license, visit
@@ -26,12 +27,26 @@
  *
  */
 
-#ifndef TURNOUTTESTS_H
-#define TURNOUTTESTS_H
+#ifndef DCCMILLIS_H
+#define DCCMILLIS_H
 
-#include "TestHarnessBase.hpp"
+/* to remove the dependance on Arduino's millis() function 
+ * this file provides an abstract interface for a millis() function 
+ */
 
-/// @brief Test harness for the Turnout class
-class TurnoutTests : public TestHarnessBase {};
+namespace DCCExController {
 
-#endif // TURNOUTTESTS_H
+class DCCMillis
+{
+public:
+   virtual ~DCCMillis() = default;
+   /**
+   * @brief Get the current time in milliseconds
+   * @return Time in milliseconds
+   */
+  virtual unsigned long millis() const = 0;
+};
+
+}; // namespace DCCExController
+
+#endif // DCCMILLIS_H

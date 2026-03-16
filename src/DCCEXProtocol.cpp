@@ -43,10 +43,12 @@ Function/method prefixes
 
 #include <cstdio>
 #include <ctype.h>
+#include <stdexcept>
 #include <stdlib.h>
 #include <string.h>
 
 namespace DCCExController {
+
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
 
@@ -54,8 +56,13 @@ static const int MAX_SPEED = 126;
 // Public methods
 // Protocol and server methods
 
-DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams, unsigned long userChangeDelay) {
+DCCEXProtocol::DCCEXProtocol(DCCMillis *millisProvider, int maxCmdBuffer, int maxCommandParams, unsigned long userChangeDelay) {
   // Init streams
+  if(millisProvider == nullptr){
+    // Cannot proceed without a millis provider, so do not proceed
+    throw std::invalid_argument("DCCEXProtocol requires a DCCMillis provider for time functions");
+  }
+  _millisProvider = millisProvider;
   _stream = &_nullStream;
   _console = &_nullStream;
 
@@ -101,8 +108,13 @@ void DCCEXProtocol::enableHeartbeat(unsigned long heartbeatDelay) {
 }
 
 void DCCEXProtocol::connect(DCCStream *stream) {
-  _init();
+  if(!stream){
+    // Cannot connect without a stream, so do not proceed
+    return;
+  }
+
   this->_stream = stream;
+  _init();
 }
 
 void DCCEXProtocol::disconnect() { return; }
@@ -768,7 +780,7 @@ void DCCEXProtocol::_init() {
   memset(_inputBuffer, 0, sizeof(_inputBuffer));
   _nextChar = 0;
   // last Response time
-  _lastServerResponseTime = millis();
+  _lastServerResponseTime = _millisProvider->millis();
 }
 
 void DCCEXProtocol::_sendCommand() {
@@ -779,14 +791,13 @@ void DCCEXProtocol::_sendCommand() {
       _console->println(_outboundCommand);
     }
     *_outboundCommand = 0;     // clear it once it has been sent
-    _lastHeartbeat = millis(); // If we sent a command, a heartbeat isn't necessary
+    _lastHeartbeat = _millisProvider->millis(); // If we sent a command, a heartbeat isn't necessary
   }
 }
 
 void DCCEXProtocol::_processCommand() {
-  if (_delegate) {
-    // last Response time
-    _lastServerResponseTime = _delegate->millis();
+  // last Response time
+  _lastServerResponseTime = _millisProvider->millis();
 
   switch (DCCEXInbound::getOpcode()) {
   case '@': // Screen update
@@ -987,8 +998,8 @@ void DCCEXProtocol::_processScreenUpdate() { //<@ screen row "message">
 }
 
 void DCCEXProtocol::_sendHeartbeat() {
-  if (millis() - _lastHeartbeat > _heartbeatDelay) {
-    _lastHeartbeat = millis();
+  if (_millisProvider->millis() - _lastHeartbeat > _heartbeatDelay) {
+    _lastHeartbeat = _millisProvider->millis();
     _sendOpcode('#');
   }
 }
@@ -1076,8 +1087,8 @@ void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
 }
 
 void DCCEXProtocol::_processPendingUserChanges() {
-  if (millis() - _lastUserChange > _userChangeDelay) {
-    _lastUserChange = millis();
+  if (_millisProvider->millis() - _lastUserChange > _userChangeDelay) {
+    _lastUserChange = _millisProvider->millis();
     _setLocos(Loco::getFirst());
     _setLocos(Loco::getFirstLocalLoco());
   }
@@ -1584,7 +1595,7 @@ void DCCEXProtocol::_cmdAppend(const char *s) {
 
 void DCCEXProtocol::_cmdAppend(int n) {
   char buf[12]; // Enough for -2147483648
-  itoa(n, buf, 10);
+  snprintf(buf, sizeof(buf), "%d", n);
   _cmdAppend(buf);
 }
 
@@ -1730,3 +1741,4 @@ void DCCEXProtocol::_sendFourParams(char opcode, int param1, int param2, int par
   _cmdSend();
 }
 
+}; // namespace DCCEX

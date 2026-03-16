@@ -23,10 +23,13 @@
 #ifndef TESTHARNESSNODELEGATE_H
 #define TESTHARNESSNODELEGATE_H
 
-#include "../mocks/Arduino.h"
+#include <gmock/gmock.h>
 #include <DCCEXProtocol.h>
+#include "../mocks/MockDCCMillis.h"
+#include "../mocks/Stream.h"
 
 using namespace testing;
+using namespace DCCExController;
 
 /// @brief Test fixture to setup and tear down tests
 class TestHarnessNoDelegate : public Test {
@@ -36,19 +39,18 @@ public:
 
 protected:
   void SetUp() override {
-    millis();
     _dccexProtocol.setLogStream(&_console);
     _dccexProtocol.connect(&_stream);
   }
 
   void TearDown() override {
     resetMillis();
-    _stream.clearInput();
     _stream.clearOutput();
     _dccexProtocol.clearAllLists();
   }
 
-  DCCEXProtocol _dccexProtocol;
+  MockDCCMillis _millisProvider;
+  DCCEXProtocol _dccexProtocol{&_millisProvider};
   Stream _console;
   Stream _stream;
 };

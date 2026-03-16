@@ -30,11 +30,15 @@
 #ifndef TESTHARNESSBASE_HPP
 #define TESTHARNESSBASE_HPP
 
-#include "../mocks/Arduino.h"
+#include <gmock/gmock.h>
 #include "../mocks/MockDCCEXProtocolDelegate.h"
+#include "../mocks/MockDCCMillis.h"
+#include "../mocks/Stream.h"
+#include "millis.h"
 #include <DCCEXProtocol.h>
 
 using namespace testing;
+using namespace DCCExController;
 
 /// @brief Test fixture to setup and tear down tests
 class TestHarnessBase : public Test {
@@ -43,27 +47,27 @@ public:
   virtual ~TestHarnessBase() {}
 
 protected:
+  MockDCCMillis _millisProvider;
+  DCCEXProtocol _dccexProtocol{&_millisProvider};
+  MockDCCEXProtocolDelegate _delegate;
+  Stream _console;
+  Stream _stream;
+
+
   void SetUp() override {
-    millis();
     _dccexProtocol.setDelegate(&_delegate);
     _dccexProtocol.setLogStream(&_console);
     _dccexProtocol.connect(&_stream);
     _dccexProtocol.clearRoster();
+    resetMillis();
   }
 
   void TearDown() override {
-    resetMillis();
-    _stream.clearInput();
-    _stream.clearOutput();
     _dccexProtocol.clearAllLists();
     CSConsist::clearCSConsists();
     CSConsist::setAlwaysReplicateFunctions(false);
   }
 
-  DCCEXProtocol _dccexProtocol;
-  MockDCCEXProtocolDelegate _delegate;
-  Stream _console;
-  Stream _stream;
 };
 
 #endif // TESTHARNESSBASE_HPP

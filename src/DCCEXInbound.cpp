@@ -37,6 +37,7 @@
 #include <string.h>
 
 namespace DCCExController {
+  
 // Internal stuff for the parser and getters.
 const int32_t QUOTE_FLAG = 0x77777000;
 const int32_t QUOTE_FLAG_AREA = 0xFFFFF000;

@@ -23,6 +23,7 @@
 #include "DCCEXCSConsist.h"
 
 // CSConsist public methods
+namespace DCCExController {
 
 CSConsist *CSConsist::_first = nullptr;
 bool CSConsist::_alwaysReplicateFunctions = false;
@@ -215,3 +216,5 @@ CSConsist::~CSConsist() {
     }
   }
 }
+
+} // namespace DCCExController

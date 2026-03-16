@@ -30,6 +30,7 @@
 #define DCCEXROUTES_H
 
 namespace DCCExController {
+  
 enum RouteType {
   RouteTypeRoute = 'R',
   RouteTypeAutomation = 'A',

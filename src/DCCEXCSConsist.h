@@ -24,8 +24,9 @@
 #define DCCEXCSCONSIST_H
 
 #include "DCCEXLoco.h"
-#include <Arduino.h>
+#include <stdint.h>
 
+namespace DCCExController {
 /**
  * @brief Structure for a CSConsistMember
  */
@@ -202,5 +203,6 @@ private:
   static CSConsist *_first;
   static bool _alwaysReplicateFunctions;
 };
+} // namespace DCCExController
 
 #endif // DCCEXCSCONSIST_H

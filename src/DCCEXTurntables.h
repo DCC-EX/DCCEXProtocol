@@ -30,6 +30,7 @@
 #define DCCEXTURNTABLES_H
 
 namespace DCCExController {
+  
 enum TurntableType {
   TurntableTypeDCC = 0,
   TurntableTypeEXTT = 1,
