@@ -60,7 +60,7 @@ DCCEXProtocol::DCCEXProtocol(DCCMillis *millisProvider, int maxCmdBuffer, int ma
   // Init streams
   if(millisProvider == nullptr){
     // Cannot proceed without a millis provider, so do not proceed
-    throw std::invalid_argument("DCCEXProtocol requires a DCCMillis provider for time functions");
+    while(true);
   }
   _millisProvider = millisProvider;
   _stream = &_nullStream;
