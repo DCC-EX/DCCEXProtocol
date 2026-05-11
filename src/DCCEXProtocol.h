@@ -45,7 +45,23 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
-#include <Arduino.h>
+#include "DCCMillisWrappers.h"
+#ifdef ARDUINO
+  #include <Arduino.h>
+#else
+#include <DCCStream.h>
+#endif
+#include <stddef.h>
+
+// Platform-neutral time source. Override this macro in non-Arduino builds, for example:
+// -DDCCEX_MILLIS()=my_platform_millis()
+#ifndef DCCEX_MILLIS
+  #ifdef DCCEX_DEFAULT_MILLIS
+    #define DCCEX_MILLIS() DCCEX_DEFAULT_MILLIS()
+  #else
+    #define DCCEX_MILLIS() millis()
+  #endif
+#endif
 
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
 
@@ -79,7 +95,7 @@ public:
 
   /// @brief Dummy availability check
   /// @return Returns false (0) always
-  int available() { return 0; }
+  int available() const { return 0; }
 
   /// @brief Dummy flush method
   void flush() {}

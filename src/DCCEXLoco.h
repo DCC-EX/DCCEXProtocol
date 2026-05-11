@@ -30,7 +30,7 @@
 #ifndef DCCEXLOCO_H
 #define DCCEXLOCO_H
 
-#include <Arduino.h>
+#include <inttypes.h>
 
 static const int MAX_FUNCTIONS = 32;
 const int MAX_OBJECT_NAME_LENGTH = 30;      // including Loco name, Turnout/Point names, Route names, etc. names

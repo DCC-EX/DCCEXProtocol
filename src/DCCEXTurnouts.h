@@ -29,8 +29,6 @@
 #ifndef DCCEXTURNOUTS_H
 #define DCCEXTURNOUTS_H
 
-#include <Arduino.h>
-
 /// @brief Class to contain and maintain the various Turnout/Point attributes and methods
 class Turnout {
 public:

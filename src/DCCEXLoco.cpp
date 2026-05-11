@@ -28,7 +28,10 @@
  */
 
 #include "DCCEXLoco.h"
-#include <Arduino.h>
+#include <cstdio>
+#include <string.h>
+#include <stdlib.h>
+#include <numeric>
 
 // class Loco
 // Public methods
@@ -333,9 +336,9 @@ void Consist::addLoco(int address, Facing facing) {
   if (_locoCount == 0) {
     facing = FacingForward;
     if (_name == nullptr) {
-      int addressLength = (address == 0) ? 1 : log10(address) + 1;
+      int addressLength = snprintf(nullptr, 0, "%d", address);
       char *newName = new char[addressLength + 1];
-      itoa(address, newName, 10);
+      snprintf(newName, addressLength + 1, "%d", address);
       setName(newName);
       delete[] newName;
     }

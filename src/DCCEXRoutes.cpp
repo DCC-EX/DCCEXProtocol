@@ -27,7 +27,7 @@
  */
 
 #include "DCCEXRoutes.h"
-#include <Arduino.h>
+#include <string.h>
 
 // Public methods
 

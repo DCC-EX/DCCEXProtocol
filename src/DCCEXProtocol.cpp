@@ -40,6 +40,7 @@ Function/method prefixes
 */
 
 #include "DCCEXProtocol.h"
+#include <ctype.h>
 
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
@@ -762,7 +763,7 @@ void DCCEXProtocol::_init() {
   memset(_inputBuffer, 0, sizeof(_inputBuffer));
   _nextChar = 0;
   // last Response time
-  _lastServerResponseTime = millis();
+  _lastServerResponseTime = DCCEX_MILLIS();
 }
 
 void DCCEXProtocol::_sendCommand() {
@@ -772,14 +773,14 @@ void DCCEXProtocol::_sendCommand() {
       _console->print("==> ");
       _console->println(_outboundCommand);
     }
-    *_outboundCommand = 0;     // clear it once it has been sent
-    _lastHeartbeat = millis(); // If we sent a command, a heartbeat isn't necessary
+    *_outboundCommand = 0;           // clear it once it has been sent
+    _lastHeartbeat = DCCEX_MILLIS(); // If we sent a command, a heartbeat isn't necessary
   }
 }
 
 void DCCEXProtocol::_processCommand() {
   // last Response time
-  _lastServerResponseTime = millis();
+  _lastServerResponseTime = DCCEX_MILLIS();
 
   switch (DCCEXInbound::getOpcode()) {
   case '@': // Screen update
@@ -980,8 +981,8 @@ void DCCEXProtocol::_processScreenUpdate() { //<@ screen row "message">
 }
 
 void DCCEXProtocol::_sendHeartbeat() {
-  if (millis() - _lastHeartbeat > _heartbeatDelay) {
-    _lastHeartbeat = millis();
+  if (DCCEX_MILLIS() - _lastHeartbeat > _heartbeatDelay) {
+    _lastHeartbeat = DCCEX_MILLIS();
     _sendOpcode('#');
   }
 }
@@ -1069,8 +1070,8 @@ void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
 }
 
 void DCCEXProtocol::_processPendingUserChanges() {
-  if (millis() - _lastUserChange > _userChangeDelay) {
-    _lastUserChange = millis();
+  if (DCCEX_MILLIS() - _lastUserChange > _userChangeDelay) {
+    _lastUserChange = DCCEX_MILLIS();
     _setLocos(Loco::getFirst());
     _setLocos(Loco::getFirstLocalLoco());
   }

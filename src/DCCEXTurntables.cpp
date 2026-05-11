@@ -27,7 +27,7 @@
  */
 
 #include "DCCEXTurntables.h"
-#include <Arduino.h>
+#include <string.h>
 
 // class TurntableIndex
 

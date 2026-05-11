@@ -1,0 +1,11 @@
+version: 2.3.3
+name: DCCEXProtocol
+description: "DCCEXProtocol library for ESP-IDF"
+dependencies:
+  idf:
+    version: '>=5.5.1'
+targets:
+  - esp32
+  - esp32s2
+  - esp32s3
+  - esp32c3

@@ -39,3 +39,8 @@ _build
 # Coverage info file
 lcov.info
 test_coverage/
+
+# cmake cache.
+.cache/
+build/
+build-*/
