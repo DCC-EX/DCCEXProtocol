@@ -30,6 +30,9 @@
 #ifndef DCCEXINBOUND_H
 #define DCCEXINBOUND_H
 
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
 #include <inttypes.h>
 
 /* How to use this:

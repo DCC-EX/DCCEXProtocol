@@ -95,7 +95,7 @@ public:
 
   /// @brief Dummy availability check
   /// @return Returns false (0) always
-  int available() const { return 0; }
+  int available() { return 0; }
 
   /// @brief Dummy flush method
   void flush() {}
