@@ -6,7 +6,7 @@ if(ESP_PLATFORM OR DEFINED ENV{IDF_PATH})
     set(COMPONENT_SRCS ${SRC}) # Add all your source files here
     set(COMPONENT_ADD_INCLUDEDIRS src)
     set(COMPONENT_PRIV_INCLUDEDIRS "")
-  set(COMPONENT_REQUIRES esp_timer)
+    set(COMPONENT_REQUIRES esp_timer)
     set(COMPONENT_PRIV_REQUIRES "")
     register_component()
 else()
@@ -15,7 +15,7 @@ else()
 
     project(DCCEXProtocol LANGUAGES CXX)
 
-  option(DCCEX_BUILD_TESTS "Build native GoogleTest test target" ON)
+    option(DCCEX_BUILD_TESTS "Build native GoogleTest test target" ON)
 
     file(GLOB_RECURSE SRC src/*.cpp)
     add_library(DCCEXProtocol STATIC ${SRC})
@@ -38,12 +38,12 @@ else()
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC})
 
     if(DCCEX_BUILD_TESTS)
-      include(CTest)
       enable_testing()
 
       FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP true
       )
       FetchContent_MakeAvailable(googletest)
 

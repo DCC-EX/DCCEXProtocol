@@ -41,6 +41,10 @@ Function/method prefixes
 
 #include "DCCEXProtocol.h"
 #include <ctype.h>
+#include <stdlib.h>
+#include <cstdio>
+#include <ctype.h>
+#include <string.h>
 
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
@@ -1578,7 +1582,7 @@ void DCCEXProtocol::_cmdAppend(const char *s) {
 
 void DCCEXProtocol::_cmdAppend(int n) {
   char buf[12]; // Enough for -2147483648
-  itoa(n, buf, 10);
+  snprintf(buf, sizeof(buf), "%d", n);
   _cmdAppend(buf);
 }
 

@@ -28,6 +28,14 @@
       return (unsigned long)to_ms_since_boot(get_absolute_time());
     }
     #define DCCEX_DEFAULT_MILLIS() dccex_pico_millis()
+  #elif defined(__linux__) && !defined(ARDUINO)
+    #include <chrono>
+    static inline unsigned long dccex_linux_millis() {
+      const auto now = std::chrono::steady_clock::now();
+      static const auto start = now;
+      return (unsigned long)std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+    }
+    #define DCCEX_DEFAULT_MILLIS() dccex_linux_millis()
   #endif
 
 #endif
