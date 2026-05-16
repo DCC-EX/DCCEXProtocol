@@ -2,13 +2,12 @@ cmake_minimum_required(VERSION 3.11)
 
 # Detect ESP-IDF build
 if(ESP_PLATFORM OR DEFINED ENV{IDF_PATH})
-    file(GLOB_RECURSE SRC src/*.cpp)
-    set(COMPONENT_SRCS ${SRC}) # Add all your source files here
-    set(COMPONENT_ADD_INCLUDEDIRS src)
-    set(COMPONENT_PRIV_INCLUDEDIRS "")
-    set(COMPONENT_REQUIRES esp_timer)
-    set(COMPONENT_PRIV_REQUIRES "")
-    register_component()
+  file(GLOB_RECURSE SRC src/*.cpp)
+  idf_component_register(
+    SRCS ${SRC}
+    INCLUDE_DIRS src
+    REQUIRES esp_timer
+  )
 else()
     include(FetchContent)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)

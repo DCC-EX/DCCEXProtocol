@@ -49,7 +49,7 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #ifdef ARDUINO
   #include <Arduino.h>
 #else
-#include <DCCStream.h>
+#include "DCCStream.h"
 #endif
 #include <stddef.h>
 
