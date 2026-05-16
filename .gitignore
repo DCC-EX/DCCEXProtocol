@@ -44,3 +44,4 @@ test_coverage/
 .cache/
 build/
 build-*/
+config.h
