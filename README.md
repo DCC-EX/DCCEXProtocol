@@ -38,6 +38,7 @@ These objects include:
 - Route entries
 - Turnouts/Points
 - Turntables (noting that these objects are only available in development versions)
+- Sensor entries (only those sensors that are created via <S ..> commands (or JMRI_SENSOR macros))
 
 This means the client software does not need to explicitly manage the state of these objects whilever the ```check()``` method mentioned above is called appropriately.
 

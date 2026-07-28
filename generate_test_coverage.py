@@ -1,10 +1,19 @@
 """
 Generate lcov.info to enable Coverage Gutters VSCode extension to display code test coverage.
 """
-
 import os
+import argparse
 
-build_dir = os.path.join(".pio", "build", "native_test", "src")
+# check if env is specified as argument
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", default="native_test", help="Environment to generate coverage for")
+args = parser.parse_args()
+
+current_env = "native_test"     # default environment
+if (args.e):
+    current_env = args.e
+
+build_dir = os.path.join(".pio", "build", current_env, "src")
 html_dir = os.path.join("test_coverage")
 html_file = os.path.join(html_dir, "coverage.html")
 
@@ -19,7 +28,7 @@ if not os.path.exists(html_dir):
 if os.path.exists(build_dir):
     cmd = (
         "gcovr -r . "
-        ".pio/build/native_test/src/ "
+        f"{build_dir} "
         "--exclude test/ "
         "--lcov lcov.info "
         f"--html-details -o {html_file}"

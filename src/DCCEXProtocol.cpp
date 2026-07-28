@@ -106,6 +106,7 @@ void DCCEXProtocol::check() {
     while (_stream->available()) {
       // Read from our stream
       int r = _stream->read();
+
       if (_bufflen < _maxCmdBuffer - 1) {
         _cmdBuffer[_bufflen] = r;
         _bufflen++;
@@ -146,7 +147,7 @@ void DCCEXProtocol::sendCommand(const char *cmd) {
 
 // Gated method to get the required lists to avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
-                             bool turntableListRequired) {
+                             bool turntableListRequired, bool sensorListRequired) {
   // Serial.println(F("getLists()"));
   if (_receivedLists)
     return;
@@ -195,9 +196,21 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     return;
   }
 
+ // If we get here, get sensors if required
+  if (sensorListRequired && !_sensorListRequested) {
+    _getSensors();
+    return;
+  }
+
+  // If we're still waiting for sensors, do not continue
+  if (_sensorListRequested && !_receivedSensorList) {
+    return;
+  }
+
   // If we get here, all lists received
   _receivedLists = true;
 }
+
 
 bool DCCEXProtocol::receivedLists() { return _receivedLists; }
 
@@ -221,6 +234,7 @@ void DCCEXProtocol::clearAllLists() {
   clearTurnoutList();
   clearTurntableList();
   clearRouteList();
+  clearSensorList();
 }
 
 void DCCEXProtocol::refreshAllLists() {
@@ -228,6 +242,7 @@ void DCCEXProtocol::refreshAllLists() {
   refreshTurnoutList();
   refreshTurntableList();
   refreshRouteList();
+  refreshSensorList();
 }
 
 void DCCEXProtocol::setDebug(bool debug) { _debug = debug; }
@@ -660,6 +675,38 @@ void DCCEXProtocol::refreshTurntableList() {
   _turntableListRequested = false;
 }
 
+
+// sensor methods
+void DCCEXProtocol::requestSensorStates() {
+  _sendOpcode('Q');
+}
+
+int DCCEXProtocol::getSensorCount() { return _sensorCount; }
+
+bool DCCEXProtocol::receivedSensorList() { return _receivedSensorList; }
+
+Sensor *DCCEXProtocol::getSensorById(int SensorId) {
+  for (Sensor *tt = sensors->getFirst(); tt; tt = tt->getNext()) {
+    if (tt->getId() == SensorId) {
+      return tt;
+    }
+  }
+  return nullptr;
+}
+
+void DCCEXProtocol::clearSensorList() {
+  Sensor::clearSensorList();
+  sensors = nullptr;
+  _sensorCount = 0;
+}
+
+void DCCEXProtocol::refreshSensorList() {
+  clearSensorList();
+  _receivedLists = false;
+  _receivedSensorList = false;
+  _sensorListRequested = false;
+}
+
 // Track management methods
 
 void DCCEXProtocol::powerOn() { _sendOpcode('1'); }
@@ -719,6 +766,10 @@ void DCCEXProtocol::deactivateAccessory(int accessoryAddress, int accessorySubAd
 void DCCEXProtocol::activateLinearAccessory(int linearAddress) { _sendTwoParams('a', linearAddress, 1); }
 
 void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) { _sendTwoParams('a', linearAddress, 0); }
+
+void DCCEXProtocol::setSignalAspect(int linearAddress, int aspect) {
+  _sendTwoParams('A', linearAddress, aspect);
+}
 
 void DCCEXProtocol::getNumberSupportedLocos() { _sendOpcode('#'); }
 
@@ -879,6 +930,16 @@ void DCCEXProtocol::_processCommand() {
       } else if (DCCEXInbound::getParameterCount() == 3) {
         _processSetFastClock();
       }
+    }
+    break;
+
+  case 'Q':   // sensor responses Q: active, q: inactive
+  case 'q':
+    if (DCCEXInbound::getParameterCount() == 0) { // Empty sensor list
+        _receivedSensorList = true;
+    }
+    else {
+       _processSensorEntry(DCCEXInbound::getOpcode() == 'Q');
     }
     break;
 
@@ -1426,8 +1487,52 @@ void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
     _delegate->receivedTurntableAction(id, newIndex, moving);
 }
 
-// Track management methods
 
+// Sensor methods
+
+void DCCEXProtocol::_getSensors() {
+  _sendOpcode('S');
+  _sensorListRequested = true;
+}
+
+bool DCCEXProtocol::_requestedSensors() { return _sensorListRequested; }
+
+//
+// This function is called when the client has requested a list of sensors (via getList)
+// The dcc-ex command station sends a series of <Q id1>, <Q id2>,... responses. 
+// But the same <Q id> and <q id> responses are also sent to indicate the state of 
+// a sensor when the state changes. 
+// There is no way for the dccex protocol do distinguish between them.
+// So the function checks if the sensor id exists in the sensor list or not.
+// if the sensor exits, it will simply update its state. 
+// otherwise, it will create a new sensor object
+// Also, there is no defined 'end of list' response. So for each response received,
+// the _recievedSensorList is set to true and the sensor count is updated.
+// The client code must wait for about 100 ms before checking sensor list.
+// <Q id>:   a sensor id with active status
+// <q id>:   a sensor id with inactive status
+//
+void DCCEXProtocol::_processSensorEntry(bool activate) { // <Q id> or <q id>
+  // there is only 1 parameter for the sensor list request
+  int id = DCCEXInbound::getNumber(0);
+  Sensor *tt = Sensor::getById(id);
+  if (tt) {     // sensor exists
+    tt->setActive(activate);
+    if (_delegate)
+      _delegate->receivedSensorState(id, activate);
+  }
+  else {
+    new Sensor(id, activate);
+    _sensorCount++;
+    _receivedSensorList = true;
+    if (_delegate)
+      _delegate->receivedSensorList();
+  }
+}
+
+
+
+// Track management methods
 void DCCEXProtocol::_processTrackPower() {
   if (!_delegate)
     return;

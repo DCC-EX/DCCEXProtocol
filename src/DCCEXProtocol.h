@@ -45,6 +45,7 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
+#include "DCCEXSensors.h"
 #include <Arduino.h>
 
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
@@ -129,6 +130,9 @@ public:
   /// @brief Notify when the turntable list is received
   virtual void receivedTurntableList() {}
 
+  /// @brief Notify when the sensor list is received
+  virtual void receivedSensorList() {}
+
   /// @brief Notify when an update to a Loco object is received
   /// @param loco Pointer to the loco object
   virtual void receivedLocoUpdate(Loco *loco) {}
@@ -179,6 +183,11 @@ public:
   /// @param position Index of the position it is moving (or has moved) to
   /// @param moving Whether it is moving or not (true|false)
   virtual void receivedTurntableAction(int turntableId, int position, bool moving) {}
+ 
+  /// @brief Notify when a sensor index change is received
+  /// @param sensorId ID of the turntable
+  /// @param active Whether the sensor is active or not (true|false)
+  virtual void receivedSensorState(int sensorId, bool active) {}
 
   /// @brief Notify when a loco address is read from the programming track
   /// @param address DCC address read from the programming track, or -1 for a failure to read
@@ -280,8 +289,9 @@ public:
   /// @param turnoutListRequired Request the turnout list (true|false)
   /// @param routeListRequired Request the route list (true|false)
   /// @param turntableListRequired Request the turntable list (true|false)
+  /// @param sensorListRequired Request the Sensor list as defined by JMRI_SERSOR or <S .. > commands(true|false)
   void getLists(bool rosterRequired = true, bool turnoutListRequired = true, bool routeListRequired = true,
-                bool turntableListRequired = true);
+                bool turntableListRequired = true, bool sensorListRequired = false);
 
   /// @brief Check if all lists have been received (roster, routes, turnouts, turntables)
   /// @return true|false
@@ -662,6 +672,33 @@ public:
   /// @brief Clear all turntables and request a new list
   void refreshTurntableList();
 
+ // Sensor methods
+
+  /// @brief Get the number of sensor entries
+  /// @return Number of sensor received
+  int getSensorCount();
+
+  /// @brief Request current state of all defined sensors from CS
+  /// @brief The sensor values are returned via <Q..>/<q..> commands
+  /// @brief The sensor values can be accessed via the sensor list.
+  void requestSensorStates();
+
+  /// @brief Check if sensor list has been received
+  /// @return true|false
+  bool receivedSensorList();
+
+  /// @brief Retrieve a sensor object by its ID
+  /// @param sensor ID of the sensor
+  /// @return The sensor object
+  Sensor *getSensorById(int sensorId);
+
+  /// @brief Clear all sensors
+  void clearSensorList();
+
+  /// @brief Clear all sensors and request a new list
+  void refreshSensorList();
+
+
   // Track management methods
 
   /// @brief Global track power on command
@@ -729,6 +766,11 @@ public:
   /// @param linearAddress Linear address of the DCC accessory
   void deactivateLinearAccessory(int linearAddress);
 
+  /// @brief set a DCC signal accesory's aspect (DCC Extended Accessory)
+  /// @param linearAddress Linear address of the DCC accessory
+  /// @param aspect Aspect value of the signal (value depends on DCC signal decoder)
+  void setSignalAspect(int linearAddress, int aspect);
+ 
   /// @brief Request the number of supported cabs(locos)
   void getNumberSupportedLocos();
 
@@ -807,6 +849,9 @@ public:
   /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
 
+  /// @brief Linked list of Sensor objects to form the list of sensors, call sensor->getFirst()
+  Sensor *sensors = nullptr;
+
   /**
    * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class, call
    * csConsists->getFirst()
@@ -871,6 +916,11 @@ private:
   void _processTurntableIndexEntry();
   void _processTurntableBroadcast();
 
+  // Sensor methods
+  void _getSensors();
+  bool _requestedSensors();
+  void _processSensorEntry(bool activate);
+
   // Track management methods
   void _processTrackPower();
   void _processTrackType();
@@ -892,6 +942,8 @@ private:
   int _turnoutCount = 0;                              // Count of turnout objects received
   int _routeCount = 0;                                // Count of route objects received
   int _turntableCount = 0;                            // Count of turntable objects received
+  int _sensorCount = 0;                               // Count of sensor objects
+
   int _version[3] = {};                               // EX-CommandStation version x.y.z
   Stream *_stream;                                    // Stream object where commands are sent/received
   Stream *_console;                                   // Stream object for console output
@@ -914,6 +966,8 @@ private:
   bool _receivedRouteList = false;                    // Flag that route list received
   bool _turntableListRequested = false;               // Flag that turntable list requested
   bool _receivedTurntableList = false;                // Flag that turntable list received
+  bool _sensorListRequested = false;                  // Flag that sensor list requested
+  bool _receivedSensorList = false;                   // Flag that sensor list received
   bool _enableHeartbeat;                              // Flag if heartbeat is enabled
   unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
   unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command

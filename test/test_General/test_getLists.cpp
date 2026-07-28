@@ -30,7 +30,7 @@
 TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   // Request all lists
   // We expect ONLY the roster to be requested first.
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();
 
@@ -52,7 +52,7 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start turnouts
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
 
@@ -77,7 +77,7 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start routes
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J A>");
   _stream.clearOutput();
 
@@ -102,7 +102,7 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start turntables
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
@@ -143,9 +143,26 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   _dccexProtocol.check();
   _stream << "<jP 2 2 20 \"Turntable2 Index2\">";
   _dccexProtocol.check();
+  _stream.clearOutput();
+
+  // Next call to getLists() should start sensor list
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<S>");
+  _stream.clearOutput();
+
+  // Simulate receiving the sensor list and stream should now request first sensor value
+  EXPECT_CALL(_delegate, receivedSensorList()).Times(2);
+  _stream << "<Q 100>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_dccexProtocol.getSensorCount(), 1);
+
+  // Simulate receiving the sensor list and stream should now request second sensor value
+  _stream << "<q 101>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_dccexProtocol.getSensorCount(), 2);
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -153,6 +170,7 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
   EXPECT_TRUE(_dccexProtocol.receivedRouteList());
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+  EXPECT_TRUE(_dccexProtocol.receivedSensorList());
 }
 
 /**
@@ -161,7 +179,7 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
 TEST_F(DCCEXProtocolTests, getRosterList) {
   // Request all lists
   // We expect ONLY the roster to be requested first.
-  _dccexProtocol.getLists(true, false, false, false);
+  _dccexProtocol.getLists(true, false, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();
 
@@ -183,7 +201,7 @@ TEST_F(DCCEXProtocolTests, getRosterList) {
   _dccexProtocol.check();
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(true, false, false, false);
+  _dccexProtocol.getLists(true, false, false, false, false);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -191,6 +209,7 @@ TEST_F(DCCEXProtocolTests, getRosterList) {
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  EXPECT_FALSE(_dccexProtocol.receivedSensorList());
 }
 
 /**
@@ -199,7 +218,7 @@ TEST_F(DCCEXProtocolTests, getRosterList) {
 TEST_F(DCCEXProtocolTests, getTurnoutList) {
   // Request all lists
   // We expect ONLY the turnouts to be requested first.
-  _dccexProtocol.getLists(false, true, false, false);
+  _dccexProtocol.getLists(false, true, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
 
@@ -221,7 +240,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutList) {
   _dccexProtocol.check();
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(false, true, false, false);
+  _dccexProtocol.getLists(false, true, false, false, false);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -229,6 +248,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutList) {
   EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  EXPECT_FALSE(_dccexProtocol.receivedSensorList());
 }
 
 /**
@@ -237,7 +257,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutList) {
 TEST_F(DCCEXProtocolTests, getRouteList) {
   // Request all lists
   // We expect ONLY the route list to be requested first.
-  _dccexProtocol.getLists(false, false, true, false);
+  _dccexProtocol.getLists(false, false, true, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J A>");
   _stream.clearOutput();
 
@@ -259,7 +279,7 @@ TEST_F(DCCEXProtocolTests, getRouteList) {
   _dccexProtocol.check();
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(false, false, true, false);
+  _dccexProtocol.getLists(false, false, true, false, false);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -267,6 +287,7 @@ TEST_F(DCCEXProtocolTests, getRouteList) {
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   EXPECT_TRUE(_dccexProtocol.receivedRouteList());
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  EXPECT_FALSE(_dccexProtocol.receivedSensorList());
 }
 
 /**
@@ -275,7 +296,7 @@ TEST_F(DCCEXProtocolTests, getRouteList) {
 TEST_F(DCCEXProtocolTests, getTurntableList) {
   // Request all lists
   // We expect ONLY the turntable list to be requested first.
-  _dccexProtocol.getLists(false, false, false, true);
+  _dccexProtocol.getLists(false, false, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
@@ -315,7 +336,7 @@ TEST_F(DCCEXProtocolTests, getTurntableList) {
   _dccexProtocol.check();
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(false, false, false, true);
+  _dccexProtocol.getLists(false, false, false, true, false);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -323,6 +344,7 @@ TEST_F(DCCEXProtocolTests, getTurntableList) {
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+  EXPECT_FALSE(_dccexProtocol.receivedSensorList());
 }
 
 /**
@@ -331,7 +353,7 @@ TEST_F(DCCEXProtocolTests, getTurntableList) {
 TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
   // Request all lists
   // We expect ONLY the turnout list to be requested first.
-  _dccexProtocol.getLists(false, true, false, true);
+  _dccexProtocol.getLists(false, true, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
 
@@ -353,7 +375,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start turntables
-  _dccexProtocol.getLists(false, true, false, true);
+  _dccexProtocol.getLists(false, true, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
@@ -396,7 +418,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
   _dccexProtocol.check();
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(false, true, false, true);
+  _dccexProtocol.getLists(false, true, false, true, false);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -404,6 +426,56 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
   EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+  EXPECT_FALSE(_dccexProtocol.receivedSensorList());
+}
+
+/**
+ * @brief Test requesting sesors only
+ */
+TEST_F(DCCEXProtocolTests, getSensorList) {
+  _dccexProtocol.setDebug(true);
+  // Request Sensor list only
+  // We expect ONLY the sensor to be requested first.
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "<S>");
+  _stream.clearOutput();
+
+  // Simulate receiving the sensor list
+  // Each <Q ..> command calls the receivedSensorList() method
+  EXPECT_CALL(_delegate, receivedSensorList()).Times(2);
+  _stream << "<Q 100>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_dccexProtocol.getSensorCount(), 1);
+
+  // Simulate receiving the sensor list and stream should now request second sensor value
+  _stream << "<q 101>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_dccexProtocol.getSensorCount(), 2);
+
+  // send the same sensor Id as before. It should not increment the count
+  EXPECT_CALL(_delegate, receivedSensorState(101, true)).Times(1);
+  _stream << "<Q 101>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_dccexProtocol.getSensorCount(), 2);
+ 
+  // check getting sensor states
+  EXPECT_CALL(_delegate, receivedSensorList()).Times(0);
+  EXPECT_CALL(_delegate, receivedSensorState(100, true)).Times(1);
+  EXPECT_CALL(_delegate, receivedSensorState(101, false)).Times(1);
+  _stream.clearOutput();
+  _dccexProtocol.requestSensorStates();
+  _stream << "<Q 100>";
+  _dccexProtocol.check();
+  _stream << "<q 101>"; 
+  _dccexProtocol.check();
+ 
+  // receivedLists() should return true when all lists complete
+  EXPECT_FALSE(_dccexProtocol.receivedLists());
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  EXPECT_TRUE(_dccexProtocol.receivedSensorList());
 }
 
 /**
@@ -411,7 +483,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
  */
 TEST_F(DCCEXProtocolTests, testRequestNoLists) {
   // Calling getLists() with all false should immediately set receivedLists() true
-  _dccexProtocol.getLists(false, false, false, false);
+  _dccexProtocol.getLists(false, false, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "");
   EXPECT_TRUE(_dccexProtocol.receivedLists());
 }
