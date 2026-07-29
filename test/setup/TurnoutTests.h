@@ -27,7 +27,7 @@
  */
 
 #ifndef TURNOUTTESTS_H
-#define TUNROUTTESTS_H
+#define TURNOUTTESTS_H
 
 #include "TestHarnessBase.hpp"
 
