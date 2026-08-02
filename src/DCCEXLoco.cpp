@@ -59,6 +59,9 @@ Loco::Loco(int address, LocoSource source) : _address(address), _source(source) 
 int Loco::getAddress() { return _address; }
 
 void Loco::setName(const char *name) {
+  if (!name)
+    return;
+
   if (_name) {
     delete[] _name;
     _name = nullptr;

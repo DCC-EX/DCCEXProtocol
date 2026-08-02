@@ -157,3 +157,16 @@ TEST_F(TurnoutTests, TestToggleTurnout) {
   _dccexProtocol.check();
   EXPECT_FALSE(turnout100->getThrown());
 }
+
+/**
+ * @brief Test setting a null name is a no-op and does not crash
+ */
+TEST_F(TurnoutTests, setNameNullIsNoOp) {
+  // Create a turnout with a name, then clear it with a null name
+  Turnout *turnout = new Turnout(100, false);
+  turnout->setName("Turnout 100");
+
+  // Calling setName(nullptr) must not crash and should clear the name
+  EXPECT_NO_FATAL_FAILURE(turnout->setName(nullptr));
+  EXPECT_STREQ(turnout->getName(), "Turnout 100");
+}

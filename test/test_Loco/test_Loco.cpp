@@ -275,3 +275,19 @@ TEST_F(LocoTests, TestGetByAddress) {
   ASSERT_NE(Loco::getByAddress(42), nullptr);
   ASSERT_NE(Loco::getByAddress(3), nullptr);
 }
+
+/**
+ * @brief Test setting a null name is a no-op and does not crash
+ */
+TEST_F(LocoTests, setNameNullIsNoOp) {
+  // Create a loco with a name, then clear it with a null name
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+  loco->setName("Loco 1");
+
+  // Calling setName(nullptr) must not crash and should clear the name
+  EXPECT_NO_FATAL_FAILURE(loco->setName(nullptr));
+  EXPECT_STREQ(loco->getName(), "Loco 1");
+
+  // Clean up
+  delete loco;
+}

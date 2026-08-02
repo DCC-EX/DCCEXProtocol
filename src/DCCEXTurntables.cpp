@@ -103,6 +103,9 @@ void Turntable::setNumberOfIndexes(int numberOfIndexes) { _numberOfIndexes = num
 int Turntable::getNumberOfIndexes() { return _numberOfIndexes; }
 
 void Turntable::setName(const char *name) {
+  if (!name)
+    return;
+
   if (_name) {
     delete[] _name;
     _name = nullptr;

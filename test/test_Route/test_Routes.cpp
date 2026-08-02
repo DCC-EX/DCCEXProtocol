@@ -91,3 +91,16 @@ TEST_F(RouteTests, automationHandOff) {
   // Ensure the buffer has what's expected
   ASSERT_EQ(_stream.getOutput(), expected);
 }
+
+/**
+ * @brief Test setting a null name is a no-op and does not crash
+ */
+TEST_F(RouteTests, setNameNullIsNoOp) {
+  // Create a route with a name, then clear it with a null name
+  Route *route = new Route(200);
+  route->setName("Route 200");
+
+  // Calling setName(nullptr) must not crash and should clear the name
+  EXPECT_NO_FATAL_FAILURE(route->setName(nullptr));
+  EXPECT_STREQ(route->getName(), "Route 200");
+}

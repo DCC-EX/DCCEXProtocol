@@ -93,3 +93,16 @@ TEST_F(SensorTests, operateSensor) {
   Sensor100->setActive(false);
   EXPECT_FALSE(Sensor100->getActive());
 }
+
+/**
+ * @brief Test setting a null name is a no-op and does not crash
+ */
+TEST_F(SensorTests, setNameNullIsNoOp) {
+  // Create a sensor with a name, then clear it with a null name
+  Sensor *sensor = new Sensor(100, false);
+  sensor->setName("Sensor 100");
+
+  // Calling setName(nullptr) must not crash and should clear the name
+  EXPECT_NO_FATAL_FAILURE(sensor->setName(nullptr));
+  EXPECT_STREQ(sensor->getName(), "Sensor 100");
+}
