@@ -54,3 +54,30 @@ TEST_F(LocoTests, TestIsFunctionOn) {
   _dccexProtocol.check();
   EXPECT_TRUE(_dccexProtocol.isFunctionOn(loco42, 0));
 }
+
+/**
+ * @brief Test calling functionOn() with a null Loco is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestFunctionOnNullLoco) {
+  // A null loco must not crash and should not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.functionOn(static_cast<Loco *>(nullptr), 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling functionOff() with a null Loco is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestFunctionOffNullLoco) {
+  // A null loco must not crash and should not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.functionOff(static_cast<Loco *>(nullptr), 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling isFunctionOn() with a null Loco returns false and does not crash
+ */
+TEST_F(LocoTests, TestIsFunctionOnNullLoco) {
+  // A null loco must not crash and should return false
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.isFunctionOn(static_cast<Loco *>(nullptr), 0));
+  EXPECT_FALSE(_dccexProtocol.isFunctionOn(static_cast<Loco *>(nullptr), 0));
+}

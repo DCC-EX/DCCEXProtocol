@@ -161,6 +161,57 @@ TEST_F(LocoTests, createConsistByAddress) {
 }
 
 /**
+ * @brief Test calling setThrottle() with a null Consist is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestSetThrottleNullConsist) {
+  // A null consist must not crash and should not queue any change
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.setThrottle(static_cast<Consist *>(nullptr), 10, Forward));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling functionOn() with a null Consist is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestFunctionOnNullConsist) {
+  // A null consist must not crash and should not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.functionOn(static_cast<Consist *>(nullptr), 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling functionOff() with a null Consist is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestFunctionOffNullConsist) {
+  // A null consist must not crash and should not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.functionOff(static_cast<Consist *>(nullptr), 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling isFunctionOn() with a null Consist returns false and does not crash
+ */
+TEST_F(LocoTests, TestIsFunctionOnNullConsist) {
+  // A null consist must not crash and should return false
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.isFunctionOn(static_cast<Consist *>(nullptr), 0));
+  EXPECT_FALSE(_dccexProtocol.isFunctionOn(static_cast<Consist *>(nullptr), 0));
+}
+
+/**
+ * @brief Test calling isFunctionOn() with an empty Consist returns false and does not crash
+ */
+TEST_F(LocoTests, TestIsFunctionOnEmptyConsist) {
+  // Create an empty consist
+  Consist *emptyConsist = new Consist();
+
+  // An empty consist must not crash and should return false
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.isFunctionOn(emptyConsist, 0));
+  EXPECT_FALSE(_dccexProtocol.isFunctionOn(emptyConsist, 0));
+
+  // Clean up
+  delete emptyConsist;
+}
+
+/**
  * @brief Test creating a consist using local locos
  */
 TEST_F(LocoTests, CreateConsistWithLocalLocos) {

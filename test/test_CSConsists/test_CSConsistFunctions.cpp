@@ -258,3 +258,30 @@ TEST_F(CSConsistTests, TestSetIsFunctionOnInvalidCSConsist) {
   bool state = _dccexProtocol.isFunctionOn(csConsist, 0);
   EXPECT_FALSE(state);
 }
+
+/**
+ * @brief Test calling functionOn() with a null CSConsist is a no-op and does not crash
+ */
+TEST_F(CSConsistTests, TestFunctionOnNullCSConsist) {
+  // A null consist must not crash and should not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.functionOn(static_cast<CSConsist *>(nullptr), 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling functionOff() with a null CSConsist is a no-op and does not crash
+ */
+TEST_F(CSConsistTests, TestFunctionOffNullCSConsist) {
+  // A null consist must not crash and should not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.functionOff(static_cast<CSConsist *>(nullptr), 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test calling isFunctionOn() with a null CSConsist returns false and does not crash
+ */
+TEST_F(CSConsistTests, TestIsFunctionOnNullCSConsist) {
+  // A null consist must not crash and should return false
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.isFunctionOn(static_cast<CSConsist *>(nullptr), 0));
+  EXPECT_FALSE(_dccexProtocol.isFunctionOn(static_cast<CSConsist *>(nullptr), 0));
+}

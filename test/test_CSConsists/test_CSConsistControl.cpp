@@ -325,6 +325,15 @@ TEST_F(CSConsistTests, TestSetThrottleInvalidConsist) {
 }
 
 /**
+ * @brief Test calling setThrottle() with a null CSConsist does nothing and does not crash
+ */
+TEST_F(CSConsistTests, TestSetThrottleNullCSConsist) {
+  // A null consist must not crash and should not queue any change
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.setThrottle(static_cast<CSConsist *>(nullptr), 10, Forward));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
  * @brief Test getting a CSConsist by the lead loco address
  */
 TEST_F(CSConsistTests, TestGetCSConsistByLeadLocoAddress) {

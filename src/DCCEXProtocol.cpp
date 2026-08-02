@@ -196,7 +196,7 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     return;
   }
 
- // If we get here, get sensors if required
+  // If we get here, get sensors if required
   if (sensorListRequired && !_sensorListRequested) {
     _getSensors();
     return;
@@ -210,7 +210,6 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
   // If we get here, all lists received
   _receivedLists = true;
 }
-
 
 bool DCCEXProtocol::receivedLists() { return _receivedLists; }
 
@@ -250,11 +249,17 @@ void DCCEXProtocol::setDebug(bool debug) { _debug = debug; }
 // Consist/loco methods
 
 void DCCEXProtocol::setThrottle(Loco *loco, int speed, Direction direction) {
+  if (!loco)
+    return;
+
   loco->setUserSpeed(speed);
   loco->setUserDirection(direction);
 }
 
 void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction) {
+  if (!consist)
+    return;
+
   for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
     Direction effectiveDir =
         (cl->getFacing() == FacingReversed) ? (direction == Forward ? Reverse : Forward) : direction;
@@ -279,6 +284,9 @@ void DCCEXProtocol::setThrottle(CSConsist *csConsist, int speed, Direction direc
 }
 
 void DCCEXProtocol::functionOn(Loco *loco, int function) {
+  if (!loco)
+    return;
+
   int address = loco->getAddress();
   if (address >= 0) {
     _sendThreeParams('F', address, function, 1);
@@ -286,6 +294,9 @@ void DCCEXProtocol::functionOn(Loco *loco, int function) {
 }
 
 void DCCEXProtocol::functionOn(Consist *consist, int function) {
+  if (!consist)
+    return;
+
   for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
     functionOn(cl->getLoco(), function);
   }
@@ -308,6 +319,9 @@ void DCCEXProtocol::functionOn(CSConsist *csConsist, int function) {
 }
 
 void DCCEXProtocol::functionOff(Loco *loco, int function) {
+  if (!loco)
+    return;
+
   int address = loco->getAddress();
   if (address >= 0) {
     _sendThreeParams('F', address, function, 0);
@@ -315,6 +329,9 @@ void DCCEXProtocol::functionOff(Loco *loco, int function) {
 }
 
 void DCCEXProtocol::functionOff(Consist *consist, int function) {
+  if (!consist)
+    return;
+
   for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
     functionOff(cl->getLoco(), function);
   }
@@ -336,10 +353,22 @@ void DCCEXProtocol::functionOff(CSConsist *csConsist, int function) {
     _setCSConsistMemberFunction(first->next, function, false);
 }
 
-bool DCCEXProtocol::isFunctionOn(Loco *loco, int function) { return loco->isFunctionOn(function); }
+bool DCCEXProtocol::isFunctionOn(Loco *loco, int function) {
+  if (!loco)
+    return false;
+
+  return loco->isFunctionOn(function);
+}
 
 bool DCCEXProtocol::isFunctionOn(Consist *consist, int function) {
+  if (!consist)
+    return false;
+
   ConsistLoco *firstCL = consist->getFirst();
+
+  if (!firstCL)
+    return false;
+
   return firstCL->getLoco()->isFunctionOn(function);
 }
 
@@ -675,11 +704,8 @@ void DCCEXProtocol::refreshTurntableList() {
   _turntableListRequested = false;
 }
 
-
 // sensor methods
-void DCCEXProtocol::requestSensorStates() {
-  _sendOpcode('Q');
-}
+void DCCEXProtocol::requestSensorStates() { _sendOpcode('Q'); }
 
 int DCCEXProtocol::getSensorCount() { return _sensorCount; }
 
@@ -767,9 +793,7 @@ void DCCEXProtocol::activateLinearAccessory(int linearAddress) { _sendTwoParams(
 
 void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) { _sendTwoParams('a', linearAddress, 0); }
 
-void DCCEXProtocol::setSignalAspect(int linearAddress, int aspect) {
-  _sendTwoParams('A', linearAddress, aspect);
-}
+void DCCEXProtocol::setSignalAspect(int linearAddress, int aspect) { _sendTwoParams('A', linearAddress, aspect); }
 
 void DCCEXProtocol::getNumberSupportedLocos() { _sendOpcode('#'); }
 
@@ -933,13 +957,12 @@ void DCCEXProtocol::_processCommand() {
     }
     break;
 
-  case 'Q':   // sensor responses Q: active, q: inactive
+  case 'Q': // sensor responses Q: active, q: inactive
   case 'q':
     if (DCCEXInbound::getParameterCount() == 0) { // Empty sensor list
-        _receivedSensorList = true;
-    }
-    else {
-       _processSensorEntry(DCCEXInbound::getOpcode() == 'Q');
+      _receivedSensorList = true;
+    } else {
+      _processSensorEntry(DCCEXInbound::getOpcode() == 'Q');
     }
     break;
 
@@ -1487,7 +1510,6 @@ void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
     _delegate->receivedTurntableAction(id, newIndex, moving);
 }
 
-
 // Sensor methods
 
 void DCCEXProtocol::_getSensors() {
@@ -1499,12 +1521,12 @@ bool DCCEXProtocol::_requestedSensors() { return _sensorListRequested; }
 
 //
 // This function is called when the client has requested a list of sensors (via getList)
-// The dcc-ex command station sends a series of <Q id1>, <Q id2>,... responses. 
-// But the same <Q id> and <q id> responses are also sent to indicate the state of 
-// a sensor when the state changes. 
+// The dcc-ex command station sends a series of <Q id1>, <Q id2>,... responses.
+// But the same <Q id> and <q id> responses are also sent to indicate the state of
+// a sensor when the state changes.
 // There is no way for the dccex protocol do distinguish between them.
 // So the function checks if the sensor id exists in the sensor list or not.
-// if the sensor exits, it will simply update its state. 
+// if the sensor exits, it will simply update its state.
 // otherwise, it will create a new sensor object
 // Also, there is no defined 'end of list' response. So for each response received,
 // the _recievedSensorList is set to true and the sensor count is updated.
@@ -1516,12 +1538,11 @@ void DCCEXProtocol::_processSensorEntry(bool activate) { // <Q id> or <q id>
   // there is only 1 parameter for the sensor list request
   int id = DCCEXInbound::getNumber(0);
   Sensor *tt = Sensor::getById(id);
-  if (tt) {     // sensor exists
+  if (tt) { // sensor exists
     tt->setActive(activate);
     if (_delegate)
       _delegate->receivedSensorState(id, activate);
-  }
-  else {
+  } else {
     new Sensor(id, activate);
     _sensorCount++;
     _receivedSensorList = true;
@@ -1529,8 +1550,6 @@ void DCCEXProtocol::_processSensorEntry(bool activate) { // <Q id> or <q id>
       _delegate->receivedSensorList();
   }
 }
-
-
 
 // Track management methods
 void DCCEXProtocol::_processTrackPower() {
