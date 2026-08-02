@@ -29,12 +29,15 @@
 #ifndef DCCEXPROTOCOLVERSION_H
 #define DCCEXPROTOCOLVERSION_H
 
-#define DCCEX_PROTOCOL_VERSION "1.3.2"
+#define DCCEX_PROTOCOL_VERSION "1.4.0"
 
 /*
 Version information:
 
 1.4.0.  - Add methods for getting sensor objects and state from Command Station
+        - Add additional tests for multiple classes and methods
+        - Fix bug where DCCEXProtocol::rotateTurntable() sent an extra blank command
+        - Fix bug where CSConsist member count may be incorrect after deleting members
 1.3.2   - Add missing getSpeed() and getDirection() to CSConsist class
 1.3.1   - Fix bug where function 28 is masked off incorrectly and not received in Loco updates
 1.3.0   - Introduce queued throttle updates to prevent buffer overloads and broadcast storms

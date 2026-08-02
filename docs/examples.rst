@@ -72,7 +72,7 @@ What can't be demonstrated in this example is the control of speed and direction
 
 Note when setting speed and direction, these should be sent to the |EX-CS| via the |EX-PL|, and any local references to these should be set based on the response received, not directly by the input method in use.
 
-For example, when setting the speed based on the position of a rotary encoder, send that value via the protocol's `setThrottle()` method, but do not display that speed directly. Instead, utlise the delegate's `receivedLocoUpdate()` method to update the displayed speed.
+For example, when setting the speed based on the position of a rotary encoder, send that value via the protocol's `setThrottle()` method, but do not display that speed directly. Instead, utilise the delegate's `receivedLocoUpdate()` method to update the displayed speed.
 
 This ensures that the user of the throttle sees the accurate results of what the throttle is doing, and provides validation that the EX-CommandStation is responding to the user input.
 

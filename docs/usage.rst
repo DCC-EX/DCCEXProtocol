@@ -116,7 +116,7 @@ As of version 1.2.1 of this library, the method defaults to all lists true, mean
 
   // Explicitly retrieve all lists
   dccexProtocol.getLists(true, true, true, true);
-  // Default retreives all lists as of 1.2.1
+  // Default retrieves all lists as of 1.2.1
   dccexProtocol.getLists();
   // Only retrieve the roster
   dccexProtocol.getLists(true, false, false, false);
@@ -212,7 +212,7 @@ Each object type has a clear method to delete the list of retrieved objects:
 - Turnout: `clearTurnoutList()`
 - Turntable: `clearTurntableList()`
 
-You can also clear all lists with `dccexProtocol->clearAllLists()`.
+You can also clear all lists with `dccexProtocol.clearAllLists()`.
 
 **Note there is one exception to this rule** which is Loco objects that are created with the `LocoSource::LocoSourceEntry` type set, as these do not get added to the roster list.
 
