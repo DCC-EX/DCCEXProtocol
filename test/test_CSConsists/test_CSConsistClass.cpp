@@ -486,3 +486,106 @@ TEST_F(CSConsistTests, TestRemoveMemberNotFoundSingleMember) {
   EXPECT_EQ(csConsist->getMemberCount(), 1);
   EXPECT_EQ(csConsist->getMember(42), csConsist->getFirstMember());
 }
+
+/**
+ * @brief Test deleting the head CSConsist in a multi-consist list preserves the remaining list
+ */
+TEST_F(CSConsistTests, TestDeleteFirstCSConsistInList) {
+  // Create three CSConsists
+  CSConsist *csConsist1 = new CSConsist();
+  csConsist1->addMember(3, false);
+  csConsist1->addMember(5, true);
+  CSConsist *csConsist2 = new CSConsist();
+  csConsist2->addMember(13, false);
+  csConsist2->addMember(15, true);
+  CSConsist *csConsist3 = new CSConsist();
+  csConsist3->addMember(23, false);
+  csConsist3->addMember(25, true);
+
+  // Validate the initial list
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+
+  // Delete the head of the list
+  delete csConsist1;
+
+  // Remaining list must be intact
+  ASSERT_EQ(CSConsist::getFirst(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+  EXPECT_TRUE(csConsist2->isInConsist(13));
+  EXPECT_TRUE(csConsist3->isInConsist(23));
+}
+
+/**
+ * @brief Test deleting a middle CSConsist in a multi-consist list preserves the remaining list
+ */
+TEST_F(CSConsistTests, TestDeleteMiddleCSConsist) {
+  // Create three CSConsists
+  CSConsist *csConsist1 = new CSConsist();
+  csConsist1->addMember(3, false);
+  csConsist1->addMember(5, true);
+  CSConsist *csConsist2 = new CSConsist();
+  csConsist2->addMember(13, false);
+  csConsist2->addMember(15, true);
+  CSConsist *csConsist3 = new CSConsist();
+  csConsist3->addMember(23, false);
+  csConsist3->addMember(25, true);
+
+  // Validate the initial list
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+
+  // Delete the middle of the list
+  delete csConsist2;
+
+  // The remaining list must be linked directly and intact
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+  EXPECT_TRUE(csConsist1->isInConsist(3));
+  EXPECT_TRUE(csConsist3->isInConsist(23));
+
+  // The deleted consist must no longer be reachable from the list head
+  CSConsist *current = CSConsist::getFirst();
+  while (current) {
+    EXPECT_NE(current, csConsist2);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last CSConsist in a multi-consist list preserves the remaining list
+ */
+TEST_F(CSConsistTests, TestDeleteLastCSConsist) {
+  // Create three CSConsists
+  CSConsist *csConsist1 = new CSConsist();
+  csConsist1->addMember(3, false);
+  csConsist1->addMember(5, true);
+  CSConsist *csConsist2 = new CSConsist();
+  csConsist2->addMember(13, false);
+  csConsist2->addMember(15, true);
+  CSConsist *csConsist3 = new CSConsist();
+  csConsist3->addMember(23, false);
+  csConsist3->addMember(25, true);
+
+  // Validate the initial list
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+
+  // Delete the last in the list
+  delete csConsist3;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), nullptr);
+  EXPECT_TRUE(csConsist1->isInConsist(3));
+  EXPECT_TRUE(csConsist2->isInConsist(13));
+}
