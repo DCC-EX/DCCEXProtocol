@@ -80,6 +80,15 @@ TEST_F(TestHarnessNoDelegate, TestTrackPowerUpdate) {
 }
 
 /**
+ * @brief Test processing a track type update will seg fault this test if not guarded against no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestTrackTypeUpdate) {
+  // Simulate receiving a track type update
+  _stream << "<= A MAIN>";
+  _dccexProtocol.check();
+}
+
+/**
  * @brief Test receiving a message doesn't seg fault when no delegate
  */
 TEST_F(TestHarnessNoDelegate, TestReceiveMessage) {

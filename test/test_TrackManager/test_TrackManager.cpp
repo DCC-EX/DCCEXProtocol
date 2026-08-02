@@ -86,3 +86,73 @@ TEST_F(TrackManagerTests, setTrackTypeNone) {
   // Ensure the buffer has what's expected
   ASSERT_EQ(_stream.getOutput(), expected);
 }
+
+/**
+ * @brief Test receiving a MAIN track type broadcast
+ */
+TEST_F(TrackManagerTests, TestTrackTypeBroadcastMain) {
+  // Simulate receiving a track type broadcast
+  _stream << "<= A MAIN>";
+  EXPECT_CALL(_delegate, receivedTrackType('A', TrackManagerMode::MAIN, 0)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving a PROG track type broadcast
+ */
+TEST_F(TrackManagerTests, TestTrackTypeBroadcastProg) {
+  // Simulate receiving a track type broadcast
+  _stream << "<= B PROG>";
+  EXPECT_CALL(_delegate, receivedTrackType('B', TrackManagerMode::PROG, 0)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving a DC track type broadcast with an address
+ */
+TEST_F(TrackManagerTests, TestTrackTypeBroadcastDC) {
+  // Simulate receiving a track type broadcast
+  _stream << "<= C DC 1234>";
+  EXPECT_CALL(_delegate, receivedTrackType('C', TrackManagerMode::DC, 1234)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving a DCX track type broadcast with an address
+ */
+TEST_F(TrackManagerTests, TestTrackTypeBroadcastDCX) {
+  // Simulate receiving a track type broadcast
+  _stream << "<= D DCX 2345>";
+  EXPECT_CALL(_delegate, receivedTrackType('D', TrackManagerMode::DCX, 2345)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving a NONE track type broadcast
+ */
+TEST_F(TrackManagerTests, TestTrackTypeBroadcastNone) {
+  // Simulate receiving a track type broadcast
+  _stream << "<= E NONE>";
+  EXPECT_CALL(_delegate, receivedTrackType('E', TrackManagerMode::NONE, 0)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving an unknown track type broadcast does not invoke the delegate
+ */
+TEST_F(TrackManagerTests, TestTrackTypeBroadcastUnknownType) {
+  // Simulate receiving a broadcast with an unknown track type
+  _stream << "<= A 42>";
+  EXPECT_CALL(_delegate, receivedTrackType(_, _, _)).Times(Exactly(0));
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test receiving a track type broadcast with too few parameters does not invoke the delegate
+ */
+TEST_F(TrackManagerTests, TestTrackTypeTooFewParams) {
+  // Simulate receiving a broadcast with only the track parameter
+  _stream << "<= A>";
+  EXPECT_CALL(_delegate, receivedTrackType(_, _, _)).Times(Exactly(0));
+  _dccexProtocol.check();
+}
