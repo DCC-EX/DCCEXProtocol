@@ -432,7 +432,7 @@ TEST_F(CSConsistTests, TestSpeedDirectionNoLoco) {
 /**
  * @brief Test get speed and direction with lead Loco objects
  */
-TEST_F(CSConsistTests, TestSpeedDirectionWithLoco) {  
+TEST_F(CSConsistTests, TestSpeedDirectionWithLoco) {
   // Create the consist and add members
   CSConsist *csConsist = new CSConsist();
   csConsist->addMember(42, false);

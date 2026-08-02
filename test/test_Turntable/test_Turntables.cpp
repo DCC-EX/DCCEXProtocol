@@ -247,3 +247,165 @@ TEST_F(TurntableTests, setNameNullIsNoOp) {
   EXPECT_NO_FATAL_FAILURE(turntable->setName(nullptr));
   EXPECT_STREQ(turntable->getName(), "Test EX-Turntable");
 }
+
+/**
+ * @brief Test rotating a DCC turntable sends the two parameter command without activity
+ */
+TEST_F(TurntableTests, TestRotateTurntableDCC) {
+  // Create a DCC turntable
+  Turntable *turntable = new Turntable(2);
+  turntable->setType(TurntableType::TurntableTypeDCC);
+  turntable->setIndex(0);
+  turntable->setName("Test DCC Turntable");
+
+  // Rotate to position 2 with an activity value, which must be ignored for DCC turntables
+  _dccexProtocol.rotateTurntable(2, 2, 9);
+  EXPECT_EQ(_stream.getOutput(), "<I 2 2>");
+}
+
+/**
+ * @brief Test rotating an EX-Turntable sends the three parameter command with the activity
+ */
+TEST_F(TurntableTests, TestRotateTurntableEXTT) {
+  // Create an EX-Turntable
+  Turntable *turntable = new Turntable(1);
+  turntable->setType(TurntableType::TurntableTypeEXTT);
+  turntable->setIndex(0);
+  turntable->setName("Test EX-Turntable");
+
+  // Rotate to position 3 with activity 1, which must be sent for EX-Turntables
+  _dccexProtocol.rotateTurntable(1, 3, 1);
+  EXPECT_EQ(_stream.getOutput(), "<I 1 3 1>");
+}
+
+/**
+ * @brief Test rotating an EX-Turntable with the default activity sends activity 0
+ */
+TEST_F(TurntableTests, TestRotateTurntableEXTTDefaultActivity) {
+  // Create an EX-Turntable
+  Turntable *turntable = new Turntable(1);
+  turntable->setType(TurntableType::TurntableTypeEXTT);
+  turntable->setIndex(0);
+  turntable->setName("Test EX-Turntable");
+
+  // Rotate to position 3 using the default activity of 0
+  _dccexProtocol.rotateTurntable(1, 3);
+  EXPECT_EQ(_stream.getOutput(), "<I 1 3 0>");
+}
+
+/**
+ * @brief Test rotating an EX-Turntable to position 0 forces activity 2
+ */
+TEST_F(TurntableTests, TestRotateTurntableEXTTZeroPosition) {
+  // Create an EX-Turntable
+  Turntable *turntable = new Turntable(1);
+  turntable->setType(TurntableType::TurntableTypeEXTT);
+  turntable->setIndex(0);
+  turntable->setName("Test EX-Turntable");
+
+  // Rotate to position 0, the activity must be forced to 2 regardless of the passed value
+  _dccexProtocol.rotateTurntable(1, 0, 1);
+  EXPECT_EQ(_stream.getOutput(), "<I 1 0 2>");
+}
+
+/**
+ * @brief Test rotating a turntable that doesn't exist does not crash and sends nothing
+ */
+TEST_F(TurntableTests, TestRotateTurntableUnknownId) {
+  // Create an EX-Turntable with a different id
+  Turntable *turntable = new Turntable(1);
+  turntable->setType(TurntableType::TurntableTypeEXTT);
+  turntable->setIndex(0);
+  turntable->setName("Test EX-Turntable");
+
+  // Rotating an unknown turntable must not crash and must not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.rotateTurntable(99, 2, 1));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test rotating a turntable when the turntable list is empty does not crash and sends nothing
+ */
+TEST_F(TurntableTests, TestRotateTurntableEmptyList) {
+  // No turntables have been created, rotating any turntable must not crash or send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.rotateTurntable(1, 2, 1));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test getting a turntable by id returns nullptr when the id isn't in the list
+ */
+TEST_F(TurntableTests, TestGetTurntableByIdNotFound) {
+  // Create an EX-Turntable with id 1
+  Turntable *turntable = new Turntable(1);
+  turntable->setType(TurntableType::TurntableTypeEXTT);
+  turntable->setIndex(0);
+  turntable->setName("Test EX-Turntable");
+
+  // Querying an unknown id must return nullptr
+  EXPECT_EQ(_dccexProtocol.getTurntableById(99), nullptr);
+
+  // Querying the existing id must return the turntable
+  EXPECT_EQ(_dccexProtocol.getTurntableById(1), turntable);
+}
+
+/**
+ * @brief Test getting a turntable by id returns nullptr when the turntable list is empty
+ */
+TEST_F(TurntableTests, TestGetTurntableByIdEmptyList) {
+  // No turntables have been created, querying any id must return nullptr
+  EXPECT_EQ(_dccexProtocol.getTurntableById(1), nullptr);
+}
+
+/**
+ * @brief Test a single rotateTurntable command produces exactly one debug console line
+ */
+TEST_F(TurntableTests, TestRotateTurntableDebugSingleLine) {
+  // Create an EX-Turntable and a DCC turntable
+  Turntable *exTT = new Turntable(1);
+  exTT->setType(TurntableType::TurntableTypeEXTT);
+  exTT->setIndex(0);
+  exTT->setName("Test EX-Turntable");
+  Turntable *dccTT = new Turntable(2);
+  dccTT->setType(TurntableType::TurntableTypeDCC);
+  dccTT->setIndex(0);
+  dccTT->setName("Test DCC Turntable");
+
+  // Turn debug on and rotate the EX-Turntable
+  _dccexProtocol.setDebug(true);
+  _dccexProtocol.rotateTurntable(1, 3, 1);
+
+  // A single command must produce exactly one debug line; the redundant trailing send must not add an empty line
+  EXPECT_EQ(_stream.getOutput(), "<I 1 3 1>");
+  EXPECT_EQ(_console.getOutput(), "==> <I 1 3 1>\r\n");
+
+  // Rotate the DCC turntable and validate the same
+  _stream.clearOutput();
+  _console.clearOutput();
+  _dccexProtocol.rotateTurntable(2, 2, 9);
+  EXPECT_EQ(_stream.getOutput(), "<I 2 2>");
+  EXPECT_EQ(_console.getOutput(), "==> <I 2 2>\r\n");
+
+  // Reset debug for subsequent tests
+  _dccexProtocol.setDebug(false);
+}
+
+/**
+ * @brief Test rotating an unknown turntable with debug on produces no console output
+ */
+TEST_F(TurntableTests, TestRotateTurntableUnknownIdNoDebugOutput) {
+  // Create an EX-Turntable with a different id
+  Turntable *turntable = new Turntable(1);
+  turntable->setType(TurntableType::TurntableTypeEXTT);
+  turntable->setIndex(0);
+  turntable->setName("Test EX-Turntable");
+
+  // With debug on, rotating an unknown turntable must not produce a command or a debug line
+  _dccexProtocol.setDebug(true);
+  _dccexProtocol.rotateTurntable(99, 2, 1);
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(_console.getOutput(), "");
+
+  // Reset debug for subsequent tests
+  _dccexProtocol.setDebug(false);
+}
