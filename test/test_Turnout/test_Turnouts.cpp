@@ -170,3 +170,68 @@ TEST_F(TurnoutTests, setNameNullIsNoOp) {
   EXPECT_NO_FATAL_FAILURE(turnout->setName(nullptr));
   EXPECT_STREQ(turnout->getName(), "Turnout 100");
 }
+
+/**
+ * @brief Test deleting a middle turnout in the list preserves the remaining list
+ */
+TEST_F(TurnoutTests, TestDeleteMiddleTurnout) {
+  // Create three turnouts
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+  Turnout *turnout101 = new Turnout(101, true);
+  turnout101->setName("Turnout 101");
+  Turnout *turnout102 = new Turnout(102, false);
+  turnout102->setName("Turnout 102");
+
+  // Validate the initial list
+  ASSERT_EQ(Turnout::getFirst(), turnout100);
+  EXPECT_EQ(turnout100->getNext(), turnout101);
+  EXPECT_EQ(turnout101->getNext(), turnout102);
+  EXPECT_EQ(turnout102->getNext(), nullptr);
+
+  // Delete the middle of the list
+  delete turnout101;
+
+  // The remaining list must be linked directly and intact
+  ASSERT_EQ(Turnout::getFirst(), turnout100);
+  EXPECT_EQ(turnout100->getNext(), turnout102);
+  EXPECT_EQ(turnout102->getNext(), nullptr);
+  EXPECT_EQ(turnout100->getId(), 100);
+  EXPECT_EQ(turnout102->getId(), 102);
+
+  // The deleted turnout must no longer be reachable from the list head
+  Turnout *current = Turnout::getFirst();
+  while (current) {
+    EXPECT_NE(current, turnout101);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last turnout in the list preserves the remaining list
+ */
+TEST_F(TurnoutTests, TestDeleteLastTurnout) {
+  // Create three turnouts
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+  Turnout *turnout101 = new Turnout(101, true);
+  turnout101->setName("Turnout 101");
+  Turnout *turnout102 = new Turnout(102, false);
+  turnout102->setName("Turnout 102");
+
+  // Validate the initial list
+  ASSERT_EQ(Turnout::getFirst(), turnout100);
+  EXPECT_EQ(turnout100->getNext(), turnout101);
+  EXPECT_EQ(turnout101->getNext(), turnout102);
+  EXPECT_EQ(turnout102->getNext(), nullptr);
+
+  // Delete the last in the list
+  delete turnout102;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(Turnout::getFirst(), turnout100);
+  EXPECT_EQ(turnout100->getNext(), turnout101);
+  EXPECT_EQ(turnout101->getNext(), nullptr);
+  EXPECT_EQ(turnout100->getId(), 100);
+  EXPECT_EQ(turnout101->getId(), 101);
+}

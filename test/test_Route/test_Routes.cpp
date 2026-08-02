@@ -104,3 +104,68 @@ TEST_F(RouteTests, setNameNullIsNoOp) {
   EXPECT_NO_FATAL_FAILURE(route->setName(nullptr));
   EXPECT_STREQ(route->getName(), "Route 200");
 }
+
+/**
+ * @brief Test deleting a middle route in the list preserves the remaining list
+ */
+TEST_F(RouteTests, TestDeleteMiddleRoute) {
+  // Create three routes
+  Route *route200 = new Route(200);
+  route200->setName("Route 200");
+  Route *route300 = new Route(300);
+  route300->setName("Automation 300");
+  Route *route400 = new Route(400);
+  route400->setName("Route 400");
+
+  // Validate the initial list
+  ASSERT_EQ(Route::getFirst(), route200);
+  EXPECT_EQ(route200->getNext(), route300);
+  EXPECT_EQ(route300->getNext(), route400);
+  EXPECT_EQ(route400->getNext(), nullptr);
+
+  // Delete the middle of the list
+  delete route300;
+
+  // The remaining list must be linked directly and intact
+  ASSERT_EQ(Route::getFirst(), route200);
+  EXPECT_EQ(route200->getNext(), route400);
+  EXPECT_EQ(route400->getNext(), nullptr);
+  EXPECT_EQ(route200->getId(), 200);
+  EXPECT_EQ(route400->getId(), 400);
+
+  // The deleted route must no longer be reachable from the list head
+  Route *current = Route::getFirst();
+  while (current) {
+    EXPECT_NE(current, route300);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last route in the list preserves the remaining list
+ */
+TEST_F(RouteTests, TestDeleteLastRoute) {
+  // Create three routes
+  Route *route200 = new Route(200);
+  route200->setName("Route 200");
+  Route *route300 = new Route(300);
+  route300->setName("Automation 300");
+  Route *route400 = new Route(400);
+  route400->setName("Route 400");
+
+  // Validate the initial list
+  ASSERT_EQ(Route::getFirst(), route200);
+  EXPECT_EQ(route200->getNext(), route300);
+  EXPECT_EQ(route300->getNext(), route400);
+  EXPECT_EQ(route400->getNext(), nullptr);
+
+  // Delete the last in the list
+  delete route400;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(Route::getFirst(), route200);
+  EXPECT_EQ(route200->getNext(), route300);
+  EXPECT_EQ(route300->getNext(), nullptr);
+  EXPECT_EQ(route200->getId(), 200);
+  EXPECT_EQ(route300->getId(), 300);
+}

@@ -291,3 +291,94 @@ TEST_F(LocoTests, setNameNullIsNoOp) {
   // Clean up
   delete loco;
 }
+
+/**
+ * @brief Test deleting a middle loco in the roster preserves the remaining roster
+ */
+TEST_F(LocoTests, TestDeleteMiddleLocoInRoster) {
+  // Create three roster locos
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  loco42->setName("Loco42");
+  Loco *loco9 = new Loco(9, LocoSource::LocoSourceRoster);
+  loco9->setName("Loco9");
+  Loco *loco120 = new Loco(120, LocoSource::LocoSourceRoster);
+  loco120->setName("Loco120");
+
+  // Validate the initial roster
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco9);
+  EXPECT_EQ(loco9->getNext(), loco120);
+  EXPECT_EQ(loco120->getNext(), nullptr);
+
+  // Delete the middle of the roster
+  delete loco9;
+
+  // The remaining roster must be linked directly and intact
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco120);
+  EXPECT_EQ(loco120->getNext(), nullptr);
+  EXPECT_EQ(loco42->getAddress(), 42);
+  EXPECT_EQ(loco120->getAddress(), 120);
+
+  // The deleted loco must no longer be reachable from the roster head
+  Loco *current = Loco::getFirst();
+  while (current) {
+    EXPECT_NE(current, loco9);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last loco in the roster preserves the remaining roster
+ */
+TEST_F(LocoTests, TestDeleteLastLocoInRoster) {
+  // Create three roster locos
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  loco42->setName("Loco42");
+  Loco *loco9 = new Loco(9, LocoSource::LocoSourceRoster);
+  loco9->setName("Loco9");
+  Loco *loco120 = new Loco(120, LocoSource::LocoSourceRoster);
+  loco120->setName("Loco120");
+
+  // Validate the initial roster
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco9);
+  EXPECT_EQ(loco9->getNext(), loco120);
+  EXPECT_EQ(loco120->getNext(), nullptr);
+
+  // Delete the last in the roster
+  delete loco120;
+
+  // The remaining roster must terminate correctly
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco9);
+  EXPECT_EQ(loco9->getNext(), nullptr);
+  EXPECT_EQ(loco42->getAddress(), 42);
+  EXPECT_EQ(loco9->getAddress(), 9);
+}
+
+/**
+ * @brief Test deleting the last local loco preserves the remaining local loco list
+ */
+TEST_F(LocoTests, TestDeleteLastLocalLoco) {
+  // Create three local locos
+  Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSource::LocoSourceEntry);
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+
+  // Validate the initial local loco list
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Delete the last in the local loco list
+  delete loco3;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), nullptr);
+  EXPECT_EQ(loco1->getAddress(), 1);
+  EXPECT_EQ(loco2->getAddress(), 2);
+}

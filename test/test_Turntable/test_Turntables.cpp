@@ -409,3 +409,74 @@ TEST_F(TurntableTests, TestRotateTurntableUnknownIdNoDebugOutput) {
   // Reset debug for subsequent tests
   _dccexProtocol.setDebug(false);
 }
+
+/**
+ * @brief Test deleting a middle turntable in the list preserves the remaining list
+ */
+TEST_F(TurntableTests, TestDeleteMiddleTurntable) {
+  // Create three turntables
+  Turntable *turntable1 = new Turntable(1);
+  turntable1->setType(TurntableType::TurntableTypeEXTT);
+  turntable1->setName("Turntable 1");
+  Turntable *turntable2 = new Turntable(2);
+  turntable2->setType(TurntableType::TurntableTypeDCC);
+  turntable2->setName("Turntable 2");
+  Turntable *turntable3 = new Turntable(3);
+  turntable3->setType(TurntableType::TurntableTypeEXTT);
+  turntable3->setName("Turntable 3");
+
+  // Validate the initial list
+  ASSERT_EQ(Turntable::getFirst(), turntable1);
+  EXPECT_EQ(turntable1->getNext(), turntable2);
+  EXPECT_EQ(turntable2->getNext(), turntable3);
+  EXPECT_EQ(turntable3->getNext(), nullptr);
+
+  // Delete the middle of the list
+  delete turntable2;
+
+  // The remaining list must be linked directly and intact
+  ASSERT_EQ(Turntable::getFirst(), turntable1);
+  EXPECT_EQ(turntable1->getNext(), turntable3);
+  EXPECT_EQ(turntable3->getNext(), nullptr);
+  EXPECT_EQ(turntable1->getId(), 1);
+  EXPECT_EQ(turntable3->getId(), 3);
+
+  // The deleted turntable must no longer be reachable from the list head
+  Turntable *current = Turntable::getFirst();
+  while (current) {
+    EXPECT_NE(current, turntable2);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last turntable in the list preserves the remaining list
+ */
+TEST_F(TurntableTests, TestDeleteLastTurntable) {
+  // Create three turntables
+  Turntable *turntable1 = new Turntable(1);
+  turntable1->setType(TurntableType::TurntableTypeEXTT);
+  turntable1->setName("Turntable 1");
+  Turntable *turntable2 = new Turntable(2);
+  turntable2->setType(TurntableType::TurntableTypeDCC);
+  turntable2->setName("Turntable 2");
+  Turntable *turntable3 = new Turntable(3);
+  turntable3->setType(TurntableType::TurntableTypeEXTT);
+  turntable3->setName("Turntable 3");
+
+  // Validate the initial list
+  ASSERT_EQ(Turntable::getFirst(), turntable1);
+  EXPECT_EQ(turntable1->getNext(), turntable2);
+  EXPECT_EQ(turntable2->getNext(), turntable3);
+  EXPECT_EQ(turntable3->getNext(), nullptr);
+
+  // Delete the last in the list
+  delete turntable3;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(Turntable::getFirst(), turntable1);
+  EXPECT_EQ(turntable1->getNext(), turntable2);
+  EXPECT_EQ(turntable2->getNext(), nullptr);
+  EXPECT_EQ(turntable1->getId(), 1);
+  EXPECT_EQ(turntable2->getId(), 2);
+}
