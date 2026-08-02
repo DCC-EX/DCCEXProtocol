@@ -81,3 +81,39 @@ TEST_F(LocoTests, TestIsFunctionOnNullLoco) {
   EXPECT_NO_FATAL_FAILURE(_dccexProtocol.isFunctionOn(static_cast<Loco *>(nullptr), 0));
   EXPECT_FALSE(_dccexProtocol.isFunctionOn(static_cast<Loco *>(nullptr), 0));
 }
+
+/**
+ * @brief Test calling getFunctionName() with an out of range function returns nullptr and does not crash
+ */
+TEST_F(LocoTests, TestGetFunctionNameOutOfRange) {
+  // Create a loco
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceEntry);
+
+  // Out of range functions must not crash and should return nullptr
+  EXPECT_EQ(loco42->getFunctionName(MAX_FUNCTIONS), nullptr);
+  EXPECT_EQ(loco42->getFunctionName(-1), nullptr);
+}
+
+/**
+ * @brief Test calling isFunctionOn() with an out of range function returns false and does not crash
+ */
+TEST_F(LocoTests, TestIsFunctionOnOutOfRange) {
+  // Create a loco
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceEntry);
+
+  // Out of range functions must not crash and should return false
+  EXPECT_FALSE(loco42->isFunctionOn(MAX_FUNCTIONS));
+  EXPECT_FALSE(loco42->isFunctionOn(-1));
+}
+
+/**
+ * @brief Test calling isFunctionMomentary() with an out of range function returns false and does not crash
+ */
+TEST_F(LocoTests, TestIsFunctionMomentaryOutOfRange) {
+  // Create a loco
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceEntry);
+
+  // Out of range functions must not crash and should return false
+  EXPECT_FALSE(loco42->isFunctionMomentary(MAX_FUNCTIONS));
+  EXPECT_FALSE(loco42->isFunctionMomentary(-1));
+}
