@@ -73,7 +73,32 @@ TEST_F(CSConsistTests, TestCreateConsistWithAddress) {
 }
 
 /**
- * @brief Test building a consist with addresses
+ * @brief Test building a consist with addressesvoid CSConsist::removeMember(int address) {
+  CSConsistMember *previous = nullptr;
+  CSConsistMember *current = _firstMember;
+  while (current) {
+    if (current->address == (uint16_t)address) {
+      CSConsistMember *next = current->next;
+      if (previous) {
+        previous->next = next;
+      } else {
+        _firstMember = next;
+      }
+      delete current;
+      current = next;
+    } else {
+      previous = current;
+      current = current->next;
+    }
+  }
+
+  if (!_firstMember)
+    _firstMember = nullptr;
+
+  _memberCount--;
+  if (_memberCount < 0)
+    _memberCount = 0;
+}
  */
 TEST_F(CSConsistTests, TestBuildConsistWithAddresses) {
   // Create the consist and validate
@@ -427,4 +452,37 @@ TEST_F(CSConsistTests, TestSpeedDirectionWithLoco) {
   loco42->setDirection(Direction::Reverse);
   EXPECT_EQ(csConsist->getSpeed(), 10);
   EXPECT_EQ(csConsist->getDirection(), Direction::Reverse);
+}
+
+/**
+ * @brief Test removing a member that isn't in the consist does not change the member count
+ */
+TEST_F(CSConsistTests, TestRemoveMemberNotFound) {
+  // Create the consist and add members
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  csConsist->addMember(24, true);
+  ASSERT_EQ(csConsist->getMemberCount(), 2);
+  ASSERT_TRUE(csConsist->isValid());
+
+  // Removing a member that isn't in the consist must not change the count or validity
+  csConsist->removeMember(22);
+  EXPECT_EQ(csConsist->getMemberCount(), 2);
+  EXPECT_TRUE(csConsist->isValid());
+  EXPECT_EQ(csConsist->getMember(22), nullptr);
+}
+
+/**
+ * @brief Test removing a member that isn't in a single member consist does not change the member count
+ */
+TEST_F(CSConsistTests, TestRemoveMemberNotFoundSingleMember) {
+  // Create the consist and add a member
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  ASSERT_EQ(csConsist->getMemberCount(), 1);
+
+  // Removing a member that isn't in the consist must not change the count
+  csConsist->removeMember(22);
+  EXPECT_EQ(csConsist->getMemberCount(), 1);
+  EXPECT_EQ(csConsist->getMember(42), csConsist->getFirstMember());
 }
