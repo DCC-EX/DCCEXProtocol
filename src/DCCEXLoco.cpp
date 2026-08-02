@@ -318,6 +318,9 @@ void Consist::setName(const char *name) {
 const char *Consist::getName() { return _name; }
 
 void Consist::addLoco(Loco *loco, Facing facing) {
+  if (!loco)
+    return;
+
   if (inConsist(loco))
     return; // Already in the consist
   if (_locoCount == 0) {

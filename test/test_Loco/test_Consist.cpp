@@ -212,6 +212,40 @@ TEST_F(LocoTests, TestIsFunctionOnEmptyConsist) {
 }
 
 /**
+ * @brief Test adding a null Loco to an empty Consist is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestAddNullLocoToEmptyConsist) {
+  // Create an empty consist
+  Consist *consist = new Consist();
+
+  // Adding a null loco must not crash and must not add anything
+  EXPECT_NO_FATAL_FAILURE(consist->addLoco(static_cast<Loco *>(nullptr), FacingForward));
+  EXPECT_EQ(consist->getLocoCount(), 0);
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test adding a null Loco to a populated Consist is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestAddNullLocoToPopulatedConsist) {
+  // Create a consist with a valid loco
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  consist->addLoco(loco10, FacingForward);
+  EXPECT_EQ(consist->getLocoCount(), 1);
+
+  // Adding a null loco must not crash and must not poison the consist
+  EXPECT_NO_FATAL_FAILURE(consist->addLoco(static_cast<Loco *>(nullptr), FacingForward));
+  EXPECT_EQ(consist->getLocoCount(), 1);
+  EXPECT_TRUE(consist->inConsist(10));
+
+  // Clean up
+  delete consist;
+}
+
+/**
  * @brief Test creating a consist using local locos
  */
 TEST_F(LocoTests, CreateConsistWithLocalLocos) {

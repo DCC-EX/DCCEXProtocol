@@ -1692,6 +1692,9 @@ void DCCEXProtocol::_cmdStart(char opcode) {
 }
 
 void DCCEXProtocol::_cmdAppend(const char *s) {
+  if (!s)
+    return;
+
   // Must leave room for '>' and null terminator
   while (*s && _cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
     _outboundCommand[_cmdIndex++] = *s++;

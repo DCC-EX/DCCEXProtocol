@@ -48,6 +48,15 @@ TEST_F(DCCEXProtocolTests, testGenericSendCommand) {
 }
 
 /**
+ * @brief Test sending a null command with sendCommand is a no-op and does not crash
+ */
+TEST_F(DCCEXProtocolTests, TestSendNullCommand) {
+  // A null command must not crash and should not send anything
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.sendCommand(nullptr));
+  EXPECT_EQ(_stream.getOutput(), "<>");
+}
+
+/**
  * @brief Test the library version can be retrieved via the static method
  */
 TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.3.2"); }
