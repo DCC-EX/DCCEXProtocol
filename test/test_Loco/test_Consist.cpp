@@ -367,3 +367,129 @@ TEST_F(LocoTests, CreateConsistWithLocalLocos) {
   // Clean up
   delete consist;
 }
+
+/**
+ * @brief Test setting a consist name with a null or existing value
+ */
+TEST_F(LocoTests, TestConsistSetNameReplacesExisting) {
+  // Create a consist
+  Consist *consist = new Consist();
+
+  // A null name must be a no-op
+  EXPECT_NO_FATAL_FAILURE(consist->setName(nullptr));
+  EXPECT_EQ(consist->getName(), nullptr);
+
+  // Setting a name twice must replace the existing name
+  consist->setName("First Name");
+  ASSERT_STREQ(consist->getName(), "First Name");
+  consist->setName("Second Name");
+  EXPECT_STREQ(consist->getName(), "Second Name");
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test adding the same Loco object to a consist twice is a no-op
+ */
+TEST_F(LocoTests, TestConsistAddDuplicateLocoObject) {
+  // Create a consist and a loco
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+
+  // Adding the same loco twice must only add it once
+  consist->addLoco(loco10, Facing::FacingForward);
+  consist->addLoco(loco10, Facing::FacingForward);
+  EXPECT_EQ(consist->getLocoCount(), 1);
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test adding the same loco address to a consist twice is a no-op
+ */
+TEST_F(LocoTests, TestConsistAddDuplicateLocoAddress) {
+  // Create a consist
+  Consist *consist = new Consist();
+
+  // Adding the same address twice must only add it once
+  consist->addLoco(10, Facing::FacingForward);
+  consist->addLoco(10, Facing::FacingForward);
+  EXPECT_EQ(consist->getLocoCount(), 1);
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test removing the last loco from a consist cleans up the list
+ */
+TEST_F(LocoTests, TestConsistRemoveLastLoco) {
+  // Create a consist with a single loco
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+  ASSERT_EQ(consist->getLocoCount(), 1);
+
+  // Removing the only loco must empty the consist
+  consist->removeLoco(loco10);
+  EXPECT_EQ(consist->getLocoCount(), 0);
+  EXPECT_EQ(consist->getFirst(), nullptr);
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test setLocoFacing() updates the facing of a member
+ */
+TEST_F(LocoTests, TestConsistSetLocoFacing) {
+  // Create a consist with two locos
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  Loco *loco20 = new Loco(20, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+  consist->addLoco(loco20, Facing::FacingForward);
+
+  // Set the facing of the first member
+  consist->setLocoFacing(loco10, Facing::FacingReversed);
+  EXPECT_EQ(consist->getByAddress(10)->getFacing(), Facing::FacingReversed);
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test setLocoFacing() with a loco not in the consist is a no-op
+ */
+TEST_F(LocoTests, TestConsistSetLocoFacingNotInConsist) {
+  // Create a consist with a member loco and a non-member loco
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  Loco *loco50 = new Loco(50, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+
+  // Setting the facing of a non-member must not change anything
+  consist->setLocoFacing(loco50, Facing::FacingReversed);
+  EXPECT_EQ(consist->getByAddress(10)->getFacing(), Facing::FacingForward);
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test getByAddress() with an address not in the consist returns nullptr
+ */
+TEST_F(LocoTests, TestConsistGetByAddressNotFound) {
+  // Create a consist with a loco
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+
+  // An address that isn't in the consist must not be found
+  EXPECT_EQ(consist->getByAddress(999), nullptr);
+
+  // Clean up
+  delete consist;
+}

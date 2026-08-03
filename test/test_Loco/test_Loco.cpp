@@ -382,3 +382,97 @@ TEST_F(LocoTests, TestDeleteLastLocalLoco) {
   EXPECT_EQ(loco1->getAddress(), 1);
   EXPECT_EQ(loco2->getAddress(), 2);
 }
+
+/**
+ * @brief Test setting a name when one already exists replaces it
+ */
+TEST_F(LocoTests, TestSetNameReplacesExistingName) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // Set a name, then replace it
+  loco->setName("First Name");
+  ASSERT_STREQ(loco->getName(), "First Name");
+  loco->setName("Second Name");
+  EXPECT_STREQ(loco->getName(), "Second Name");
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test calling setupFunctions() with a null list is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestSetupFunctionsNullNoOp) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // A null function list must not crash and must not set anything
+  EXPECT_NO_FATAL_FAILURE(loco->setupFunctions(nullptr));
+  EXPECT_EQ(loco->getFunctionName(0), nullptr);
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test calling setupFunctions() twice replaces the existing functions
+ */
+TEST_F(LocoTests, TestSetupFunctionsReplacesExisting) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // Set an initial function list including a momentary function
+  loco->setupFunctions("Lights/*Horn");
+  ASSERT_STREQ(loco->getFunctionName(0), "Lights");
+  ASSERT_STREQ(loco->getFunctionName(1), "Horn");
+  ASSERT_TRUE(loco->isFunctionMomentary(1));
+
+  // Re-setup must free the old names and replace them
+  loco->setupFunctions("Horn/Bell");
+  EXPECT_STREQ(loco->getFunctionName(0), "Horn");
+  EXPECT_STREQ(loco->getFunctionName(1), "Bell");
+  EXPECT_FALSE(loco->isFunctionMomentary(0));
+  EXPECT_FALSE(loco->isFunctionMomentary(1));
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test calling setupFunctions() with more than MAX_FUNCTIONS names stops safely
+ */
+TEST_F(LocoTests, TestSetupFunctionsExceedsMaxFunctions) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // Build a list with MAX_FUNCTIONS + 1 names
+  std::string functionList;
+  for (int i = 0; i <= MAX_FUNCTIONS; i++) {
+    if (i > 0)
+      functionList += "/";
+    functionList += std::to_string(i);
+  }
+
+  // Excess names must not crash and the last valid function must be set
+  EXPECT_NO_FATAL_FAILURE(loco->setupFunctions(functionList.c_str()));
+  EXPECT_STREQ(loco->getFunctionName(MAX_FUNCTIONS - 1), "31");
+  EXPECT_EQ(loco->getFunctionName(MAX_FUNCTIONS), nullptr);
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test deleting a Loco with a name and functions cleans up its memory
+ */
+TEST_F(LocoTests, TestDeleteLocoWithFunctions) {
+  // Create a local loco with a name and functions set
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+  loco->setName("Loco 1");
+  loco->setupFunctions("Lights/*Horn");
+
+  // Deleting it must not crash and must remove it from the local loco list
+  EXPECT_NO_FATAL_FAILURE(delete loco);
+  EXPECT_EQ(Loco::getFirstLocalLoco(), nullptr);
+}
