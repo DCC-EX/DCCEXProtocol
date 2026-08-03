@@ -434,3 +434,32 @@ TEST_F(CSConsistTests, TestGetCSConsistByMemberLocoFails) {
   test = _dccexProtocol.getCSConsistByMemberLoco(nullptr);
   EXPECT_EQ(test, nullptr);
 }
+
+/**
+ * @brief Test adding a member to an empty consist fails and sends nothing
+ */
+TEST_F(CSConsistTests, TestAddMemberToEmptyConsistFails) {
+  // Create an empty consist
+  CSConsist *csConsist = new CSConsist();
+
+  // Adding a member leaves it with only one member, so it must fail and not send
+  bool add = _dccexProtocol.addCSConsistMember(csConsist, 5, false);
+  EXPECT_FALSE(add);
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test removing the only member sends no delete command for an empty consist
+ */
+TEST_F(CSConsistTests, TestRemoveOnlyMemberSendsNoDelete) {
+  // Create a single member consist
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  ASSERT_EQ(_dccexProtocol.csConsists->getFirst(), csConsist);
+
+  // Removing the only member must not send a delete command as it is now empty
+  bool remove = _dccexProtocol.removeCSConsistMember(csConsist, 3);
+  EXPECT_TRUE(remove);
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(_dccexProtocol.csConsists->getFirst(), nullptr);
+}

@@ -156,7 +156,66 @@ TEST_F(LocoTests, createConsistByAddress) {
   EXPECT_EQ(consist->getSpeed(), 0);
   EXPECT_EQ(consist->getDirection(), Direction::Forward);
 
-  // Clean up the consist
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test calling functionOn() with a populated Consist sends a command per member
+ */
+TEST_F(LocoTests, TestFunctionOnPopulatedConsist) {
+  // Create a consist with two locos
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  Loco *loco20 = new Loco(20, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+  consist->addLoco(loco20, Facing::FacingForward);
+
+  // Turning on a function must send a command for each member
+  _dccexProtocol.functionOn(consist, 3);
+  EXPECT_EQ(_stream.getOutput(), "<F 10 3 1><F 20 3 1>");
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test calling functionOff() with a populated Consist sends a command per member
+ */
+TEST_F(LocoTests, TestFunctionOffPopulatedConsist) {
+  // Create a consist with two locos
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  Loco *loco20 = new Loco(20, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+  consist->addLoco(loco20, Facing::FacingForward);
+
+  // Turning off a function must send a command for each member
+  _dccexProtocol.functionOff(consist, 3);
+  EXPECT_EQ(_stream.getOutput(), "<F 10 3 0><F 20 3 0>");
+
+  // Clean up
+  delete consist;
+}
+
+/**
+ * @brief Test isFunctionOn() with a populated Consist reflects the first member's state
+ */
+TEST_F(LocoTests, TestIsFunctionOnPopulatedConsist) {
+  // Create a consist with two locos
+  Consist *consist = new Consist();
+  Loco *loco10 = new Loco(10, LocoSourceRoster);
+  Loco *loco20 = new Loco(20, LocoSourceRoster);
+  consist->addLoco(loco10, Facing::FacingForward);
+  consist->addLoco(loco20, Facing::FacingForward);
+
+  // The state of the first member determines the consist state
+  EXPECT_FALSE(_dccexProtocol.isFunctionOn(consist, 3));
+  loco10->setFunctionStates(1 << 3);
+  EXPECT_TRUE(_dccexProtocol.isFunctionOn(consist, 3));
+  EXPECT_FALSE(_dccexProtocol.isFunctionOn(consist, 4));
+
+  // Clean up
   delete consist;
 }
 

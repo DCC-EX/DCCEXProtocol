@@ -169,3 +169,23 @@ TEST_F(RouteTests, TestDeleteLastRoute) {
   EXPECT_EQ(route200->getId(), 200);
   EXPECT_EQ(route300->getId(), 300);
 }
+
+/// @brief Validate that handOffLoco() with no matching automation sends nothing
+TEST_F(RouteTests, automationHandOffNoAutomation) {
+  // No automation 999 exists
+  _dccexProtocol.handOffLoco(1234, 999);
+
+  // Nothing should be sent
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/// @brief Validate that handOffLoco() with a non-automation route sends nothing
+TEST_F(RouteTests, automationHandOffWrongType) {
+  // Route 100 exists but is not an automation
+  Route *route100 = new Route(100);
+  route100->setType(RouteType::RouteTypeRoute);
+
+  // Handing off to a non-automation route must not send anything
+  _dccexProtocol.handOffLoco(1234, 100);
+  EXPECT_EQ(_stream.getOutput(), "");
+}

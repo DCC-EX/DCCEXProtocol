@@ -91,3 +91,126 @@ TEST_F(DCCEXProtocolTests, TestSendNullCommand) {
  * @brief Test the library version can be retrieved via the static method
  */
 TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.4.0"); }
+
+/**
+ * @brief Test calling disconnect() is a no-op and does not crash
+ */
+TEST_F(DCCEXProtocolTests, disconnectIsNoOp) {
+  // Disconnecting must not crash and should not send anything
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.disconnect());
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test getLastServerResponseTime() records the last server response
+ */
+TEST_F(DCCEXProtocolTests, getLastServerResponseTime) {
+  // Before any response, the time must be the initial value
+  EXPECT_EQ(_dccexProtocol.getLastServerResponseTime(), 0UL);
+
+  // Advance the clock and process a server response
+  advanceMillis(1000);
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOn));
+  _stream << "<p1>";
+  _dccexProtocol.check();
+
+  // The last response time must match the time the response was processed
+  EXPECT_EQ(_dccexProtocol.getLastServerResponseTime(), 1000UL);
+}
+
+/**
+ * @brief Test requestLocoUpdate() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, requestLocoUpdateSendsCommand) {
+  _dccexProtocol.requestLocoUpdate(42);
+  EXPECT_EQ(_stream.getOutput(), "<t 42>");
+}
+
+/**
+ * @brief Test emergencyStop() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, emergencyStopSendsCommand) {
+  _dccexProtocol.emergencyStop();
+  EXPECT_EQ(_stream.getOutput(), "<!>");
+}
+
+/**
+ * @brief Test getNumberSupportedLocos() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, getNumberSupportedLocosSendsCommand) {
+  _dccexProtocol.getNumberSupportedLocos();
+  EXPECT_EQ(_stream.getOutput(), "<#>");
+}
+
+/**
+ * @brief Test activateAccessory() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, activateAccessorySendsCommand) {
+  _dccexProtocol.activateAccessory(1, 2);
+  EXPECT_EQ(_stream.getOutput(), "<a 1 2 1>");
+}
+
+/**
+ * @brief Test deactivateAccessory() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, deactivateAccessorySendsCommand) {
+  _dccexProtocol.deactivateAccessory(1, 2);
+  EXPECT_EQ(_stream.getOutput(), "<a 1 2 0>");
+}
+
+/**
+ * @brief Test activateLinearAccessory() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, activateLinearAccessorySendsCommand) {
+  _dccexProtocol.activateLinearAccessory(1);
+  EXPECT_EQ(_stream.getOutput(), "<a 1 1>");
+}
+
+/**
+ * @brief Test deactivateLinearAccessory() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, deactivateLinearAccessorySendsCommand) {
+  _dccexProtocol.deactivateLinearAccessory(1);
+  EXPECT_EQ(_stream.getOutput(), "<a 1 0>");
+}
+
+/**
+ * @brief Test setSignalAspect() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, setSignalAspectSendsCommand) {
+  _dccexProtocol.setSignalAspect(1, 2);
+  EXPECT_EQ(_stream.getOutput(), "<A 1 2>");
+}
+
+/**
+ * @brief Test startRoute() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, startRouteSendsCommand) {
+  _dccexProtocol.startRoute(5);
+  EXPECT_EQ(_stream.getOutput(), "</ START 5>");
+}
+
+/**
+ * @brief Test pauseRoutes() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, pauseRoutesSendsCommand) {
+  _dccexProtocol.pauseRoutes();
+  EXPECT_EQ(_stream.getOutput(), "</ PAUSE>");
+}
+
+/**
+ * @brief Test resumeRoutes() sends the correct command
+ */
+TEST_F(DCCEXProtocolTests, resumeRoutesSendsCommand) {
+  _dccexProtocol.resumeRoutes();
+  EXPECT_EQ(_stream.getOutput(), "</ RESUME>");
+}
+
+/**
+ * @brief Test setTrackType() with an invalid type is a no-op and does not crash
+ */
+TEST_F(DCCEXProtocolTests, setTrackTypeInvalidTypeIgnored) {
+  // An invalid track manager mode must not send a command
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.setTrackType('A', (TrackManagerMode)99, 0));
+  EXPECT_EQ(_stream.getOutput(), "");
+}

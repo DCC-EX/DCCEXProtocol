@@ -235,3 +235,23 @@ TEST_F(TurnoutTests, TestDeleteLastTurnout) {
   EXPECT_EQ(turnout100->getId(), 100);
   EXPECT_EQ(turnout101->getId(), 101);
 }
+
+/**
+ * @brief Test getting a turnout by ID returns the matching turnout
+ */
+TEST_F(TurnoutTests, getTurnoutById) {
+  // Create a turnout to find
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+
+  // Get it by ID
+  EXPECT_EQ(_dccexProtocol.getTurnoutById(100), turnout100);
+}
+
+/**
+ * @brief Test getting a turnout by an unknown ID returns nullptr
+ */
+TEST_F(TurnoutTests, getTurnoutByIdNotFound) {
+  // No turnouts exist, so it must not be found
+  EXPECT_EQ(_dccexProtocol.getTurnoutById(100), nullptr);
+}

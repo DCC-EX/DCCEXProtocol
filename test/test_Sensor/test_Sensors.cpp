@@ -171,3 +171,23 @@ TEST_F(SensorTests, TestDeleteLastSensor) {
   EXPECT_EQ(sensor100->getId(), 100);
   EXPECT_EQ(sensor101->getId(), 101);
 }
+
+/**
+ * @brief Test getting a sensor by ID returns the matching sensor
+ */
+TEST_F(SensorTests, getSensorById) {
+  // Create a sensor to find
+  Sensor *sensor100 = new Sensor(100, false);
+  sensor100->setName("Sensor 100");
+
+  // Get it by ID
+  EXPECT_EQ(_dccexProtocol.getSensorById(100), sensor100);
+}
+
+/**
+ * @brief Test getting a sensor by an unknown ID returns nullptr
+ */
+TEST_F(SensorTests, getSensorByIdNotFound) {
+  // No sensors exist, so it must not be found
+  EXPECT_EQ(_dccexProtocol.getSensorById(100), nullptr);
+}
