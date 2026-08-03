@@ -50,6 +50,15 @@ TEST_F(MomentumTests, TestSetInvalidAlgorithm) {
 }
 
 /**
+ * @brief Test setting a negative algorithm does nothing
+ */
+TEST_F(MomentumTests, TestSetNegativeAlgorithm) {
+  // Set a negative algorithm and validate no output
+  _dccexProtocol.setMomentumAlgorithm((MomentumAlgorithm)-1);
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
  * @brief Test setting the default momentum
  */
 TEST_F(MomentumTests, TestSetDefaultMomentum) {

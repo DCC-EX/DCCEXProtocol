@@ -189,3 +189,20 @@ TEST_F(RouteTests, automationHandOffWrongType) {
   _dccexProtocol.handOffLoco(1234, 100);
   EXPECT_EQ(_stream.getOutput(), "");
 }
+
+/**
+ * @brief Test setting a new name replaces the existing name
+ */
+TEST_F(RouteTests, TestSetNameReplacesExistingName) {
+  // Create a route with a name, then replace it
+  Route *route200 = new Route(200);
+  route200->setName("Route 200");
+  route200->setName("Route Renamed");
+
+  // The new name must replace the old name
+  EXPECT_STREQ(route200->getName(), "Route Renamed");
+
+  // Clean up
+  delete route200;
+  EXPECT_EQ(Route::getFirst(), nullptr);
+}

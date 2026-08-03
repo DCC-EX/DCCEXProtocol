@@ -463,3 +463,23 @@ TEST_F(CSConsistTests, TestRemoveOnlyMemberSendsNoDelete) {
   EXPECT_EQ(_stream.getOutput(), "");
   EXPECT_EQ(_dccexProtocol.csConsists->getFirst(), nullptr);
 }
+
+/**
+ * @brief Test removing a member with an invalid address range fails sanely
+ */
+TEST_F(CSConsistTests, TestRemoveCSConsistMemberInvalidAddressRange) {
+  // Create a consist with members
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  csConsist->addMember(5, true);
+
+  // Removing with an out of range address must fail and send nothing
+  EXPECT_FALSE(_dccexProtocol.removeCSConsistMember(csConsist, 0));
+  EXPECT_FALSE(_dccexProtocol.removeCSConsistMember(csConsist, 10240));
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // The consist must be intact
+  EXPECT_TRUE(csConsist->isInConsist(3));
+  EXPECT_TRUE(csConsist->isInConsist(5));
+  EXPECT_EQ(_dccexProtocol.csConsists->getFirst(), csConsist);
+}

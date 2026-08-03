@@ -589,3 +589,18 @@ TEST_F(CSConsistTests, TestDeleteLastCSConsist) {
   EXPECT_TRUE(csConsist1->isInConsist(3));
   EXPECT_TRUE(csConsist2->isInConsist(13));
 }
+
+/**
+ * @brief Test get speed and direction with an empty consist
+ */
+TEST_F(CSConsistTests, TestSpeedDirectionEmptyConsist) {
+  // Create a consist with no members
+  CSConsist *csConsist = new CSConsist();
+
+  // Speed should be zero and direction should be forward
+  EXPECT_EQ(csConsist->getSpeed(), 0);
+  EXPECT_EQ(csConsist->getDirection(), Direction::Forward);
+
+  // Clean up
+  delete csConsist;
+}

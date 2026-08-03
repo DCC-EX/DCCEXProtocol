@@ -255,3 +255,54 @@ TEST_F(TurnoutTests, getTurnoutByIdNotFound) {
   // No turnouts exist, so it must not be found
   EXPECT_EQ(_dccexProtocol.getTurnoutById(100), nullptr);
 }
+
+/**
+ * @brief Test setting a new name replaces the existing name
+ */
+TEST_F(TurnoutTests, TestSetNameReplacesExistingName) {
+  // Create a turnout with a name, then replace it
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+  turnout100->setName("Turnout Renamed");
+
+  // The new name must replace the old name
+  EXPECT_STREQ(turnout100->getName(), "Turnout Renamed");
+
+  // Clean up
+  delete turnout100;
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test the class-level getById returns the matching turnout or nullptr
+ */
+TEST_F(TurnoutTests, TestGetById) {
+  // Create a turnout to find
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+
+  // A matching ID returns the turnout
+  EXPECT_EQ(Turnout::getById(100), turnout100);
+
+  // A non-matching ID walks the list and returns nullptr
+  EXPECT_EQ(Turnout::getById(200), nullptr);
+
+  // Clean up
+  delete turnout100;
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test toggling an unknown turnout ID is a silent no-op
+ */
+TEST_F(TurnoutTests, TestToggleTurnoutUnknownIdSendsNothing) {
+  // Create a turnout so the list is walked
+  Turnout *turnout100 = new Turnout(100, false);
+
+  // Toggling an unknown ID must not match and must send nothing
+  _dccexProtocol.toggleTurnout(999);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // Clean up
+  delete turnout100;
+}

@@ -480,3 +480,39 @@ TEST_F(TurntableTests, TestDeleteLastTurntable) {
   EXPECT_EQ(turntable1->getId(), 1);
   EXPECT_EQ(turntable2->getId(), 2);
 }
+
+/**
+ * @brief Test setting a new name replaces the existing name
+ */
+TEST_F(TurntableTests, TestSetNameReplacesExistingName) {
+  // Create a turntable with a name, then replace it
+  Turntable *turntable1 = new Turntable(1);
+  turntable1->setName("Turntable 1");
+  turntable1->setName("Turntable Renamed");
+
+  // The new name must replace the old name
+  EXPECT_STREQ(turntable1->getName(), "Turntable Renamed");
+
+  // Clean up
+  delete turntable1;
+  EXPECT_EQ(Turntable::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test the class-level getById returns the matching turntable or nullptr
+ */
+TEST_F(TurntableTests, TestGetById) {
+  // Create a turntable to find
+  Turntable *turntable1 = new Turntable(1);
+  turntable1->setName("Turntable 1");
+
+  // A matching ID returns the turntable
+  EXPECT_EQ(Turntable::getById(1), turntable1);
+
+  // A non-matching ID walks the list and returns nullptr
+  EXPECT_EQ(Turntable::getById(99), nullptr);
+
+  // Clean up
+  delete turntable1;
+  EXPECT_EQ(Turntable::getFirst(), nullptr);
+}
