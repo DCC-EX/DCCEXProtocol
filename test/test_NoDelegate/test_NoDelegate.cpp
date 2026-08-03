@@ -238,6 +238,15 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
 }
 
 /**
+ * @brief Test processing a turnout broadcast doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestTurnoutBroadcast) {
+  // Simulate receiving a turnout broadcast
+  _stream << "<H 1 1>";
+  _dccexProtocol.check();
+}
+
+/**
  * @brief Test turntable broadcast does not seg fault
  */
 TEST_F(TestHarnessNoDelegate, TestTurntableBroadcast) {
