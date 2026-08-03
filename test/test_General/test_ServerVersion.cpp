@@ -73,3 +73,15 @@ TEST_F(DCCEXProtocolTests, versionIgnoreLabels) {
   EXPECT_EQ(_dccexProtocol.getMinorVersion(), 2);
   EXPECT_EQ(_dccexProtocol.getPatchVersion(), 3);
 }
+
+TEST_F(DCCEXProtocolTests, versionOutOfRangeRejected) {
+  // A version component >= 1000 must be rejected without setting the version
+  EXPECT_FALSE(_dccexProtocol.receivedVersion());
+  _stream << "<iDCCEX V-10000 / MEGA / STANDARD_MOTOR_SHIELD / 7>";
+  EXPECT_CALL(_delegate, receivedServerVersion(_, _, _)).Times(Exactly(0));
+  _dccexProtocol.check();
+  EXPECT_FALSE(_dccexProtocol.receivedVersion());
+  EXPECT_EQ(_dccexProtocol.getMajorVersion(), 0);
+  EXPECT_EQ(_dccexProtocol.getMinorVersion(), 0);
+  EXPECT_EQ(_dccexProtocol.getPatchVersion(), 0);
+}
