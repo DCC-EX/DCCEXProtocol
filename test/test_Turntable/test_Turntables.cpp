@@ -555,3 +555,63 @@ TEST_F(TurntableTests, TestTurntableIndexNullName) {
   // Clean up
   delete index;
 }
+
+/**
+ * @brief Test deleting the first turntable in the list moves the head and preserves the remaining list
+ */
+TEST_F(TurntableTests, TestDeleteFirstTurntable) {
+  // Create three turntables
+  Turntable *turntable1 = new Turntable(1);
+  turntable1->setType(TurntableType::TurntableTypeEXTT);
+  turntable1->setName("Turntable 1");
+  Turntable *turntable2 = new Turntable(2);
+  turntable2->setType(TurntableType::TurntableTypeDCC);
+  turntable2->setName("Turntable 2");
+  Turntable *turntable3 = new Turntable(3);
+  turntable3->setType(TurntableType::TurntableTypeEXTT);
+  turntable3->setName("Turntable 3");
+
+  // Validate the initial list
+  ASSERT_EQ(Turntable::getFirst(), turntable1);
+  EXPECT_EQ(turntable1->getNext(), turntable2);
+  EXPECT_EQ(turntable2->getNext(), turntable3);
+  EXPECT_EQ(turntable3->getNext(), nullptr);
+
+  // Delete the first in the list
+  delete turntable1;
+
+  // The list head must move and the remaining list must stay intact
+  ASSERT_EQ(Turntable::getFirst(), turntable2);
+  EXPECT_EQ(turntable2->getNext(), turntable3);
+  EXPECT_EQ(turntable3->getNext(), nullptr);
+  EXPECT_EQ(turntable2->getId(), 2);
+  EXPECT_EQ(turntable3->getId(), 3);
+
+  // The deleted turntable must no longer be reachable from the list head
+  Turntable *current = Turntable::getFirst();
+  while (current) {
+    EXPECT_NE(current, turntable1);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test clearing the turntable list removes all turntables and resets the count
+ */
+TEST_F(TurntableTests, clearTurntableListClearsAllTurntables) {
+  // Populate the turntable list via inbound <jO> responses
+  _dccexProtocol.getLists(false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
+  _stream.clearOutput();
+  _stream << "<jO 1 2>";
+  _dccexProtocol.check();
+  ASSERT_EQ(_dccexProtocol.getTurntableCount(), 2);
+  ASSERT_NE(Turntable::getFirst(), nullptr);
+
+  // Clearing the list must remove every turntable and reset the count
+  _dccexProtocol.clearTurntableList();
+  EXPECT_EQ(_dccexProtocol.getTurntableCount(), 0);
+  EXPECT_EQ(Turntable::getFirst(), nullptr);
+  EXPECT_EQ(Turntable::getById(1), nullptr);
+  EXPECT_EQ(Turntable::getById(2), nullptr);
+}

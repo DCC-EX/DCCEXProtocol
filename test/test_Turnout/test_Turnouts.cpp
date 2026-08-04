@@ -321,3 +321,124 @@ TEST_F(TurnoutTests, getTurnoutByIdNotFoundWalksList) {
   delete turnout100;
   EXPECT_EQ(Turnout::getFirst(), nullptr);
 }
+
+/**
+ * @brief Test deleting the first turnout in the list moves the head and preserves the remaining list
+ */
+TEST_F(TurnoutTests, TestDeleteFirstTurnout) {
+  // Create three turnouts
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+  Turnout *turnout101 = new Turnout(101, true);
+  turnout101->setName("Turnout 101");
+  Turnout *turnout102 = new Turnout(102, false);
+  turnout102->setName("Turnout 102");
+
+  // Validate the initial list
+  ASSERT_EQ(Turnout::getFirst(), turnout100);
+  EXPECT_EQ(turnout100->getNext(), turnout101);
+  EXPECT_EQ(turnout101->getNext(), turnout102);
+  EXPECT_EQ(turnout102->getNext(), nullptr);
+
+  // Delete the first in the list
+  delete turnout100;
+
+  // The list head must move and the remaining list must stay intact
+  ASSERT_EQ(Turnout::getFirst(), turnout101);
+  EXPECT_EQ(turnout101->getNext(), turnout102);
+  EXPECT_EQ(turnout102->getNext(), nullptr);
+  EXPECT_EQ(turnout101->getId(), 101);
+  EXPECT_EQ(turnout102->getId(), 102);
+
+  // The deleted turnout must no longer be reachable from the list head
+  Turnout *current = Turnout::getFirst();
+  while (current) {
+    EXPECT_NE(current, turnout100);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test Turnout::clearTurnoutList() deletes the whole list, and is safe on an empty list
+ */
+TEST_F(TurnoutTests, turnoutClearTurnoutListEmptiesList) {
+  // Create three turnouts
+  Turnout *turnout100 = new Turnout(100, false);
+  turnout100->setName("Turnout 100");
+  Turnout *turnout101 = new Turnout(101, true);
+  turnout101->setName("Turnout 101");
+  Turnout *turnout102 = new Turnout(102, false);
+  turnout102->setName("Turnout 102");
+
+  // Validate the initial list
+  ASSERT_EQ(Turnout::getFirst(), turnout100);
+  EXPECT_EQ(turnout100->getNext(), turnout101);
+  EXPECT_EQ(turnout101->getNext(), turnout102);
+  EXPECT_EQ(turnout102->getNext(), nullptr);
+
+  // Clearing the list must delete every turnout and reset the head
+  Turnout::clearTurnoutList();
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+
+  // Clearing an already empty list must be safe and not crash
+  EXPECT_NO_FATAL_FAILURE(Turnout::clearTurnoutList());
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test clearing the turnout list removes all turnouts and resets the count
+ */
+TEST_F(TurnoutTests, clearTurnoutListClearsAllTurnouts) {
+  // Populate the turnout list via inbound <jT> responses
+  _dccexProtocol.getLists(false, true, false, false);
+  _stream.clearOutput();
+  _stream << "<jT 100 101 102>";
+  _dccexProtocol.check();
+  _stream << R"(<jT 100 C "Turnout 100">)";
+  _stream << R"(<jT 101 T "Turnout 101">)";
+  _stream << R"(<jT 102 C "Turnout 102">)";
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _dccexProtocol.check();
+  ASSERT_EQ(_dccexProtocol.getTurnoutCount(), 3);
+  ASSERT_NE(Turnout::getFirst(), nullptr);
+
+  // Clearing the list must remove every turnout and reset the count
+  _dccexProtocol.clearTurnoutList();
+  EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 0);
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+  EXPECT_EQ(Turnout::getById(100), nullptr);
+  EXPECT_EQ(Turnout::getById(101), nullptr);
+  EXPECT_EQ(Turnout::getById(102), nullptr);
+}
+
+/**
+ * @brief Test refreshTurnoutList() clears the list, resets the flags, and re-requests on getLists()
+ */
+TEST_F(TurnoutTests, refreshTurnoutListResetsAndReRequests) {
+  // Request and receive the turnout list
+  _dccexProtocol.getLists(false, true, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J T>");
+  _stream.clearOutput();
+
+  _stream << "<jT 100 101>";
+  _dccexProtocol.check();
+  _stream << R"(<jT 100 C "Turnout 100">)";
+  _stream << R"(<jT 101 T "Turnout 101">)";
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _dccexProtocol.check();
+  ASSERT_EQ(_dccexProtocol.getTurnoutCount(), 2);
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+
+  // Clear the entry detail requests accumulated while receiving the turnout list
+  _stream.clearOutput();
+
+  // Refreshing must clear the list and reset the received/requested flags
+  _dccexProtocol.refreshTurnoutList();
+  EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 0);
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedLists());
+
+  // A fresh getLists() must request the turnout list again
+  _dccexProtocol.getLists(false, true, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J T>");
+}

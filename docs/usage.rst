@@ -143,7 +143,7 @@ All objects are contained within linked lists and can be accessed via for loops:
     // turnout methods are available here
   }
 
-  for (Route* route=dccexProtocol.route->getFirst(); route; route=route->getNext()) {
+  for (Route* route=dccexProtocol.routes->getFirst(); route; route=route->getNext()) {
     // route methods are available here
   }
 

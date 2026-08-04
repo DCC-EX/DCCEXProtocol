@@ -100,3 +100,17 @@ TEST_F(CVTests, writeCVResponse) {
   EXPECT_CALL(_delegate, receivedWriteCV(1, 3)).Times(Exactly(1));
   _dccexProtocol.check();
 }
+
+/// @brief Validate an error response <w -1> calls receivedWriteLoco() with -1
+TEST_F(CVTests, writeLocoAddressErrorResponse) {
+  _stream << "<w -1>";
+  EXPECT_CALL(_delegate, receivedWriteLoco(-1)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/// @brief Validate an error response <r cv -1> calls receivedWriteCV() with -1
+TEST_F(CVTests, writeCVErrorResponse) {
+  _stream << "<r 1 -1>";
+  EXPECT_CALL(_delegate, receivedWriteCV(1, -1)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
