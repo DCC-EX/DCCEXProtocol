@@ -37,6 +37,7 @@ Route::Route(int id) {
   _id = id;
   _name = nullptr;
   _next = nullptr;
+  _type = RouteType::RouteTypeRoute;
   if (!_first) {
     _first = this;
   } else {

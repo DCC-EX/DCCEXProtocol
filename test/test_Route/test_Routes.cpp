@@ -43,6 +43,15 @@ TEST_F(RouteTests, createSingleRoute) {
   EXPECT_EQ(route200->getNext(), nullptr);
 }
 
+/// @brief Validate a newly created Route reports RouteTypeRoute before setType() is called
+TEST_F(RouteTests, newRouteDefaultsToRouteType) {
+  // Create a route without setting its type
+  Route *route = new Route(500);
+
+  // Validate it defaults to a route (not an automation)
+  EXPECT_EQ(route->getType(), RouteType::RouteTypeRoute);
+}
+
 TEST_F(RouteTests, createThreeRoutes) {
   // Create three routes, route, automation, and route with no name
   Route *route200 = new Route(200);
