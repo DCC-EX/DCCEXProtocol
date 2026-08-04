@@ -306,3 +306,18 @@ TEST_F(TurnoutTests, TestToggleTurnoutUnknownIdSendsNothing) {
   // Clean up
   delete turnout100;
 }
+
+/**
+ * @brief Test getting a turnout by an unknown ID walks the populated list and returns nullptr
+ */
+TEST_F(TurnoutTests, getTurnoutByIdNotFoundWalksList) {
+  // Create a turnout so the list is walked
+  Turnout *turnout100 = new Turnout(100, false);
+
+  // An unknown ID walks the whole list and returns nullptr
+  EXPECT_EQ(_dccexProtocol.getTurnoutById(200), nullptr);
+
+  // Clean up
+  delete turnout100;
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+}

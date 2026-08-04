@@ -193,6 +193,21 @@ TEST_F(SensorTests, getSensorByIdNotFound) {
 }
 
 /**
+ * @brief Test getting a sensor by an unknown ID walks the populated list and returns nullptr
+ */
+TEST_F(SensorTests, getSensorByIdNotFoundWalksList) {
+  // Create a sensor so the list is walked
+  Sensor *sensor100 = new Sensor(100, true);
+
+  // An unknown ID walks the whole list and returns nullptr
+  EXPECT_EQ(_dccexProtocol.getSensorById(200), nullptr);
+
+  // Clean up
+  delete sensor100;
+  EXPECT_EQ(Sensor::getFirst(), nullptr);
+}
+
+/**
  * @brief Test requestSensorStates() sends the <Q> opcode
  */
 TEST_F(SensorTests, requestSensorStatesSendsQOpcode) {

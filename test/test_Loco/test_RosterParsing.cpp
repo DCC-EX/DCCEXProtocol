@@ -110,3 +110,33 @@ TEST_F(LocoTests, TestLocoNotInRoster) {
   test = _dccexProtocol.findLocoInRoster(42);
   EXPECT_EQ(test, nullptr);
 }
+
+/**
+ * @brief Test roster entries received out of order are accepted without requesting missing details
+ */
+TEST_F(LocoTests, parseRosterEntriesOutOfOrder) {
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  _dccexProtocol.getLists(true, false, false, false);
+  _stream.clearOutput();
+
+  // Response
+  _stream << "<jR 42 9 120>";
+  _dccexProtocol.check();
+
+  // Entries received out of order, starting with the last in the list
+  _stream << R"(<jR 120 "Loco120" "Func120">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jR 9 "Loco9" "Func9">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jR 42 "Loco42" "Func42">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Roster is complete and the count is unchanged
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+  EXPECT_EQ(_dccexProtocol.getRosterCount(), 3);
+}

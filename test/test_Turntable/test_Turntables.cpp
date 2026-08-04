@@ -516,3 +516,42 @@ TEST_F(TurntableTests, TestGetById) {
   delete turntable1;
   EXPECT_EQ(Turntable::getFirst(), nullptr);
 }
+
+/**
+ * @brief Test the class-level getIndexById returns the matching index or nullptr
+ */
+TEST_F(TurntableTests, TestGetIndexByIdNotFound) {
+  // Create a turntable with two indexes
+  Turntable *turntable1 = new Turntable(1);
+  TurntableIndex *index0 = new TurntableIndex(1, 0, 900, "Home");
+  TurntableIndex *index1 = new TurntableIndex(1, 1, 450, "Index 1");
+  turntable1->addIndex(index0);
+  turntable1->addIndex(index1);
+
+  // A matching index ID returns the index
+  EXPECT_EQ(turntable1->getIndexById(0), index0);
+  EXPECT_EQ(turntable1->getIndexById(1), index1);
+
+  // A non-matching index ID walks the list and returns nullptr
+  EXPECT_EQ(turntable1->getIndexById(99), nullptr);
+
+  // Clean up
+  delete turntable1;
+  EXPECT_EQ(Turntable::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test creating a TurntableIndex without a name leaves the name null
+ */
+TEST_F(TurntableTests, TestTurntableIndexNullName) {
+  // An index created without a name must have a null name
+  TurntableIndex *index = new TurntableIndex(1, 2, 90, nullptr);
+
+  // Validate the index details
+  EXPECT_EQ(index->getName(), nullptr);
+  EXPECT_EQ(index->getId(), 2);
+  EXPECT_EQ(index->getAngle(), 90);
+
+  // Clean up
+  delete index;
+}

@@ -99,6 +99,30 @@ TEST_F(TurntableTests, parseTwoTurntables) {
 }
 
 /**
+ * @brief Test turntable entries received out of order are accepted without requesting missing details
+ */
+TEST_F(TurntableTests, parseTurntableEntriesOutOfOrder) {
+  // Received flag should be false to start
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  _dccexProtocol.getLists(false, false, false, true);
+  _stream.clearOutput();
+
+  // Two turntables in response
+  _stream << "<jO 1 2>";
+  _dccexProtocol.check();
+
+  // Entries received out of order, starting with the last in the list
+  _stream << R"(<jO 2 0 3 6 "DCC Turntable">)";
+  _dccexProtocol.check();
+
+  _stream << R"(<jO 1 1 0 5 "EX-Turntable">)";
+  _dccexProtocol.check();
+
+  // Count must remain two, no extra turntables created
+  EXPECT_EQ(_dccexProtocol.getTurntableCount(), 2);
+}
+
+/**
  * @brief Test that a turntable broadcast notifies the delegate and updates the turntable
  */
 TEST_F(TurntableTests, turntableBroadcastDelegateCalled) {

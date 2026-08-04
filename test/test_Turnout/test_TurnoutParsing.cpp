@@ -76,3 +76,34 @@ TEST_F(TurnoutTests, parseThreeTurnouts) {
   // Validate count
   EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 3);
 }
+
+/**
+ * @brief Test turnout entries received out of order are accepted without requesting missing details
+ */
+TEST_F(TurnoutTests, parseTurnoutEntriesOutOfOrder) {
+  // Received flag should be false to start
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  _dccexProtocol.getLists(false, true, false, false);
+  _stream.clearOutput();
+
+  // Turnout list response
+  _stream << "<jT 100 101 102>";
+  _dccexProtocol.check();
+
+  // Entries received out of order, starting with the last in the list
+  _stream << R"(<jT 102 C "Turnout 102">)";
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jT 101 T "Turnout 101">)";
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jT 100 C "Turnout 100">)";
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Should be true and the count unchanged
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 3);
+}
