@@ -325,6 +325,15 @@ TEST_F(CSConsistTests, TestSetThrottleInvalidConsist) {
 }
 
 /**
+ * @brief Test calling setThrottle() with a null CSConsist does nothing and does not crash
+ */
+TEST_F(CSConsistTests, TestSetThrottleNullCSConsist) {
+  // A null consist must not crash and should not queue any change
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.setThrottle(static_cast<CSConsist *>(nullptr), 10, Forward));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
  * @brief Test getting a CSConsist by the lead loco address
  */
 TEST_F(CSConsistTests, TestGetCSConsistByLeadLocoAddress) {
@@ -424,4 +433,53 @@ TEST_F(CSConsistTests, TestGetCSConsistByMemberLocoFails) {
   EXPECT_EQ(test, nullptr);
   test = _dccexProtocol.getCSConsistByMemberLoco(nullptr);
   EXPECT_EQ(test, nullptr);
+}
+
+/**
+ * @brief Test adding a member to an empty consist fails and sends nothing
+ */
+TEST_F(CSConsistTests, TestAddMemberToEmptyConsistFails) {
+  // Create an empty consist
+  CSConsist *csConsist = new CSConsist();
+
+  // Adding a member leaves it with only one member, so it must fail and not send
+  bool add = _dccexProtocol.addCSConsistMember(csConsist, 5, false);
+  EXPECT_FALSE(add);
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test removing the only member sends no delete command for an empty consist
+ */
+TEST_F(CSConsistTests, TestRemoveOnlyMemberSendsNoDelete) {
+  // Create a single member consist
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  ASSERT_EQ(_dccexProtocol.csConsists->getFirst(), csConsist);
+
+  // Removing the only member must not send a delete command as it is now empty
+  bool remove = _dccexProtocol.removeCSConsistMember(csConsist, 3);
+  EXPECT_TRUE(remove);
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(_dccexProtocol.csConsists->getFirst(), nullptr);
+}
+
+/**
+ * @brief Test removing a member with an invalid address range fails sanely
+ */
+TEST_F(CSConsistTests, TestRemoveCSConsistMemberInvalidAddressRange) {
+  // Create a consist with members
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(3, false);
+  csConsist->addMember(5, true);
+
+  // Removing with an out of range address must fail and send nothing
+  EXPECT_FALSE(_dccexProtocol.removeCSConsistMember(csConsist, 0));
+  EXPECT_FALSE(_dccexProtocol.removeCSConsistMember(csConsist, 10240));
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // The consist must be intact
+  EXPECT_TRUE(csConsist->isInConsist(3));
+  EXPECT_TRUE(csConsist->isInConsist(5));
+  EXPECT_EQ(_dccexProtocol.csConsists->getFirst(), csConsist);
 }

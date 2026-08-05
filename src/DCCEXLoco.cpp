@@ -59,6 +59,9 @@ Loco::Loco(int address, LocoSource source) : _address(address), _source(source) 
 int Loco::getAddress() { return _address; }
 
 void Loco::setName(const char *name) {
+  if (!name)
+    return;
+
   if (_name) {
     delete[] _name;
     _name = nullptr;
@@ -140,15 +143,30 @@ void Loco::setupFunctions(const char *functionNames) {
   delete[] fNames; // Clean up fNames
 }
 
-bool Loco::isFunctionOn(int function) { return _functionStates & 1 << function; }
+bool Loco::isFunctionOn(int function) {
+  if (function < 0 || function >= MAX_FUNCTIONS)
+    return false;
+
+  return _functionStates & 1 << function;
+}
 
 void Loco::setFunctionStates(int functionStates) { _functionStates = functionStates; }
 
 int Loco::getFunctionStates() { return _functionStates; }
 
-const char *Loco::getFunctionName(int function) { return _functionNames[function]; }
+const char *Loco::getFunctionName(int function) {
+  if (function < 0 || function >= MAX_FUNCTIONS)
+    return nullptr;
 
-bool Loco::isFunctionMomentary(int function) { return _momentaryFlags & 1 << function; }
+  return _functionNames[function];
+}
+
+bool Loco::isFunctionMomentary(int function) {
+  if (function < 0 || function >= MAX_FUNCTIONS)
+    return false;
+
+  return _momentaryFlags & 1 << function;
+}
 
 Loco *Loco::getFirst() { return _first; }
 
@@ -315,6 +333,9 @@ void Consist::setName(const char *name) {
 const char *Consist::getName() { return _name; }
 
 void Consist::addLoco(Loco *loco, Facing facing) {
+  if (!loco)
+    return;
+
   if (inConsist(loco))
     return; // Already in the consist
   if (_locoCount == 0) {

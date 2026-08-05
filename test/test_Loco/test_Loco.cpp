@@ -275,3 +275,204 @@ TEST_F(LocoTests, TestGetByAddress) {
   ASSERT_NE(Loco::getByAddress(42), nullptr);
   ASSERT_NE(Loco::getByAddress(3), nullptr);
 }
+
+/**
+ * @brief Test setting a null name is a no-op and does not crash
+ */
+TEST_F(LocoTests, setNameNullIsNoOp) {
+  // Create a loco with a name, then clear it with a null name
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+  loco->setName("Loco 1");
+
+  // Calling setName(nullptr) must not crash and should clear the name
+  EXPECT_NO_FATAL_FAILURE(loco->setName(nullptr));
+  EXPECT_STREQ(loco->getName(), "Loco 1");
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test deleting a middle loco in the roster preserves the remaining roster
+ */
+TEST_F(LocoTests, TestDeleteMiddleLocoInRoster) {
+  // Create three roster locos
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  loco42->setName("Loco42");
+  Loco *loco9 = new Loco(9, LocoSource::LocoSourceRoster);
+  loco9->setName("Loco9");
+  Loco *loco120 = new Loco(120, LocoSource::LocoSourceRoster);
+  loco120->setName("Loco120");
+
+  // Validate the initial roster
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco9);
+  EXPECT_EQ(loco9->getNext(), loco120);
+  EXPECT_EQ(loco120->getNext(), nullptr);
+
+  // Delete the middle of the roster
+  delete loco9;
+
+  // The remaining roster must be linked directly and intact
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco120);
+  EXPECT_EQ(loco120->getNext(), nullptr);
+  EXPECT_EQ(loco42->getAddress(), 42);
+  EXPECT_EQ(loco120->getAddress(), 120);
+
+  // The deleted loco must no longer be reachable from the roster head
+  Loco *current = Loco::getFirst();
+  while (current) {
+    EXPECT_NE(current, loco9);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last loco in the roster preserves the remaining roster
+ */
+TEST_F(LocoTests, TestDeleteLastLocoInRoster) {
+  // Create three roster locos
+  Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
+  loco42->setName("Loco42");
+  Loco *loco9 = new Loco(9, LocoSource::LocoSourceRoster);
+  loco9->setName("Loco9");
+  Loco *loco120 = new Loco(120, LocoSource::LocoSourceRoster);
+  loco120->setName("Loco120");
+
+  // Validate the initial roster
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco9);
+  EXPECT_EQ(loco9->getNext(), loco120);
+  EXPECT_EQ(loco120->getNext(), nullptr);
+
+  // Delete the last in the roster
+  delete loco120;
+
+  // The remaining roster must terminate correctly
+  ASSERT_EQ(Loco::getFirst(), loco42);
+  EXPECT_EQ(loco42->getNext(), loco9);
+  EXPECT_EQ(loco9->getNext(), nullptr);
+  EXPECT_EQ(loco42->getAddress(), 42);
+  EXPECT_EQ(loco9->getAddress(), 9);
+}
+
+/**
+ * @brief Test deleting the last local loco preserves the remaining local loco list
+ */
+TEST_F(LocoTests, TestDeleteLastLocalLoco) {
+  // Create three local locos
+  Loco *loco1 = new Loco(1, LocoSource::LocoSourceEntry);
+  Loco *loco2 = new Loco(2, LocoSource::LocoSourceEntry);
+  Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
+
+  // Validate the initial local loco list
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), loco3);
+  EXPECT_EQ(loco3->getNext(), nullptr);
+
+  // Delete the last in the local loco list
+  delete loco3;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), nullptr);
+  EXPECT_EQ(loco1->getAddress(), 1);
+  EXPECT_EQ(loco2->getAddress(), 2);
+}
+
+/**
+ * @brief Test setting a name when one already exists replaces it
+ */
+TEST_F(LocoTests, TestSetNameReplacesExistingName) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // Set a name, then replace it
+  loco->setName("First Name");
+  ASSERT_STREQ(loco->getName(), "First Name");
+  loco->setName("Second Name");
+  EXPECT_STREQ(loco->getName(), "Second Name");
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test calling setupFunctions() with a null list is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestSetupFunctionsNullNoOp) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // A null function list must not crash and must not set anything
+  EXPECT_NO_FATAL_FAILURE(loco->setupFunctions(nullptr));
+  EXPECT_EQ(loco->getFunctionName(0), nullptr);
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test calling setupFunctions() twice replaces the existing functions
+ */
+TEST_F(LocoTests, TestSetupFunctionsReplacesExisting) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // Set an initial function list including a momentary function
+  loco->setupFunctions("Lights/*Horn");
+  ASSERT_STREQ(loco->getFunctionName(0), "Lights");
+  ASSERT_STREQ(loco->getFunctionName(1), "Horn");
+  ASSERT_TRUE(loco->isFunctionMomentary(1));
+
+  // Re-setup must free the old names and replace them
+  loco->setupFunctions("Horn/Bell");
+  EXPECT_STREQ(loco->getFunctionName(0), "Horn");
+  EXPECT_STREQ(loco->getFunctionName(1), "Bell");
+  EXPECT_FALSE(loco->isFunctionMomentary(0));
+  EXPECT_FALSE(loco->isFunctionMomentary(1));
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test calling setupFunctions() with more than MAX_FUNCTIONS names stops safely
+ */
+TEST_F(LocoTests, TestSetupFunctionsExceedsMaxFunctions) {
+  // Create a loco
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+
+  // Build a list with MAX_FUNCTIONS + 1 names
+  std::string functionList;
+  for (int i = 0; i <= MAX_FUNCTIONS; i++) {
+    if (i > 0)
+      functionList += "/";
+    functionList += std::to_string(i);
+  }
+
+  // Excess names must not crash and the last valid function must be set
+  EXPECT_NO_FATAL_FAILURE(loco->setupFunctions(functionList.c_str()));
+  EXPECT_STREQ(loco->getFunctionName(MAX_FUNCTIONS - 1), "31");
+  EXPECT_EQ(loco->getFunctionName(MAX_FUNCTIONS), nullptr);
+
+  // Clean up
+  delete loco;
+}
+
+/**
+ * @brief Test deleting a Loco with a name and functions cleans up its memory
+ */
+TEST_F(LocoTests, TestDeleteLocoWithFunctions) {
+  // Create a local loco with a name and functions set
+  Loco *loco = new Loco(1, LocoSource::LocoSourceEntry);
+  loco->setName("Loco 1");
+  loco->setupFunctions("Lights/*Horn");
+
+  // Deleting it must not crash and must remove it from the local loco list
+  EXPECT_NO_FATAL_FAILURE(delete loco);
+  EXPECT_EQ(Loco::getFirstLocalLoco(), nullptr);
+}

@@ -99,6 +99,70 @@ TEST_F(TurntableTests, parseTwoTurntables) {
 }
 
 /**
+ * @brief Test turntable entries received out of order are accepted without requesting missing details
+ */
+TEST_F(TurntableTests, parseTurntableEntriesOutOfOrder) {
+  // Received flag should be false to start
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  _dccexProtocol.getLists(false, false, false, true);
+  _stream.clearOutput();
+
+  // Two turntables in response
+  _stream << "<jO 1 2>";
+  _dccexProtocol.check();
+
+  // Entries received out of order, starting with the last in the list
+  _stream << R"(<jO 2 0 3 6 "DCC Turntable">)";
+  _dccexProtocol.check();
+
+  _stream << R"(<jO 1 1 0 5 "EX-Turntable">)";
+  _dccexProtocol.check();
+
+  // Count must remain two, no extra turntables created
+  EXPECT_EQ(_dccexProtocol.getTurntableCount(), 2);
+}
+
+/**
+ * @brief Test that a turntable broadcast notifies the delegate and updates the turntable
+ */
+TEST_F(TurntableTests, turntableBroadcastDelegateCalled) {
+  // Set up a dummy turntable
+  Turntable *tt = new Turntable(1);
+  tt->setType(TurntableType::TurntableTypeDCC);
+  tt->addIndex(new TurntableIndex(1, 0, 0, "Home"));
+  tt->addIndex(new TurntableIndex(1, 1, 0, "Index1"));
+
+  // Simulate receiving a broadcast to move to index 1, not moving
+  EXPECT_CALL(_delegate, receivedTurntableAction(1, 1, false)).Times(Exactly(1));
+  _stream << "<I 1 1 0>";
+  _dccexProtocol.check();
+
+  // The turntable should reflect the new index and moving state
+  EXPECT_EQ(tt->getIndex(), 1);
+  EXPECT_FALSE(tt->isMoving());
+}
+
+/**
+ * @brief Test that a turntable broadcast with the moving flag set is forwarded to the delegate
+ */
+TEST_F(TurntableTests, turntableBroadcastMovingFlag) {
+  // Set up a dummy turntable
+  Turntable *tt = new Turntable(1);
+  tt->setType(TurntableType::TurntableTypeDCC);
+  tt->addIndex(new TurntableIndex(1, 0, 0, "Home"));
+  tt->addIndex(new TurntableIndex(1, 1, 0, "Index1"));
+
+  // Simulate receiving a broadcast to move to index 0, moving
+  EXPECT_CALL(_delegate, receivedTurntableAction(1, 0, true)).Times(Exactly(1));
+  _stream << "<I 1 0 1>";
+  _dccexProtocol.check();
+
+  // The turntable should reflect the new index and moving state
+  EXPECT_EQ(tt->getIndex(), 0);
+  EXPECT_TRUE(tt->isMoving());
+}
+
+/**
  * @brief Test that malformed/orphaned index entries don't leak memory
  */
 TEST_F(TurntableTests, orphanedIndexEntryLeak) {

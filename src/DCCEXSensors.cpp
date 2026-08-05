@@ -50,6 +50,9 @@ Sensor::Sensor(int id, bool active) {
 void Sensor::setActive(bool active) { _active = active; }
 
 void Sensor::setName(const char *name) {
+  if (!name)
+    return;
+
   if (_name) {
     delete[] _name;
     _name = nullptr;

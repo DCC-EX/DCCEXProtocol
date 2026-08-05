@@ -95,3 +95,24 @@ TEST_F(CVTests, validateCVBitResponse) {
   EXPECT_CALL(_delegate, receivedValidateCVBit(1, 3, 1)).Times(Exactly(1));
   _dccexProtocol.check();
 }
+
+/// @brief Validate receiving an error response <r -1> calls receivedReadLoco() with -1
+TEST_F(CVTests, readAddressCVErrorResponse) {
+  _stream << "<r -1>";
+  EXPECT_CALL(_delegate, receivedReadLoco(-1)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/// @brief Validate receiving an error response <v cv -1> calls receivedValidateCV() with -1
+TEST_F(CVTests, validateCVErrorResponse) {
+  _stream << "<v 1 -1>";
+  EXPECT_CALL(_delegate, receivedValidateCV(1, -1)).Times(Exactly(1));
+  _dccexProtocol.check();
+}
+
+/// @brief Validate receiving an error response <v cv bit -1> calls receivedValidateCVBit() with -1
+TEST_F(CVTests, validateCVBitErrorResponse) {
+  _stream << "<v 1 3 -1>";
+  EXPECT_CALL(_delegate, receivedValidateCVBit(1, 3, -1)).Times(Exactly(1));
+  _dccexProtocol.check();
+}

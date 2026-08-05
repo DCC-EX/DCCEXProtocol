@@ -73,3 +73,30 @@ TEST_F(DCCEXProtocolTests, versionIgnoreLabels) {
   EXPECT_EQ(_dccexProtocol.getMinorVersion(), 2);
   EXPECT_EQ(_dccexProtocol.getPatchVersion(), 3);
 }
+
+TEST_F(DCCEXProtocolTests, versionOutOfRangeRejected) {
+  // A version component >= 1000 must be rejected without setting the version
+  EXPECT_FALSE(_dccexProtocol.receivedVersion());
+  _stream << "<iDCCEX V-10000 / MEGA / STANDARD_MOTOR_SHIELD / 7>";
+  EXPECT_CALL(_delegate, receivedServerVersion(_, _, _)).Times(Exactly(0));
+  _dccexProtocol.check();
+  EXPECT_FALSE(_dccexProtocol.receivedVersion());
+  EXPECT_EQ(_dccexProtocol.getMajorVersion(), 0);
+  EXPECT_EQ(_dccexProtocol.getMinorVersion(), 0);
+  EXPECT_EQ(_dccexProtocol.getPatchVersion(), 0);
+}
+
+/**
+ * @brief Test version components missing a leading digit are skipped
+ */
+TEST_F(DCCEXProtocolTests, versionSkipsInvalidDigits) {
+  // The '-' delimiter is not followed by a digit, so that component is skipped
+  EXPECT_FALSE(_dccexProtocol.receivedVersion());
+  _stream << "<iDCCEX V-.2.3 / MEGA / STANDARD_MOTOR_SHIELD / 7>";
+  EXPECT_CALL(_delegate, receivedServerVersion(2, 3, 0)).Times(Exactly(1));
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedVersion());
+  EXPECT_EQ(_dccexProtocol.getMajorVersion(), 2);
+  EXPECT_EQ(_dccexProtocol.getMinorVersion(), 3);
+  EXPECT_EQ(_dccexProtocol.getPatchVersion(), 0);
+}

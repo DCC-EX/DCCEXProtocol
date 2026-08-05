@@ -849,7 +849,7 @@ public:
   /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
 
-  /// @brief Linked list of Sensor objects to form the list of sensors, call sensor->getFirst()
+  /// @brief Linked list of Sensor objects to form the list of sensors, call sensors->getFirst()
   Sensor *sensors = nullptr;
 
   /**

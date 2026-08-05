@@ -37,6 +37,7 @@ Route::Route(int id) {
   _id = id;
   _name = nullptr;
   _next = nullptr;
+  _type = RouteType::RouteTypeRoute;
   if (!_first) {
     _first = this;
   } else {
@@ -51,6 +52,9 @@ Route::Route(int id) {
 int Route::getId() { return _id; }
 
 void Route::setName(const char *name) {
+  if (!name)
+    return;
+
   if (_name) {
     delete[] _name;
     _name = nullptr;
