@@ -175,14 +175,6 @@ TEST_F(DCCEXProtocolTests, deactivateLinearAccessorySendsCommand) {
 }
 
 /**
- * @brief Test setSignalAspect() sends the correct command
- */
-TEST_F(DCCEXProtocolTests, setSignalAspectSendsCommand) {
-  _dccexProtocol.setSignalAspect(1, 2);
-  EXPECT_EQ(_stream.getOutput(), "<A 1 2>");
-}
-
-/**
  * @brief Test startRoute() sends the correct command
  */
 TEST_F(DCCEXProtocolTests, startRouteSendsCommand) {

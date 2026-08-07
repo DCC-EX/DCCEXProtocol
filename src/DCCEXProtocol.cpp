@@ -792,8 +792,6 @@ void DCCEXProtocol::activateLinearAccessory(int linearAddress) { _sendTwoParams(
 
 void DCCEXProtocol::deactivateLinearAccessory(int linearAddress) { _sendTwoParams('a', linearAddress, 0); }
 
-void DCCEXProtocol::setSignalAspect(int linearAddress, int aspect) { _sendTwoParams('A', linearAddress, aspect); }
-
 void DCCEXProtocol::getNumberSupportedLocos() { _sendOpcode('#'); }
 
 // CV programming methods

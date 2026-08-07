@@ -185,7 +185,7 @@ public:
   virtual void receivedTurntableAction(int turntableId, int position, bool moving) {}
  
   /// @brief Notify when a sensor index change is received
-  /// @param sensorId ID of the turntable
+  /// @param sensorId ID of the sensor
   /// @param active Whether the sensor is active or not (true|false)
   virtual void receivedSensorState(int sensorId, bool active) {}
 
@@ -766,11 +766,6 @@ public:
   /// @param linearAddress Linear address of the DCC accessory
   void deactivateLinearAccessory(int linearAddress);
 
-  /// @brief set a DCC signal accesory's aspect (DCC Extended Accessory)
-  /// @param linearAddress Linear address of the DCC accessory
-  /// @param aspect Aspect value of the signal (value depends on DCC signal decoder)
-  void setSignalAspect(int linearAddress, int aspect);
- 
   /// @brief Request the number of supported cabs(locos)
   void getNumberSupportedLocos();
 

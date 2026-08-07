@@ -34,10 +34,29 @@
 /*
 Version information:
 
-1.4.0.  - Add methods for getting sensor objects and state from Command Station
-        - Add additional tests for multiple classes and methods
+1.4.0   - Add new Sensor class to manage Command Station sensor objects and state:
+                - Accessible via sensors->getFirst()
+                - getSensorCount()
+                - requestSensorStates()
+                - receivedSensorList()
+                - getSensorById(int sensorId)
+                - clearSensorList()
+                - refreshSensorList()
+                - Sensor objects are created/updated from <Q id> and <q id> responses
+        - DCCEXProtocolDelegate new methods receivedSensorList() and
+          receivedSensorState(int sensorId, bool active)
+        - getLists() now includes a sensorListRequired parameter (default true)
+        - Add null pointer guards to prevent crashes on invalid objects in:
+                - setThrottle(Loco*) and setThrottle(Consist*)
+                - functionOn()/functionOff()/isFunctionOn() for Loco and Consist
+                - Loco::setName(), Consist::addLoco(), Turnout::setName(), Route::setName(),
+                  Turntable::setName(), Sensor::setName()
+        - Add function out of bounds guards so isFunctionOn(), getFunctionName(), and
+          isFunctionMomentary() return safe values for out of range function numbers
+        - Fix bug where Route type was left uninitialised in the Route constructor
         - Fix bug where DCCEXProtocol::rotateTurntable() sent an extra blank command
         - Fix bug where CSConsist member count may be incorrect after deleting members
+        - Add additional tests for multiple classes and methods
 1.3.2   - Add missing getSpeed() and getDirection() to CSConsist class
 1.3.1   - Fix bug where function 28 is masked off incorrectly and not received in Loco updates
 1.3.0   - Introduce queued throttle updates to prevent buffer overloads and broadcast storms
