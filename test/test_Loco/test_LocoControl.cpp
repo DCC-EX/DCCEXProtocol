@@ -47,6 +47,15 @@ TEST_F(LocoTests, TestLocoSetThrottleAddsSpeedToQueue) {
 }
 
 /**
+ * @brief Test calling setThrottle() with a null Loco is a no-op and does not crash
+ */
+TEST_F(LocoTests, TestSetThrottleNullLoco) {
+  // A null loco must not crash and should not queue any change
+  EXPECT_NO_FATAL_FAILURE(_dccexProtocol.setThrottle(static_cast<Loco *>(nullptr), 10, Forward));
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
  * @brief Test calling setThrottle() for a Loco with a direction change flags pending
  */
 TEST_F(LocoTests, TestLocoSetThrottleAddsDirectionToQueue) {

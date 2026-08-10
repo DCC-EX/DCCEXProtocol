@@ -70,8 +70,11 @@ void CSConsist::addMember(int address, bool reversed) {
 void CSConsist::removeMember(int address) {
   CSConsistMember *previous = nullptr;
   CSConsistMember *current = _firstMember;
+  bool found = false;
+
   while (current) {
     if (current->address == (uint16_t)address) {
+      found = true;
       CSConsistMember *next = current->next;
       if (previous) {
         previous->next = next;
@@ -89,7 +92,9 @@ void CSConsist::removeMember(int address) {
   if (!_firstMember)
     _firstMember = nullptr;
 
-  _memberCount--;
+  if (found)
+    _memberCount--;
+
   if (_memberCount < 0)
     _memberCount = 0;
 }

@@ -80,6 +80,15 @@ TEST_F(TestHarnessNoDelegate, TestTrackPowerUpdate) {
 }
 
 /**
+ * @brief Test processing a track type update will seg fault this test if not guarded against no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestTrackTypeUpdate) {
+  // Simulate receiving a track type update
+  _stream << "<= A MAIN>";
+  _dccexProtocol.check();
+}
+
+/**
  * @brief Test receiving a message doesn't seg fault when no delegate
  */
 TEST_F(TestHarnessNoDelegate, TestReceiveMessage) {
@@ -212,6 +221,15 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
 }
 
 /**
+ * @brief Test processing a turnout broadcast doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestTurnoutBroadcast) {
+  // Simulate receiving a turnout broadcast
+  _stream << "<H 1 1>";
+  _dccexProtocol.check();
+}
+
+/**
  * @brief Test turntable broadcast does not seg fault
  */
 TEST_F(TestHarnessNoDelegate, TestTurntableBroadcast) {
@@ -257,5 +275,59 @@ TEST_F(TestHarnessNoDelegate, TestReceivingSetFastClock) {
  */
 TEST_F(TestHarnessNoDelegate, TestReceivingFastClockTime) {
   _stream << "<jC 60>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test processing a screen update doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestReceiveScreenUpdate) {
+  // Simulate receiving a screen update
+  _stream << "<@ 1 1 \"Test message\">";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test processing a read loco response doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestReceiveReadResponse) {
+  // Simulate receiving a read loco response
+  _stream << "<r 1>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test processing a write CV response doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestReceiveWriteCV) {
+  // Simulate receiving a write CV response
+  _stream << "<r 1 2>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test processing a validate CV response doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestReceiveValidateCV) {
+  // Simulate receiving a validate CV response
+  _stream << "<v 1 2>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test processing a validate CV bit response doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestReceiveValidateCVBit) {
+  // Simulate receiving a validate CV bit response
+  _stream << "<v 1 2 3>";
+  _dccexProtocol.check();
+}
+
+/**
+ * @brief Test processing a write loco response doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestReceiveWriteLoco) {
+  // Simulate receiving a write loco response
+  _stream << "<w 1>";
   _dccexProtocol.check();
 }

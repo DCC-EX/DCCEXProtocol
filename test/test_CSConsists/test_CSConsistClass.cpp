@@ -73,7 +73,32 @@ TEST_F(CSConsistTests, TestCreateConsistWithAddress) {
 }
 
 /**
- * @brief Test building a consist with addresses
+ * @brief Test building a consist with addressesvoid CSConsist::removeMember(int address) {
+  CSConsistMember *previous = nullptr;
+  CSConsistMember *current = _firstMember;
+  while (current) {
+    if (current->address == (uint16_t)address) {
+      CSConsistMember *next = current->next;
+      if (previous) {
+        previous->next = next;
+      } else {
+        _firstMember = next;
+      }
+      delete current;
+      current = next;
+    } else {
+      previous = current;
+      current = current->next;
+    }
+  }
+
+  if (!_firstMember)
+    _firstMember = nullptr;
+
+  _memberCount--;
+  if (_memberCount < 0)
+    _memberCount = 0;
+}
  */
 TEST_F(CSConsistTests, TestBuildConsistWithAddresses) {
   // Create the consist and validate
@@ -407,7 +432,7 @@ TEST_F(CSConsistTests, TestSpeedDirectionNoLoco) {
 /**
  * @brief Test get speed and direction with lead Loco objects
  */
-TEST_F(CSConsistTests, TestSpeedDirectionWithLoco) {  
+TEST_F(CSConsistTests, TestSpeedDirectionWithLoco) {
   // Create the consist and add members
   CSConsist *csConsist = new CSConsist();
   csConsist->addMember(42, false);
@@ -427,4 +452,155 @@ TEST_F(CSConsistTests, TestSpeedDirectionWithLoco) {
   loco42->setDirection(Direction::Reverse);
   EXPECT_EQ(csConsist->getSpeed(), 10);
   EXPECT_EQ(csConsist->getDirection(), Direction::Reverse);
+}
+
+/**
+ * @brief Test removing a member that isn't in the consist does not change the member count
+ */
+TEST_F(CSConsistTests, TestRemoveMemberNotFound) {
+  // Create the consist and add members
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  csConsist->addMember(24, true);
+  ASSERT_EQ(csConsist->getMemberCount(), 2);
+  ASSERT_TRUE(csConsist->isValid());
+
+  // Removing a member that isn't in the consist must not change the count or validity
+  csConsist->removeMember(22);
+  EXPECT_EQ(csConsist->getMemberCount(), 2);
+  EXPECT_TRUE(csConsist->isValid());
+  EXPECT_EQ(csConsist->getMember(22), nullptr);
+}
+
+/**
+ * @brief Test removing a member that isn't in a single member consist does not change the member count
+ */
+TEST_F(CSConsistTests, TestRemoveMemberNotFoundSingleMember) {
+  // Create the consist and add a member
+  CSConsist *csConsist = new CSConsist();
+  csConsist->addMember(42, false);
+  ASSERT_EQ(csConsist->getMemberCount(), 1);
+
+  // Removing a member that isn't in the consist must not change the count
+  csConsist->removeMember(22);
+  EXPECT_EQ(csConsist->getMemberCount(), 1);
+  EXPECT_EQ(csConsist->getMember(42), csConsist->getFirstMember());
+}
+
+/**
+ * @brief Test deleting the head CSConsist in a multi-consist list preserves the remaining list
+ */
+TEST_F(CSConsistTests, TestDeleteFirstCSConsistInList) {
+  // Create three CSConsists
+  CSConsist *csConsist1 = new CSConsist();
+  csConsist1->addMember(3, false);
+  csConsist1->addMember(5, true);
+  CSConsist *csConsist2 = new CSConsist();
+  csConsist2->addMember(13, false);
+  csConsist2->addMember(15, true);
+  CSConsist *csConsist3 = new CSConsist();
+  csConsist3->addMember(23, false);
+  csConsist3->addMember(25, true);
+
+  // Validate the initial list
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+
+  // Delete the head of the list
+  delete csConsist1;
+
+  // Remaining list must be intact
+  ASSERT_EQ(CSConsist::getFirst(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+  EXPECT_TRUE(csConsist2->isInConsist(13));
+  EXPECT_TRUE(csConsist3->isInConsist(23));
+}
+
+/**
+ * @brief Test deleting a middle CSConsist in a multi-consist list preserves the remaining list
+ */
+TEST_F(CSConsistTests, TestDeleteMiddleCSConsist) {
+  // Create three CSConsists
+  CSConsist *csConsist1 = new CSConsist();
+  csConsist1->addMember(3, false);
+  csConsist1->addMember(5, true);
+  CSConsist *csConsist2 = new CSConsist();
+  csConsist2->addMember(13, false);
+  csConsist2->addMember(15, true);
+  CSConsist *csConsist3 = new CSConsist();
+  csConsist3->addMember(23, false);
+  csConsist3->addMember(25, true);
+
+  // Validate the initial list
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+
+  // Delete the middle of the list
+  delete csConsist2;
+
+  // The remaining list must be linked directly and intact
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+  EXPECT_TRUE(csConsist1->isInConsist(3));
+  EXPECT_TRUE(csConsist3->isInConsist(23));
+
+  // The deleted consist must no longer be reachable from the list head
+  CSConsist *current = CSConsist::getFirst();
+  while (current) {
+    EXPECT_NE(current, csConsist2);
+    current = current->getNext();
+  }
+}
+
+/**
+ * @brief Test deleting the last CSConsist in a multi-consist list preserves the remaining list
+ */
+TEST_F(CSConsistTests, TestDeleteLastCSConsist) {
+  // Create three CSConsists
+  CSConsist *csConsist1 = new CSConsist();
+  csConsist1->addMember(3, false);
+  csConsist1->addMember(5, true);
+  CSConsist *csConsist2 = new CSConsist();
+  csConsist2->addMember(13, false);
+  csConsist2->addMember(15, true);
+  CSConsist *csConsist3 = new CSConsist();
+  csConsist3->addMember(23, false);
+  csConsist3->addMember(25, true);
+
+  // Validate the initial list
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), csConsist3);
+  EXPECT_EQ(csConsist3->getNext(), nullptr);
+
+  // Delete the last in the list
+  delete csConsist3;
+
+  // The remaining list must terminate correctly
+  ASSERT_EQ(CSConsist::getFirst(), csConsist1);
+  EXPECT_EQ(csConsist1->getNext(), csConsist2);
+  EXPECT_EQ(csConsist2->getNext(), nullptr);
+  EXPECT_TRUE(csConsist1->isInConsist(3));
+  EXPECT_TRUE(csConsist2->isInConsist(13));
+}
+
+/**
+ * @brief Test get speed and direction with an empty consist
+ */
+TEST_F(CSConsistTests, TestSpeedDirectionEmptyConsist) {
+  // Create a consist with no members
+  CSConsist *csConsist = new CSConsist();
+
+  // Speed should be zero and direction should be forward
+  EXPECT_EQ(csConsist->getSpeed(), 0);
+  EXPECT_EQ(csConsist->getDirection(), Direction::Forward);
+
+  // Clean up
+  delete csConsist;
 }

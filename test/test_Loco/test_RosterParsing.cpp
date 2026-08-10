@@ -110,3 +110,90 @@ TEST_F(LocoTests, TestLocoNotInRoster) {
   test = _dccexProtocol.findLocoInRoster(42);
   EXPECT_EQ(test, nullptr);
 }
+
+/**
+ * @brief Test roster entries received out of order are accepted without requesting missing details
+ */
+TEST_F(LocoTests, parseRosterEntriesOutOfOrder) {
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  _dccexProtocol.getLists(true, false, false, false);
+  _stream.clearOutput();
+
+  // Response
+  _stream << "<jR 42 9 120>";
+  _dccexProtocol.check();
+
+  // Entries received out of order, starting with the last in the list
+  _stream << R"(<jR 120 "Loco120" "Func120">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jR 9 "Loco9" "Func9">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jR 42 "Loco42" "Func42">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Roster is complete and the count is unchanged
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+  EXPECT_EQ(_dccexProtocol.getRosterCount(), 3);
+}
+
+/**
+ * @brief Test clearLocalLocos() deletes all local (non-roster) locos
+ */
+TEST_F(LocoTests, clearLocalLocosClearsList) {
+  // Create two local locos (LocoSourceEntry locos live in the local loco list)
+  Loco *loco1 = new Loco(42, LocoSource::LocoSourceEntry);
+  loco1->setName("Loco 42");
+  Loco *loco2 = new Loco(43, LocoSource::LocoSourceEntry);
+  loco2->setName("Loco 43");
+
+  // Validate they are in the local loco list
+  ASSERT_EQ(Loco::getFirstLocalLoco(), loco1);
+  EXPECT_EQ(loco1->getNext(), loco2);
+  EXPECT_EQ(loco2->getNext(), nullptr);
+
+  // Clearing local locos must delete them and reset the head
+  _dccexProtocol.clearLocalLocos();
+  EXPECT_EQ(Loco::getFirstLocalLoco(), nullptr);
+
+  // The roster list must remain untouched
+  EXPECT_EQ(Loco::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test refreshRoster() clears the roster, resets the flags, and re-requests on getLists()
+ */
+TEST_F(LocoTests, refreshRosterResetsAndReRequests) {
+  // Request and receive the roster
+  _dccexProtocol.getLists(true, false, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+  _stream.clearOutput();
+
+  _stream << "<jR 42 9 120>";
+  _dccexProtocol.check();
+  _stream << R"(<jR 42 "Loco42" "Func42">)";
+  _stream << R"(<jR 9 "Loco9" "Func9">)";
+  _stream << R"(<jR 120 "Loco120" "Func120">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+  ASSERT_EQ(_dccexProtocol.getRosterCount(), 3);
+  ASSERT_TRUE(_dccexProtocol.receivedRoster());
+
+  // Clear the entry detail requests accumulated while receiving the roster
+  _stream.clearOutput();
+
+  // Refreshing must clear the roster and reset the received/requested flags
+  _dccexProtocol.refreshRoster();
+  EXPECT_EQ(_dccexProtocol.getRosterCount(), 0);
+  EXPECT_EQ(Loco::getFirst(), nullptr);
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_FALSE(_dccexProtocol.receivedLists());
+
+  // A fresh getLists() must request the roster again
+  _dccexProtocol.getLists(true, false, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+}

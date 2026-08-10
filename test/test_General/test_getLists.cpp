@@ -415,3 +415,143 @@ TEST_F(DCCEXProtocolTests, testRequestNoLists) {
   EXPECT_EQ(_stream.getOutput(), "");
   EXPECT_TRUE(_dccexProtocol.receivedLists());
 }
+
+/**
+ * @brief Test calling getLists() repeatedly while a request is in flight does not duplicate requests
+ */
+TEST_F(DCCEXProtocolTests, getListsNoDuplicateRequests) {
+  // Roster stage: first call requests the roster, a second call must not
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+  _stream.clearOutput();
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // Complete the roster
+  _stream << "<jR 1 2>";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  _stream << "<jR 1 \"Loco1\" \"Func1\">";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _stream << "<jR 2 \"Loco2\" \"Func2\">";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+
+  // Turnout stage: request, then duplicate call must not re-request
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J T>");
+  _stream.clearOutput();
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // Complete the turnouts
+  _stream << "<jT 1 2>";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  _stream << "<jT 1 0 \"Turnout1\">";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _stream << "<jT 2 1 \"Turnout2\">";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+
+  // Route stage: request, then duplicate call must not re-request
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J A>");
+  _stream.clearOutput();
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // Complete the routes
+  _stream << "<jA 1 2>";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  _stream << "<jA 1 R \"Route1\">";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _stream << "<jA 2 A \"Route2\">";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+
+  // Turntable stage: request, then duplicate call must not re-request
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
+  _stream.clearOutput();
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  // Complete a single turntable and its index
+  _stream << "<jO 1>";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+  _stream << "<jO 1 0 0 1 \"Turntable1\">";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J P 1>");
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedTurntableList()).Times(Exactly(1));
+  _stream << "<jP 1 0 0 \"Home\">";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+
+  // Final getLists() completes the sequence
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_TRUE(_dccexProtocol.receivedLists());
+
+  // Once all lists are received, any further call must not send anything
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test refreshAllLists() clears the lists and resets all the received flags
+ */
+TEST_F(DCCEXProtocolTests, refreshAllListsResetsListsAndFlags) {
+  // Request all lists using empty list responses to set every received flag
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+  _stream.clearOutput();
+  _stream << "<jR>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J T>");
+  _stream.clearOutput();
+  _stream << "<jT>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J A>");
+  _stream.clearOutput();
+  _stream << "<jA>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
+  _stream.clearOutput();
+  _stream << "<jO>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+
+  // All lists received
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_TRUE(_dccexProtocol.receivedLists());
+
+  // Refreshing all lists must clear them and reset every received flag
+  _dccexProtocol.refreshAllLists();
+  EXPECT_FALSE(_dccexProtocol.receivedLists());
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+  EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+
+  // A fresh getLists() should request the roster again
+  _dccexProtocol.getLists(true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+}

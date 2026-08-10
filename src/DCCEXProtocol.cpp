@@ -257,11 +257,17 @@ void DCCEXProtocol::setDebug(bool debug) { _debug = debug; }
 // Consist/loco methods
 
 void DCCEXProtocol::setThrottle(Loco *loco, int speed, Direction direction) {
+  if (!loco)
+    return;
+
   loco->setUserSpeed(speed);
   loco->setUserDirection(direction);
 }
 
 void DCCEXProtocol::setThrottle(Consist *consist, int speed, Direction direction) {
+  if (!consist)
+    return;
+
   for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
     Direction effectiveDir =
         (cl->getFacing() == FacingReversed) ? (direction == Forward ? Reverse : Forward) : direction;
@@ -286,6 +292,9 @@ void DCCEXProtocol::setThrottle(CSConsist *csConsist, int speed, Direction direc
 }
 
 void DCCEXProtocol::functionOn(Loco *loco, int function) {
+  if (!loco)
+    return;
+
   int address = loco->getAddress();
   if (address >= 0) {
     _sendThreeParams('F', address, function, 1);
@@ -293,6 +302,9 @@ void DCCEXProtocol::functionOn(Loco *loco, int function) {
 }
 
 void DCCEXProtocol::functionOn(Consist *consist, int function) {
+  if (!consist)
+    return;
+
   for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
     functionOn(cl->getLoco(), function);
   }
@@ -315,6 +327,9 @@ void DCCEXProtocol::functionOn(CSConsist *csConsist, int function) {
 }
 
 void DCCEXProtocol::functionOff(Loco *loco, int function) {
+  if (!loco)
+    return;
+
   int address = loco->getAddress();
   if (address >= 0) {
     _sendThreeParams('F', address, function, 0);
@@ -322,6 +337,9 @@ void DCCEXProtocol::functionOff(Loco *loco, int function) {
 }
 
 void DCCEXProtocol::functionOff(Consist *consist, int function) {
+  if (!consist)
+    return;
+
   for (ConsistLoco *cl = consist->getFirst(); cl; cl = cl->getNext()) {
     functionOff(cl->getLoco(), function);
   }
@@ -343,10 +361,22 @@ void DCCEXProtocol::functionOff(CSConsist *csConsist, int function) {
     _setCSConsistMemberFunction(first->next, function, false);
 }
 
-bool DCCEXProtocol::isFunctionOn(Loco *loco, int function) { return loco->isFunctionOn(function); }
+bool DCCEXProtocol::isFunctionOn(Loco *loco, int function) {
+  if (!loco)
+    return false;
+
+  return loco->isFunctionOn(function);
+}
 
 bool DCCEXProtocol::isFunctionOn(Consist *consist, int function) {
+  if (!consist)
+    return false;
+
   ConsistLoco *firstCL = consist->getFirst();
+
+  if (!firstCL)
+    return false;
+
   return firstCL->getLoco()->isFunctionOn(function);
 }
 
@@ -664,7 +694,6 @@ void DCCEXProtocol::rotateTurntable(int turntableId, int position, int activity)
       _sendTwoParams('I', turntableId, position);
     }
   }
-  _sendCommand();
 }
 
 void DCCEXProtocol::clearTurntableList() {
@@ -1588,6 +1617,9 @@ void DCCEXProtocol::_cmdStart(char opcode) {
 }
 
 void DCCEXProtocol::_cmdAppend(const char *s) {
+  if (!s)
+    return;
+
   // Must leave room for '>' and null terminator
   while (*s && _cmdIndex < (MAX_OUTBOUND_COMMAND_LENGTH - 2)) {
     _outboundCommand[_cmdIndex++] = *s++;

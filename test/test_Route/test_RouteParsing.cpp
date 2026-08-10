@@ -76,3 +76,34 @@ TEST_F(RouteTests, parseThreeRoutes) {
   // Validate count
   EXPECT_EQ(_dccexProtocol.getRouteCount(), 3);
 }
+
+/**
+ * @brief Test route entries received out of order are accepted without requesting missing details
+ */
+TEST_F(RouteTests, parseRouteEntriesOutOfOrder) {
+  // Received flag should be false to start
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+  _dccexProtocol.getLists(false, false, true, false);
+  _stream.clearOutput();
+
+  // Three route response
+  _stream << "<jA 21 121 221>";
+  _dccexProtocol.check();
+
+  // Entries received out of order, starting with the last in the list
+  _stream << R"(<jA 221 R "Route 221">)";
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jA 121 A "Automation 121">)";
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  _stream << R"(<jA 21 R "Route 21">)";
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // Flag should now be true and the count unchanged
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+  EXPECT_EQ(_dccexProtocol.getRouteCount(), 3);
+}

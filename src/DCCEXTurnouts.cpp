@@ -50,6 +50,9 @@ Turnout::Turnout(int id, bool thrown) {
 void Turnout::setThrown(bool thrown) { _thrown = thrown; }
 
 void Turnout::setName(const char *name) {
+  if (!name)
+    return;
+
   if (_name) {
     delete[] _name;
     _name = nullptr;
