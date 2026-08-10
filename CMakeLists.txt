@@ -49,6 +49,9 @@ else()
       file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS test/*.cpp)
       add_executable(DCCEXProtocolTests ${TEST_SOURCES})
 
+      # Compile the library with NATIVE_TESTING so it uses DCCStream.h instead of Arduino.h's Stream
+      target_compile_definitions(DCCEXProtocol PRIVATE NATIVE_TESTING)
+
       target_compile_definitions(DCCEXProtocolTests PRIVATE NATIVE_TESTING)
       target_include_directories(DCCEXProtocolTests PRIVATE test/mocks test/setup)
       target_link_libraries(DCCEXProtocolTests PRIVATE DCCEXProtocol GTest::gtest GTest::gmock)

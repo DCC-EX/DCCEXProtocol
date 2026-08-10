@@ -28,10 +28,9 @@
  */
 
 #include "DCCEXLoco.h"
-#include <cstdio>
+#include "DCCEXUtils.h"
 #include <string.h>
 #include <stdlib.h>
-#include <numeric>
 
 // class Loco
 // Public methods
@@ -336,11 +335,9 @@ void Consist::addLoco(int address, Facing facing) {
   if (_locoCount == 0) {
     facing = FacingForward;
     if (_name == nullptr) {
-      int addressLength = snprintf(nullptr, 0, "%d", address);
-      char *newName = new char[addressLength + 1];
-      snprintf(newName, addressLength + 1, "%d", address);
-      setName(newName);
-      delete[] newName;
+      char newName[sizeof(int) * 3 + 2];
+      char *writePtr = fastitoa(address, &newName[sizeof(newName) - 1]);
+      setName(writePtr);
     }
   }
   Loco *loco = new Loco(address, LocoSourceEntry);

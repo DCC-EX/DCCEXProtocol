@@ -39,15 +39,18 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #define DCCEXPROTOCOL_H
 
 #include "DCCEXCSConsist.h"
-#include "DCCEXInbound.h"
 #include "DCCEXLoco.h"
-#include "DCCEXProtocolVersion.h"
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
 #include "DCCMillisWrappers.h"
 #ifdef ARDUINO
-  #include <Arduino.h>
+  #if defined(NATIVE_TESTING)
+    // In native test builds, use DCCStream.h so both library and test TUs share one Stream class
+    #include "DCCStream.h"
+  #else
+    #include <Arduino.h>
+  #endif
 #else
 #include "DCCStream.h"
 #endif
@@ -87,38 +90,8 @@ enum MomentumAlgorithm {
   Power,  // Speed difference
 };
 
-/// @brief Nullstream class for initial DCCEXProtocol instantiation to direct streams to nothing
-class NullStream : public Stream {
-public:
-  /// @brief Constructor for the NullStream object
-  NullStream() {}
-
-  /// @brief Dummy availability check
-  /// @return Returns false (0) always
-  int available() { return 0; }
-
-  /// @brief Dummy flush method
-  void flush() {}
-
-  /// @brief Dummy peek method
-  /// @return Returns -1 always
-  int peek() { return -1; }
-
-  /// @brief Dummy read method
-  /// @return Returns -1 always
-  int read() { return -1; }
-
-  /// @brief Dummy write method for single int
-  /// @param c Number received
-  /// @return Returns 1 always
-  size_t write(uint8_t c) { return 1; }
-
-  /// @brief Dummy write method for buffered input
-  /// @param buffer Buffer received
-  /// @param size Size of buffer
-  /// @return Returns size of buffer always
-  size_t write(const uint8_t *buffer, size_t size) { return size; }
-};
+/// @brief Opaque stream sink; defined in DCCEXProtocol.cpp to avoid ODR violations
+class NullStream;
 
 /// @brief Delegate responses and broadcast events to the client software to enable custom event handlers
 class DCCEXProtocolDelegate {
@@ -911,7 +884,7 @@ private:
   int _version[3] = {};                               // EX-CommandStation version x.y.z
   Stream *_stream;                                    // Stream object where commands are sent/received
   Stream *_console;                                   // Stream object for console output
-  NullStream _nullStream;                             // Send streams to null if no object provided
+  NullStream *_nullStream;                            // Send streams to null if no object provided
   int _bufflen;                                       // Used to ensure command buffer size not exceeded
   int _maxCmdBuffer;                                  // Max size for the command buffer
   char *_cmdBuffer;                                   // Char array for inbound command buffer

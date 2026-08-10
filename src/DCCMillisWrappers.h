@@ -28,6 +28,10 @@
       return (unsigned long)to_ms_since_boot(get_absolute_time());
     }
     #define DCCEX_DEFAULT_MILLIS() dccex_pico_millis()
+  #elif defined(NATIVE_TESTING)
+    // Native test builds: use the mock millis() provided by the test harness
+    extern unsigned long millis();
+    #define DCCEX_DEFAULT_MILLIS() millis()
   #elif defined(__linux__) && !defined(ARDUINO)
     #include <chrono>
     static inline unsigned long dccex_linux_millis() {

@@ -40,11 +40,25 @@ Function/method prefixes
 */
 
 #include "DCCEXProtocol.h"
+#include "DCCEXUtils.h"
+#include "DCCEXInbound.h"
+#include "DCCEXProtocolVersion.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <cstdio>
 #include <ctype.h>
 #include <string.h>
+
+class NullStream : public Stream {
+public:
+  NullStream() {}
+  int available() { return 0; }
+  void flush() {}
+  int peek() { return -1; }
+  int read() { return -1; }
+  size_t write(uint8_t c) { return 1; }
+  size_t write(const uint8_t *buffer, size_t size) { return size; }
+};
 
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
@@ -55,8 +69,9 @@ static const int MAX_SPEED = 126;
 
 DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams, unsigned long userChangeDelay) {
   // Init streams
-  _stream = &_nullStream;
-  _console = &_nullStream;
+  _nullStream = new NullStream();
+  _stream = _nullStream;
+  _console = _nullStream;
 
   // Allocate memory for command buffer
   _cmdBuffer = new char[maxCmdBuffer];
@@ -86,6 +101,8 @@ DCCEXProtocol::~DCCEXProtocol() {
 
   // Cleanup command parser
   DCCEXInbound::cleanup();
+
+  delete _nullStream;
 }
 
 // Set the delegate instance for callbacks
@@ -505,11 +522,9 @@ void DCCEXProtocol::clearCSConsists() { CSConsist::clearCSConsists(); }
 // Momentum methods
 
 void DCCEXProtocol::setMomentumAlgorithm(MomentumAlgorithm algorithm) {
-  // Algorithm lookup table
   static const char *const ALGORITHMS[] = {"LINEAR", "POWER"};
 
-  // Check out of bounds before sending command
-  if (algorithm >= 0 && algorithm < (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]))) {
+  if (static_cast<size_t>(algorithm) < (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]))) {
     _sendOneParam('m', ALGORITHMS[algorithm]);
   }
 }
@@ -1581,9 +1596,9 @@ void DCCEXProtocol::_cmdAppend(const char *s) {
 }
 
 void DCCEXProtocol::_cmdAppend(int n) {
-  char buf[12]; // Enough for -2147483648
-  snprintf(buf, sizeof(buf), "%d", n);
-  _cmdAppend(buf);
+  char buf[sizeof(int) * 3 + 2];
+  char *writePtr = fastitoa(n, &buf[sizeof(buf) - 1]);
+  _cmdAppend(writePtr);
 }
 
 void DCCEXProtocol::_cmdAppend(char c) {
