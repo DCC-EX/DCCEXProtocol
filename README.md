@@ -104,6 +104,19 @@ If you do run on Windows, run this command instead, note that it disables the re
 pio test -e native_test_windows
 ```
 
+If you are running on macOS, use this environment instead, which removes the GCC-specific coverage flags that are not supported by the Apple clang toolchain:
+
+```bash
+pio test -e native_test_macos
+```
+
+To generate test coverage, use the `generate_test_coverage.py` script. The environment is auto-selected based on the platform (`native_test_macos` on macOS, `native_test` elsewhere) and can be overridden with `-e`:
+
+```bash
+python3 generate_test_coverage.py
+python3 generate_test_coverage.py -e native_test_macos
+```
+
 For full details, including how to monitor test coverage, see the [Library Tests](https://dcc-ex.com/DCCEXProtocol/tests.html) documentation.
 
 ----

@@ -29,12 +29,22 @@
 #ifndef DCCEXPROTOCOLVERSION_H
 #define DCCEXPROTOCOLVERSION_H
 
-#define DCCEX_PROTOCOL_VERSION "1.3.2"
+#define DCCEX_PROTOCOL_VERSION "1.3.3"
 
 /*
 Version information:
 
-1.3.3   - Allow using ESP-IDF and Pico C/CPP SDK without Arduino.
+1.3.3   - Bug fixes and expanded test coverage, no functional library changes:
+        - Fix CSConsist::removeMember() member count bug when removing an address not in the consist
+        - Fix new Route objects not defaulting to RouteTypeRoute until setType() was called
+        - Remove stray command buffer flush in rotateTurntable()
+        - Add bounds checking to Loco::isFunctionOn(), getFunctionName(), and isFunctionMomentary()
+        - Add nullptr guards to setName() for Loco, Route, Turnout, and Turntable objects
+        - Add nullptr guards to setThrottle(), functionOn(), functionOff(), isFunctionOn(), Consist::addLoco(),
+          and _cmdAppend()
+        - Add macOS native test environment and improve coverage tooling
+        - Significantly expand unit tests across all object types to improve branch coverage
+        - Documentation updates and typo fixes
 1.3.2   - Add missing getSpeed() and getDirection() to CSConsist class
 1.3.1   - Fix bug where function 28 is masked off incorrectly and not received in Loco updates
 1.3.0   - Introduce queued throttle updates to prevent buffer overloads and broadcast storms

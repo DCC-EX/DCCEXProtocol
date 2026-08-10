@@ -45,3 +45,8 @@ test_coverage/
 build/
 build-*/
 config.h
+# File systems
+.DS_Store
+
+# Python cache
+__pycache__/
