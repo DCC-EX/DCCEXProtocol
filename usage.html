@@ -794,7 +794,7 @@
 <p>As of version 1.2.1 of this library, the method defaults to all lists true, meaning you can simply call it without parameters.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Explicitly retrieve all lists</span>
 <span class="n">dccexProtocol</span><span class="p">.</span><span class="n">getLists</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
-<span class="c1">// Default retreives all lists as of 1.2.1</span>
+<span class="c1">// Default retrieves all lists as of 1.2.1</span>
 <span class="n">dccexProtocol</span><span class="p">.</span><span class="n">getLists</span><span class="p">();</span>
 <span class="c1">// Only retrieve the roster</span>
 <span class="n">dccexProtocol</span><span class="p">.</span><span class="n">getLists</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
@@ -816,7 +816,7 @@
 <span class="w">  </span><span class="c1">// turnout methods are available here</span>
 <span class="p">}</span>
 
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Route</span><span class="o">*</span><span class="w"> </span><span class="n">route</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">route</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">route</span><span class="p">;</span><span class="w"> </span><span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Route</span><span class="o">*</span><span class="w"> </span><span class="n">route</span><span class="o">=</span><span class="n">dccexProtocol</span><span class="p">.</span><span class="n">routes</span><span class="o">-&gt;</span><span class="n">getFirst</span><span class="p">();</span><span class="w"> </span><span class="n">route</span><span class="p">;</span><span class="w"> </span><span class="n">route</span><span class="o">=</span><span class="n">route</span><span class="o">-&gt;</span><span class="n">getNext</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// route methods are available here</span>
 <span class="p">}</span>
 
@@ -870,7 +870,7 @@
 <li><p>Turnout: <cite>clearTurnoutList()</cite></p></li>
 <li><p>Turntable: <cite>clearTurntableList()</cite></p></li>
 </ul>
-<p>You can also clear all lists with <cite>dccexProtocol-&gt;clearAllLists()</cite>.</p>
+<p>You can also clear all lists with <cite>dccexProtocol.clearAllLists()</cite>.</p>
 <p><strong>Note there is one exception to this rule</strong> which is Loco objects that are created with the <cite>LocoSource::LocoSourceEntry</cite> type set, as these do not get added to the roster list.</p>
 <p><em>Updated in DCCEXProtocol 1.3.0</em></p>
 <p>If you create a Loco object using this type, you may delete the object when you are finished with it in order to prevent memory leaks, but this is no longer strictly necessary as they are added to a list of LocoSourceEntry Locos, which is accessible via <cite>dccexProtocol.roster-&gt;getFirstLocalLoco()</cite>. This can also be cleared with <cite>clearLocalLocos()</cite>, and it is also cleared along with the other lists when calling <cite>clearAllLists()</cite>.</p>

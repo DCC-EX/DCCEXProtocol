@@ -763,7 +763,7 @@
 <p>This example demonstrates how client throttle software may be written to control multiple locomotives (or consists for that matter) concurrently.</p>
 <p>What can’t be demonstrated in this example is the control of speed and direction, which would typically be accomplished with the use of rotary encoders or similar.</p>
 <p>Note when setting speed and direction, these should be sent to the <a href="https://dcc-ex.com/"><span class="ex-prefix">EX</span><span class="ex-suffix">&#8209;CommandStation</span></a> via the <span class="ex-prefix">DCCEX</span><span class="ex-suffix">Protocol library</span>, and any local references to these should be set based on the response received, not directly by the input method in use.</p>
-<p>For example, when setting the speed based on the position of a rotary encoder, send that value via the protocol’s <cite>setThrottle()</cite> method, but do not display that speed directly. Instead, utlise the delegate’s <cite>receivedLocoUpdate()</cite> method to update the displayed speed.</p>
+<p>For example, when setting the speed based on the position of a rotary encoder, send that value via the protocol’s <cite>setThrottle()</cite> method, but do not display that speed directly. Instead, utilise the delegate’s <cite>receivedLocoUpdate()</cite> method to update the displayed speed.</p>
 <p>This ensures that the user of the throttle sees the accurate results of what the throttle is doing, and provides validation that the EX-CommandStation is responding to the user input.</p>
 </section>
 <section id="dccexprotocol-track-type">

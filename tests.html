@@ -705,7 +705,7 @@
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pio</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">native_test</span>
 </pre></div>
 </div>
-<p>If you do run on Windows, run this command instead, not it disables the relevant sanitiser checks:</p>
+<p>If you do run on Windows, run this command instead, note it disables the relevant sanitiser checks:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pio</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">native_test_windows</span>
 </pre></div>
 </div>
@@ -715,22 +715,7 @@
 </section>
 <section id="legacy-cmake-tests">
 <h2>Legacy cmake Tests<a class="headerlink" href="#legacy-cmake-tests" title="Link to this heading"></a></h2>
-<p>To run these locally, you will need cmake, doxygen, and C++ build tools. If generating graphs with Doxygen, graphviz is also required. Including clang-format is recommended to help code formatting according to the included formatting also.</p>
-<p>It is recommended these be run on Linux or macOS, as you will need to use MSYS2/MinGW on Windows, and various functions are unsupported, in addition to the case insensitivity of Windows causing issues with some Arduino/C++ headers (eg. string.h in Windows is the same as String.h). To be clear, running these tests is <strong>not recommended on Windows</strong>.</p>
-<p>If you are using a Windows PC for the tests, it is best to utilise Windows Subsystem for Linux with Ubuntu, or your preference of distribution. Note also, that while your existing cloned repository is likely available to WSL in the <cite>/mnt/c</cite> directory, this will likely still cause issues as it is a case insensitive file system that has been mounted, and you should clone the repository within your WSL instance instead.</p>
-<p>To use your existing installation of VSCode with WSL, you can simply change to the repository containing the cloned repository and run <code class="docutils literal notranslate"><span class="pre">code</span> <span class="pre">.</span></code>, which will launch VSCode connected to your WSL instance.</p>
-<p>For Ubuntu, install the required packages with:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span><span class="w"> </span><span class="n">apt</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">build</span><span class="o">-</span><span class="n">essential</span><span class="w"> </span><span class="n">doxygen</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="n">graphviz</span><span class="w"> </span><span class="n">clang</span><span class="o">-</span><span class="n">format</span>
-</pre></div>
-</div>
-<p>Once these packages are installed, running the tests is pretty simple:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="o">&lt;</span><span class="n">directory</span><span class="o">&gt;/</span><span class="n">DCCEXProtocol</span>
-<span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">Bbuild</span>
-<span class="n">cmake</span><span class="w"> </span><span class="o">--</span><span class="n">build</span><span class="w"> </span><span class="n">build</span>
-<span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span><span class="n">DCCEXProtocolTests</span><span class="w"> </span><span class="o">--</span><span class="n">gtest_shuffle</span>
-</pre></div>
-</div>
-<p>If you have issues compiling the tests, you may need to delete the build directory if it already existed before you started. It is not included in the repository and is used locally only.</p>
+<p>Prior to version 1.2.1, the tests were run using cmake. These have now been fully migrated across to PlatformIO’s native test environment as described above, and the cmake build files have been removed from the repository.</p>
 </section>
 </section>
 

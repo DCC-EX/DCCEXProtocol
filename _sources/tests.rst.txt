@@ -19,7 +19,7 @@ To run the tests, simply call:
 
   pio test -e native_test
 
-If you do run on Windows, run this command instead, not it disables the relevant sanitiser checks:
+If you do run on Windows, run this command instead, note it disables the relevant sanitiser checks:
 
 .. code-block::
 
@@ -33,27 +33,4 @@ To monitor test coverage, you can run the `generate_test_coverage.py` Python scr
 Legacy cmake Tests
 ------------------
 
-To run these locally, you will need cmake, doxygen, and C++ build tools. If generating graphs with Doxygen, graphviz is also required. Including clang-format is recommended to help code formatting according to the included formatting also.
-
-It is recommended these be run on Linux or macOS, as you will need to use MSYS2/MinGW on Windows, and various functions are unsupported, in addition to the case insensitivity of Windows causing issues with some Arduino/C++ headers (eg. string.h in Windows is the same as String.h). To be clear, running these tests is **not recommended on Windows**.
-
-If you are using a Windows PC for the tests, it is best to utilise Windows Subsystem for Linux with Ubuntu, or your preference of distribution. Note also, that while your existing cloned repository is likely available to WSL in the `/mnt/c` directory, this will likely still cause issues as it is a case insensitive file system that has been mounted, and you should clone the repository within your WSL instance instead.
-
-To use your existing installation of VSCode with WSL, you can simply change to the repository containing the cloned repository and run ``code .``, which will launch VSCode connected to your WSL instance.
-
-For Ubuntu, install the required packages with:
-
-.. code-block::
-
-  sudo apt install build-essential doxygen cmake graphviz clang-format
-
-Once these packages are installed, running the tests is pretty simple:
-
-.. code-block::
-
-  cd <directory>/DCCEXProtocol
-  cmake -Bbuild
-  cmake --build build
-  ./build/tests/DCCEXProtocolTests --gtest_shuffle
-
-If you have issues compiling the tests, you may need to delete the build directory if it already existed before you started. It is not included in the repository and is used locally only.
+Prior to version 1.2.1, the tests were run using cmake. These have now been fully migrated across to PlatformIO's native test environment as described above, and the cmake build files have been removed from the repository.

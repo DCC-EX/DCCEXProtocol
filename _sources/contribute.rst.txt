@@ -43,10 +43,7 @@ The DCCEXProtocol class documentation is generated automatically via Doxygen and
 
 For contributors wishing to build local copies of the documentation while updating the library, here is the very high level process of the requirements to make this work on Windows:
 
-- Install `MSYS2 C++ <https://code.visualstudio.com/docs/cpp/config-mingw#_prerequisites>`_ compilers
-- Install `CMake <https://cmake.org/download/>`_ and ensure you select the option to add to your user path
 - Install `Doxygen <https://www.doxygen.nl/download.html>`_ and once complete, add to your user path
-- Install the CMake Tools extension in VSCode
 - Setup a Python virtual environment with "virtualenv venv" and activate with "venv\scripts\activate"
 - Install required Python modules with "pip3 install -r requirements.txt"
 - Change to the docs directory and run "make html"
