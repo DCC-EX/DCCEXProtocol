@@ -2,7 +2,6 @@
 
 #include "../../../src/DCCEXProtocol.h"
 
-#include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -30,51 +29,20 @@ constexpr const char *TAG = "DCCEXBasic";
 class EspLogStream : public Stream {
 public:
   int available() override { return 0; }
-
   int read() override { return -1; }
+  void flush() override {}
+
+  size_t write(uint8_t c) override {
+    putchar(static_cast<char>(c));
+    return 1;
+  }
 
   size_t write(const uint8_t *buffer, size_t size) override {
     if (buffer == nullptr || size == 0) {
       return 0;
     }
-
-    char message[128];
-    const size_t copy_length = size < sizeof(message) - 1 ? size : sizeof(message) - 1;
-    memcpy(message, buffer, copy_length);
-    message[copy_length] = '\0';
-    printf("[%s] %s\n", TAG, message);
+    fwrite(buffer, 1, size, stdout);
     return size;
-  }
-
-  void flush() override {}
-
-  void println(const char *format, ...) override {
-    if (format == nullptr) {
-      return;
-    }
-
-    va_list args;
-    va_start(args, format);
-    vlog(format, args);
-    va_end(args);
-  }
-
-  void print(const char *format, ...) override {
-    if (format == nullptr) {
-      return;
-    }
-
-    va_list args;
-    va_start(args, format);
-    vlog(format, args);
-    va_end(args);
-  }
-
-private:
-  static void vlog(const char *format, va_list args) {
-    char message[192];
-    vsnprintf(message, sizeof(message), format, args);
-    printf("[%s] %s\n", TAG, message);
   }
 };
 
@@ -97,6 +65,10 @@ public:
     uint8_t byte = 0;
     const int n = recv(_fd, &byte, 1, 0);
     return (n == 1) ? static_cast<int>(byte) : -1;
+  }
+
+  size_t write(uint8_t c) override {
+    return write(&c, 1);
   }
 
   size_t write(const uint8_t *buffer, size_t size) override {
