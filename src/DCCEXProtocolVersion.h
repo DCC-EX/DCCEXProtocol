@@ -29,7 +29,7 @@
 #ifndef DCCEXPROTOCOLVERSION_H
 #define DCCEXPROTOCOLVERSION_H
 
-#define DCCEX_PROTOCOL_VERSION "1.3.3"
+#define DCCEX_PROTOCOL_VERSION "1.3.2"
 
 /*
 Version information:
