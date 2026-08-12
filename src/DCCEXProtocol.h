@@ -925,7 +925,7 @@ private:
   void _processFastClockTime();
 
   // JMRI sensor methods
-  void _processJMRISensorBroadcast(byte opcode);
+  void _processJMRISensorBroadcast(uint8_t opcode);
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received

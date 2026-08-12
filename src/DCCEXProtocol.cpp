@@ -49,16 +49,8 @@ Function/method prefixes
 #include <ctype.h>
 #include <string.h>
 
-class NullStream : public Stream {
-public:
-  NullStream() {}
-  int available() { return 0; }
-  void flush() {}
-  int peek() { return -1; }
-  int read() { return -1; }
-  size_t write(uint8_t c) { return 1; }
-  size_t write(const uint8_t *buffer, size_t size) { return size; }
-};
+/// @brief Opaque stream sink; defined in DCCEXProtocol.cpp to avoid ODR violations
+class NullStream;
 
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
@@ -1607,7 +1599,7 @@ void DCCEXProtocol::_processFastClockTime() { // <jC minutes>
 }
 
 // JMRI sensor methods
-void DCCEXProtocol::_processJMRISensorBroadcast(byte opcode) { // <Q|q id>
+void DCCEXProtocol::_processJMRISensorBroadcast(uint8_t opcode) { // <Q|q id>
   if (!_delegate)
     return;
 
