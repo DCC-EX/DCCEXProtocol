@@ -107,3 +107,21 @@ TEST_F(RouteTests, parseRouteEntriesOutOfOrder) {
   EXPECT_TRUE(_dccexProtocol.receivedRouteList());
   EXPECT_EQ(_dccexProtocol.getRouteCount(), 3);
 }
+
+/**
+ * @brief Test a route entry for an id not in the list is accepted without requesting details
+ */
+TEST_F(RouteTests, parseRouteEntryUnknownId) {
+  // Received flag should be false to start
+  EXPECT_FALSE(_dccexProtocol.receivedRouteList());
+
+  // Route entry response for an unknown id
+  _stream << R"(<jA 999 R "Route 999">)";
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // The route list is received, nothing is created, and no entry details are requested
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+  EXPECT_EQ(_dccexProtocol.getRouteCount(), 0);
+  EXPECT_EQ(_stream.getOutput(), "");
+}

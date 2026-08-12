@@ -166,6 +166,22 @@ TEST_F(CSConsistTests, TestCallingWithInvalidParams) {
 }
 
 /**
+ * @brief Test adding a member with an invalid address is ignored
+ */
+TEST_F(CSConsistTests, TestAddMemberInvalidAddress) {
+  // Create the consist
+  CSConsist *csConsist = new CSConsist();
+
+  // Negative and over-range addresses must be ignored
+  csConsist->addMember(-1, false);
+  csConsist->addMember(10240, true);
+
+  // No members should have been added
+  EXPECT_EQ(csConsist->getMemberCount(), 0);
+  EXPECT_EQ(csConsist->getFirstMember(), nullptr);
+}
+
+/**
  * @brief Test removing a member by address
  */
 TEST_F(CSConsistTests, TestRemoveMemberByAddress) {

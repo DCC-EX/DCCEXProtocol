@@ -88,3 +88,12 @@ TEST_F(DCCEXProtocolTests, lowercaseKeywordHandling) {
   EXPECT_CALL(_delegate, receivedTrackType('A', TrackManagerMode::MAIN, 0)).Times(Exactly(1));
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Ensure an underscore keyword is hashed like other keywords
+ */
+TEST_F(DCCEXProtocolTests, underscoreKeywordHandling) {
+  char command[] = "<1 _>";
+  EXPECT_TRUE(DCCEXInbound::parse(command));
+  EXPECT_EQ(DCCEXInbound::getNumber(0), 0x5F);
+}

@@ -92,6 +92,44 @@ enum MomentumAlgorithm {
 
 /// @brief Opaque stream sink; defined in DCCEXProtocol.cpp to avoid ODR violations
 class NullStream;
+// Valid JMRI sensor states
+enum JMRISensorState {
+  Activated,
+  Deactivated,
+};
+
+/// @brief Nullstream class for initial DCCEXProtocol instantiation to direct streams to nothing
+class NullStream : public Stream {
+public:
+  /// @brief Constructor for the NullStream object
+  NullStream() {}
+
+  /// @brief Dummy availability check
+  /// @return Returns false (0) always
+  int available() { return 0; }
+
+  /// @brief Dummy flush method
+  void flush() {}
+
+  /// @brief Dummy peek method
+  /// @return Returns -1 always
+  int peek() { return -1; }
+
+  /// @brief Dummy read method
+  /// @return Returns -1 always
+  int read() { return -1; }
+
+  /// @brief Dummy write method for single int
+  /// @param c Number received
+  /// @return Returns 1 always
+  size_t write(uint8_t c) { return 1; }
+
+  /// @brief Dummy write method for buffered input
+  /// @param buffer Buffer received
+  /// @param size Size of buffer
+  /// @return Returns size of buffer always
+  size_t write(const uint8_t *buffer, size_t size) { return size; }
+};
 
 /// @brief Delegate responses and broadcast events to the client software to enable custom event handlers
 class DCCEXProtocolDelegate {
@@ -218,6 +256,13 @@ public:
    * @param minutes Time in minutes
    */
   virtual void receivedFastClockTime(int minutes) {}
+
+  /**
+   * @brief Notify when a JMRI sensor broadcast has been received
+   * @param id ID of the JMRI sensor
+   * @param state JMRISensorState enum value
+   */
+  virtual void receivedJMRISensorBroadcast(int id, JMRISensorState state) {}
 
   /// @brief Default destructor for DCCEXProtocolDelegate
   virtual ~DCCEXProtocolDelegate() = default;
@@ -782,6 +827,13 @@ public:
    */
   void requestFastClockTime();
 
+  // JMRI Sensor Methods
+
+  /**
+   * @brief Request the list of JMRI sensors
+   */
+  void requestJMRISensorList();
+
   // Attributes
 
   /// @brief Linked list of Loco objects to form the roster, call roster->getFirst()
@@ -830,14 +882,12 @@ private:
 
   // Roster methods
   void _getRoster();
-  bool _requestedRoster();
   void _processRosterList();
   void _requestRosterEntry(int address);
   void _processRosterEntry();
 
   // Turnout methods
   void _getTurnouts();
-  bool _requestedTurnouts();
   void _processTurnoutList();
   void _requestTurnoutEntry(int id);
   void _processTurnoutEntry();
@@ -845,14 +895,12 @@ private:
 
   // Route methods
   void _getRoutes();
-  bool _requestedRoutes();
   void _processRouteList();
   void _requestRouteEntry(int id);
   void _processRouteEntry();
 
   // Turntable methods
   void _getTurntables();
-  bool _requestedTurntables();
   void _processTurntableList();
   void _requestTurntableEntry(int id);
   void _processTurntableEntry();
@@ -875,6 +923,9 @@ private:
   // Fast clock methods
   void _processSetFastClock();
   void _processFastClockTime();
+
+  // JMRI sensor methods
+  void _processJMRISensorBroadcast(byte opcode);
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received

@@ -197,3 +197,20 @@ TEST_F(LocoTests, refreshRosterResetsAndReRequests) {
   _dccexProtocol.getLists(true, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
 }
+
+/**
+ * @brief Test a roster entry for an address not in the roster is accepted without requesting details
+ */
+TEST_F(LocoTests, parseRosterEntryUnknownAddress) {
+  EXPECT_FALSE(_dccexProtocol.receivedRoster());
+
+  // Detailed response for an unknown address
+  _stream << R"(<jR 999 "Loco999" "Func999">)";
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _dccexProtocol.check();
+
+  // The roster is received, nothing is created, and no entry details are requested
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+  EXPECT_EQ(_dccexProtocol.getRosterCount(), 0);
+  EXPECT_EQ(_stream.getOutput(), "");
+}

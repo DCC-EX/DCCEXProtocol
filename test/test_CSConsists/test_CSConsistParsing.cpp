@@ -250,3 +250,32 @@ TEST_F(CSConsistTests, TestMemberShuffles) {
   EXPECT_EQ(CSConsist::getMemberCSConsist(20), csConsist1);
   EXPECT_EQ(CSConsist::getMemberCSConsist(30), csConsist1);
 }
+
+/**
+ * @brief Test a consist update for the same lead loco reuses the existing CSConsist
+ */
+TEST_F(CSConsistTests, TestUpdateExistingConsist) {
+  // Receive an initial consist
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+  _stream << "<^ 42 -24 3>";
+  _dccexProtocol.check();
+
+  CSConsist *csConsist = CSConsist::getFirst();
+  ASSERT_NE(csConsist, nullptr);
+  EXPECT_EQ(csConsist->getMemberCount(), 3);
+
+  // A second consist with the same lead loco must update, not duplicate
+  EXPECT_CALL(_delegate, receivedCSConsist(42, _)).Times(1);
+  _stream << "<^ 42 -5 25>";
+  _dccexProtocol.check();
+
+  // The same CSConsist object is reused with the new members
+  EXPECT_EQ(CSConsist::getFirst(), csConsist);
+  EXPECT_EQ(csConsist->getMemberCount(), 3);
+  EXPECT_EQ(csConsist->getFirstMember()->address, 42);
+  EXPECT_TRUE(csConsist->isInConsist(5));
+  EXPECT_TRUE(csConsist->isReversed(5));
+  EXPECT_TRUE(csConsist->isInConsist(25));
+  EXPECT_FALSE(csConsist->isInConsist(24));
+  EXPECT_FALSE(csConsist->isInConsist(3));
+}

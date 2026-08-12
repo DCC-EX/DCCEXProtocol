@@ -331,3 +331,15 @@ TEST_F(TestHarnessNoDelegate, TestReceiveWriteLoco) {
   _stream << "<w 1>";
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test processing sensor broadcasts doesn't seg fault when no delegate
+ */
+TEST_F(TestHarnessNoDelegate, TestNoSensorBroadcasts) {
+  // Simulate receiving broadcasts
+  _stream << "<Q 100>";
+  _dccexProtocol.check();
+
+  _stream << "<q 200>";
+  _dccexProtocol.check();
+}

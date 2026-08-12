@@ -107,3 +107,13 @@ TEST_F(TurnoutTests, parseTurnoutEntriesOutOfOrder) {
   EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
   EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 3);
 }
+
+/**
+ * @brief Test a turnout entry for an unregistered id does not crash and leaves the list empty
+ */
+TEST_F(TurnoutTests, parseTurnoutEntryUnknownId) {
+  _stream << R"(<jT 999 C "Unknown">)";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(_dccexProtocol.getTurnoutCount(), 0);
+}

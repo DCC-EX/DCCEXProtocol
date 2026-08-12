@@ -52,3 +52,12 @@ TEST_F(DCCEXProtocolTests, mainTrackOff) {
   EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerOff)).Times(Exactly(1));
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test receiving an unknown power state leaves the state as PowerUnknown
+ */
+TEST_F(DCCEXProtocolTests, unknownPowerState) {
+  _stream << "<p2>";
+  EXPECT_CALL(_delegate, receivedTrackPower(TrackPower::PowerUnknown)).Times(Exactly(1));
+  _dccexProtocol.check();
+}

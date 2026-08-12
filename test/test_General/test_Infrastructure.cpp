@@ -90,7 +90,7 @@ TEST_F(DCCEXProtocolTests, TestSendNullCommand) {
 /**
  * @brief Test the library version can be retrieved via the static method
  */
-TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.3.3"); }
+TEST_F(DCCEXProtocolTests, TestLibraryVersion) { ASSERT_STREQ(DCCEXProtocol::getLibraryVersion(), "1.4.0"); }
 
 /**
  * @brief Test calling disconnect() is a no-op and does not crash

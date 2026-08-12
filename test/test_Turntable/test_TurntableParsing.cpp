@@ -181,3 +181,49 @@ TEST_F(TurntableTests, orphanedIndexEntryLeak) {
   // Cleanup
   Turntable::clearTurntableList();
 }
+
+/**
+ * @brief Test a turntable entry for an id not in the list is accepted without creating a turntable
+ */
+TEST_F(TurntableTests, parseTurntableEntryUnknownId) {
+  // Turntable entry response for an unknown id
+  _stream << R"(<jO 999 1 1 1 "Unknown">)";
+  EXPECT_CALL(_delegate, receivedTurntableList()).Times(0);
+  _dccexProtocol.check();
+
+  // No turntable is created, no list is completed, and no detail requests are made
+  EXPECT_EQ(_dccexProtocol.getTurntableCount(), 0);
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test a turntable broadcast for an unregistered id is forwarded without modifying any turntable
+ */
+TEST_F(TurntableTests, turntableBroadcastUnknownId) {
+  // Set up a dummy turntable
+  Turntable *tt = new Turntable(1);
+  tt->setIndex(2);
+  tt->setMoving(true);
+
+  // Simulate receiving a broadcast for an unregistered turntable
+  EXPECT_CALL(_delegate, receivedTurntableAction(999, 0, false)).Times(Exactly(1));
+  _stream << "<I 999 0 0>";
+  _dccexProtocol.check();
+
+  // The registered turntable must remain untouched
+  EXPECT_EQ(tt->getIndex(), 2);
+  EXPECT_TRUE(tt->isMoving());
+}
+
+/**
+ * @brief Test a position index entry with a numeric name is ignored
+ */
+TEST_F(TurntableTests, turntableIndexEntryNumericNameIgnored) {
+  // Simulate receiving a malformed index entry (numeric name parameter)
+  _stream << "<jP 1 0 0 45>";
+  EXPECT_CALL(_delegate, receivedTurntableList()).Times(0);
+  _dccexProtocol.check();
+
+  // Nothing is processed
+  EXPECT_EQ(_stream.getOutput(), "");
+}

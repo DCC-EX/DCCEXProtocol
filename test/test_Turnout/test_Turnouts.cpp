@@ -442,3 +442,17 @@ TEST_F(TurnoutTests, refreshTurnoutListResetsAndReRequests) {
   _dccexProtocol.getLists(false, true, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
 }
+
+/**
+ * @brief Test a turnout broadcast for an unregistered id walks the list and is ignored
+ */
+TEST_F(TurnoutTests, TestBroadcastUnknownTurnoutId) {
+  Turnout *turnout100 = new Turnout(100, false);
+  EXPECT_CALL(_delegate, receivedTurnoutAction(_, _)).Times(0);
+  _stream << "<H 999 1>";
+  _dccexProtocol.check();
+  EXPECT_FALSE(turnout100->getThrown());
+
+  delete turnout100;
+  EXPECT_EQ(Turnout::getFirst(), nullptr);
+}

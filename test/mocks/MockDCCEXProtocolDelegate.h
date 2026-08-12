@@ -71,4 +71,7 @@ public:
 
   // Notify when a fast clock time has been received
   MOCK_METHOD(void, receivedFastClockTime, (int minutes), (override));
+
+  // Notify when a JMRI sensor broadcast has been received
+  MOCK_METHOD(void, receivedJMRISensorBroadcast, (int id, JMRISensorState state), (override));
 };

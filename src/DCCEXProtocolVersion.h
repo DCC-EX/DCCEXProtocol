@@ -29,11 +29,14 @@
 #ifndef DCCEXPROTOCOLVERSION_H
 #define DCCEXPROTOCOLVERSION_H
 
-#define DCCEX_PROTOCOL_VERSION "1.3.3"
+#define DCCEX_PROTOCOL_VERSION "1.4.0"
 
 /*
 Version information:
 
+1.4.0   - Add JMRI type sensor support for broadcasts, noting objects are not created:
+                - requestJMRISensorList()
+        - DCCEXProtocolDelegate new method receivedJMRISensorBroadcast(int id, JMRISensorState state)
 1.3.3   - Bug fixes and expanded test coverage, no functional library changes:
         - Fix CSConsist::removeMember() member count bug when removing an address not in the consist
         - Fix new Route objects not defaulting to RouteTypeRoute until setType() was called

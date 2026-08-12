@@ -165,3 +165,65 @@ TEST_F(DCCEXProtocolTests, locoBroadcastFunctionMapMasked) {
   EXPECT_CALL(_delegate, receivedLocoBroadcast(5, 0, Reverse, 0)).Times(Exactly(1));
   _dccexProtocol.check();
 }
+
+/**
+ * @brief Test screen update not called with a numeric instead of text parameter
+ */
+TEST_F(DCCEXProtocolTests, screenUpdateNumericMessageDropped) {
+  _stream << "<@ 1 1 2>";
+  EXPECT_CALL(_delegate, receivedScreenUpdate(_, _, _)).Times(0);
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test screen update not called with too many parameters
+ */
+TEST_F(DCCEXProtocolTests, screenUpdateTooManyParamsDropped) {
+  _stream << "<@ 1 1 \"x\" \"y\">";
+  EXPECT_CALL(_delegate, receivedScreenUpdate(_, _, _)).Times(0);
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test turntable broadcast not called with an invalid parameter count
+ */
+TEST_F(DCCEXProtocolTests, turntableBroadcastBadParamCountDropped) {
+  _stream << "<I 1 1>";
+  EXPECT_CALL(_delegate, receivedTurntableAction(_, _, _)).Times(0);
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test message broadcast not called with a numeric parameter
+ */
+TEST_F(DCCEXProtocolTests, messageBroadcastNumericParamDropped) {
+  _stream << "<m 123>";
+  EXPECT_CALL(_delegate, receivedMessage(_)).Times(0);
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test unknown throttle subcommand ignored
+ */
+TEST_F(DCCEXProtocolTests, unknownThrottleSubcommandIgnored) {
+  EXPECT_NO_FATAL_FAILURE({
+    _stream << "<jX 1>";
+    _dccexProtocol.check();
+  });
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
+ * @brief Test invalid fast clock param count is ignored
+ */
+TEST_F(DCCEXProtocolTests, fastClockBadParamCountIgnored) {
+  _stream << "<jC>";
+  EXPECT_CALL(_delegate, receivedFastClockTime(_)).Times(0);
+  EXPECT_CALL(_delegate, receivedSetFastClock(_, _)).Times(0);
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+}
