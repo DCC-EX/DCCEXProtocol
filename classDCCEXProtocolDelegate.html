@@ -160,6 +160,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>receivedTurnt
 <tr class="memitem:afced19a4b4b75cdab25e8ce2a97dd6f1" id="r_afced19a4b4b75cdab25e8ce2a97dd6f1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#afced19a4b4b75cdab25e8ce2a97dd6f1">receivedFastClockTime</a> (int minutes)</td></tr>
 <tr class="memdesc:afced19a4b4b75cdab25e8ce2a97dd6f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a fast clock time has been received.  <br /></td></tr>
 <tr class="separator:afced19a4b4b75cdab25e8ce2a97dd6f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a865bb1fec2b36822daf568979512f0b5" id="r_a865bb1fec2b36822daf568979512f0b5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDCCEXProtocolDelegate.html#a865bb1fec2b36822daf568979512f0b5">receivedJMRISensorBroadcast</a> (int id, JMRISensorState state)</td></tr>
+<tr class="memdesc:a865bb1fec2b36822daf568979512f0b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify when a JMRI sensor broadcast has been received.  <br /></td></tr>
+<tr class="separator:a865bb1fec2b36822daf568979512f0b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bad08946495cf7bfa54472d43a469fe" id="r_a8bad08946495cf7bfa54472d43a469fe"><td class="memItemLeft" align="right" valign="top"><a id="a8bad08946495cf7bfa54472d43a469fe" name="a8bad08946495cf7bfa54472d43a469fe"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DCCEXProtocolDelegate</b> ()=default</td></tr>
 <tr class="memdesc:a8bad08946495cf7bfa54472d43a469fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default destructor for <a class="el" href="classDCCEXProtocolDelegate.html" title="Delegate responses and broadcast events to the client software to enable custom event handlers.">DCCEXProtocolDelegate</a>. <br /></td></tr>
@@ -286,6 +289,51 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~DCCEXProtocolDele
   <table class="params">
     <tr><td class="paramname">state</td><td>Power state received (PowerOff|PowerOn|PowerUnknown) </td></tr>
     <tr><td class="paramname">track</td><td>which track changed 65=A..72=H | 2698315=MAIN | 2788330=PROG | 2183=DC | 71999=DCX </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a865bb1fec2b36822daf568979512f0b5" name="a865bb1fec2b36822daf568979512f0b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a865bb1fec2b36822daf568979512f0b5">&#9670;&#160;</a></span>receivedJMRISensorBroadcast()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DCCEXProtocolDelegate::receivedJMRISensorBroadcast </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">JMRISensorState&#160;</td>
+          <td class="paramname"><em>state</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notify when a JMRI sensor broadcast has been received. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>ID of the JMRI sensor </td></tr>
+    <tr><td class="paramname">state</td><td>JMRISensorState enum value </td></tr>
   </table>
   </dd>
 </dl>
