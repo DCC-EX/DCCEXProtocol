@@ -146,7 +146,7 @@ void DCCEXProtocol::sendCommand(const char *cmd) {
 
 // Gated method to get the required lists to avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
-                             bool turntableListRequired) {
+                             bool turntableListRequired, bool requestSignalUpdates) {
   // Serial.println(F("getLists()"));
   if (_receivedLists)
     return;
@@ -195,6 +195,17 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     return;
   }
 
+   // If we get here, get signals if required
+  if (requestSignalUpdates && !_signalListRequested) {
+    _getSignals();
+    return;
+  }
+
+  // If we're still waiting for signals, do not continue
+  if (_signalListRequested && !_receivedSignalList) {
+    return;
+  }
+
   // If we get here, all lists received
   _receivedLists = true;
 }
@@ -221,6 +232,7 @@ void DCCEXProtocol::clearAllLists() {
   clearTurnoutList();
   clearTurntableList();
   clearRouteList();
+  clearSignalList();
 }
 
 void DCCEXProtocol::refreshAllLists() {
@@ -228,6 +240,7 @@ void DCCEXProtocol::refreshAllLists() {
   refreshTurnoutList();
   refreshTurntableList();
   refreshRouteList();
+  refreshSignalList();
 }
 
 void DCCEXProtocol::setDebug(bool debug) { _debug = debug; }
@@ -689,6 +702,30 @@ void DCCEXProtocol::refreshTurntableList() {
   _turntableListRequested = false;
 }
 
+
+// Signal methods
+int DCCEXProtocol::getSignalCount() { return _signalCount; }
+
+bool DCCEXProtocol::receivedSignalList() { return _receivedSignalList; }
+
+Signal *DCCEXProtocol::getSignalById(int SignalId) {
+  return Signal::getById(SignalId);
+}
+
+void DCCEXProtocol::clearSignalList() {
+  Signal::clearSignalList();
+  signals = nullptr;
+  _signalCount = 0;
+}
+
+void DCCEXProtocol::refreshSignalList() {
+  clearSignalList();
+  _receivedLists = false;
+  _receivedSignalList = false;
+  _signalListRequested = false;
+}
+
+
 // Track management methods
 
 void DCCEXProtocol::powerOn() { _sendOpcode('1'); }
@@ -862,7 +899,14 @@ void DCCEXProtocol::_processCommand() {
     _processLocoBroadcast();
     break;
 
-  case 'j': // Throttle list response jA|O|P|R|T|G|I
+  case 'h':  
+    // signal state broadcast; <h id state> or <h id state aspect>
+    if ((DCCEXInbound::getParameterCount() == 2) || (DCCEXInbound::getParameterCount() == 3)) {
+        _processSignalBroadcast();
+    }
+    break;
+
+  case 'j': // Throttle list response jA|O|P|R|T|G|I|B
     if (DCCEXInbound::isTextParameter(0))
       break;
     if (DCCEXInbound::getNumber(0) == 'A') {        // Receive route/automation info
@@ -916,6 +960,23 @@ void DCCEXProtocol::_processCommand() {
         _processFastClockTime();
       } else if (DCCEXInbound::getParameterCount() == 3) {
         _processSetFastClock();
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'B') { // Receive Route state or caption info
+      if (DCCEXInbound::getParameterCount() == 3) {
+        if (DCCEXInbound::isTextParameter(2)) {
+          _processRouteCaption();
+        }
+        else {
+          _processRouteState();
+        }
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'S') { // Receive Signal state info
+        if ((DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) ||
+            (DCCEXInbound::getParameterCount() == 5 && DCCEXInbound::isTextParameter(4))) { 
+            // Signal State: <jS id state "desc"> or <jS id state aspect "desc">
+          _processSignalState();
+        } else { // Signal list
+          _processSignalList();
       }
     }
     break;
@@ -1356,6 +1417,34 @@ void DCCEXProtocol::_processRouteEntry() {
   }
 }
 
+void DCCEXProtocol::_processRouteState() {
+  int id = DCCEXInbound::getNumber(1);
+  RouteState state = (RouteState)DCCEXInbound::getNumber(2);
+ 
+  Route *r = Route::getById(id);
+  if (r) {
+    r->setState(state);
+    if (_delegate)
+      _delegate->receivedRouteState(id,
+         state);
+  }
+}
+
+void DCCEXProtocol::_processRouteCaption() {
+  int id = DCCEXInbound::getNumber(1);
+  char *caption = DCCEXInbound::copyTextParameter(2);
+  
+  Route *r = Route::getById(id);
+  if (r) {
+    r->setCaption(caption);
+    if (_delegate) {
+      _delegate->receivedRouteCaption(id, caption);
+    }
+  }
+
+  free(caption);
+}
+
 // Turntable methods
 
 void DCCEXProtocol::_getTurntables() {
@@ -1455,6 +1544,78 @@ void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
   if (_delegate)
     _delegate->receivedTurntableAction(id, newIndex, moving);
 }
+
+  // Signal Methods
+void DCCEXProtocol::_getSignals() {
+  _sendOneParam('J', 'S');
+  _signalListRequested = true;
+}
+
+void DCCEXProtocol::_requestSignalState(int id) { _sendTwoParams('J', 'S', id); }
+
+void DCCEXProtocol::_processSignalList() {
+  // <jS id1, id2,....>
+  if (signals != nullptr) {
+    return;
+  }
+
+  if (DCCEXInbound::getParameterCount() == 1) { // signal list is empty
+    _receivedSignalList = true;
+    return;
+  }
+  
+  for (int i = 1; i < DCCEXInbound::getParameterCount(); i++) {
+    auto id = DCCEXInbound::getNumber(i);
+    new Signal(id);
+
+  }
+  _requestSignalState(Signal::getFirst()->getId());    // get the currrent state of the signal
+  _signalCount = DCCEXInbound::getParameterCount() - 1;
+}
+
+void DCCEXProtocol::_processSignalState() { // <jS id state "desc"> or <jS id state aspect "desc">
+  int id = DCCEXInbound::getNumber(1);
+  SignalState state = Signal::getStateFromName(DCCEXInbound::getNumber(2));
+  int aspect = (DCCEXInbound::getParameterCount() == 5) ? DCCEXInbound::getNumber(3) : InvalidAspect;
+  const char* desc = (DCCEXInbound::getParameterCount() == 4) ? DCCEXInbound::getTextParameter(3) 
+                                                              : DCCEXInbound::getTextParameter(4);
+  bool missingSignals = false;
+
+  Signal *signal = Signal::getById(id);
+  if (signal) {
+    signal->setState(state);
+    signal->setAspect(aspect);
+    signal->setName(desc);
+    if (signal->getNext() && signal->getNext()->getName() == nullptr) {
+      missingSignals = true;
+      _requestSignalState(signal->getNext()->getId());
+    }
+    if (_delegate) {
+      _delegate->receivedSignalState(id, state, aspect);
+    }
+  }
+
+  if (!missingSignals) {
+    _receivedSignalList = true;
+    if (_delegate)
+      _delegate->receivedSignalList();
+  }
+}
+
+void DCCEXProtocol::_processSignalBroadcast() { // <h id state> or <h id state aspect>
+  int id = DCCEXInbound::getNumber(0);
+  SignalState state = Signal::getStateFromName(DCCEXInbound::getNumber(1));
+  int aspect = (DCCEXInbound::getParameterCount() == 3) ? DCCEXInbound::getNumber(2) : InvalidAspect;
+
+  Signal *signal = Signal::getById(id);
+  if (signal) {
+    signal->setState(state);
+    signal->setAspect(aspect);
+    if (_delegate)
+      _delegate->receivedSignalState(id, state, aspect);
+   }
+}
+
 
 // Track management methods
 

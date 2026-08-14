@@ -45,6 +45,7 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
+#include "DCCEXSignals.h"
 #include <Arduino.h>
 
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
@@ -134,6 +135,9 @@ public:
 
   /// @brief Notify when the turntable list is received
   virtual void receivedTurntableList() {}
+ 
+  /// @brief Notify when the signal list is received
+  virtual void receivedSignalList() {}
 
   /// @brief Notify when an update to a Loco object is received
   /// @param loco Pointer to the loco object
@@ -185,10 +189,25 @@ public:
   /// @param position Index of the position it is moving (or has moved) to
   /// @param moving Whether it is moving or not (true|false)
   virtual void receivedTurntableAction(int turntableId, int position, bool moving) {}
+  
+  /// @brief Notify when a signal state is received
+  /// @param signalId ID of the signal
+  /// @param state state of the signal
+  virtual void receivedSignalState(int signalId, SignalState state, int aspect) {}
 
   /// @brief Notify when a loco address is read from the programming track
   /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
+
+  /// @brief Notify when a route state has been received
+  /// @param routeId ID of the route
+  /// @param state State of the route
+  virtual void receivedRouteState(int routeId, RouteState state) {}
+
+  /// @brief Notify when a route caption has been received
+  /// @param routeId ID of the route
+  /// @param caption New caption for the route button on a throttle
+  virtual void receivedRouteCaption(int routeId, const char *caption) {}
 
   /// @brief Notify when a CV is read or validated from the programming track
   /// @param cv CV the value has been read from
@@ -293,8 +312,9 @@ public:
   /// @param turnoutListRequired Request the turnout list (true|false)
   /// @param routeListRequired Request the route list (true|false)
   /// @param turntableListRequired Request the turntable list (true|false)
+  /// @param signalListRequired Request signal list (true|false)
   void getLists(bool rosterRequired = true, bool turnoutListRequired = true, bool routeListRequired = true,
-                bool turntableListRequired = true);
+                bool turntableListRequired = true, bool signalListRequired = false);
 
   /// @brief Check if all lists have been received (roster, routes, turnouts, turntables)
   /// @return true|false
@@ -674,6 +694,26 @@ public:
 
   /// @brief Clear all turntables and request a new list
   void refreshTurntableList();
+ // Signal methods
+  /// @brief Get the number of Signal entries
+  /// @return Number of signals received
+  int getSignalCount();
+
+  /// @brief Check if signal list has been received
+  /// @return true|false
+  bool receivedSignalList();
+
+  /// @brief Retrieve a signal object by its ID
+  /// @param signal ID of the signal
+  /// @return The signal object
+  Signal *getSignalById(int signalId);
+
+  /// @brief Clear all signals
+  void clearSignalList();
+
+  /// @brief Clear all signals and request a new list
+  void refreshSignalList();
+
 
   // Track management methods
 
@@ -826,6 +866,9 @@ public:
 
   /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
+ 
+  /// @brief Linked list of Signal objects to form the list of signals, call signals->getFirst()
+  Signal *signals = nullptr;
 
   /**
    * @brief Linked list of CSConsist objects to make these accessible via the DCCEXProtocol class, call
@@ -877,6 +920,8 @@ private:
   void _processRouteList();
   void _requestRouteEntry(int id);
   void _processRouteEntry();
+  void _processRouteState();
+  void _processRouteCaption();
 
   // Turntable methods
   void _getTurntables();
@@ -886,6 +931,14 @@ private:
   void _requestTurntableIndexEntry(int id);
   void _processTurntableIndexEntry();
   void _processTurntableBroadcast();
+
+  // Signal methods
+  void _getSignals();
+  bool _requestedSignals();
+  void _processSignalList();
+  void _requestSignalState(int id);
+  void _processSignalState();
+  void _processSignalBroadcast();
 
   // Track management methods
   void _processTrackPower();
@@ -911,6 +964,8 @@ private:
   int _turnoutCount = 0;                              // Count of turnout objects received
   int _routeCount = 0;                                // Count of route objects received
   int _turntableCount = 0;                            // Count of turntable objects received
+  int _signalCount = 0;                               // Count of signal objects
+
   int _version[3] = {};                               // EX-CommandStation version x.y.z
   Stream *_stream;                                    // Stream object where commands are sent/received
   Stream *_console;                                   // Stream object for console output
@@ -933,6 +988,8 @@ private:
   bool _receivedRouteList = false;                    // Flag that route list received
   bool _turntableListRequested = false;               // Flag that turntable list requested
   bool _receivedTurntableList = false;                // Flag that turntable list received
+  bool _signalListRequested = false;                  // Flag that signal list requested
+  bool _receivedSignalList = false;                   // Flag that signal list received
   bool _enableHeartbeat;                              // Flag if heartbeat is enabled
   unsigned long _heartbeatDelay;                      // Delay between heartbeats if enabled
   unsigned long _lastHeartbeat;                       // Time in ms of the last heartbeat, also set by sending a command

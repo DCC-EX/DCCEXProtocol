@@ -103,7 +103,7 @@ TEST_F(TestHarnessNoDelegate, TestReceiveMessage) {
 TEST_F(TestHarnessNoDelegate, TestGetLists) {
   // Request all lists
   // We expect ONLY the roster to be requested first.
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();
 
@@ -124,7 +124,7 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start turnouts
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
 
@@ -148,7 +148,7 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start routes
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J A>");
   _stream.clearOutput();
 
@@ -172,7 +172,7 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   _dccexProtocol.check();
 
   // Next call to getLists() should start turntables
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
@@ -212,9 +212,35 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   _dccexProtocol.check();
   _stream << "<jP 2 2 20 \"Turntable2 Index2\">";
   _dccexProtocol.check();
+  _stream.clearOutput();
+
+ // Next call to getLists() should start signals
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J S>");
+  _stream.clearOutput();
+
+ // receivedLists() should still be false
+  EXPECT_FALSE(_dccexProtocol.receivedLists());
+
+  // Simulate receiving the signal list and stream should now request first signal details
+  _stream << "<jS 50 51>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J S 50>");
+  _stream.clearOutput();
+
+  _stream << "<jS 50 R 4 \"Signal50\">";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J S 51>");
+  _stream.clearOutput();
+
+  // Simulate second details
+  _stream << "<jS 51 G 10 \"Signal51\">";
+  _dccexProtocol.check();
+  _stream.clearOutput();
+
 
   // Final getLists() should set received true
-  _dccexProtocol.getLists(true, true, true, true);
+  _dccexProtocol.getLists(true, true, true, true, true);
 
   // receivedLists() should return true when all lists complete
   EXPECT_TRUE(_dccexProtocol.receivedLists());
