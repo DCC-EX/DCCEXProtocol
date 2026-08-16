@@ -54,10 +54,6 @@ public:
   // Notify when a loco address is read from the programming track
   MOCK_METHOD(void, receivedReadLoco, (int), (override));
 
-  MOCK_METHOD(void, receivedRouteState, (int, RouteState), (override));
-
-  MOCK_METHOD(void, receivedRouteCaption, (int, const char *), (override));
-
   // Notify when a CV is read from the programming track
   MOCK_METHOD(void, receivedValidateCV, (int, int), (override));
 
