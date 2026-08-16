@@ -34,8 +34,7 @@
 /*
 Version information:
 
-1.5.0   - Add singal list support for lists, state and broadcast commands.
-        - Add support for route state and route caption broadcast commands
+1.5.0   - Add signal list support for lists, state and broadcast commands.
 1.4.0   - Add JMRI type sensor support for broadcasts, noting objects are not created:
                 - requestJMRISensorList()
         - DCCEXProtocolDelegate new method receivedJMRISensorBroadcast(int id, JMRISensorState state)

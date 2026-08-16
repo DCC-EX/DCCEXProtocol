@@ -961,15 +961,6 @@ void DCCEXProtocol::_processCommand() {
       } else if (DCCEXInbound::getParameterCount() == 3) {
         _processSetFastClock();
       }
-    } else if (DCCEXInbound::getNumber(0) == 'B') { // Receive Route state or caption info
-      if (DCCEXInbound::getParameterCount() == 3) {
-        if (DCCEXInbound::isTextParameter(2)) {
-          _processRouteCaption();
-        }
-        else {
-          _processRouteState();
-        }
-      }
     } else if (DCCEXInbound::getNumber(0) == 'S') { // Receive Signal state info
         if ((DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) ||
             (DCCEXInbound::getParameterCount() == 5 && DCCEXInbound::isTextParameter(4))) { 
@@ -1415,34 +1406,6 @@ void DCCEXProtocol::_processRouteEntry() {
     if (_delegate)
       _delegate->receivedRouteList();
   }
-}
-
-void DCCEXProtocol::_processRouteState() {
-  int id = DCCEXInbound::getNumber(1);
-  RouteState state = (RouteState)DCCEXInbound::getNumber(2);
- 
-  Route *r = Route::getById(id);
-  if (r) {
-    r->setState(state);
-    if (_delegate)
-      _delegate->receivedRouteState(id,
-         state);
-  }
-}
-
-void DCCEXProtocol::_processRouteCaption() {
-  int id = DCCEXInbound::getNumber(1);
-  char *caption = DCCEXInbound::copyTextParameter(2);
-  
-  Route *r = Route::getById(id);
-  if (r) {
-    r->setCaption(caption);
-    if (_delegate) {
-      _delegate->receivedRouteCaption(id, caption);
-    }
-  }
-
-  free(caption);
 }
 
 // Turntable methods

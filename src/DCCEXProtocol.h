@@ -199,16 +199,6 @@ public:
   /// @param address DCC address read from the programming track, or -1 for a failure to read
   virtual void receivedReadLoco(int address) {}
 
-  /// @brief Notify when a route state has been received
-  /// @param routeId ID of the route
-  /// @param state State of the route
-  virtual void receivedRouteState(int routeId, RouteState state) {}
-
-  /// @brief Notify when a route caption has been received
-  /// @param routeId ID of the route
-  /// @param caption New caption for the route button on a throttle
-  virtual void receivedRouteCaption(int routeId, const char *caption) {}
-
   /// @brief Notify when a CV is read or validated from the programming track
   /// @param cv CV the value has been read from
   /// @param value Value read from the CV, or -1 for a failure to read
@@ -920,9 +910,6 @@ private:
   void _processRouteList();
   void _requestRouteEntry(int id);
   void _processRouteEntry();
-  void _processRouteState();
-  void _processRouteCaption();
-
   // Turntable methods
   void _getTurntables();
   void _processTurntableList();
