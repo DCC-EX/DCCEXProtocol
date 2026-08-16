@@ -306,7 +306,7 @@ public:
   void getLists(bool rosterRequired = true, bool turnoutListRequired = true, bool routeListRequired = true,
                 bool turntableListRequired = true, bool signalListRequired = false);
 
-  /// @brief Check if all lists have been received (roster, routes, turnouts, turntables)
+  /// @brief Check if all requested lists have been received, including signals when requested
   /// @return true|false
   bool receivedLists();
 

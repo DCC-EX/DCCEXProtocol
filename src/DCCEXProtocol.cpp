@@ -146,7 +146,7 @@ void DCCEXProtocol::sendCommand(const char *cmd) {
 
 // Gated method to get the required lists to avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
-                             bool turntableListRequired, bool requestSignalUpdates) {
+                             bool turntableListRequired, bool signalListRequired) {
   // Serial.println(F("getLists()"));
   if (_receivedLists)
     return;
@@ -196,7 +196,7 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
   }
 
    // If we get here, get signals if required
-  if (requestSignalUpdates && !_signalListRequested) {
+  if (signalListRequired && !_signalListRequested) {
     _getSignals();
     return;
   }
