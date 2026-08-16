@@ -899,7 +899,7 @@ void DCCEXProtocol::_processCommand() {
     _processLocoBroadcast();
     break;
 
-  case 'h':  
+  case 'h':
     // signal state broadcast; <h id state> or <h id state aspect>
     if ((DCCEXInbound::getParameterCount() == 2) || (DCCEXInbound::getParameterCount() == 3)) {
         _processSignalBroadcast();
@@ -963,7 +963,7 @@ void DCCEXProtocol::_processCommand() {
       }
     } else if (DCCEXInbound::getNumber(0) == 'S') { // Receive Signal state info
         if ((DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) ||
-            (DCCEXInbound::getParameterCount() == 5 && DCCEXInbound::isTextParameter(4))) { 
+            (DCCEXInbound::getParameterCount() == 5 && DCCEXInbound::isTextParameter(4))) {
             // Signal State: <jS id state "desc"> or <jS id state aspect "desc">
           _processSignalState();
         } else { // Signal list
@@ -1526,7 +1526,7 @@ void DCCEXProtocol::_processSignalList() {
     _receivedSignalList = true;
     return;
   }
-  
+
   for (int i = 1; i < DCCEXInbound::getParameterCount(); i++) {
     auto id = DCCEXInbound::getNumber(i);
     new Signal(id);
@@ -1540,7 +1540,7 @@ void DCCEXProtocol::_processSignalState() { // <jS id state "desc"> or <jS id st
   int id = DCCEXInbound::getNumber(1);
   SignalState state = Signal::getStateFromName(DCCEXInbound::getNumber(2));
   int aspect = (DCCEXInbound::getParameterCount() == 5) ? DCCEXInbound::getNumber(3) : InvalidAspect;
-  const char* desc = (DCCEXInbound::getParameterCount() == 4) ? DCCEXInbound::getTextParameter(3) 
+  const char* desc = (DCCEXInbound::getParameterCount() == 4) ? DCCEXInbound::getTextParameter(3)
                                                               : DCCEXInbound::getTextParameter(4);
   bool missingSignals = false;
 

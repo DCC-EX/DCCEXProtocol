@@ -146,7 +146,7 @@ TEST_F(SignalTests, getSignalByIdNotFound) {
 
   delete signal100;
   EXPECT_EQ(_dccexProtocol.getSignalById(100), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -163,7 +163,7 @@ TEST_F(SignalTests, getSignalByIdNotFoundWalksList) {
   // Clean up
   delete signal100;
   EXPECT_EQ(Signal::getFirst(), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -192,7 +192,7 @@ TEST_F(SignalTests, clearSignalListClearsAllSignals) {
   EXPECT_EQ(Signal::getFirst(), nullptr);
   EXPECT_EQ(_dccexProtocol.getSignalById(100), nullptr);
   EXPECT_EQ(_dccexProtocol.getSignalById(101), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -221,7 +221,7 @@ TEST_F(SignalTests, signalClearSignalListEmptiesList) {
   // Clearing an already empty list must be safe and not crash
   EXPECT_NO_FATAL_FAILURE(Signal::clearSignalList());
   EXPECT_EQ(Signal::getFirst(), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -280,7 +280,7 @@ TEST_F(SignalTests, refreshSignalListResetsAndReRequests) {
   EXPECT_EQ(_dccexProtocol.getSignalById(201)->getState(), SignalStateGreen);
   EXPECT_EQ(_dccexProtocol.getSignalById(200)->getAspect(), 12);
   EXPECT_EQ(_dccexProtocol.getSignalById(201)->getAspect(), InvalidAspect);
- 
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -305,7 +305,7 @@ TEST_F(SignalTests, setNextLinksSignalDirectly) {
   // Restore the list for correct teardown
   signal101->setNext(signal102);
   EXPECT_EQ(signal101->getNext(), signal102);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -359,15 +359,15 @@ TEST_F(SignalTests, setSignalStateAndAspect) {
   // send invalid aspect
   _stream << "<jS 200 G \"Signal200\">";
   _dccexProtocol.check();
-  
+
   EXPECT_EQ(_dccexProtocol.getSignalById(100)->getState(), SignalStateInvalid);
   EXPECT_EQ(_dccexProtocol.getSignalById(200)->getState(), SignalStateGreen);
   EXPECT_EQ(_dccexProtocol.getSignalById(100)->getAspect(), 3);
   EXPECT_EQ(_dccexProtocol.getSignalById(200)->getAspect(), InvalidAspect);
- 
+
   _dccexProtocol.clearSignalList();
 }
- 
+
 /**
  * @brief Test deleting a signal that is not in the list is a safe no-op
  */
@@ -430,7 +430,7 @@ TEST_F(SignalTests, receiveSignalListAndState) {
   EXPECT_EQ(_dccexProtocol.signals->getById(101)->getState(), SignalStateRed);
   EXPECT_EQ(_dccexProtocol.signals->getById(100)->getAspect(), 9);
   EXPECT_EQ(_dccexProtocol.signals->getById(101)->getAspect(), 12);
-  
+
   _dccexProtocol.clearSignalList();
 }
 

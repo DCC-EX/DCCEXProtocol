@@ -438,7 +438,7 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
 }
 
 /**
- * @brief Test requesting signal list 
+ * @brief Test requesting signal list
  */
 TEST_F(DCCEXProtocolTests, getSignalList) {
   _dccexProtocol.getLists(false, false, false, false, true);

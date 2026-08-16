@@ -135,7 +135,7 @@ public:
 
   /// @brief Notify when the turntable list is received
   virtual void receivedTurntableList() {}
- 
+
   /// @brief Notify when the signal list is received
   virtual void receivedSignalList() {}
 
@@ -189,7 +189,7 @@ public:
   /// @param position Index of the position it is moving (or has moved) to
   /// @param moving Whether it is moving or not (true|false)
   virtual void receivedTurntableAction(int turntableId, int position, bool moving) {}
-  
+
   /// @brief Notify when a signal state is received
   /// @param signalId ID of the signal
   /// @param state state of the signal
@@ -856,7 +856,7 @@ public:
 
   /// @brief Linked list of Turntable objects to form the list of turntables, call turntables->getFirst()
   Turntable *turntables = nullptr;
- 
+
   /// @brief Linked list of Signal objects to form the list of signals, call signals->getFirst()
   Signal *signals = nullptr;
 
