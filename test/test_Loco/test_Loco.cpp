@@ -271,6 +271,9 @@ TEST_F(LocoTests, TestGetByAddress) {
   Loco *loco3 = new Loco(3, LocoSource::LocoSourceEntry);
   Loco *loco42 = new Loco(42, LocoSource::LocoSourceRoster);
 
+  ASSERT_NE(loco3, nullptr);
+  ASSERT_NE(loco42, nullptr);
+
   // Assert both are now available
   ASSERT_NE(Loco::getByAddress(42), nullptr);
   ASSERT_NE(Loco::getByAddress(3), nullptr);

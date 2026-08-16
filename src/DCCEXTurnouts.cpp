@@ -27,7 +27,7 @@
  */
 
 #include "DCCEXTurnouts.h"
-#include <Arduino.h>
+#include <string.h>
 
 Turnout *Turnout::_first = nullptr;
 

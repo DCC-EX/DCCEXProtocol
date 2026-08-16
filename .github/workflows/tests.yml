@@ -34,3 +34,24 @@ jobs:
         run: pio test -e native_test
         env:
           PLATFORMIO_TEST_FLAGS: "--gtest-shuffle --gtest_repeat=5 --gtest_recreate_environments_when_repeating"
+
+  cmake-native:
+    name: CMake native build and tests
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Configure CMake
+        run: cmake -S . -B build -G Ninja -DDCCEX_BUILD_TESTS=ON -DDCCEX_BUILD_EXAMPLES=ON
+      - name: Build library, tests, and example
+        run: cmake --build build --parallel
+      - name: Run CTest suite
+        run: ctest --test-dir build --output-on-failure
+      - name: Run native example
+        if: runner.os != 'Windows'
+        run: ./build/DCCEXProtocolNativeExample
+      - name: Run native example (Windows)
+        if: runner.os == 'Windows'
+        run: .\build\DCCEXProtocolNativeExample.exe

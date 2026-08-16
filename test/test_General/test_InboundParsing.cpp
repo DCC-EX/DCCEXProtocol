@@ -23,6 +23,7 @@
  */
 
 #include "../setup/DCCEXProtocolTests.h"
+#include "DCCEXInbound.h"
 
 /**
  * @brief Ensure parse returns false for an unterminated command

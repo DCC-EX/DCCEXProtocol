@@ -45,7 +45,28 @@ Version information: MOVED TO DCCEXProtocolVersion.h
 #include "DCCEXRoutes.h"
 #include "DCCEXTurnouts.h"
 #include "DCCEXTurntables.h"
-#include <Arduino.h>
+#include "DCCMillisWrappers.h"
+#ifdef ARDUINO
+  #if defined(NATIVE_TESTING)
+    // In native test builds, use DCCStream.h so both library and test TUs share one Stream class
+    #include "DCCStream.h"
+  #else
+    #include <Arduino.h>
+  #endif
+#else
+#include "DCCStream.h"
+#endif
+#include <stddef.h>
+
+// Platform-neutral time source. Override this macro in non-Arduino builds, for example:
+// -DDCCEX_MILLIS()=my_platform_millis()
+#ifndef DCCEX_MILLIS
+  #ifdef DCCEX_DEFAULT_MILLIS
+    #define DCCEX_MILLIS() DCCEX_DEFAULT_MILLIS()
+  #else
+    #define DCCEX_MILLIS() millis()
+  #endif
+#endif
 
 const int MAX_OUTBOUND_COMMAND_LENGTH = 100; // Max number of bytes for outbound commands
 
@@ -904,7 +925,7 @@ private:
   void _processFastClockTime();
 
   // JMRI sensor methods
-  void _processJMRISensorBroadcast(byte opcode);
+  void _processJMRISensorBroadcast(uint8_t opcode);
 
   // Attributes
   int _rosterCount = 0;                               // Count of roster items received

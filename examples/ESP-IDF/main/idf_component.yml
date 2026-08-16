@@ -1,0 +1,9 @@
+## IDF Component Manager Manifest File
+dependencies:
+  ## Required IDF version
+  idf:
+    version: '>=5.5.1'
+  DCCEXProtocol:
+    path: ../../../
+    # git: https://github.com/mwinters-stuff/DCCEXProtocol.git
+    # version: main

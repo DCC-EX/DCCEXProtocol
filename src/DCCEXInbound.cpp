@@ -33,12 +33,19 @@
 // The dump() function is used to list the parameters obtained.
 // so this is the best place to look for how to access the results.
 #include "DCCEXInbound.h"
-#include <Arduino.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef ARDUINO
+#define DCCEX_INBOUND_TEXT(text) F(text)
+#else
+#define DCCEX_INBOUND_TEXT(text) text
+#endif
 
 // Internal stuff for the parser and getters.
 const int32_t QUOTE_FLAG = 0x77777000;
 const int32_t QUOTE_FLAG_AREA = 0xFFFFF000;
-enum splitState : byte {
+enum splitState : uint8_t {
   FIND_START,
   SET_OPCODE,
   SKIP_SPACES,
@@ -50,7 +57,7 @@ enum splitState : byte {
 
 int16_t DCCEXInbound::_maxParams = 0;
 int16_t DCCEXInbound::_parameterCount = 0;
-byte DCCEXInbound::_opcode = 0;
+uint8_t DCCEXInbound::_opcode = 0;
 int32_t *DCCEXInbound::_parameterValues = nullptr;
 char *DCCEXInbound::_cmdBuffer = nullptr;
 
@@ -70,7 +77,7 @@ void DCCEXInbound::cleanup() {
   }
 }
 
-byte DCCEXInbound::getOpcode() { return _opcode; }
+uint8_t DCCEXInbound::getOpcode() { return _opcode; }
 
 int16_t DCCEXInbound::getParameterCount() { return _parameterCount; }
 
@@ -116,7 +123,7 @@ bool DCCEXInbound::parse(char *command) {
   splitState state = FIND_START;
 
   while (_parameterCount < _maxParams) {
-    byte hot = *remainingCmd;
+    uint8_t hot = *remainingCmd;
     if (hot == 0)
       return false; // no > on end of command.
 
@@ -200,29 +207,29 @@ bool DCCEXInbound::parse(char *command) {
 }
 
 void DCCEXInbound::dump(Print *out) {
-  out->print(F("\nDCCEXInbound Opcode='"));
+  out->print(DCCEX_INBOUND_TEXT("\nDCCEXInbound Opcode='"));
   if (_opcode)
     out->write(_opcode);
   else
-    out->print(F("\\0"));
+    out->print(DCCEX_INBOUND_TEXT("\\0"));
   out->println('\'');
 
   for (int i = 0; i < getParameterCount(); i++) {
     if (isTextParameter(i)) {
-      out->print(F("getTextParameter("));
+      out->print(DCCEX_INBOUND_TEXT("getTextParameter("));
       out->print(i);
-      out->print(F(")=\""));
+      out->print(DCCEX_INBOUND_TEXT(")=\""));
       out->print(getTextParameter(i));
       out->println('"');
     } else {
-      out->print(F("getNumber("));
+      out->print(DCCEX_INBOUND_TEXT("getNumber("));
       out->print(i);
-      out->print(F(")="));
+      out->print(DCCEX_INBOUND_TEXT(")="));
       out->println(getNumber(i));
     }
   }
 }
-
+#undef DCCEX_INBOUND_TEXT
 // Private methods
 
 bool DCCEXInbound::_isTextInternal(int16_t n) { return ((_parameterValues[n] & QUOTE_FLAG_AREA) == QUOTE_FLAG); }

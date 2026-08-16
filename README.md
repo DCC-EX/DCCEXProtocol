@@ -18,6 +18,39 @@ The implementation of this library is tested on ESP32 based devices running the 
 
 There has also been limited testing on STM32F103C8 Bluepill.
 
+The library can also be built without an Arduino core. Native builds provide
+the `Stream` and `Print` interfaces in `src/DCCStream.h`, while the time source
+uses a host monotonic clock. Embedded platforms can provide their own stream
+and override `DCCEX_MILLIS()` when the built-in Arduino, ESP-IDF, or Pico
+wrappers are not suitable.
+
+## Cross-platform millis support
+
+The library now uses a platform-neutral time macro internally. By default it uses Arduino millis(), and it can be overridden for non-Arduino targets without changing library source code.
+
+Built-in defaults are provided in src/DCCMillisWrappers.h for:
+
+- Arduino (millis)
+- ESP-IDF (esp_timer_get_time()/1000)
+- Pico SDK (to_ms_since_boot(get_absolute_time()))
+
+If your target is not covered, define DCCEX_MILLIS() in your build flags or before including DCCEXProtocol.h.
+
+Examples:
+
+- Arduino: no change required.
+- ESP-IDF:
+
+   add_compile_definitions(DCCEX_MILLIS()=dccex_esp_idf_millis())
+
+- Pico SDK:
+
+   add_compile_definitions(DCCEX_MILLIS()=dccex_pico_millis())
+
+- Custom platform function:
+
+   -DDCCEX_MILLIS()=my_platform_millis()
+
 ## Basic Design Principles
 
 First of all, this library implements the DCC-EX Native protocol in a non-blocking fashion. After creating a DCCEXProtocol object, you set up various necessities such as the network connection and a debug console (see [Dependency Injection][depinj]).
@@ -61,9 +94,22 @@ For contributors wishing to build local copies of the documentation while updati
 
 ## Testing
 
-The library has a comprehensive test suite written using GoogleTest, which is run automatically on every push and pull request via the GitHub "PlatformIO Testing" workflow (see tests.yml in the repository).
+The library has a comprehensive test suite written using GoogleTest. It runs
+in both the existing PlatformIO workflow and a native CMake workflow on every
+push and pull request. The CMake path is useful when PlatformIO is not
+available and also compiles the native example.
 
-As of version 1.2.1, the tests have been migrated from cmake across to PlatformIO's native test environment, which simplifies the dependencies and process of running the tests. To run them, you will need PlatformIO installed, either through the VSCode IDE or installed within a Linux/macOS environment directly. PlatformIO Core should be all that is required to be installed.
+To configure, build, and run the native suite:
+
+```bash
+cmake -S . -B build -DDCCEX_BUILD_TESTS=ON -DDCCEX_BUILD_EXAMPLES=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+PlatformIO remains available for contributors who want to use the existing
+Arduino-oriented test environment. To run it, install PlatformIO Core through
+the VSCode IDE or directly in a Linux/macOS environment:
 
 The recommendation to run the tests on Linux or macOS remains due to the ability to check for memory leaks and invalid pointers:
 

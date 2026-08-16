@@ -29,8 +29,6 @@
 #ifndef DCCEXTURNTABLES_H
 #define DCCEXTURNTABLES_H
 
-#include <Arduino.h>
-
 enum TurntableType {
   TurntableTypeDCC = 0,
   TurntableTypeEXTT = 1,

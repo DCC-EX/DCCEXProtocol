@@ -28,6 +28,8 @@
 #include <gmock/gmock.h>
 #include <stdint.h>
 
+#define ARDUINO
+
 // Define states
 #define HIGH 0x1
 #define LOW 0x0
