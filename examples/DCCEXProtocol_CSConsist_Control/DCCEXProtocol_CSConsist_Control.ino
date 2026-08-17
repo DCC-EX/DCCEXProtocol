@@ -95,7 +95,7 @@ void loop() {
   // parse incoming messages
   dccexProtocol.check();
 
-  if (!consist) {
+  if (!csConsist) {
     // Create a new CSConsist for loco address 11 in the normal direction of travel, and replicate functions across the
     // consist.
     // By default, functions will only affect the lead loco

@@ -68,7 +68,7 @@ public:
     CONSOLE.println("\n\n");
   }
 
-  void receivedScreenUpdate(int screen, int row, char *message) override {
+  void receivedScreenUpdate(int screen, int row, const char *message) override {
     CONSOLE.println("\n\nReceived screen|row|message");
     CONSOLE.print(screen);
     CONSOLE.print("|");

@@ -61,6 +61,12 @@ else()
       # separate test-library instance against the deterministic Arduino mock.
       target_compile_definitions(DCCEXProtocolTest PRIVATE NATIVE_TESTING)
       target_include_directories(DCCEXProtocolTest PRIVATE test/mocks test/setup)
+      target_link_libraries(DCCEXProtocolTest PRIVATE GTest::gmock)
+      target_compile_options(DCCEXProtocolTest PRIVATE
+        "$<$<CXX_COMPILER_ID:MSVC>:/FI${CMAKE_CURRENT_SOURCE_DIR}/test/mocks/Arduino.h>"
+        "$<$<CXX_COMPILER_ID:Clang>:/FI${CMAKE_CURRENT_SOURCE_DIR}/test/mocks/Arduino.h>"
+        "$<$<CXX_COMPILER_ID:GNU>:-include${CMAKE_CURRENT_SOURCE_DIR}/test/mocks/Arduino.h>"
+      )
 
       add_executable(DCCEXProtocolTests ${TEST_SOURCES})
       target_compile_definitions(DCCEXProtocolTests PRIVATE NATIVE_TESTING)
