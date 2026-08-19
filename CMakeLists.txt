@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.11)
 
 # Detect ESP-IDF build
 if(ESP_PLATFORM OR DEFINED ENV{IDF_PATH})
-  file(GLOB_RECURSE SRC src/*.cpp)
-  idf_component_register(
-    SRCS ${SRC}
-    INCLUDE_DIRS src
-    REQUIRES esp_timer
-  )
+    file(GLOB_RECURSE SRC src/*.cpp)
+    set(COMPONENT_SRCS ${SRC}) # Add all your source files here
+    set(COMPONENT_ADD_INCLUDEDIRS src)
+    set(COMPONENT_PRIV_INCLUDEDIRS "")
+    set(COMPONENT_REQUIRES esp_timer)
+    set(COMPONENT_PRIV_REQUIRES "")
+    register_component()
 else()
     include(FetchContent)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
@@ -37,6 +38,7 @@ else()
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC})
 
     if(DCCEX_BUILD_TESTS)
+      include(CTest)
       enable_testing()
 
       FetchContent_Declare(
@@ -48,9 +50,6 @@ else()
 
       file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS test/*.cpp)
       add_executable(DCCEXProtocolTests ${TEST_SOURCES})
-
-      # Compile the library with NATIVE_TESTING so it uses DCCStream.h instead of Arduino.h's Stream
-      target_compile_definitions(DCCEXProtocol PRIVATE NATIVE_TESTING)
 
       target_compile_definitions(DCCEXProtocolTests PRIVATE NATIVE_TESTING)
       target_include_directories(DCCEXProtocolTests PRIVATE test/mocks test/setup)
