@@ -17,74 +17,7 @@
 
 #ifndef STREAM_H
 #define STREAM_H
-
-#include "Print.h"
-
-/**
- * @brief Mock Stream class to simulate Arduino Stream objects eg. Serial.
- * @details Utilises a separate input and output buffer to cater for bi-directional comms.
- */
-class Stream : public Print {
-public:
-  /**
-   * @brief Determines if there are more characters in the buffer
-   * @return int Length of the buffer
-   */
-  int available() const { return _inputBuffer.length(); }
-
-  /**
-   * @brief Read a char from the buffer
-   * @return int Char
-   */
-  int read() {
-    if (_inputBuffer.empty())
-      return -1;
-    char c = _inputBuffer[0];
-    _inputBuffer.erase(0, 1);
-    return c;
-  }
-
-  /**
-   * @brief Write to the output buffer
-   * @param c Char to write
-   * @return size_t
-   */
-  virtual size_t write(uint8_t c) override {
-    _outputBuffer += (char)c;
-    return 1;
-  }
-
-  /**
-   * @brief Helper to write data to the buffer using <<
-   * @tparam T
-   * @param data
-   * @return Stream&
-   */
-  template <typename T> Stream &operator<<(const T &data) {
-    // We bypass write() and put this straight into input
-    _inputBuffer += data;
-    return *this;
-  }
-
-  /**
-   * @brief Helper to view the output buffer contents
-   * @return std::string
-   */
-  std::string getOutput() { return _outputBuffer; }
-
-  /**
-   * @brief Clear the output buffer
-   */
-  void clearOutput() { _outputBuffer.clear(); }
-
-  /**
-   * @brief Clear the input buffer
-   */
-  void clearInput() { _inputBuffer.clear(); }
-
-private:
-  std::string _inputBuffer;  // Data for read()
-  std::string _outputBuffer; // Data from write()/print()
-};
-
+// Stream and Print are defined in DCCStream.h for native builds
+#include "DCCStream.h"
 #endif
+

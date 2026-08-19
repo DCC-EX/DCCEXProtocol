@@ -24,7 +24,7 @@
 #define DCCEXCSCONSIST_H
 
 #include "DCCEXLoco.h"
-#include <Arduino.h>
+#include <string.h>
 
 /**
  * @brief Structure for a CSConsistMember

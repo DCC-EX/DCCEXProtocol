@@ -29,7 +29,6 @@
 #ifndef DCCEXROUTES_H
 #define DCCEXROUTES_H
 
-#include <Arduino.h>
 
 enum RouteType {
   RouteTypeRoute = 'R',

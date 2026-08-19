@@ -18,6 +18,33 @@ The implementation of this library is tested on ESP32 based devices running the 
 
 There has also been limited testing on STM32F103C8 Bluepill.
 
+## Cross-platform millis support
+
+The library now uses a platform-neutral time macro internally. By default it uses Arduino millis(), and it can be overridden for non-Arduino targets without changing library source code.
+
+Built-in defaults are provided in src/DCCMillisWrappers.h for:
+
+- Arduino (millis)
+- ESP-IDF (esp_timer_get_time()/1000)
+- Pico SDK (to_ms_since_boot(get_absolute_time()))
+
+If your target is not covered, define DCCEX_MILLIS() in your build flags or before including DCCEXProtocol.h.
+
+Examples:
+
+- Arduino: no change required.
+- ESP-IDF:
+
+   add_compile_definitions(DCCEX_MILLIS()=dccex_esp_idf_millis())
+
+- Pico SDK:
+
+   add_compile_definitions(DCCEX_MILLIS()=dccex_pico_millis())
+
+- Custom platform function:
+
+   -DDCCEX_MILLIS()=my_platform_millis()
+
 ## Basic Design Principles
 
 First of all, this library implements the DCC-EX Native protocol in a non-blocking fashion. After creating a DCCEXProtocol object, you set up various necessities such as the network connection and a debug console (see [Dependency Injection][depinj]).

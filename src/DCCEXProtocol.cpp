@@ -40,6 +40,17 @@ Function/method prefixes
 */
 
 #include "DCCEXProtocol.h"
+#include "DCCEXUtils.h"
+#include "DCCEXInbound.h"
+#include "DCCEXProtocolVersion.h"
+#include <ctype.h>
+#include <stdlib.h>
+#include <cstdio>
+#include <ctype.h>
+#include <string.h>
+
+/// @brief Opaque stream sink; defined in DCCEXProtocol.cpp to avoid ODR violations
+class NullStream;
 
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
@@ -50,8 +61,9 @@ static const int MAX_SPEED = 126;
 
 DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams, unsigned long userChangeDelay) {
   // Init streams
-  _stream = &_nullStream;
-  _console = &_nullStream;
+  _nullStream = new NullStream();
+  _stream = _nullStream;
+  _console = _nullStream;
 
   // Allocate memory for command buffer
   _cmdBuffer = new char[maxCmdBuffer];
@@ -81,6 +93,8 @@ DCCEXProtocol::~DCCEXProtocol() {
 
   // Cleanup command parser
   DCCEXInbound::cleanup();
+
+  delete _nullStream;
 }
 
 // Set the delegate instance for callbacks
@@ -530,11 +544,9 @@ void DCCEXProtocol::clearCSConsists() { CSConsist::clearCSConsists(); }
 // Momentum methods
 
 void DCCEXProtocol::setMomentumAlgorithm(MomentumAlgorithm algorithm) {
-  // Algorithm lookup table
   static const char *const ALGORITHMS[] = {"LINEAR", "POWER"};
 
-  // Check out of bounds before sending command
-  if (algorithm >= 0 && algorithm < (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]))) {
+  if (static_cast<size_t>(algorithm) < (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]))) {
     _sendOneParam('m', ALGORITHMS[algorithm]);
   }
 }
@@ -793,7 +805,7 @@ void DCCEXProtocol::_init() {
   memset(_inputBuffer, 0, sizeof(_inputBuffer));
   _nextChar = 0;
   // last Response time
-  _lastServerResponseTime = millis();
+  _lastServerResponseTime = DCCEX_MILLIS();
 }
 
 void DCCEXProtocol::_sendCommand() {
@@ -803,14 +815,14 @@ void DCCEXProtocol::_sendCommand() {
       _console->print("==> ");
       _console->println(_outboundCommand);
     }
-    *_outboundCommand = 0;     // clear it once it has been sent
-    _lastHeartbeat = millis(); // If we sent a command, a heartbeat isn't necessary
+    *_outboundCommand = 0;           // clear it once it has been sent
+    _lastHeartbeat = DCCEX_MILLIS(); // If we sent a command, a heartbeat isn't necessary
   }
 }
 
 void DCCEXProtocol::_processCommand() {
   // last Response time
-  _lastServerResponseTime = millis();
+  _lastServerResponseTime = DCCEX_MILLIS();
 
   switch (DCCEXInbound::getOpcode()) {
   case '@': // Screen update
@@ -1018,8 +1030,8 @@ void DCCEXProtocol::_processScreenUpdate() { //<@ screen row "message">
 }
 
 void DCCEXProtocol::_sendHeartbeat() {
-  if (millis() - _lastHeartbeat > _heartbeatDelay) {
-    _lastHeartbeat = millis();
+  if (DCCEX_MILLIS() - _lastHeartbeat > _heartbeatDelay) {
+    _lastHeartbeat = DCCEX_MILLIS();
     _sendOpcode('#');
   }
 }
@@ -1107,8 +1119,8 @@ void DCCEXProtocol::_processReadResponse() { // <r id> - -1 = error
 }
 
 void DCCEXProtocol::_processPendingUserChanges() {
-  if (millis() - _lastUserChange > _userChangeDelay) {
-    _lastUserChange = millis();
+  if (DCCEX_MILLIS() - _lastUserChange > _userChangeDelay) {
+    _lastUserChange = DCCEX_MILLIS();
     _setLocos(Loco::getFirst());
     _setLocos(Loco::getFirstLocalLoco());
   }
@@ -1587,7 +1599,7 @@ void DCCEXProtocol::_processFastClockTime() { // <jC minutes>
 }
 
 // JMRI sensor methods
-void DCCEXProtocol::_processJMRISensorBroadcast(byte opcode) { // <Q|q id>
+void DCCEXProtocol::_processJMRISensorBroadcast(uint8_t opcode) { // <Q|q id>
   if (!_delegate)
     return;
 
@@ -1622,9 +1634,9 @@ void DCCEXProtocol::_cmdAppend(const char *s) {
 }
 
 void DCCEXProtocol::_cmdAppend(int n) {
-  char buf[12]; // Enough for -2147483648
-  itoa(n, buf, 10);
-  _cmdAppend(buf);
+  char buf[sizeof(int) * 3 + 2];
+  char *writePtr = fastitoa(n, &buf[sizeof(buf) - 1]);
+  _cmdAppend(writePtr);
 }
 
 void DCCEXProtocol::_cmdAppend(char c) {

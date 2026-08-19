@@ -30,7 +30,10 @@
 #ifndef DCCEXINBOUND_H
 #define DCCEXINBOUND_H
 
+#ifdef ARDUINO
 #include <Arduino.h>
+#endif
+#include <inttypes.h>
 
 /* How to use this:
   1) setup is done once with your expected max parameter count.
@@ -58,7 +61,7 @@ public:
   static bool parse(char *command);
 
   /// @brief Gets the DCC-EX OPCODE of the parsed command (the first char after the <)
-  static byte getOpcode();
+  static uint8_t getOpcode();
 
   /// @brief Gets number of parameters detected after OPCODE  <JR 1 2 3> is 4 parameters!
   /// @return Number of parameters
@@ -86,12 +89,14 @@ public:
 
   /// @brief dump list of parameters obtained
   /// @param out Address of output e.g. &Serial
+#ifdef ARDUINO  
   static void dump(Print *);
+#endif  
 
 private:
   static int16_t _maxParams;
   static int16_t _parameterCount;
-  static byte _opcode;
+  static uint8_t _opcode;
   static int32_t *_parameterValues;
   static char *_cmdBuffer;
   static bool _isTextInternal(int16_t n);
