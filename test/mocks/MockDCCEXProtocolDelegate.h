@@ -21,6 +21,9 @@ public:
   // Notify when the turntable list is received
   MOCK_METHOD(void, receivedTurntableList, (), (override));
 
+  // Notify when the signal list is received
+  MOCK_METHOD(void, receivedSignalList, (), (override));
+
   // Notify when an update to a Loco object is received
   MOCK_METHOD(void, receivedLocoUpdate, (Loco *), (override));
 
@@ -42,11 +45,18 @@ public:
   // Notify when a turnout state change is received
   MOCK_METHOD(void, receivedTurnoutAction, (int, bool), (override));
 
+   // Notify when a signal state change is received
+  MOCK_METHOD(void, receivedSignalState, (int, SignalState, int), (override));
+
   // Notify when a turntable index change is received
   MOCK_METHOD(void, receivedTurntableAction, (int, int, bool), (override));
 
   // Notify when a loco address is read from the programming track
   MOCK_METHOD(void, receivedReadLoco, (int), (override));
+
+  MOCK_METHOD(void, receivedRouteState, (int, RouteState), (override));
+
+  MOCK_METHOD(void, receivedRouteCaption, (int, const char *), (override));
 
   // Notify when a CV is read from the programming track
   MOCK_METHOD(void, receivedValidateCV, (int, int), (override));

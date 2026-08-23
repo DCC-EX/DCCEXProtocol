@@ -31,6 +31,9 @@ TEST_F(TurnoutTests, parseEmptyTurnoutList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   _dccexProtocol.getLists(false, true, false, false);
+  _getListsGetServerVersion();
+  
+  _dccexProtocol.getLists(false, true, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
 
@@ -45,6 +48,9 @@ TEST_F(TurnoutTests, parseEmptyTurnoutList) {
 TEST_F(TurnoutTests, parseThreeTurnouts) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
+  _dccexProtocol.getLists(false, true, false, false);
+   _getListsGetServerVersion();
+
   _dccexProtocol.getLists(false, true, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
@@ -84,8 +90,10 @@ TEST_F(TurnoutTests, parseTurnoutEntriesOutOfOrder) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurnoutList());
   _dccexProtocol.getLists(false, true, false, false);
+  _getListsGetServerVersion();
   _stream.clearOutput();
 
+  _dccexProtocol.getLists(false, true, false, false);
   // Turnout list response
   _stream << "<jT 100 101 102>";
   _dccexProtocol.check();

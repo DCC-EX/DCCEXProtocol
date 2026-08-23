@@ -36,6 +36,15 @@ enum RouteType {
   RouteTypeAutomation = 'A',
 };
 
+
+enum RouteState {
+  RouteStateInactive = 0,
+  RouteStateActive = 1,
+  RouteStateHidden = 2,
+  RouteStateDisabled = 4
+};
+
+
 /// @brief Class to contain and maintain the various Route attributes and methods
 class Route {
 public:
@@ -63,6 +72,22 @@ public:
   /// @return RouteTypeAutomation|RouteTypeRoute
   RouteType getType();
 
+  /// @brief Set route state (A automation, R route)
+  /// @param state RouteState - RouteStateInactive|RouteStateActive|RouteStateHidden|RouteStateDisabled
+  void setState(RouteState state);
+
+  /// @brief Get route state (A automation, R route)
+  /// @return RouteStateInactive|RouteStateActive|RouteStateHidden|RouteStateDisabled
+  RouteState getState();
+ 
+  /// @brief Set caption for the route button of a throttle (A automation, R route)
+  /// @param caption Caption to set for the route button
+  void setCaption(const char *caption);
+
+  /// @brief Get route caption (A automation, R route)
+  /// @return Current caption of the route button
+  const char *getCaption();
+ 
   /// @brief Get first Route object
   /// @return Pointer to the first Route object
   static Route *getFirst();
@@ -89,6 +114,8 @@ private:
   int _id;
   char *_name;
   char _type;
+  RouteState  _state;
+  char *_caption;
   static Route *_first;
   Route *_next;
 

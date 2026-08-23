@@ -601,6 +601,9 @@ TEST_F(TurntableTests, TestDeleteFirstTurntable) {
 TEST_F(TurntableTests, clearTurntableListClearsAllTurntables) {
   // Populate the turntable list via inbound <jO> responses
   _dccexProtocol.getLists(false, false, false, true);
+  _getListsGetServerVersion();
+  
+  _dccexProtocol.getLists(false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
   _stream << "<jO 1 2>";

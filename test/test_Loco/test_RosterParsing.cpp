@@ -27,6 +27,9 @@
 TEST_F(LocoTests, parseEmptyRoster) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());
   _dccexProtocol.getLists(true, false, false, false);
+  _getListsGetServerVersion();
+
+  _dccexProtocol.getLists(true, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();
 
@@ -41,7 +44,9 @@ TEST_F(LocoTests, parseEmptyRoster) {
 TEST_F(LocoTests, parseRosterWithThreeIDs) {
   EXPECT_FALSE(_dccexProtocol.receivedRoster());
   _dccexProtocol.getLists(true, false, false, false);
+  _getListsGetServerVersion();
 
+  _dccexProtocol.getLists(true, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();
 
@@ -169,6 +174,9 @@ TEST_F(LocoTests, clearLocalLocosClearsList) {
  */
 TEST_F(LocoTests, refreshRosterResetsAndReRequests) {
   // Request and receive the roster
+  _dccexProtocol.getLists(true, false, false, false);
+  _getListsGetServerVersion();
+
   _dccexProtocol.getLists(true, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();

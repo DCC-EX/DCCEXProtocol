@@ -60,6 +60,18 @@ protected:
     CSConsist::setAlwaysReplicateFunctions(false);
   }
 
+  // Helper finction to return server version for all getLists calls
+  // This is common for all getLists in all test classes.
+  // NOTE: the default version number must be updated to reflect latest iDCCEX version.
+  void _getListsGetServerVersion(const char* cs_version = "5.9.0")
+  {
+      EXPECT_EQ(_stream.getOutput(), "<s>");
+      _stream.clearOutput();
+      // send a version number
+      _stream << "<iDCC-EX V-" << cs_version << ">";
+      _dccexProtocol.check();
+  }
+
   DCCEXProtocol _dccexProtocol;
   MockDCCEXProtocolDelegate _delegate;
   Stream _console;

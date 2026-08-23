@@ -31,6 +31,9 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
+  _getListsGetServerVersion();
+
+  _dccexProtocol.getLists(false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
 
@@ -45,6 +48,9 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
 TEST_F(TurntableTests, parseTwoTurntables) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
+  _dccexProtocol.getLists(false, false, false, true);
+  _getListsGetServerVersion();
+
   _dccexProtocol.getLists(false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
@@ -105,8 +111,9 @@ TEST_F(TurntableTests, parseTurntableEntriesOutOfOrder) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  _stream.clearOutput();
+  _getListsGetServerVersion();
 
+  _dccexProtocol.getLists(false, false, false, true);
   // Two turntables in response
   _stream << "<jO 1 2>";
   _dccexProtocol.check();

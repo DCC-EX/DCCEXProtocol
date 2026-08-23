@@ -37,6 +37,8 @@ Route::Route(int id) {
   _id = id;
   _name = nullptr;
   _next = nullptr;
+  _caption = nullptr;
+  _state = RouteState::RouteStateInactive;
   _type = RouteType::RouteTypeRoute;
   if (!_first) {
     _first = this;
@@ -69,6 +71,21 @@ const char *Route::getName() { return _name; }
 void Route::setType(RouteType type) { _type = type; }
 
 RouteType Route::getType() { return (RouteType)_type; }
+
+void Route::setState(RouteState state) { _state = state; }
+RouteState Route::getState() { return _state; }
+
+void Route::setCaption(const char *caption) {
+  if (_caption) {
+    delete[] _caption;
+    _caption = nullptr;
+  }
+  int captionLength = strlen(caption);
+  _caption = new char[captionLength + 1];
+  strcpy(_caption, caption);
+}
+
+const char *Route::getCaption() { return _caption; }
 
 Route *Route::getFirst() { return _first; }
 
@@ -122,6 +139,10 @@ Route::~Route() {
     _name = nullptr;
   }
 
+  if (_caption) {
+    delete[] _caption;
+    _caption = nullptr;
+  }
   _next = nullptr;
 }
 

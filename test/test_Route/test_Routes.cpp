@@ -304,3 +304,98 @@ TEST_F(RouteTests, clearRouteListClearsAllRoutes) {
   EXPECT_EQ(Route::getById(121), nullptr);
   EXPECT_EQ(Route::getById(221), nullptr);
 }
+
+TEST_F(RouteTests, TestRouteState) {
+  // Populate the route list via inbound <jA> responses
+  _dccexProtocol.getLists(false, false, true, false);
+  _stream.clearOutput();
+  _stream << "<jA 21 121>";
+  _dccexProtocol.check();
+  _stream << R"(<jA 21 R "Route 21">)";
+  _stream << R"(<jA 121 A "Automation 121">)";
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _dccexProtocol.check();
+  ASSERT_EQ(_dccexProtocol.getRouteCount(), 2);
+  ASSERT_NE(Route::getFirst(), nullptr);
+
+  // Test setting and getting route state
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedRouteState(21, RouteStateActive)).Times(Exactly(1));
+  _stream << "<jB 21 1>";   // set active state for route 21
+  _dccexProtocol.check();
+  ASSERT_EQ(Route::getById(21)->getState(), RouteStateActive);
+
+  EXPECT_CALL(_delegate, receivedRouteState(21, RouteStateHidden)).Times(Exactly(1));
+  _stream.clearOutput();
+  _stream << "<jB 21 2>";   // set hidden state for route 21
+  _dccexProtocol.check();
+  ASSERT_EQ(Route::getById(21)->getState(), RouteStateHidden);
+
+   EXPECT_CALL(_delegate, receivedRouteState(121, RouteStateInactive)).Times(Exactly(1));
+ _stream.clearOutput();
+  _stream << "<jB 121 0>";   // set Inactive state for route 121
+  _dccexProtocol.check();
+  ASSERT_EQ(Route::getById(121)->getState(), RouteStateInactive);
+
+  EXPECT_CALL(_delegate, receivedRouteState(121, RouteStateDisabled)).Times(Exactly(1));
+  _stream.clearOutput();
+  _stream << "<jB 121 4>";   // set disabled state for route 121
+  _dccexProtocol.check();
+  ASSERT_EQ(Route::getById(121)->getState(), RouteStateDisabled);
+
+  // Clearing the list must remove every route and reset the count
+  _dccexProtocol.clearRouteList();
+  EXPECT_EQ(_dccexProtocol.getRouteCount(), 0);
+  EXPECT_EQ(Route::getFirst(), nullptr);
+  EXPECT_EQ(Route::getById(21), nullptr);
+  EXPECT_EQ(Route::getById(121), nullptr);
+}
+
+TEST_F(RouteTests, TestRouteCaption) {
+  std::string caption;
+ 
+  // populate the route list via inbound <jA> responses
+  _dccexProtocol.getLists(false, false, true, false);
+  _stream.clearOutput();
+  _stream << "<jA 21 121>";
+  _dccexProtocol.check();
+  _stream << R"(<jA 21 R "Route 21">)";
+  _stream << R"(<jA 121 A "Automation 121">)";
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _dccexProtocol.check();
+  ASSERT_EQ(_dccexProtocol.getRouteCount(), 2);
+  ASSERT_NE(Route::getFirst(), nullptr);
+
+  // Test setting and getting route state
+  _stream << R"(<jB 21 "Active">)";   // set active state for route 21
+   EXPECT_CALL(_delegate, receivedRouteCaption(21, testing::StrEq("Active"))).Times(Exactly(1));
+  _dccexProtocol.check();
+  caption = Route::getById(21)->getCaption();
+  ASSERT_EQ(caption, "Active");
+
+  _stream << R"(<jB 21 "Hidden">)";   // set hidden state for route 21
+   EXPECT_CALL(_delegate, receivedRouteCaption(21, testing::StrEq("Hidden"))).Times(Exactly(1));
+  _dccexProtocol.check();
+  caption = Route::getById(21)->getCaption();
+  ASSERT_EQ(caption, "Hidden");
+
+  _stream << R"(<jB 121 "Inactive">)";   // set Inactive state for route 121
+  EXPECT_CALL(_delegate, receivedRouteCaption(121, testing::StrEq("Inactive"))).Times(Exactly(1));
+  _dccexProtocol.check();
+  caption = Route::getById(121)->getCaption();
+  ASSERT_EQ(caption, "Inactive");
+
+  _stream.clearOutput();
+  _stream << R"(<jB 121 "Disabled">)";   // set disabled state for route 121
+   EXPECT_CALL(_delegate, receivedRouteCaption(121, testing::StrEq("Disabled"))).Times(Exactly(1));
+  _dccexProtocol.check();
+  caption = Route::getById(121)->getCaption();
+  ASSERT_EQ(caption, "Disabled");
+
+  // Clearing the list must remove every route and reset the count
+  _dccexProtocol.clearRouteList();
+  EXPECT_EQ(_dccexProtocol.getRouteCount(), 0);
+  EXPECT_EQ(Route::getFirst(), nullptr);
+  EXPECT_EQ(Route::getById(21), nullptr);
+  EXPECT_EQ(Route::getById(121), nullptr);
+}

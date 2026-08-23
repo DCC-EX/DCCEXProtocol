@@ -44,6 +44,18 @@ Function/method prefixes
 static const int MIN_SPEED = 0;
 static const int MAX_SPEED = 126;
 
+typedef struct {
+  FeatureNames  featureName;
+  int           minVersion[3];    // minimum version needed to support this feature
+} FeatureSupport_t;
+
+// feature support table that matches each feature with the minimum CS version that supports it.
+static FeatureSupport_t featuresSupported[] = {
+  {FEATURE_SIGNAL_LIST, {5, 9, 0}},
+};
+#define NUM_FEATURE_SUPPORTED   (sizeof(featuresSupported)/sizeof(featuresSupported[0]))
+
+
 // DCCEXProtocol class
 // Public methods
 // Protocol and server methods
@@ -146,10 +158,22 @@ void DCCEXProtocol::sendCommand(const char *cmd) {
 
 // Gated method to get the required lists to avoid overloading the buffer
 void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool routeListRequired,
-                             bool turntableListRequired) {
+                             bool turntableListRequired, bool signalListRequired) {
   // Serial.println(F("getLists()"));
   if (_receivedLists)
     return;
+
+  // start getList by getting the CS version. 
+  // The version will be used later to enable/disable certain features
+  if (!_versionRequested) {
+    _getServerVersion();
+    return;
+  }
+
+  // If we are still waiting for server version, do no continue
+  if (_versionRequested && !_receivedVersion) {
+    return;
+  }
 
   // Start with roster if it's required and get it, do not continue
   if (rosterRequired && !_rosterRequested) {
@@ -195,6 +219,19 @@ void DCCEXProtocol::getLists(bool rosterRequired, bool turnoutListRequired, bool
     return;
   }
 
+  if (_isFeatureSupported(FEATURE_SIGNAL_LIST)) {
+   // If we get here, get signals if required
+    if (signalListRequired && !_signalListRequested) {
+      _getSignals();
+      return;
+    }
+
+    // If we're still waiting for signals, do not continue
+    if (_signalListRequested && !_receivedSignalList) {
+      return;
+    }
+  }
+
   // If we get here, all lists received
   _receivedLists = true;
 }
@@ -221,6 +258,7 @@ void DCCEXProtocol::clearAllLists() {
   clearTurnoutList();
   clearTurntableList();
   clearRouteList();
+  clearSignalList();
 }
 
 void DCCEXProtocol::refreshAllLists() {
@@ -228,6 +266,7 @@ void DCCEXProtocol::refreshAllLists() {
   refreshTurnoutList();
   refreshTurntableList();
   refreshRouteList();
+  refreshSignalList();
 }
 
 void DCCEXProtocol::setDebug(bool debug) { _debug = debug; }
@@ -689,6 +728,30 @@ void DCCEXProtocol::refreshTurntableList() {
   _turntableListRequested = false;
 }
 
+
+// Signal methods
+int DCCEXProtocol::getSignalCount() { return _signalCount; }
+
+bool DCCEXProtocol::receivedSignalList() { return _receivedSignalList; }
+
+Signal *DCCEXProtocol::getSignalById(int SignalId) {
+  return Signal::getById(SignalId);
+}
+
+void DCCEXProtocol::clearSignalList() {
+  Signal::clearSignalList();
+  signals = nullptr;
+  _signalCount = 0;
+}
+
+void DCCEXProtocol::refreshSignalList() {
+  clearSignalList();
+  _receivedLists = false;
+  _receivedSignalList = false;
+  _signalListRequested = false;
+}
+
+
 // Track management methods
 
 void DCCEXProtocol::powerOn() { _sendOpcode('1'); }
@@ -862,7 +925,14 @@ void DCCEXProtocol::_processCommand() {
     _processLocoBroadcast();
     break;
 
-  case 'j': // Throttle list response jA|O|P|R|T|G|I
+  case 'h':  
+    // signal state broadcast; <h id state> or <h id state aspect>
+    if ((DCCEXInbound::getParameterCount() == 2) || (DCCEXInbound::getParameterCount() == 3)) {
+        _processSignalBroadcast();
+    }
+    break;
+
+  case 'j': // Throttle list response jA|O|P|R|T|G|I|B
     if (DCCEXInbound::isTextParameter(0))
       break;
     if (DCCEXInbound::getNumber(0) == 'A') {        // Receive route/automation info
@@ -917,6 +987,23 @@ void DCCEXProtocol::_processCommand() {
       } else if (DCCEXInbound::getParameterCount() == 3) {
         _processSetFastClock();
       }
+    } else if (DCCEXInbound::getNumber(0) == 'B') { // Receive Route state or caption info
+      if (DCCEXInbound::getParameterCount() == 3) {
+        if (DCCEXInbound::isTextParameter(2)) {
+          _processRouteCaption();
+        }
+        else {
+          _processRouteState();
+        }
+      }
+    } else if (DCCEXInbound::getNumber(0) == 'S') { // Receive Signal state info
+        if ((DCCEXInbound::getParameterCount() == 4 && DCCEXInbound::isTextParameter(3)) ||
+            (DCCEXInbound::getParameterCount() == 5 && DCCEXInbound::isTextParameter(4))) { 
+            // Signal State: <jS id state "desc"> or <jS id state aspect "desc">
+          _processSignalState();
+        } else { // Signal list
+          _processSignalList();
+      }
     }
     break;
 
@@ -959,6 +1046,12 @@ void DCCEXProtocol::_processCommand() {
   default:
     break;
   }
+}
+
+
+void DCCEXProtocol::_getServerVersion() {
+  requestServerVersion();
+  _versionRequested = true;
 }
 
 void DCCEXProtocol::_processServerDescription() { //<iDCCEX version / microprocessorType / MotorControllerType /
@@ -1023,6 +1116,28 @@ void DCCEXProtocol::_sendHeartbeat() {
     _sendOpcode('#');
   }
 }
+
+bool DCCEXProtocol::_isFeatureSupported(FeatureNames featureName) {
+  for (int i=0; i < NUM_FEATURE_SUPPORTED; ++i) {
+    if (featuresSupported[i].featureName == featureName) {
+      int* minVersion = featuresSupported[i].minVersion;
+      if      (minVersion[0] < _version[0])     return true;    // maj server version higher
+      else if (minVersion[0] > _version[0])     return false;   // maj server version lower
+      else {     
+          // maj server version same as feature version. check mid version
+        if      (minVersion[1] < _version[1])   return true;    // mid server version higher
+        else if (minVersion[1] > _version[1])   return false;   // mid server version lower
+        else {     
+            // mid server version same as feature version. check min version
+          if      (minVersion[2] > _version[2]) return false;  // min server version lower
+          else                                  return true;   // min server version higher or same
+        }
+      }
+    }
+  }
+  return true;    // feature name not in supported table. Assume supported. 
+}
+
 
 // Consist/loco methods
 
@@ -1356,6 +1471,34 @@ void DCCEXProtocol::_processRouteEntry() {
   }
 }
 
+void DCCEXProtocol::_processRouteState() {
+  int id = DCCEXInbound::getNumber(1);
+  RouteState state = (RouteState)DCCEXInbound::getNumber(2);
+ 
+  Route *r = Route::getById(id);
+  if (r) {
+    r->setState(state);
+    if (_delegate)
+      _delegate->receivedRouteState(id,
+         state);
+  }
+}
+
+void DCCEXProtocol::_processRouteCaption() {
+  int id = DCCEXInbound::getNumber(1);
+  char *caption = DCCEXInbound::copyTextParameter(2);
+  
+  Route *r = Route::getById(id);
+  if (r) {
+    r->setCaption(caption);
+    if (_delegate) {
+      _delegate->receivedRouteCaption(id, caption);
+    }
+  }
+
+  free(caption);
+}
+
 // Turntable methods
 
 void DCCEXProtocol::_getTurntables() {
@@ -1455,6 +1598,78 @@ void DCCEXProtocol::_processTurntableBroadcast() { // <I id position moving>
   if (_delegate)
     _delegate->receivedTurntableAction(id, newIndex, moving);
 }
+
+  // Signal Methods
+void DCCEXProtocol::_getSignals() {
+  _sendOneParam('J', 'S');
+  _signalListRequested = true;
+}
+
+void DCCEXProtocol::_requestSignalState(int id) { _sendTwoParams('J', 'S', id); }
+
+void DCCEXProtocol::_processSignalList() {
+  // <jS id1, id2,....>
+  if (signals != nullptr) {
+    return;
+  }
+
+  if (DCCEXInbound::getParameterCount() == 1) { // signal list is empty
+    _receivedSignalList = true;
+    return;
+  }
+  
+  for (int i = 1; i < DCCEXInbound::getParameterCount(); i++) {
+    auto id = DCCEXInbound::getNumber(i);
+    new Signal(id);
+
+  }
+  _requestSignalState(Signal::getFirst()->getId());    // get the currrent state of the signal
+  _signalCount = DCCEXInbound::getParameterCount() - 1;
+}
+
+void DCCEXProtocol::_processSignalState() { // <jS id state "desc"> or <jS id state aspect "desc">
+  int id = DCCEXInbound::getNumber(1);
+  SignalState state = Signal::getStateFromName(DCCEXInbound::getNumber(2));
+  int aspect = (DCCEXInbound::getParameterCount() == 5) ? DCCEXInbound::getNumber(3) : InvalidAspect;
+  const char* desc = (DCCEXInbound::getParameterCount() == 4) ? DCCEXInbound::getTextParameter(3) 
+                                                              : DCCEXInbound::getTextParameter(4);
+  bool missingSignals = false;
+
+  Signal *signal = Signal::getById(id);
+  if (signal) {
+    signal->setState(state);
+    signal->setAspect(aspect);
+    signal->setName(desc);
+    if (signal->getNext() && signal->getNext()->getName() == nullptr) {
+      missingSignals = true;
+      _requestSignalState(signal->getNext()->getId());
+    }
+    if (_delegate) {
+      _delegate->receivedSignalState(id, state, aspect);
+    }
+  }
+
+  if (!missingSignals) {
+    _receivedSignalList = true;
+    if (_delegate)
+      _delegate->receivedSignalList();
+  }
+}
+
+void DCCEXProtocol::_processSignalBroadcast() { // <h id state> or <h id state aspect>
+  int id = DCCEXInbound::getNumber(0);
+  SignalState state = Signal::getStateFromName(DCCEXInbound::getNumber(1));
+  int aspect = (DCCEXInbound::getParameterCount() == 3) ? DCCEXInbound::getNumber(2) : InvalidAspect;
+
+  Signal *signal = Signal::getById(id);
+  if (signal) {
+    signal->setState(state);
+    signal->setAspect(aspect);
+    if (_delegate)
+      _delegate->receivedSignalState(id, state, aspect);
+   }
+}
+
 
 // Track management methods
 
