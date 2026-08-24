@@ -41,7 +41,7 @@ protected:
   /**
    * @brief Mock version string for the EX-CommandStation server
    */
-  const char *_mockServerVersion = nullptr;
+  const char *_mockServerVersion = "0.0.0";
 
   /**
    * @brief Set the Mock Server Version char array string
@@ -56,15 +56,21 @@ protected:
 
   /**
    * @brief Get the Mock Server Version object
+   * @details Must be called only after the library has sent a version request `<s>` via `requestServerVersion()` or `getLists()`.
    */
   void streamMockServerVersion() {
     if (!_mockServerVersion)
       FAIL() << "Must call setMockServerVersion() before streamMockServerVersion()";
 
-    EXPECT_EQ(_stream.getOutput(), "<s>");
+    // Library must request version before we respond, fail here without injection to prevent state corruption
+    ASSERT_EQ(_stream.getOutput(), "<s>") << "Server version not requested, call requestServerVersion() or getLists() first";
     _stream.clearOutput();
     _stream << "<iDCC-EX V-" << _mockServerVersion << ">";
     _dccexProtocol.check();
+    _stream.clearOutput();
+
+    // Assert here if this did not correctly trigger the version has been received
+    ASSERT_TRUE(_dccexProtocol.receivedVersion()) << "Mock server version did not parse: '" << _mockServerVersion << "'";
   }
 
   /**

@@ -601,7 +601,6 @@ TEST_F(TurntableTests, TestDeleteFirstTurntable) {
 TEST_F(TurntableTests, clearTurntableListClearsAllTurntables) {
   // Populate the turntable list via inbound <jO> responses
   _dccexProtocol.getLists(false, false, false, true);
-  setMockServerVersion("5.0.0");
   streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);

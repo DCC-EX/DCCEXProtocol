@@ -496,7 +496,6 @@ TEST_F(SignalTests, receiveSignalBroadcast) {
 TEST_F(SignalTests, signalListNotSupportedByCS) {
   // Request and receive the signal list
   _dccexProtocol.getLists(false, false, false, false, true);
-  setMockServerVersion("4.9.0");
   streamMockServerVersion();
 
   EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(0));

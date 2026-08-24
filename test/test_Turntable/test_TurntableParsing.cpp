@@ -31,7 +31,6 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  setMockServerVersion("5.0.0");
   streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);
@@ -50,7 +49,6 @@ TEST_F(TurntableTests, parseTwoTurntables) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  setMockServerVersion("5.0.0");
   streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);
@@ -113,7 +111,6 @@ TEST_F(TurntableTests, parseTurntableEntriesOutOfOrder) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  setMockServerVersion("5.0.0");
   streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);
