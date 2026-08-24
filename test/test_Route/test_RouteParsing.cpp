@@ -31,7 +31,8 @@ TEST_F(RouteTests, parseEmptyRouteList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   _dccexProtocol.getLists(false, false, true, false);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J A>");
@@ -49,7 +50,8 @@ TEST_F(RouteTests, parseThreeRoutes) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   _dccexProtocol.getLists(false, false, true, false);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J A>");
@@ -90,7 +92,8 @@ TEST_F(RouteTests, parseRouteEntriesOutOfOrder) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedRouteList());
   _dccexProtocol.getLists(false, false, true, false);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
   _stream.clearOutput();
 
   _dccexProtocol.getLists(false, false, true, false);

@@ -6,8 +6,6 @@
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
  * Copyright © 2026 Peter Cole
- * Copyright © 2024 Vincent Hamp
- * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
  * 4.0 International License. To view a copy of this license, visit
@@ -27,30 +25,62 @@
  *
  */
 
-#ifndef TESTHARNESSBASE_HPP
-#define TESTHARNESSBASE_HPP
+#ifndef TESTHARNESSCOMMON_H
+#define TESTHARNESSCOMMON_H
 
 #include "../mocks/Arduino.h"
-#include "../mocks/MockDCCEXProtocolDelegate.h"
 #include <DCCEXProtocol.h>
 
 using namespace testing;
 
-/// @brief Test fixture to setup and tear down tests
-class TestHarnessBase : public Test {
-public:
-  TestHarnessBase() {}
-  virtual ~TestHarnessBase() {}
-
+/**
+ * @brief Common elements of the test harness to be inherited by other harnesses
+ */
+class TestHarnessCommon : public Test {
 protected:
+  /**
+   * @brief Mock version string for the EX-CommandStation server
+   */
+  const char *_mockServerVersion = nullptr;
+
+  /**
+   * @brief Set the Mock Server Version char array string
+   * @param version Version string (eg. "4.0.0", "5.9.0")
+   */
+  void setMockServerVersion(const char *version) {
+    if (!version)
+      return;
+
+    _mockServerVersion = version;
+  }
+
+  /**
+   * @brief Get the Mock Server Version object
+   */
+  void streamMockServerVersion() {
+    if (!_mockServerVersion)
+      FAIL() << "Must call setMockServerVersion() before streamMockServerVersion()";
+
+    EXPECT_EQ(_stream.getOutput(), "<s>");
+    _stream.clearOutput();
+    _stream << "<iDCC-EX V-" << _mockServerVersion << ">";
+    _dccexProtocol.check();
+  }
+
+  /**
+   * @brief Override default setup to set common objects (millis, log, and connection streams)
+   */
   void SetUp() override {
     millis();
-    _dccexProtocol.setDelegate(&_delegate);
     _dccexProtocol.setLogStream(&_console);
     _dccexProtocol.connect(&_stream);
     _dccexProtocol.clearRoster();
+    onSetUp();
   }
 
+  /**
+   * @brief Override default tear down to clear/reset common objects
+   */
   void TearDown() override {
     resetMillis();
     _stream.clearInput();
@@ -58,24 +88,25 @@ protected:
     _dccexProtocol.clearAllLists();
     CSConsist::clearCSConsists();
     CSConsist::setAlwaysReplicateFunctions(false);
+    onTearDown();
   }
 
-  // Helper finction to return server version for all getLists calls
-  // This is common for all getLists in all test classes.
-  // NOTE: the default version number must be updated to reflect latest iDCCEX version.
-  void _getListsGetServerVersion(const char* cs_version = "5.9.0")
-  {
-      EXPECT_EQ(_stream.getOutput(), "<s>");
-      _stream.clearOutput();
-      // send a version number
-      _stream << "<iDCC-EX V-" << cs_version << ">";
-      _dccexProtocol.check();
-  }
+  /**
+   * @brief Override for derived class setup
+   */
+  virtual void onSetUp() {}
 
+  /**
+   * @brief Override for derived class tear down
+   */
+  virtual void onTearDown() {}
+
+  /**
+   * @brief Common attributes/objects
+   */
   DCCEXProtocol _dccexProtocol;
-  MockDCCEXProtocolDelegate _delegate;
-  Stream _console;
   Stream _stream;
+  Stream _console;
 };
 
-#endif // TESTHARNESSBASE_HPP
+#endif // TESTHARNESSCOMMON_H

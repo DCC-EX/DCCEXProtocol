@@ -23,7 +23,7 @@
 #ifndef CSCONSISTTESTS_H
 #define CSCONSISTTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for CS Consists
 class CSConsistTests : public TestHarnessBase {};

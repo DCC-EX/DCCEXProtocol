@@ -29,7 +29,7 @@
 #ifndef TURNOUTTESTS_H
 #define TURNOUTTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for the Turnout class
 class TurnoutTests : public TestHarnessBase {};

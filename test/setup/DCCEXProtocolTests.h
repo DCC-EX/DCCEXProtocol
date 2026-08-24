@@ -28,7 +28,7 @@
 #ifndef DCCEXPROTOCOLTESTS_H
 #define DCCEXPROTOCOLTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for DCCEX protocol parsing tests
 class DCCEXProtocolTests : public TestHarnessBase {};

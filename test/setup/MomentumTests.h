@@ -23,7 +23,7 @@
 #ifndef MOMENTUMTESTS_H
 #define MOMENTUMTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for Momentum
 class MomentumTests : public TestHarnessBase {};

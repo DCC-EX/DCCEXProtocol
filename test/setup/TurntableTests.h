@@ -29,7 +29,7 @@
 #ifndef TURNTABLETESTS_H
 #define TURNTABLETESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for the Turntable class
 class TurntableTests : public TestHarnessBase {};

@@ -391,7 +391,8 @@ TEST_F(TurnoutTests, turnoutClearTurnoutListEmptiesList) {
 TEST_F(TurnoutTests, clearTurnoutListClearsAllTurnouts) {
   // Populate the turnout list via inbound <jT> responses
   _dccexProtocol.getLists(false, true, false, false);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, true, false, false);
   _stream.clearOutput();
@@ -420,8 +421,9 @@ TEST_F(TurnoutTests, clearTurnoutListClearsAllTurnouts) {
 TEST_F(TurnoutTests, refreshTurnoutListResetsAndReRequests) {
   // Request and receive the turnout list
   _dccexProtocol.getLists(false, true, false, false);
-  _getListsGetServerVersion();
-  
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, true, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();

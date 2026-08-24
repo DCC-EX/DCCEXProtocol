@@ -43,8 +43,7 @@ TEST_F(SignalTests, createSingleSignal) {
   _dccexProtocol.clearSignalList();
 }
 
-
- TEST_F(SignalTests, createSignalList) {
+TEST_F(SignalTests, createSignalList) {
   // Create three Signals
   Signal *Signal100 = new Signal(100);
   Signal100->setName("Signal 100");
@@ -76,7 +75,7 @@ TEST_F(SignalTests, createSingleSignal) {
   EXPECT_EQ(Signal102->getState(), SignalStateRed);
   EXPECT_STREQ(Signal102->getName(), "Signal 102");
 
-   _dccexProtocol.clearSignalList();
+  _dccexProtocol.clearSignalList();
 }
 
 /**
@@ -146,7 +145,7 @@ TEST_F(SignalTests, getSignalByIdNotFound) {
 
   delete signal100;
   EXPECT_EQ(_dccexProtocol.getSignalById(100), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -163,7 +162,7 @@ TEST_F(SignalTests, getSignalByIdNotFoundWalksList) {
   // Clean up
   delete signal100;
   EXPECT_EQ(Signal::getFirst(), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -192,7 +191,7 @@ TEST_F(SignalTests, clearSignalListClearsAllSignals) {
   EXPECT_EQ(Signal::getFirst(), nullptr);
   EXPECT_EQ(_dccexProtocol.getSignalById(100), nullptr);
   EXPECT_EQ(_dccexProtocol.getSignalById(101), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -221,7 +220,7 @@ TEST_F(SignalTests, signalClearSignalListEmptiesList) {
   // Clearing an already empty list must be safe and not crash
   EXPECT_NO_FATAL_FAILURE(Signal::clearSignalList());
   EXPECT_EQ(Signal::getFirst(), nullptr);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -231,7 +230,8 @@ TEST_F(SignalTests, signalClearSignalListEmptiesList) {
 TEST_F(SignalTests, refreshSignalListResetsAndReRequests) {
   // Request and receive the signal list
   _dccexProtocol.getLists(false, false, false, false, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J S>");
@@ -283,7 +283,7 @@ TEST_F(SignalTests, refreshSignalListResetsAndReRequests) {
   EXPECT_EQ(_dccexProtocol.getSignalById(201)->getState(), SignalStateGreen);
   EXPECT_EQ(_dccexProtocol.getSignalById(200)->getAspect(), 12);
   EXPECT_EQ(_dccexProtocol.getSignalById(201)->getAspect(), InvalidAspect);
- 
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -308,7 +308,7 @@ TEST_F(SignalTests, setNextLinksSignalDirectly) {
   // Restore the list for correct teardown
   signal101->setNext(signal102);
   EXPECT_EQ(signal101->getNext(), signal102);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
@@ -329,7 +329,7 @@ TEST_F(SignalTests, setSignalNameAndGetName) {
   EXPECT_STREQ(signal100->getName(), name);
 
   // set null name
-  signal100->setName(nullptr) ;
+  signal100->setName(nullptr);
   EXPECT_STREQ(signal100->getName(), name);
 
   // set another name
@@ -345,7 +345,8 @@ TEST_F(SignalTests, setSignalNameAndGetName) {
  */
 TEST_F(SignalTests, setSignalStateAndAspect) {
   _dccexProtocol.getLists(false, false, false, false, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J S>");
@@ -365,15 +366,15 @@ TEST_F(SignalTests, setSignalStateAndAspect) {
   // send invalid aspect
   _stream << "<jS 200 G \"Signal200\">";
   _dccexProtocol.check();
-  
+
   EXPECT_EQ(_dccexProtocol.getSignalById(100)->getState(), SignalStateInvalid);
   EXPECT_EQ(_dccexProtocol.getSignalById(200)->getState(), SignalStateGreen);
   EXPECT_EQ(_dccexProtocol.getSignalById(100)->getAspect(), 3);
   EXPECT_EQ(_dccexProtocol.getSignalById(200)->getAspect(), InvalidAspect);
- 
+
   _dccexProtocol.clearSignalList();
 }
- 
+
 /**
  * @brief Test deleting a signal that is not in the list is a safe no-op
  */
@@ -413,7 +414,8 @@ TEST_F(SignalTests, removeSignalNotInListLeavesListIntact) {
 TEST_F(SignalTests, receiveSignalListAndState) {
   // Request and receive the signal list
   _dccexProtocol.getLists(false, false, false, false, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J S>");
@@ -431,7 +433,7 @@ TEST_F(SignalTests, receiveSignalListAndState) {
   _stream << "<jS 100 G 9 \"Signal 100\">";
   _dccexProtocol.check();
 
- // send second signal response
+  // send second signal response
   _stream << R"(<jS 101 R 12 "Signal 101">)";
   _dccexProtocol.check();
 
@@ -439,16 +441,16 @@ TEST_F(SignalTests, receiveSignalListAndState) {
   EXPECT_EQ(_dccexProtocol.signals->getById(101)->getState(), SignalStateRed);
   EXPECT_EQ(_dccexProtocol.signals->getById(100)->getAspect(), 9);
   EXPECT_EQ(_dccexProtocol.signals->getById(101)->getAspect(), 12);
-  
+
   _dccexProtocol.clearSignalList();
 }
 
-
 TEST_F(SignalTests, receiveSignalBroadcast) {
-   // Request and receive the signal list
+  // Request and receive the signal list
   _dccexProtocol.getLists(false, false, false, false, true);
-  _getListsGetServerVersion();
-  
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J S>");
   _stream.clearOutput();
@@ -461,11 +463,11 @@ TEST_F(SignalTests, receiveSignalBroadcast) {
   _stream << "<jS 200 201>";
   _dccexProtocol.check();
 
- // send first signal response
+  // send first signal response
   _stream << "<jS 200 G 5 \"Signal 200\">";
   _dccexProtocol.check();
 
- // send second signal response
+  // send second signal response
   _stream << R"(<jS 201 A "Signal 201">)";
   _dccexProtocol.check();
 
@@ -487,14 +489,15 @@ TEST_F(SignalTests, receiveSignalBroadcast) {
 }
 
 /*
- * Test case where the signal list featuer is not supported 
- * by an older CS. Even if a list is requested by getList, 
+ * Test case where the signal list featuer is not supported
+ * by an older CS. Even if a list is requested by getList,
  * no signal list will be received and list will remain empty.
-*/
+ */
 TEST_F(SignalTests, signalListNotSupportedByCS) {
   // Request and receive the signal list
   _dccexProtocol.getLists(false, false, false, false, true);
-  _getListsGetServerVersion("4.10.9");    // send an older CS version.
+  setMockServerVersion("4.9.0");
+  streamMockServerVersion();
 
   EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(0));
   _dccexProtocol.getLists(false, false, false, false, true);
@@ -506,4 +509,3 @@ TEST_F(SignalTests, signalListNotSupportedByCS) {
 
   _dccexProtocol.clearSignalList();
 }
-

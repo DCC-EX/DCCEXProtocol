@@ -24,7 +24,6 @@
 
 #include "../setup/DCCEXProtocolTests.h"
 
-
 /**
  * @brief Validate all lists are requested sequentially by getLists()
  */
@@ -32,7 +31,8 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   // Request all lists
   // We expect ONLY the roster to be requested first.
   _dccexProtocol.getLists(true, true, true, true, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
@@ -169,9 +169,8 @@ TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
   EXPECT_EQ(_stream.getOutput(), "<J S 101>");
   _stream.clearOutput();
 
- _stream << "<jS 101 A  \"Signal 101\">";     // send without aspect
+  _stream << "<jS 101 A  \"Signal 101\">"; // send without aspect
   _dccexProtocol.check();
-
 
   // Final getLists() should set received true
   _dccexProtocol.getLists(true, true, true, true, true);
@@ -192,7 +191,8 @@ TEST_F(DCCEXProtocolTests, getRosterList) {
   // Request all lists
   // We expect ONLY the roster to be requested first.
   _dccexProtocol.getLists(true, false, false, false, false);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(true, false, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
@@ -234,7 +234,8 @@ TEST_F(DCCEXProtocolTests, getTurnoutList) {
   // Request all lists
   // We expect ONLY the turnouts to be requested first.
   _dccexProtocol.getLists(false, true, false, false, false);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, true, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
@@ -276,8 +277,9 @@ TEST_F(DCCEXProtocolTests, getRouteList) {
   // Request all lists
   // We expect ONLY the route list to be requested first.
   _dccexProtocol.getLists(false, false, true, false, false);
-  _getListsGetServerVersion();
- 
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, false, true, false, false);
   EXPECT_EQ(_stream.getOutput(), "<J A>");
   _stream.clearOutput();
@@ -318,8 +320,9 @@ TEST_F(DCCEXProtocolTests, getTurntableList) {
   // Request all lists
   // We expect ONLY the turntable list to be requested first.
   _dccexProtocol.getLists(false, false, false, true, false);
-  _getListsGetServerVersion();
- 
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, false, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();
@@ -378,8 +381,9 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
   // Request all lists
   // We expect ONLY the turnout list to be requested first.
   _dccexProtocol.getLists(false, true, false, true, false);
-  _getListsGetServerVersion();
- 
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, true, false, true, false);
   EXPECT_EQ(_stream.getOutput(), "<J T>");
   _stream.clearOutput();
@@ -457,17 +461,18 @@ TEST_F(DCCEXProtocolTests, getTurnoutAndTurntableList) {
 }
 
 /**
- * @brief Test requesting signal list 
+ * @brief Test requesting signal list
  */
 TEST_F(DCCEXProtocolTests, getSignalList) {
   _dccexProtocol.getLists(false, false, false, false, true);
-  _getListsGetServerVersion();
- 
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J S>");
   _stream.clearOutput();
 
-   // Simulate receiving the signal list and stream should now request first signal details
+  // Simulate receiving the signal list and stream should now request first signal details
   _stream << "<jS 200 201>";
   _dccexProtocol.check();
   EXPECT_EQ(_stream.getOutput(), "<J S 200>");
@@ -483,7 +488,7 @@ TEST_F(DCCEXProtocolTests, getSignalList) {
   _stream << "<jS 201 A 20 \"Signal201\">";
   _dccexProtocol.check();
 
-   // Final getLists() should set received true
+  // Final getLists() should set received true
   _dccexProtocol.getLists(false, false, false, false, true);
 
   // receivedLists() should return true when all lists complete
@@ -495,15 +500,15 @@ TEST_F(DCCEXProtocolTests, getSignalList) {
   EXPECT_TRUE(_dccexProtocol.receivedSignalList());
 }
 
-
 /**
  * @brief Test requesting no lists should set receivedLists true
  */
 TEST_F(DCCEXProtocolTests, testRequestNoLists) {
   // Calling getLists() with all false should immediately set receivedLists() true
   _dccexProtocol.getLists(false, false, false, false, false);
-  _getListsGetServerVersion();
-  
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, false, false, false, false);
   EXPECT_EQ(_stream.getOutput(), "");
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -515,8 +520,9 @@ TEST_F(DCCEXProtocolTests, testRequestNoLists) {
 TEST_F(DCCEXProtocolTests, getListsNoDuplicateRequests) {
   // Roster stage: first call requests the roster, a second call must not
   _dccexProtocol.getLists(true, true, true, true, true);
-  _getListsGetServerVersion();
-  
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();
@@ -611,7 +617,6 @@ TEST_F(DCCEXProtocolTests, getListsNoDuplicateRequests) {
   _stream.clearOutput();
   EXPECT_TRUE(_dccexProtocol.receivedSignalList());
 
-
   // Final getLists() completes the sequence
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_TRUE(_dccexProtocol.receivedLists());
@@ -627,8 +632,9 @@ TEST_F(DCCEXProtocolTests, getListsNoDuplicateRequests) {
 TEST_F(DCCEXProtocolTests, refreshAllListsResetsListsAndFlags) {
   // Request all lists using empty list responses to set every received flag
   _dccexProtocol.getLists(true, true, true, true, true);
-  _getListsGetServerVersion();
- 
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
   _stream.clearOutput();

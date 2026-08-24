@@ -29,7 +29,7 @@
 #ifndef ROUTETESTS_H
 #define ROUTETESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for the Route class
 class RouteTests : public TestHarnessBase {};

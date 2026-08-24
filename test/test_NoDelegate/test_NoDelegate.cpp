@@ -104,7 +104,8 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   // Request all lists
   // We expect ONLY the roster to be requested first.
   _dccexProtocol.getLists(true, true, true, true, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
@@ -217,12 +218,12 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   _dccexProtocol.check();
   _stream.clearOutput();
 
- // Next call to getLists() should start signals
+  // Next call to getLists() should start signals
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J S>");
   _stream.clearOutput();
 
- // receivedLists() should still be false
+  // receivedLists() should still be false
   EXPECT_FALSE(_dccexProtocol.receivedLists());
 
   // Simulate receiving the signal list and stream should now request first signal details
@@ -240,7 +241,6 @@ TEST_F(TestHarnessNoDelegate, TestGetLists) {
   _stream << "<jS 51 G 10 \"Signal51\">";
   _dccexProtocol.check();
   _stream.clearOutput();
-
 
   // Final getLists() should set received true
   _dccexProtocol.getLists(true, true, true, true, true);

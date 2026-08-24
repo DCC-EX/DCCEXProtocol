@@ -31,7 +31,8 @@ TEST_F(TurntableTests, parseEmptyTurntableList) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
@@ -49,7 +50,8 @@ TEST_F(TurntableTests, parseTwoTurntables) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
@@ -111,7 +113,8 @@ TEST_F(TurntableTests, parseTurntableEntriesOutOfOrder) {
   // Received flag should be false to start
   EXPECT_FALSE(_dccexProtocol.receivedTurntableList());
   _dccexProtocol.getLists(false, false, false, true);
-  _getListsGetServerVersion();
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
 
   _dccexProtocol.getLists(false, false, false, true);
   // Two turntables in response
@@ -175,16 +178,16 @@ TEST_F(TurntableTests, turntableBroadcastMovingFlag) {
 TEST_F(TurntableTests, orphanedIndexEntryLeak) {
   // Create one valid turntable so getFirst() isn't null
   new Turntable(1);
-  
+
   // Simulate an index entry for ID 99 (which DOES NOT EXIST)
   _stream << R"(<jP 99 0 0 "Orphaned Index">)";
   _dccexProtocol.check();
-  
+
   // Simulate an entry with wrong parameter count
   // This triggers the first 'if (DCCEXInbound::getParameterCount() != 5) return;'
   _stream << R"(<jP 1 0 0>)"; // Missing the name parameter
   _dccexProtocol.check();
-  
+
   // Cleanup
   Turntable::clearTurntableList();
 }

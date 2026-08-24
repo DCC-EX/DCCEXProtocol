@@ -28,7 +28,7 @@
 #ifndef JMRISENSORTESTS_H
 #define JMRISENSORTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for Loco and associated classes
 class JMRISensorTests : public TestHarnessBase {};

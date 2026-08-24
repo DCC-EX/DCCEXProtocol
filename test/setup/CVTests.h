@@ -29,7 +29,7 @@
 #ifndef CVTESTS_H
 #define CVTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for reading/writing CVs
 class CVTests : public TestHarnessBase {};

@@ -23,46 +23,13 @@
 #ifndef TESTHARNESSNODELEGATE_H
 #define TESTHARNESSNODELEGATE_H
 
-#include "../mocks/Arduino.h"
-#include <DCCEXProtocol.h>
+#include "TestHarnessCommon.h"
 
-using namespace testing;
-
-/// @brief Test fixture to setup and tear down tests
-class TestHarnessNoDelegate : public Test {
-public:
-  TestHarnessNoDelegate() {}
-  virtual ~TestHarnessNoDelegate() {}
-
+/**
+ * @brief Test harness for tests requiring no DCCEXProtocolDelegate instance
+ */
+class TestHarnessNoDelegate : public TestHarnessCommon {
 protected:
-  void SetUp() override {
-    millis();
-    _dccexProtocol.setLogStream(&_console);
-    _dccexProtocol.connect(&_stream);
-  }
-
-  void TearDown() override {
-    resetMillis();
-    _stream.clearInput();
-    _stream.clearOutput();
-    _dccexProtocol.clearAllLists();
-  }
-
- // Helper finction to return server version for all getLists calls
-  // This is common for all getLists in all test classes.
-  // NOTE: the default version number must be updated to reflect latest iDCCEX version.
-  void _getListsGetServerVersion(const char* cs_version = "5.9.0")
-  {
-      EXPECT_EQ(_stream.getOutput(), "<s>");
-      _stream.clearOutput();
-      // send a version number
-      _stream << "<iDCC-EX V-" << cs_version << ">";
-      _dccexProtocol.check();
-  }
-
-  DCCEXProtocol _dccexProtocol;
-  Stream _console;
-  Stream _stream;
 };
 
 #endif // TESTHARNESSNODELEGATE_H

@@ -6,6 +6,7 @@
  * allow a device to communicate with a DCC-EX EX-CommandStation.
  *
  * Copyright © 2026 Peter Cole
+ * Copyright © 2024 Vincent Hamp
  * Copyright © 2024 Peter Cole
  *
  * This work is licensed under the Creative Commons Attribution-ShareAlike
@@ -26,12 +27,25 @@
  *
  */
 
-#ifndef TRACKMANAGERTESTS_H
-#define TRACKMANAGERTESTS_H
+#ifndef TESTHARNESSBASE_H
+#define TESTHARNESSBASE_H
 
-#include "TestHarnessBase.h"
+#include "../mocks/MockDCCEXProtocolDelegate.h"
+#include "TestHarnessCommon.h"
 
-/// @brief Test harness for TrackManager tests
-class TrackManagerTests : public TestHarnessBase {};
+/**
+ * @brief Test harness for tests using a delegate
+ */
+class TestHarnessBase : public TestHarnessCommon {
+protected:
+  void onSetUp() override { _dccexProtocol.setDelegate(&_delegate); }
 
-#endif // TRACKMANAGERTESTS_H
+  void onTearDown() override {}
+
+  /**
+   * @brief Mock DCCEXProtocolDelegate object
+   */
+  MockDCCEXProtocolDelegate _delegate;
+};
+
+#endif // TESTHARNESSBASE_H

@@ -226,10 +226,10 @@ TEST_F(TurntableTests, listCleanupStressTest) {
     tt->addIndex(new TurntableIndex(i, 1, 1800, "Opposite"));
 
     // Immediately clear the global list
-    // This tests if clearTurntableList() and ~Turntable() work 
+    // This tests if clearTurntableList() and ~Turntable() work
     // together without double-freeing or leaving dangling pointers.
     Turntable::clearTurntableList();
-    
+
     // Validate list is empty
     EXPECT_EQ(Turntable::getFirst(), nullptr);
   }
@@ -601,8 +601,9 @@ TEST_F(TurntableTests, TestDeleteFirstTurntable) {
 TEST_F(TurntableTests, clearTurntableListClearsAllTurntables) {
   // Populate the turntable list via inbound <jO> responses
   _dccexProtocol.getLists(false, false, false, true);
-  _getListsGetServerVersion();
-  
+  setMockServerVersion("5.0.0");
+  streamMockServerVersion();
+
   _dccexProtocol.getLists(false, false, false, true);
   EXPECT_EQ(_stream.getOutput(), "<J O>");
   _stream.clearOutput();

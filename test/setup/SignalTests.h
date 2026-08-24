@@ -27,7 +27,7 @@
  #ifndef SIGNALTESTS_H
 #define SIGNALTESTS_H
 
-#include "TestHarnessBase.hpp"
+#include "TestHarnessBase.h"
 
 /// @brief Test harness for the Signal class
 class SignalTests : public TestHarnessBase {};
