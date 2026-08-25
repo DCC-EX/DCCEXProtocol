@@ -687,3 +687,49 @@ TEST_F(DCCEXProtocolTests, refreshAllListsResetsListsAndFlags) {
   _dccexProtocol.getLists(true, true, true, true, true);
   EXPECT_EQ(_stream.getOutput(), "<J R>");
 }
+
+/**
+ * @brief Test case for requesting all lists with unsupported version for signals
+ */
+TEST_F(DCCEXProtocolTests, allListsCompleteWhenFeatureSkipped) {
+  EXPECT_CALL(_delegate, receivedServerVersion(0, 0, 0)).Times(Exactly(1));
+
+  // Handshake with the default mock version (0.0.0), which supports no gated features
+  _dccexProtocol.getLists(true, true, true, true, true);
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+  _stream.clearOutput();
+  _stream << "<jR>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J T>");
+  _stream.clearOutput();
+  _stream << "<jT>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J A>");
+  _stream.clearOutput();
+  _stream << "<jA>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
+  _stream.clearOutput();
+  _stream << "<jO>";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+
+  // The signal block must be skipped entirely - no request, no wait state -
+  // and the sequence must still complete
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_FALSE(_dccexProtocol.receivedSignalList());
+  EXPECT_TRUE(_dccexProtocol.receivedLists());
+}

@@ -28,7 +28,6 @@ examples/*/config.h
 
 # Documentation build folders
 build
-venv
 docs/html
 docs/latex
 _build
@@ -43,5 +42,7 @@ test_coverage/
 # File systems
 .DS_Store
 
-# Python cache
+# Python and cache
 __pycache__/
+venv
+.venv

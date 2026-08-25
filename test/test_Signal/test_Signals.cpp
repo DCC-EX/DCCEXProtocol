@@ -508,3 +508,109 @@ TEST_F(SignalTests, signalListNotSupportedByCS) {
 
   _dccexProtocol.clearSignalList();
 }
+
+/**
+ * @brief Test case for major version below required
+ */
+TEST_F(SignalTests, signalListBelowMinVersionByMajor) {
+  setMockServerVersion("4.9.9");
+  _dccexProtocol.getLists(false, false, false, false, true);
+  streamMockServerVersion();
+
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(0));
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  EXPECT_FALSE(_dccexProtocol.receivedSignalList());
+  ASSERT_EQ(_dccexProtocol.getSignalCount(), 0);
+  ASSERT_EQ(Signal::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test case for patch version below required
+ */
+TEST_F(SignalTests, signalListBelowMinVersionByMinor) {
+  setMockServerVersion("5.8.99");
+  _dccexProtocol.getLists(false, false, false, false, true);
+  streamMockServerVersion();
+
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(0));
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  EXPECT_FALSE(_dccexProtocol.receivedSignalList());
+  ASSERT_EQ(_dccexProtocol.getSignalCount(), 0);
+  ASSERT_EQ(Signal::getFirst(), nullptr);
+}
+
+/**
+ * @brief Test case for patch version above required
+ */
+TEST_F(SignalTests, signalListAboveMinVersionPatch) {
+  setMockServerVersion("5.9.1");
+  _dccexProtocol.getLists(false, false, false, false, true);
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "<J S>");
+  _stream.clearOutput();
+
+  _stream << "<jS 200>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J S 200>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(1));
+  _stream << R"(<jS 200 G 4 "Signal 200">)";
+  _dccexProtocol.check();
+
+  EXPECT_TRUE(_dccexProtocol.receivedSignalList());
+  _dccexProtocol.clearSignalList();
+}
+
+/**
+ * @brief Test case for minor version above required
+ */
+TEST_F(SignalTests, signalListAboveMinVersionMinor) {
+  setMockServerVersion("5.10.0");
+  _dccexProtocol.getLists(false, false, false, false, true);
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "<J S>");
+  _stream.clearOutput();
+
+  _stream << "<jS 200>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J S 200>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(1));
+  _stream << R"(<jS 200 G 4 "Signal 200">)";
+  _dccexProtocol.check();
+
+  EXPECT_TRUE(_dccexProtocol.receivedSignalList());
+  _dccexProtocol.clearSignalList();
+}
+
+/**
+ * @brief Test case for refreshing list on unsupported version
+ */
+TEST_F(SignalTests, refreshSignalListOnUnsupportedCS) {
+  // Request the signal list from an unsupported CS (default version 0.0.0)
+  _dccexProtocol.getLists(false, false, false, false, true);
+  streamMockServerVersion();
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(0));
+
+  // Refreshing must reset the flags, and a subsequent getLists() must
+  // still not request the signal list
+  _dccexProtocol.refreshSignalList();
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "");
+
+  EXPECT_FALSE(_dccexProtocol.receivedSignalList());
+  ASSERT_EQ(_dccexProtocol.getSignalCount(), 0);
+  ASSERT_EQ(Signal::getFirst(), nullptr);
+}
