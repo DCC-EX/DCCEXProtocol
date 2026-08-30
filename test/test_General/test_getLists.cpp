@@ -733,3 +733,228 @@ TEST_F(DCCEXProtocolTests, allListsCompleteWhenFeatureSkipped) {
   EXPECT_FALSE(_dccexProtocol.receivedSignalList());
   EXPECT_TRUE(_dccexProtocol.receivedLists());
 }
+
+TEST_F(DCCEXProtocolTests, rebroadcastRosterListIgnoredUntilCleared) {
+  // Request the roster and receive it completely
+  _dccexProtocol.getLists(true, false, false, false, false);
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(true, false, false, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J R>");
+  _stream.clearOutput();
+  _stream << "<jR 10>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J R 10>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(1));
+  _stream << R"(<jR 10 "Loco10" "F1/F2">)";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRoster());
+  ASSERT_EQ(_dccexProtocol.roster, Loco::getByAddress(10));
+
+  // A duplicate list delivery in the same session must be ignored entirely
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedRosterList()).Times(Exactly(0));
+  _stream << "<jR 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Loco::getByAddress(20), nullptr);
+  ASSERT_EQ(_dccexProtocol.roster, Loco::getByAddress(10));
+
+  // After clearing, a fresh list delivery is accepted and the guard re-arms
+  _dccexProtocol.clearRoster();
+  _stream.clearOutput();
+  _stream << "<jR 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Loco::getByAddress(20)->getAddress(), 20);
+  ASSERT_EQ(_dccexProtocol.roster, Loco::getByAddress(20));
+
+  _stream.clearOutput();
+  _stream << "<jR 30>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Loco::getByAddress(30), nullptr);
+  ASSERT_EQ(_dccexProtocol.roster, Loco::getByAddress(20));
+}
+
+TEST_F(DCCEXProtocolTests, rebroadcastTurnoutListIgnoredUntilCleared) {
+  // Request the turnout list and receive it completely
+  _dccexProtocol.getLists(false, true, false, false, false);
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(false, true, false, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J T>");
+  _stream.clearOutput();
+  _stream << "<jT 10>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J T 10>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(1));
+  _stream << R"(<jT 10 0 "Turnout10">)";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurnoutList());
+  ASSERT_EQ(_dccexProtocol.turnouts, Turnout::getById(10));
+
+  // A duplicate list delivery in the same session must be ignored entirely
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedTurnoutList()).Times(Exactly(0));
+  _stream << "<jT 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Turnout::getById(20), nullptr);
+  ASSERT_EQ(_dccexProtocol.turnouts, Turnout::getById(10));
+
+  // After clearing, a fresh list delivery is accepted and the guard re-arms
+  _dccexProtocol.clearTurnoutList();
+  _stream.clearOutput();
+  _stream << "<jT 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Turnout::getById(20)->getId(), 20);
+  ASSERT_EQ(_dccexProtocol.turnouts, Turnout::getById(20));
+
+  _stream.clearOutput();
+  _stream << "<jT 30>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Turnout::getById(30), nullptr);
+  ASSERT_EQ(_dccexProtocol.turnouts, Turnout::getById(20));
+}
+
+TEST_F(DCCEXProtocolTests, rebroadcastRouteListIgnoredUntilCleared) {
+  // Request the route list and receive it completely
+  _dccexProtocol.getLists(false, false, true, false, false);
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(false, false, true, false, false);
+  EXPECT_EQ(_stream.getOutput(), "<J A>");
+  _stream.clearOutput();
+  _stream << "<jA 10>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J A 10>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(1));
+  _stream << R"(<jA 10 R "Route10">)";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedRouteList());
+  ASSERT_EQ(_dccexProtocol.routes, Route::getById(10));
+
+  // A duplicate list delivery in the same session must be ignored entirely
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedRouteList()).Times(Exactly(0));
+  _stream << "<jA 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Route::getById(20), nullptr);
+  ASSERT_EQ(_dccexProtocol.routes, Route::getById(10));
+
+  // After clearing, a fresh list delivery is accepted and the guard re-arms
+  _dccexProtocol.clearRouteList();
+  _stream.clearOutput();
+  _stream << "<jA 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Route::getById(20)->getId(), 20);
+  ASSERT_EQ(_dccexProtocol.routes, Route::getById(20));
+
+  _stream.clearOutput();
+  _stream << "<jA 30>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Route::getById(30), nullptr);
+  ASSERT_EQ(_dccexProtocol.routes, Route::getById(20));
+}
+
+TEST_F(DCCEXProtocolTests, rebroadcastTurntableListIgnoredUntilCleared) {
+  // Request the turntable list and receive it completely
+  _dccexProtocol.getLists(false, false, false, true, false);
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(false, false, false, true, false);
+  EXPECT_EQ(_stream.getOutput(), "<J O>");
+  _stream.clearOutput();
+  _stream << "<jO 10>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J O 10>");
+  _stream.clearOutput();
+
+  _stream << R"(<jO 10 0 1 1 "Turntable10">)";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J P 10>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedTurntableList()).Times(Exactly(1));
+  _stream << R"(<jP 10 0 180 "Home">)";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedTurntableList());
+  ASSERT_EQ(_dccexProtocol.turntables, Turntable::getById(10));
+
+  // A duplicate list delivery in the same session must be ignored entirely
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedTurntableList()).Times(Exactly(0));
+  _stream << "<jO 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Turntable::getById(20), nullptr);
+  ASSERT_EQ(_dccexProtocol.turntables, Turntable::getById(10));
+
+  // After clearing, a fresh list delivery is accepted and the guard re-arms
+  _dccexProtocol.clearTurntableList();
+  _stream.clearOutput();
+  _stream << "<jO 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Turntable::getById(20)->getId(), 20);
+  ASSERT_EQ(_dccexProtocol.turntables, Turntable::getById(20));
+
+  _stream.clearOutput();
+  _stream << "<jO 30>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Turntable::getById(30), nullptr);
+  ASSERT_EQ(_dccexProtocol.turntables, Turntable::getById(20));
+}
+
+TEST_F(DCCEXProtocolTests, rebroadcastSignalListIgnoredUntilCleared) {
+  // Request the signal list and receive it completely
+  _dccexProtocol.getLists(false, false, false, false, true);
+  setMockServerVersion("5.9.0");
+  streamMockServerVersion();
+
+  _dccexProtocol.getLists(false, false, false, false, true);
+  EXPECT_EQ(_stream.getOutput(), "<J S>");
+  _stream.clearOutput();
+  _stream << "<jS 10>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "<J S 10>");
+  _stream.clearOutput();
+
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(1));
+  _stream << R"(<jS 10 G 4 "Signal 10">)";
+  _dccexProtocol.check();
+  EXPECT_TRUE(_dccexProtocol.receivedSignalList());
+  ASSERT_EQ(_dccexProtocol.signals, Signal::getById(10));
+
+  // A duplicate list delivery in the same session must be ignored entirely
+  _stream.clearOutput();
+  EXPECT_CALL(_delegate, receivedSignalList()).Times(Exactly(0));
+  _stream << "<jS 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(_stream.getOutput(), "");
+  EXPECT_EQ(Signal::getById(20), nullptr);
+  ASSERT_EQ(_dccexProtocol.signals, Signal::getById(10));
+
+  // After clearing, a fresh list delivery is accepted and the guard re-arms
+  _dccexProtocol.clearSignalList();
+  _stream.clearOutput();
+  _stream << "<jS 20>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Signal::getById(20)->getId(), 20);
+  ASSERT_EQ(_dccexProtocol.signals, Signal::getById(20));
+
+  _stream.clearOutput();
+  _stream << "<jS 30>";
+  _dccexProtocol.check();
+  EXPECT_EQ(Signal::getById(30), nullptr);
+  ASSERT_EQ(_dccexProtocol.signals, Signal::getById(20));
+}

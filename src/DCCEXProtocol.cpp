@@ -86,6 +86,7 @@ DCCEXProtocol::DCCEXProtocol(int maxCmdBuffer, int maxCommandParams, unsigned lo
 DCCEXProtocol::~DCCEXProtocol() {
   // Clean up all lists
   clearAllLists();
+  clearCSConsists();
 
   // Free memory for command buffer
   delete[] (_cmdBuffer);
@@ -455,8 +456,10 @@ CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed, bool repl
 
   // First check if one already exists
   CSConsist *csConsist = CSConsist::getLeadLocoCSConsist(leadLoco);
-  if (csConsist != nullptr)
+  if (csConsist != nullptr) {
+    csConsists = CSConsist::getFirst();
     return csConsist;
+  }
 
   // Ensure the lead loco isn't in any other consists, if it is then fail
   if (CSConsist::getMemberCSConsist(leadLoco))
@@ -464,6 +467,7 @@ CSConsist *DCCEXProtocol::createCSConsist(int leadLoco, bool reversed, bool repl
 
   csConsist = new CSConsist(replicateFunctions);
   csConsist->addMember(leadLoco, reversed);
+  csConsists = CSConsist::getFirst();
 
   return csConsist;
 }
@@ -525,6 +529,7 @@ bool DCCEXProtocol::removeCSConsistMember(CSConsist *csConsist, int address) {
   // If the consist has no members, delete it
   if (csConsist->getMemberCount() == 0) {
     delete csConsist;
+    csConsists = CSConsist::getFirst();
     return false;
   }
 
@@ -543,6 +548,7 @@ bool DCCEXProtocol::removeCSConsistMember(CSConsist *csConsist, int address) {
     // Otherwise delete the CSConsist as it is no longer required
     _sendDeleteCSConsist(csConsist);
     delete csConsist;
+    csConsists = CSConsist::getFirst();
     return true;
   }
 }
@@ -554,6 +560,7 @@ void DCCEXProtocol::deleteCSConsist(int leadLoco) {
     return;
 
   delete csConsist;
+  csConsists = CSConsist::getFirst();
 }
 
 void DCCEXProtocol::deleteCSConsist(CSConsist *csConsist) {
@@ -561,9 +568,13 @@ void DCCEXProtocol::deleteCSConsist(CSConsist *csConsist) {
     return;
 
   delete csConsist;
+  csConsists = CSConsist::getFirst();
 }
 
-void DCCEXProtocol::clearCSConsists() { CSConsist::clearCSConsists(); }
+void DCCEXProtocol::clearCSConsists() {
+  CSConsist::clearCSConsists();
+  csConsists = CSConsist::getFirst();
+}
 
 // Momentum methods
 
@@ -1314,6 +1325,7 @@ void DCCEXProtocol::_processRosterList() {
     int address = DCCEXInbound::getNumber(i);
     new Loco(address, LocoSourceRoster);
   }
+  roster = Loco::getFirst();
   _requestRosterEntry(Loco::getFirst()->getAddress());
   _rosterCount = DCCEXInbound::getParameterCount() - 1;
 }
@@ -1367,6 +1379,7 @@ void DCCEXProtocol::_processTurnoutList() {
     auto id = DCCEXInbound::getNumber(i);
     new Turnout(id, false);
   }
+  turnouts = Turnout::getFirst();
   _requestTurnoutEntry(Turnout::getFirst()->getId());
   _turnoutCount = DCCEXInbound::getParameterCount() - 1;
 }
@@ -1437,6 +1450,7 @@ void DCCEXProtocol::_processRouteList() {
     int id = DCCEXInbound::getNumber(i);
     new Route(id);
   }
+  routes = Route::getFirst();
   _requestRouteEntry(Route::getFirst()->getId());
   _routeCount = DCCEXInbound::getParameterCount() - 1;
 }
@@ -1515,6 +1529,7 @@ void DCCEXProtocol::_processTurntableList() { // <jO [id1 id2 id3 ...]>
     int id = DCCEXInbound::getNumber(i);
     new Turntable(id);
   }
+  turntables = Turntable::getFirst();
   _requestTurntableEntry(Turntable::getFirst()->getId());
   _turntableCount = DCCEXInbound::getParameterCount() - 1;
 }
@@ -1619,6 +1634,7 @@ void DCCEXProtocol::_processSignalList() {
     auto id = DCCEXInbound::getNumber(i);
     new Signal(id);
   }
+  signals = Signal::getFirst();
   _requestSignalState(Signal::getFirst()->getId()); // get the currrent state of the signal
   _signalCount = DCCEXInbound::getParameterCount() - 1;
 }
