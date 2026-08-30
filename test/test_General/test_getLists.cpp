@@ -25,6 +25,21 @@
 #include "../setup/DCCEXProtocolTests.h"
 
 /**
+ * @brief Validate getLists() waits for the server version before proceeding
+ */
+TEST_F(DCCEXProtocolTests, getListsWaitsForServerVersion) {
+  // First call requests the server version
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_EQ(_stream.getOutput(), "<s>");
+  _stream.clearOutput();
+
+  // Until the version arrives, further calls must send nothing
+  _dccexProtocol.getLists(true, true, true, true, true);
+  EXPECT_FALSE(_dccexProtocol.receivedVersion());
+  EXPECT_EQ(_stream.getOutput(), "");
+}
+
+/**
  * @brief Validate all lists are requested sequentially by getLists()
  */
 TEST_F(DCCEXProtocolTests, getListsSequentialFlow) {
