@@ -1090,14 +1090,6 @@ private:
   /**
    * @brief Formatter for opcode and two params
    * @param opcode OPCODE to send
-   * @param param1 Single int parameter to send
-   * @param param2 Single char parameter to send
-   */
-  void _sendTwoParams(char opcode, int param1, char param2);
-
-  /**
-   * @brief Formatter for opcode and two params
-   * @param opcode OPCODE to send
    * @param param1 Single char parameter to send
    * @param param2 Single string parameter to send
    */

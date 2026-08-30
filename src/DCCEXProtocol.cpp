@@ -1904,15 +1904,6 @@ void DCCEXProtocol::_sendTwoParams(char opcode, const char *param1, int param2) 
   _cmdSend();
 }
 
-void DCCEXProtocol::_sendTwoParams(char opcode, int param1, char param2) {
-  _cmdStart(opcode);
-  _cmdAppend(' ');
-  _cmdAppend(param1);
-  _cmdAppend(' ');
-  _cmdAppend(param2);
-  _cmdSend();
-}
-
 void DCCEXProtocol::_sendTwoParams(char opcode, char param1, const char *param2) {
   _cmdStart(opcode);
   _cmdAppend(' ');
